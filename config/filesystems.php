@@ -41,6 +41,10 @@ return [
     |
     */
 
+
+
+
+
     'disks' => [
 
         'local' => [
@@ -63,6 +67,14 @@ return [
             'bucket' => env('AWS_BUCKET'),
             'url' => env('AWS_URL'),
         ],
+
+        'dropbox' => [ //  as seen on https://medium.com/hello-laravel/dropbox-filesystem-laravel-5-4-dfb60a618d6e
+            'driver' => 'dropbox',
+            'app_secret' => env('DROPBOX_APP_SECRET'),
+            'token' => env('DROPBOX_TOKEN'),
+        ],
+
+
 
     ],
 
