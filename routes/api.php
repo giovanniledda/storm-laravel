@@ -16,3 +16,16 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+JsonApi::register('v1')->routes(function ($api) {
+    $api->resource('documents');
+    // $api->resource('comments');
+});
+
+
+// Route::group(['prefix' => 'documents'], function() {
+//     Route::get('/{document}', 'DocumentController@show') -> name('documents.show');
+//     Route::post('/', 'DocumentController@store')->name('documents.store');
+
+// });

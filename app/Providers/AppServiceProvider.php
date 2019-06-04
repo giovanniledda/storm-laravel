@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use CloudCreativity\LaravelJsonApi\LaravelJsonApi;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,6 +24,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
+        // https://laravel-json-api.readthedocs.io/en/latest/basics/api/
+        LaravelJsonApi::defaultApi('v1');
 
         /**
          * see https://codeburst.io/upload-and-manage-files-with-laravel-and-vue-915378c8b2a4

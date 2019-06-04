@@ -186,7 +186,7 @@ return [
         BC\Laravel\DropboxDriver\ServiceProvider::class,
 
 
-
+        Venturecraft\Revisionable\RevisionableServiceProvider::class,
 
     ],
 

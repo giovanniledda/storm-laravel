@@ -75,6 +75,13 @@ return [
         ],
 
 
+        'media' => [
+            'driver' => 'dropbox',
+            'root' => storage_path('storm/documents'),
+            'app_secret' => env('DROPBOX_APP_SECRET'),
+            'token' => env('DROPBOX_TOKEN'),
+    ],
+
 
     ],
 
