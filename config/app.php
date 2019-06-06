@@ -175,19 +175,15 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\TelescopeServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-
+        Laravel\Passport\PassportServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
-
-
 
         /*
         * Dropbox - as seen on https://medium.com/hello-laravel/dropbox-filesystem-laravel-5-4-dfb60a618d6e
         */
         BC\Laravel\DropboxDriver\ServiceProvider::class,
 
-
         Venturecraft\Revisionable\RevisionableServiceProvider::class,
-
     ],
 
     /*

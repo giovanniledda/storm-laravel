@@ -38,4 +38,10 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+    public function createAndGetToken()
+    {
+        return $this->createToken(\Config::get('app.name'))->accessToken;
+    }
 }

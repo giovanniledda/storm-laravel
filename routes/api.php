@@ -1,5 +1,6 @@
 <?php
 
+use CloudCreativity\LaravelJsonApi\Facades\JsonApi;
 use Illuminate\Http\Request;
 
 /*
@@ -13,9 +14,20 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+/*
+ * AUTHENTICATION ROUTES
+ */
+
+Route::group(['prefix' => 'auth'], function () {
+    Route::post('login', 'API\AuthController@login');
+    Route::post('signup', 'API\AuthController@signup');
+
+    Route::group(['middleware' => 'auth:api'], function () {
+        Route::get('logout', 'API\AuthController@logout');
+        Route::get('user', 'API\AuthController@user');
+    });
 });
+
 
 
 JsonApi::register('v1')->routes(function ($api) {
@@ -23,9 +35,7 @@ JsonApi::register('v1')->routes(function ($api) {
     // $api->resource('comments');
 });
 
-
 // Route::group(['prefix' => 'documents'], function() {
 //     Route::get('/{document}', 'DocumentController@show') -> name('documents.show');
 //     Route::post('/', 'DocumentController@store')->name('documents.store');
-
 // });

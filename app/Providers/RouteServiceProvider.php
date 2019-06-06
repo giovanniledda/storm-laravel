@@ -65,9 +65,14 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapApiRoutes()
     {
-        // Route::prefix('api')
-        //      ->middleware('api')
-        Route::middleware('api')
+
+        // Per JSONApi suggeriscono questo per non duplicare "api" nella route, ma poi non funziona nulla
+//        Route::middleware('api')
+//            ->namespace($this->namespace)
+//            ->group(base_path('routes/api.php'));
+
+        Route::prefix('api')
+            ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/api.php'));
     }
