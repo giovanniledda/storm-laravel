@@ -175,8 +175,14 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\TelescopeServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+
+        // Gestione autenticazione con Oauth2
         Laravel\Passport\PassportServiceProvider::class,
+
+        // Gestione ruoli e permessi
         Spatie\Permission\PermissionServiceProvider::class,
+        Laracasts\Flash\FlashServiceProvider::class,
+        Collective\Html\HtmlServiceProvider::class,
 
         /*
         * Dropbox - as seen on https://medium.com/hello-laravel/dropbox-filesystem-laravel-5-4-dfb60a618d6e
@@ -235,6 +241,9 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
+        // UI ruoli e permessi
+        'Form' => Collective\Html\FormFacade::class,
+        'Html' => Collective\Html\HtmlFacade::class,
     ],
 
 ];
