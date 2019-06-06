@@ -2,8 +2,6 @@
 
 namespace App\Exceptions;
 
-
-
 use CloudCreativity\LaravelJsonApi\Exceptions\HandlesErrors;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -55,8 +53,8 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if ($this->isJsonApi($request, $e)) {
-            return $this->renderJsonApi($request, $e);
+        if ($this->isJsonApi($request, $exception)) {
+            return $this->renderJsonApi($request, $exception);
           }
         return parent::render($request, $exception);
     }
