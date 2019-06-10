@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 class Adapter extends AbstractAdapter
-{
+{ 
+    protected $fillable = ['title'];
 
     /**
      * Mapping of JSON API attribute field names to model keys.
@@ -24,7 +25,10 @@ class Adapter extends AbstractAdapter
      */
     public function __construct(StandardStrategy $paging)
     {
-        parent::__construct(new \App\Document(), $paging);
+
+        $document = new \App\Document();
+        
+        parent::__construct($document, $paging);
     }
 
     /**

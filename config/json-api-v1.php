@@ -164,6 +164,7 @@ return [
     |
     */
     'decoding' => [
+        'application/json',
         'application/vnd.api+json',
     ],
 

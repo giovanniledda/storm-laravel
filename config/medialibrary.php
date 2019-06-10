@@ -6,7 +6,10 @@ return [
      * The disk on which to store added files and derived images by default. Choose
      * one or more of the disks you've configured in config/filesystems.php.
      */
-    'disk_name' => 'public',
+    // 'disk_name' => 'public',
+    'disk_name' => env('MEDIA_DISK', 'public'),
+
+    
 
     /*
      * The maximum file size of an item in bytes.
@@ -23,8 +26,8 @@ return [
     /*
      * The fully qualified class name of the media model.
      */
-    // 'media_model' => Spatie\MediaLibrary\Models\Media::class,
-    'media_model' => App\Document::class,
+    'media_model' => Spatie\MediaLibrary\Models\Media::class,
+    // 'media_model' => App\Document::class,
 
     's3' => [
         /*

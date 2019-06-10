@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 
 class DocumentTest extends TestCase
 {
@@ -15,17 +16,72 @@ class DocumentTest extends TestCase
      *
      * @return void
      */
-    public function test_can_create_document()
+
+     public function test_can_create_document()
     {
-        $this->assertTrue(true);
+
+        $this->disableExceptionHandling();
+
+        // $local_file = __DIR__ . '/../Feature/text_file.txt';
+
+        // $uploadedFile = new UploadedFile(
+        //     $local_file,
+        //     'text_file.txt',
+        //     'text/plain',
+        //     null,
+        //     null,
+        //     true
+        // );
 
 
+        $fake_title = $this->faker->sentence;
         $data = [
-            'title' => $this->faker->sentence,
+            'data' => [
+                'attributes' => [
+                    'title' => $fake_title,
+                ],
+                'type' => 'documents'
+                // 'file' => $uploadedFile
+            ]
         ];
-        $this->post(route('documents.create'), $data)
-            ->assertStatus(201)
-            ->assertJson($data);
+
+        $headers = [
+            'Content-type' => 'application/vnd.api+json',
+            'Accept' => 'application/vnd.api+json',
+            // 'Transfer-Encoding' => 'chunked'
+        ];
+
+
+        $response = $this->json('POST', route('api:v1:documents.create'), $data, $headers);
+
+        $response
+        ->assertStatus(201)
+        ->assertJson([
+            'data' => [
+                'attributes'=> [
+                    'title' => $fake_title
+                ]
+            ]
+        ]);
+
+
+        $content =  json_decode($response->getContent(), true);
+        $document_id = $content['data']['id'];
+
+        $this->assertDatabaseHas('documents', ['id' =>  $document_id] );
+
+        $document = \App\Document::find($document_id);
 
     }
+
+
+
+
+    public function test_un_test(){
+        $response = $this->get('/');
+
+        $response->assertStatus(200);
+    }
+
+
 }
