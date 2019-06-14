@@ -6,6 +6,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
+use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
@@ -39,11 +40,15 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function setPasswordAttribute($password)
+    {
+//        $this->attributes['password'] = bcrypt($password);
+        $this->attributes['password'] = Hash::make($password);
+    }
+
     public function createAndGetToken()
     {
         return $this->createToken(\Config::get('auth.token_clients.personal.name'))->accessToken;
     }
-
-
 
 }
