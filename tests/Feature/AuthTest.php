@@ -72,12 +72,9 @@ class AuthTest extends TestCase
         $data = $this->_user_data;
 
         // Send post request
-        $response = $this->json('POST', route('api.auth.signup'), $data);
-        // Assert it was successful
-        $response->assertStatus(200);
-        // Assert we received a token
-        $this->assertArrayHasKey('success', $response->json());
-        $this->assertArrayHasKey('token', $response->json()['success']);
+        $response = $this->json('POST', route('api.auth.signup'), $data)
+            ->assertStatus(200)
+            ->assertJsonStructure(['success' => ['token']]);
 
         // Delete data
         $this->_deleteTestUser();
@@ -98,11 +95,8 @@ class AuthTest extends TestCase
         $response = $this->json('POST', route('api.auth.login'), [
             'email' => $this->_user_data['email'],
             'password' => $this->_user_data['password'],
-        ]);
-        //Assert it was successful and a token was received
-        $response->assertStatus(200);
-        $this->assertArrayHasKey('success', $response->json());
-        $this->assertArrayHasKey('token', $response->json()['success']);
+        ])->assertStatus(200)
+        ->assertJsonStructure(['success' => ['token']]);
 
         // Delete data
         $this->_deleteTestUser();
@@ -125,9 +119,8 @@ class AuthTest extends TestCase
             'scope' => '',
         ];
         // Send post request
-        $response = $this->json('POST', route('passport.token'), $data);
-        // Assert it was denied
-        $response->assertStatus(401);
+        $response = $this->json('POST', route('passport.token'), $data)
+            ->assertStatus(401);
 
         $user = $this->_createTestUser();
         $oauth_client = $this->_createTestPasswordGrantClient($user);
