@@ -10,6 +10,45 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class AuthTest extends TestCase
 {
+    private $_user_data = [
+        'name' => 'Test',
+        'email' => 'test@gmail.com',
+        'password' => 'secret1234',
+        'c_password' => 'secret1234',
+    ];
+
+    /**
+     * Utility function: creates a Password Grant Token Client
+     */
+    private function _createTestPasswordGrantClient($user)
+    {
+        $clientRepository = new ClientRepository();
+        $clientRepository->createPasswordGrantClient($user->id, \Config::get('auth.token_clients.password.name'), '/');
+
+        $oauth_client_id = \Config::get('auth.token_clients.password.id');
+        return $clientRepository->find($oauth_client_id);
+    }
+
+    /**
+     * Utility function: creates a Test User
+     */
+    private function _createTestUser()
+    {
+        $data = $this->_user_data;
+        unset($data['c_password']);
+
+        //Create user
+        return User::create($data);
+    }
+
+    /**
+     * Utility function: delete the Test User
+     */
+    private function _deleteTestUser()
+    {
+        User::where('email', $this->_user_data['email'])->delete();
+    }
+
     /**
      * A basic feature test example.
      *
@@ -29,23 +68,19 @@ class AuthTest extends TestCase
      */
     public function testSignupPersonalAccessClient()
     {
-        //User's data
-        $data = [
-            'name' => 'Test',
-            'email' => 'test@gmail.com',
-            'password' => 'secret1234',
-            'c_password' => 'secret1234',
-        ];
-        //Send post request
+        // User's data
+        $data = $this->_user_data;
+
+        // Send post request
         $response = $this->json('POST', route('api.auth.signup'), $data);
-        //Assert it was successful
+        // Assert it was successful
         $response->assertStatus(200);
-        //Assert we received a token
+        // Assert we received a token
         $this->assertArrayHasKey('success', $response->json());
         $this->assertArrayHasKey('token', $response->json()['success']);
 
-        //Delete data
-        User::where('email', 'test@gmail.com')->delete();
+        // Delete data
+        $this->_deleteTestUser();
     }
 
     /**
@@ -56,26 +91,22 @@ class AuthTest extends TestCase
      */
     public function testLoginPersonalAccessClient()
     {
-        //Create user
-        User::create([
-            'name' => 'test',
-            'email' => 'test@gmail.com',
-            'password' => 'secret1234'
-        ]);
+
+        $u = $this->_createTestUser();
+
         //attempt login
         $response = $this->json('POST', route('api.auth.login'), [
-            'email' => 'test@gmail.com',
-            'password' => 'secret1234',
+            'email' => $this->_user_data['email'],
+            'password' => $this->_user_data['password'],
         ]);
         //Assert it was successful and a token was received
         $response->assertStatus(200);
         $this->assertArrayHasKey('success', $response->json());
         $this->assertArrayHasKey('token', $response->json()['success']);
 
-        //Delete the user
-        User::where('email', 'test@gmail.com')->delete();
+        // Delete data
+        $this->_deleteTestUser();
     }
-
 
     /**
      * @test
@@ -98,37 +129,62 @@ class AuthTest extends TestCase
         // Assert it was denied
         $response->assertStatus(401);
 
-        // Create user
-        $user = User::create([
-            'name' => 'test',
-            'email' => 'test@gmail.com',
-            'password' => 'secret1234'
-        ]);
-
-        $clientRepository = new ClientRepository();
-        $clientRepository->createPasswordGrantClient($user->id, \Config::get('auth.token_clients.password.name'), '/');
-
-        $oauth_client_id = \Config::get('auth.token_clients.password.id');
-        $oauth_client = $clientRepository->find($oauth_client_id);
+        $user = $this->_createTestUser();
+        $oauth_client = $this->_createTestPasswordGrantClient($user);
 
         //User's data
         $data_ok = [
             'grant_type' => 'password',
-            'client_id' => $oauth_client_id,
+            'client_id' => $oauth_client->id,
             'client_secret' => $oauth_client->secret,
-            'username' => 'test@gmail.com',
-            'password' => 'secret1234',
+            'username' => $this->_user_data['email'],
+            'password' => $this->_user_data['password'],
             'scope' => '',
         ];
 
         //Send post request
 
-        $this->json('POST', route('passport.token'), $data_ok, ['Accept' => 'application/json']) // oauth/token
+        $this->json('POST', route('passport.token'), $data_ok) // oauth/token
             ->assertStatus(200)
             ->assertJsonStructure(['token_type', 'expires_in', 'access_token', 'refresh_token']);
 
-        //Delete data
-        User::where('email', 'test@gmail.com')->delete();
+        // Delete data
+        $this->_deleteTestUser();
+    }
+
+    /**
+     * @test
+     * Test requesting Authenticated User with autenthicated request
+     */
+    public function testUserAuthenticatedRequest()
+    {
+
+        $user = $this->_createTestUser();
+        $oauth_client = $this->_createTestPasswordGrantClient($user);
+
+        //User's data
+        $data_ok = [
+            'grant_type' => 'password',
+            'client_id' => $oauth_client->id,
+            'client_secret' => $oauth_client->secret,
+            'username' => $this->_user_data['email'],
+            'password' => $this->_user_data['password'],
+            'scope' => '',
+        ];
+
+        //Send post request
+
+        $response = $this->json('POST', route('passport.token'), $data_ok) // oauth/token
+            ->assertStatus(200)
+            ->assertJsonStructure(['token_type', 'expires_in', 'access_token', 'refresh_token']);
+
+        $token = $response->json()['access_token'];
+        $response = $this->json('GET', route('api.auth.user'), [], ['Authorization' => 'Bearer '.$token])
+            ->assertStatus(200)
+            ->assertJsonStructure(['success' => ['user']]);
+
+        // Delete data
+        $this->_deleteTestUser();
     }
 
 }
