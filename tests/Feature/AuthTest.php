@@ -200,8 +200,7 @@ class AuthTest extends TestCase
             'scope' => '',
         ];
 
-        //Send post request
-
+        // Send post request
         $response = $this->json('POST', route('passport.token'), $data_ok) // oauth/token
             ->assertStatus(200)
             ->assertJsonStructure(['token_type', 'expires_in', 'access_token', 'refresh_token']);
@@ -216,7 +215,7 @@ class AuthTest extends TestCase
             'scope' => '',
         ];
 
-        $response = $this->json('POST', route('passport.token'), $refresh_token_data)
+        $response = $this->json('POST', route('passport.token'), $refresh_token_data) // oauth/token
             ->assertStatus(200)
             ->assertJsonStructure(['expires_in', 'access_token', 'refresh_token']);
 
