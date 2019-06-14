@@ -39,9 +39,11 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-
     public function createAndGetToken()
     {
-        return $this->createToken(\Config::get('app.name'))->accessToken;
+        return $this->createToken(\Config::get('auth.token_clients.personal.name'))->accessToken;
     }
+
+
+
 }

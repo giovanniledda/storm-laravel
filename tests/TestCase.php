@@ -10,20 +10,21 @@ use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Laravel\Passport\ClientRepository;
 
 abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication, DatabaseMigrations;
 
-
     protected $faker;
+
     public function setUp(): void {
         parent::setUp();
         $this->faker = Factory::create();
+
+        // To test Oauth Grants
+        \Artisan::call('passport:install',['-vvv' => true]);
     }
-
-
-
 
     protected function disableExceptionHandling()
     {

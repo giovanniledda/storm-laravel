@@ -19,8 +19,8 @@ use Illuminate\Http\Request;
  */
 
 Route::group(['prefix' => 'auth'], function () {
-    Route::post('login', 'API\AuthController@login');
-    Route::post('signup', 'API\AuthController@signup');
+    Route::post('login', 'API\AuthController@login')->name('api.auth.login');
+    Route::post('signup', 'API\AuthController@signup')->name('api.auth.signup');
 
     Route::group(['middleware' => 'auth:api'], function () {
         Route::get('logout', 'API\AuthController@logout');
