@@ -59,19 +59,16 @@
                         <li><a href="{{ route('register') }}">Register</a></li>
                     @else
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                               aria-expanded="false">
-                                {{ Auth::user()->name }} <span class="caret"></span>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                {{ Auth::user()->name }}
                             </a>
 
                             <ul class="dropdown-menu" role="menu">
                                 <li>
                                     @role('Admin') {{-- Laravel-permission blade helper --}}
-                                    <a href="#"><i class="fa fa-btn fa-unlock"></i>Admin</a>
+                                      <a href="#"><i class="fa fa-btn fa-unlock"></i>Admin</a>
                                     @endrole
-                                    <a href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
+                                    <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                         Logout
                                     </a>
 

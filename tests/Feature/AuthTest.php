@@ -60,7 +60,7 @@ class AuthTest extends TestCase
         User::create([
             'name' => 'test',
             'email' => 'test@gmail.com',
-            'password' => bcrypt('secret1234')
+            'password' => 'secret1234'
         ]);
         //attempt login
         $response = $this->json('POST', route('api.auth.login'), [
@@ -102,7 +102,7 @@ class AuthTest extends TestCase
         $user = User::create([
             'name' => 'test',
             'email' => 'test@gmail.com',
-            'password' => bcrypt('secret1234')
+            'password' => 'secret1234'
         ]);
 
         $clientRepository = new ClientRepository();
