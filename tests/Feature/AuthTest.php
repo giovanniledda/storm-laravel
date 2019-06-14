@@ -187,4 +187,48 @@ class AuthTest extends TestCase
         $this->_deleteTestUser();
     }
 
+    /**
+     * @test
+     * Test requesting a refreshed Token previously acquired
+     */
+    public function testRefreshTokenRequest()
+    {
+
+        $user = $this->_createTestUser();
+        $oauth_client = $this->_createTestPasswordGrantClient($user);
+
+        //User's data
+        $data_ok = [
+            'grant_type' => 'password',
+            'client_id' => $oauth_client->id,
+            'client_secret' => $oauth_client->secret,
+            'username' => $this->_user_data['email'],
+            'password' => $this->_user_data['password'],
+            'scope' => '',
+        ];
+
+        //Send post request
+
+        $response = $this->json('POST', route('passport.token'), $data_ok) // oauth/token
+            ->assertStatus(200)
+            ->assertJsonStructure(['token_type', 'expires_in', 'access_token', 'refresh_token']);
+
+        $token = $response->json()['refresh_token'];
+
+        $refresh_token_data = [
+            'grant_type' => 'refresh_token',
+            'refresh_token' => $token,
+            'client_id' => $oauth_client->id,
+            'client_secret' => $oauth_client->secret,
+            'scope' => '',
+        ];
+
+        $response = $this->json('POST', route('passport.token'), $refresh_token_data)
+            ->assertStatus(200)
+            ->assertJsonStructure(['expires_in', 'access_token', 'refresh_token']);
+
+        // Delete data
+        $this->_deleteTestUser();
+    }
+
 }
