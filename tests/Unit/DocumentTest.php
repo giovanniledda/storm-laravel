@@ -18,7 +18,6 @@ class DocumentTest extends TestCase
      * @return void
      */
 
-     /*
      public function test_can_create_document(){
         $this->disableExceptionHandling();
 
@@ -111,10 +110,10 @@ class DocumentTest extends TestCase
         $this->assertDatabaseHas('documents', ['id' =>  $document_id] );
         $this->assertDatabaseHas('documents', ['title' =>  $fake_title] );
 
-        $document = \App\Document::find($document_id);
+        // $document = \App\Document::find($document_id);
 
     }
-*/
+
     public function test_can_add_files_via_json_api (){
         $this->disableExceptionHandling();
 
@@ -149,16 +148,11 @@ class DocumentTest extends TestCase
         $document_id = $content['data']['id'];
         $doc = \App\Document::find($document_id);
 
+        $this->assertEquals($doc->id, $document_id);
         // print_r ($response->getContent());
         $this->assertFileExists($doc->getFirstMedia('documents')->getPath());
 
     }
-
-    // public function test_un_test(){
-    //     $response = $this->get('/');
-
-    //     $response->assertStatus(200);
-    // }
 
 
 }
