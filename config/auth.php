@@ -100,4 +100,16 @@ return [
         ],
     ],
 
+    'token_clients' => [
+        'personal' => [
+            'id' => env('PASSPORT_PERSONAL_AC_ID', 1),
+            'name' => env('PASSPORT_PERSONAL_AC_NAME', 'Storm-Laravel Personal Access Client'),
+            'secret' => env('PASSPORT_PERSONAL_AC_SECRET'),
+        ],
+        'password' => [
+            'id' => env('PASSPORT_PASSWORD_AC_ID', 2),
+            'name' => env('PASSPORT_PASSWORD_AC_NAME', 'Storm-Laravel Password Grant Client'),
+            'secret' => env('PASSPORT_PASSWORD_AC_SECRET'),
+        ]
+    ]
 ];
