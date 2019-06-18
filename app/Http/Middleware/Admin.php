@@ -17,8 +17,8 @@ class Admin
      */
     public function handle($request, Closure $next)
     {
-        if (User::all()->count() != 1) {
-            if (!Auth::user()->hasPermissionTo('Administer roles & permissions')) // If user does //not have this permission
+        if (!User::onlyOne()) {
+            if (!Auth::user()->hasPermissionTo(\Config::get('constants.permissions.admin_roles_permissions'))) // If user does //not have this permission
             {
                 abort('401');
             }

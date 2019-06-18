@@ -111,5 +111,10 @@ return [
             'name' => env('PASSPORT_PASSWORD_AC_NAME', 'Storm-Laravel Password Grant Client'),
             'secret' => env('PASSPORT_PASSWORD_AC_SECRET'),
         ]
+    ],
+
+    'default_admin' => [
+        'username' => env('ADMIN_USERNAME', 'admin'),
+        'password' => env('ADMIN_PASSWORD', 'admin'),
     ]
 ];

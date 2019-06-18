@@ -65,9 +65,17 @@
 
                             <ul class="dropdown-menu" role="menu">
                                 <li>
-                                    @role('Admin') {{-- Laravel-permission blade helper --}}
-                                      <a href="#"><i class="fa fa-btn fa-unlock"></i>Admin</a>
-                                    @endrole
+                                    @if(User::onlyOne())
+                                        <a href="{{ route('roles.index') }}"><i class="fa fa-btn fa-key"></i> Roles</a>
+                                        <a href="{{ route('permissions.index') }}"><i class="fa fa-btn fa-key"></i> Permissions</a>
+                                    @else
+                                        @role('Admin') {{-- Laravel-permission blade helper --}}
+                                            <a href="#"><i class="fa fa-btn fa-unlock"></i>Admin</a>
+                                            <a href="{{ route('roles.index') }}"><i class="fa fa-btn fa-key"></i> Roles</a>
+                                            <a href="{{ route('permissions.index') }}"><i class="fa fa-btn fa-key"></i> Permissions</a>
+                                        @endrole
+                                    @endif
+
                                     <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                         Logout
                                     </a>

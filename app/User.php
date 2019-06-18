@@ -51,4 +51,12 @@ class User extends Authenticatable
         return $this->createToken(\Config::get('auth.token_clients.personal.name'))->accessToken;
     }
 
+
+    public static function onlyOne()
+    {
+        return (User::all()->count() == 1);
+    }
+
+
+
 }

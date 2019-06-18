@@ -24,8 +24,10 @@ class DatabaseSeeder extends Seeder
         // Seed the default permissions
         $permissions = Permission::defaultPermissions();
 
-        foreach ($permissions as $perms) {
-            Permission::firstOrCreate(['name' => $perms]);
+        foreach ($permissions as $key => $name) {
+            if ($this->command->confirm("Do you wish to create permission $name?", true)) {
+                Permission::firstOrCreate(['name' => $name]);
+            }
         }
 
         $this->command->info('Default Permissions added.');
@@ -47,13 +49,13 @@ class DatabaseSeeder extends Seeder
                     // assign all permissions
                     $role->syncPermissions(Permission::all());
                     $this->command->info('Admin granted all the permissions');
+
+                    // create user for Admin only
+                    $this->createAdmin($role);
                 } else {
                     // for others by default only read access
                     $role->syncPermissions(Permission::where('name', 'LIKE', 'view_%')->get());
                 }
-
-                // create one user for each role
-                $this->createUser($role);
             }
 
             $this->command->info('Roles ' . $input_roles . ' added successfully');
@@ -70,15 +72,27 @@ class DatabaseSeeder extends Seeder
      *
      * @param $role
      */
-    private function createUser($role)
+    private function createAdmin($role)
     {
-        $user = factory(User::class)->create();
-        $user->assignRole($role->name);
 
-        if ($role->name == 'Admin') {
+        // Must not already exist in the `email` column of `users` table
+        $validator = Validator::make(['email' => \Config('auth.default_admin.username')], ['email' => 'unique:users']);
+
+        if ($validator->fails()) {
+            $this->command->warn('Default Admin user already created');
+        }
+        else {
+            // Register the new user or whatever.
+            $user = User::create([
+                'name' => \Config('auth.default_admin.username'),
+                'email' => \Config('auth.default_admin.username'),
+                'password' => \Config('auth.default_admin.password'),
+            ]);
+            $user->assignRole($role->name);
+
             $this->command->info('Here is your admin details to login:');
             $this->command->warn($user->email);
-            $this->command->warn('Password is "secret"');
+            $this->command->warn('Password is "'.\Config('auth.default_admin.password').'"');
         }
     }
 }
