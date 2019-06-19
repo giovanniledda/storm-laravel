@@ -88,7 +88,6 @@ class AuthTest extends TestCase
      */
     public function testLoginPersonalAccessClient()
     {
-
         $u = $this->_createTestUser();
 
         //attempt login
@@ -205,11 +204,11 @@ class AuthTest extends TestCase
             ->assertStatus(200)
             ->assertJsonStructure(['token_type', 'expires_in', 'access_token', 'refresh_token']);
 
-        $token = $response->json()['refresh_token'];
+        $refresh_token = $response->json()['refresh_token'];
 
         $refresh_token_data = [
             'grant_type' => 'refresh_token',
-            'refresh_token' => $token,
+            'refresh_token' => $refresh_token,
             'client_id' => $oauth_client->id,
             'client_secret' => $oauth_client->secret,
             'scope' => '',
