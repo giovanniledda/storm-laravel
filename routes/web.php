@@ -23,4 +23,7 @@ Route::group( ['middleware' => ['auth', 'isAdmin']], function() {
     Route::resource('users', 'UserController');
     Route::resource('roles', 'RoleController');
     Route::resource('permissions', 'PermissionController');
+
+    // extra resource routes
+    Route::get('/roles/delete-confirm/{id}', 'RoleController@confirmDestroy')->name('roles.delete.confirm');
 });
