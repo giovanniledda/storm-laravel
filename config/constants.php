@@ -19,6 +19,7 @@ return [
         'add_permissions' => 'Add permissions',
         'edit_permissions' => 'Edit permissions',
         'delete_permissions' => 'Delete permissions',
+
     ]
 
 ];

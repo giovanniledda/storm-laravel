@@ -112,8 +112,8 @@ class RoleController extends Controller
     public function update(Request $request, $id)
     {
 
-        $role = Role::findOrFail($id);//Get role with the given id
-        //Validate name and permission fields
+        $role = Role::findOrFail($id);
+        // Validate name and permission fields
         $this->validate($request, [
             'name' => 'required|max:10|unique:roles,name,' . $id,
             'permissions' => 'required',
@@ -135,8 +135,7 @@ class RoleController extends Controller
         }
 
         return redirect()->route('roles.index')
-            ->with('flash_message',
-                'Role' . $role->name . ' updated!');
+            ->with('flash_message', 'Role' . $role->name . ' updated!');
     }
 
     /**
@@ -147,12 +146,23 @@ class RoleController extends Controller
      */
     public function destroy($id)
     {
-        $role = Role::findOrFail($id);
-        $role->delete();
+        Role::findOrFail($id)->delete();
 
         return redirect()->route('roles.index')
-            ->with('flash_message',
-                'Role deleted!');
+            ->with('flash_message', 'Role deleted!');
 
+    }
+
+
+    /**
+     * Ask confirmation about the specified resource from storage to remove.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function confirmDestroy($id)
+    {
+        $role = Role::findOrFail($id);
+        return view('roles.delete')->withRole($role);
     }
 }
