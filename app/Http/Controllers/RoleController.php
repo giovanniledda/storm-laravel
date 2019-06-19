@@ -153,7 +153,6 @@ class RoleController extends Controller
 
     }
 
-
     /**
      * Ask confirmation about the specified resource from storage to remove.
      *

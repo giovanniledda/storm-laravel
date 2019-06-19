@@ -143,6 +143,18 @@ class PermissionController extends Controller
         return redirect()->route('permissions.index')
             ->with('flash_message',
                 'Permission deleted!');
+    }
 
+    /**
+     * Ask confirmation about the specified resource from storage to remove.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+
+    public function confirmDestroy($id)
+    {
+        $permission = Permission::findOrFail($id);
+        return view('permissions.delete')->withPermission($permission);
     }
 }
