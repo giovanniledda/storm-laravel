@@ -22,8 +22,7 @@
         @endforeach
         <br>
         {{ Form::submit('Edit', array('class' => 'btn btn-primary')) }}
-
-        <a href="{{ @route('roles.delete.confirm', ['id' => $role->id]) }}">{{ __('Delete') }}</a>
+        <a href="{{ @route('roles.delete.confirm', ['id' => $role->id]) }}" class="btn btn-danger">{{ __('Delete') }}</a>
 
         {{ Form::close() }}
     </div>

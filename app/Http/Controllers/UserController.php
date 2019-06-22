@@ -173,4 +173,17 @@ class UserController extends Controller
         $user->syncRoles($roles);
         return $user;
     }
+
+
+    /**
+     * Ask confirmation about the specified resource from storage to remove.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function confirmDestroy($id)
+    {
+        $user = User::findOrFail($id);
+        return view('users.delete')->withUser($user);
+    }
 }

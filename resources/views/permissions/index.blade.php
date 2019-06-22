@@ -24,9 +24,7 @@
                         <td>
                             <a href="{{ URL::to('permissions/'.$permission->id.'/edit') }}"
                                class="btn btn-info pull-left" style="margin-right: 3px;">Edit</a>
-                            {!! Form::open(['method' => 'DELETE', 'route' => ['permissions.destroy', $permission->id] ]) !!}
-                            {!! Form::submit('Delete', ['class' => 'btn btn-danger']) !!}
-                            {!! Form::close() !!}
+                            <a href="{{ @route('permissions.delete.confirm', ['id' => $permission->id]) }}" class="btn btn-danger">{{ __('Delete') }}</a>
                         </td>
                     </tr>
                 @endforeach

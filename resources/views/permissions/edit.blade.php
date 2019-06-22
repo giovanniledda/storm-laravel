@@ -16,6 +16,7 @@
         </div>
         <br>
         {{ Form::submit('Edit', array('class' => 'btn btn-primary')) }}
+        <a href="{{ @route('permissions.delete.confirm', ['id' => $permission->id]) }}" class="btn btn-danger">{{ __('Delete') }}</a>
 
         {{ Form::close() }}
 
