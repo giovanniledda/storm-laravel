@@ -15,6 +15,7 @@ class CreateStormSectionsTable extends Migration
     {
         Schema::create('storm_sections', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->text('name');
             $table->timestamps();
         });
     }

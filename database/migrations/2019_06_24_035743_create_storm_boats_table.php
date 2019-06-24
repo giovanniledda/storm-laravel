@@ -15,6 +15,8 @@ class CreateStormBoatsTable extends Migration
     {
         Schema::create('storm_boats', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->text('name');
+            $table->nullableMorphs('itemable');
             $table->timestamps();
         });
     }

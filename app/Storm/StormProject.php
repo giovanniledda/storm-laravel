@@ -14,4 +14,8 @@ class StormProject extends Project
     {
         return $this->morphOne('App\Storm\StormSite', 'siteable');
     }
+
+    // public function boat(){
+    //     return $this->morphedByMany('App\Storm\StormBoat', 'storm_projects');
+    // }
 }
