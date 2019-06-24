@@ -28,22 +28,17 @@ class Document  extends Model implements HasMedia
     ];
     public function __construct(array $attributes = [])
     {
-
-        // print_r($attributes);
-        
-
-
-        
         if (isset($attributes['file'])){
-
-            // print_r ($attributes);
-
             $path = $attributes['file']->getPathName();
             $name = $attributes['file']->getClientOriginalName();
             $this->addMedia($path)->usingFileName($name)->toMediaCollection('documents', env('MEDIA_DISK', 'local'));
             unset ($attributes['file']);
         }
         parent::__construct($attributes);
-        
     }
+
+    public function getFile(){
+        return $this->getFirstMedia('documents')->getPath();
+    }
+
 }

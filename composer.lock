@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "71ae20c5b0582be9299e48d32bf004fc",
+    "content-hash": "c0336668c7cbfa1b5753da1c17f6e965",
     "packages": [
         {
             "name": "benjamincrozat/laravel-dropbox-driver",

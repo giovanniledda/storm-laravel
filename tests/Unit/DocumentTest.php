@@ -21,10 +21,7 @@ class DocumentTest extends TestCase
      public function test_can_create_document(){
         $this->disableExceptionHandling();
 
-
-
         $this->assertEquals([], Storage::allFiles());
-        
 
         $sizeInKilobytes = 200;
 
@@ -56,65 +53,7 @@ class DocumentTest extends TestCase
      }
 
 
-     public function test_can_create_document_via_json_api()
-    {
-
-        $this->disableExceptionHandling();
-
-        // $local_file = __DIR__ . '/../Feature/text_file.txt';
-
-        // $uploadedFile = new UploadedFile(
-        //     $local_file,
-        //     'text_file.txt',
-        //     'text/plain',
-        //     null,
-        //     null,
-        //     true
-        // );
-
-
-        $fake_title = $this->faker->sentence;
-        $data = [
-            'data' => [
-                'attributes' => [
-                    'title' => $fake_title,
-                ],
-                'type' => 'documents'
-                // 'file' => $uploadedFile
-            ]
-        ];
-
-        $headers = [
-            'Content-type' => 'application/vnd.api+json',
-            'Accept' => 'application/vnd.api+json',
-            // 'Transfer-Encoding' => 'chunked'
-        ];
-
-
-        $response = $this->json('POST', route('api:v1:documents.create'), $data, $headers);
-
-        $response
-        ->assertStatus(201)
-        ->assertJson([
-            'data' => [
-                'attributes'=> [
-                    'title' => $fake_title
-                ]
-            ]
-        ]);
-
-
-        $content =  json_decode($response->getContent(), true);
-        $document_id = $content['data']['id'];
-
-        $this->assertDatabaseHas('documents', ['id' =>  $document_id] );
-        $this->assertDatabaseHas('documents', ['title' =>  $fake_title] );
-
-        // $document = \App\Document::find($document_id);
-
-    }
-
-    public function test_can_add_files_via_json_api (){
+    public function test_can_create_document_via_json_api (){
         $this->disableExceptionHandling();
 
         $sizeInKilobytes = 200;
@@ -131,21 +70,31 @@ class DocumentTest extends TestCase
                     'title' => $fake_title,
                     'file' => $file
                 ],
-                'type' => 'documents'
+                'type' => 'documents',
                 // 'file' => $uploadedFile
-            ]
+            ]   
+        ];
+
+        $data = [
+            'title' => $fake_title,
+            'file' => $file
         ];
 
         $headers = [
             'Content-type' => 'multipart/form-data',
+            // 'Content-type' => 'application/vnd.api+json',
             'Accept' => 'application/vnd.api+json',
             // 'Transfer-Encoding' => 'chunked'
         ];
 
-        $response = $this->json('POST', route('api:v1:documents.create'), $data, $headers);
+        // $response = $this->json('POST', route('api:v1:documents.create'), $data, $headers);
+        $response = $this->post(route('api:v1:documents.create'), $data, $headers);
 
         $content =  json_decode($response->getContent(), true);
-        $document_id = $content['data']['id'];
+
+
+        $document_id = $content['id'];
+
         $doc = \App\Document::find($document_id);
 
         $this->assertEquals($doc->id, $document_id);

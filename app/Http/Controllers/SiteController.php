@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Document;
+use App\Site;
 use Illuminate\Http\Request;
 
-class DocumentController extends Controller
+class SiteController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,25 +20,11 @@ class DocumentController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
+    public function create()
     {
-
-        $files = $request->file('file');
-        $title = $request->title;
-
-        $attributes = [
-            'title' => $title,
-            'file' => $files //['parameters']['file']
-        ];
-
-        $document = new \App\Document($attributes);
-        $document->save();
-
-        // $document = Document::create($request->all());
-        return  response()->json($document, 201);
+        //
     }
 
     /**
@@ -48,30 +34,28 @@ class DocumentController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    { 
-        $document = Document::create($request->all());
-        return response()->json($document, 201);
- 
+    {
+        //
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Document  $document
+     * @param  \App\Site  $site
      * @return \Illuminate\Http\Response
      */
-    public function show(Document $document)
+    public function show(Site $site)
     {
-        return $document;
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Document  $document
+     * @param  \App\Site  $site
      * @return \Illuminate\Http\Response
      */
-    public function edit(Document $document)
+    public function edit(Site $site)
     {
         //
     }
@@ -80,10 +64,10 @@ class DocumentController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Document  $document
+     * @param  \App\Site  $site
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Document $document)
+    public function update(Request $request, Site $site)
     {
         //
     }
@@ -91,10 +75,10 @@ class DocumentController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Document  $document
+     * @param  \App\Site  $site
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Document $document)
+    public function destroy(Site $site)
     {
         //
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\JsonApi\V1\Documents;
+namespace App\JsonApi\V1\Projects;
 
 use Neomerx\JsonApi\Schema\SchemaProvider;
 
@@ -10,7 +10,7 @@ class Schema extends SchemaProvider
     /**
      * @var string
      */
-    protected $resourceType = 'documents';
+    protected $resourceType = 'projects';
 
     /**
      * @param $resource
@@ -30,8 +30,6 @@ class Schema extends SchemaProvider
     public function getAttributes($resource)
     {
         return [
-            'title' => $resource->title,
-            'file' => $resource->getFile(),
             'created-at' => $resource->created_at->toAtomString(),
             'updated-at' => $resource->updated_at->toAtomString(),
         ];

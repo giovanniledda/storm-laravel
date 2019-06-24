@@ -29,10 +29,12 @@ Route::group(['prefix' => 'auth'], function () {
 });
 
 
+Route::post('/v1/documents', 'DocumentController@create')->name('api:v1:documents.create');
 
 JsonApi::register('v1')->routes(function ($api) {
-    $api->resource('documents');
-    // $api->resource('comments');
+    // $api->resource('documents')->controller('DocumentController') ; // uses the App\Http\Controllers\Api\DocumentController
+    $api->resource('documents')->except('create');
+    // $api->resource('documents')->controller('DocumentController')->only('create');
 });
 
 // Route::group(['prefix' => 'documents'], function() {
