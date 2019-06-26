@@ -1,6 +1,6 @@
 <?php
 
-namespace App\JsonApi\V1\Projects;
+namespace App\JsonApi\Storm\StormProjects;
 
 use CloudCreativity\LaravelJsonApi\Eloquent\AbstractAdapter;
 use CloudCreativity\LaravelJsonApi\Pagination\StandardStrategy;
@@ -9,8 +9,6 @@ use Illuminate\Support\Collection;
 
 class Adapter extends AbstractAdapter
 {
-
-    protected $fillable = ['name'];
 
     /**
      * Mapping of JSON API attribute field names to model keys.
@@ -26,7 +24,7 @@ class Adapter extends AbstractAdapter
      */
     public function __construct(StandardStrategy $paging)
     {
-        parent::__construct(new \App\Project(), $paging);
+        parent::__construct(new \App\Storm\StormProject(), $paging);
     }
 
     /**

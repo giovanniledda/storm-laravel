@@ -36,6 +36,10 @@ return [
         'domain' => 'https://'.env('AWS_BUCKET').'.s3.amazonaws.com',
     ],
 
+    'dropbox' => [
+        'domain' => 'http://localhost:8000'
+    ],
+
     'remote' => [
         /*
          * Any extra headers that should be included when uploading media to
