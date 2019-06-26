@@ -38,7 +38,7 @@ class DocumentController extends Controller
         $document->save();
 
         // $document = Document::create($request->all());
-        return  response()->json($document, 201);
+        return response()->json($document, 201);
     }
 
     /**

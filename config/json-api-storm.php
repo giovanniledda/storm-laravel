@@ -36,7 +36,7 @@ return [
     |   - e.g. App\JsonApi\Validators\{PostValidator, CommentValidator}
     |
     */
-    'namespace' => 'App\JsonApi\V1',
+    'namespace' => 'App\JsonApi\Storm',
     'by-resource' => true,
 
     /*
@@ -53,8 +53,8 @@ return [
     | `'posts' => App\Post::class`
     */
     'resources' => [
-        'documents' => \App\Document::class,
-        'projects' => \App\Project::class
+        'documents' => \App\Storm\StormDocument::class,
+        'projects' => \App\Storm\StormProject::class
     ],
 
     /*
@@ -91,8 +91,8 @@ return [
     */
     'url' => [
         'host' => null,
-        'namespace' => '/v1',
-        'name' => 'api:v1:',
+        'namespace' => '/storm',
+        'name' => 'api:storm:',
     ],
 
     /*
@@ -165,10 +165,8 @@ return [
     |
     */
     'decoding' => [
-        'application/json',
         'application/vnd.api+json',
         'multipart/form-data'
-
     ],
 
     /*

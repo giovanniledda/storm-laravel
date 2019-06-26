@@ -64,16 +64,16 @@ class DocumentTest extends TestCase
         $file = UploadedFile::fake()->create( $filename, $sizeInKilobytes);
 
         $fake_title = $this->faker->sentence;
-        $data = [
-            'data' => [
-                'attributes' => [
-                    'title' => $fake_title,
-                    'file' => $file
-                ],
-                'type' => 'documents',
-                // 'file' => $uploadedFile
-            ]   
-        ];
+        // $data = [
+        //     'data' => [
+        //         'attributes' => [
+        //             'title' => $fake_title,
+        //             'file' => $file
+        //         ],
+        //         'type' => 'documents',
+        //         // 'file' => $uploadedFile
+        //     ]   
+        // ];
 
         $data = [
             'title' => $fake_title,
