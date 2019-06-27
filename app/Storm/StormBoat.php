@@ -14,4 +14,5 @@ class StormBoat extends Item
     {
         return $this->morphOne('App\Storm\StormProject', 'projectable');
     }
+    
 }

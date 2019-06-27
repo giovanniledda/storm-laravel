@@ -42,4 +42,53 @@ class JsonApiTest extends TestCase
 
 
     }
+
+
+    function test_get_project_and_his_item(){
+        $item_name = $this->faker->sentence;
+        $item = new \App\Item([
+            'name' => $item_name
+        ]
+        );
+        $item->save();
+
+        $project_name = $this->faker->sentence;
+        $project = new \App\Project([
+            'name' => $project_name
+        ]
+        );
+        $project->save();  
+
+        $project->item()->save($item);
+
+        $this->assertDatabaseHas('projects', ['name' =>  $project_name] );
+
+        $related_item =  $project->item;
+
+        $data = [];
+     
+         $headers = [
+            'Content-type' => 'application/vnd.api+json',
+            'Accept' => 'application/vnd.api+json',
+        ];
+
+        $response = $this->json('GET', route('api:v1:projects.read', ['record' => $project->id ]), $data, $headers);
+
+
+        var_dump($response);
+        $content = json_decode($response->getContent(), true);
+
+        $this->assertEquals('', $content);;
+
+
+/*        $content = json_decode($response->getContent(), true);
+
+        $project_id = $content['data']['id'];
+
+        $project = \App\Project::find($project_id);
+
+        $this->assertEquals($project->id, $project_id);
+*/
+
+    }
 }

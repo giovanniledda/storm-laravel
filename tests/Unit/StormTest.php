@@ -38,7 +38,7 @@ class StormTest extends TestCase
         $boat->save();  
         $boat->project()->save($project);
 
-        $this->assertDatabaseHas('storm_projects', ['name' =>  $project_name] );
+        $this->assertDatabaseHas('projects', ['name' =>  $project_name] );
 
         $related_site =  $project->site;
         $this->assertEquals($site->name, $related_site->name);
@@ -48,6 +48,10 @@ class StormTest extends TestCase
         // created with a different model
         $related_boat =  $project->projectable;
         $this->assertEquals($boat->name, $related_boat->name);
+
+        $this->assertEquals($project->projectable->id, $boat->id);
+
+
     }
 
     

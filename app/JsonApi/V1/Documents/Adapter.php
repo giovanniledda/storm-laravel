@@ -9,6 +9,7 @@ use Illuminate\Support\Collection;
 
 class Adapter extends AbstractAdapter
 { 
+    
     protected $fillable = ['title', 'file'];
 
     /**

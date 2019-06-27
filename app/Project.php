@@ -28,7 +28,7 @@ class Project extends Model
         return $this->morphOne('App\Item', 'itemable');
     }
 
-
+    
     public function site()
     {
         return $this->morphOne('App\Site', 'siteable');

@@ -43,8 +43,8 @@ Route::post('/v1/documents', 'DocumentController@create')->name('api:v1:document
 
 
 JsonApi::register('storm')->routes(function ($api) {
-    $api->resource('documents')->except('create');
-    $api->resource('projects');
+    $api->resource('storm-documents')->except('create');
+    $api->resource('storm-projects');
 });
 
 // Route::group(['prefix' => 'documents'], function() {

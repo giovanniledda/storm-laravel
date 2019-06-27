@@ -21,7 +21,7 @@ class StormJsonApiTest extends TestCase
                 'attributes' => [
                     'name' => $fake_name,
                 ],
-                'type' => 'projects',
+                'type' => 'storm-projects',
             ]   
          ];
 
@@ -30,7 +30,7 @@ class StormJsonApiTest extends TestCase
             'Accept' => 'application/vnd.api+json',
         ];
 
-        $response = $this->json('POST', route('api:storm:projects.create'), $data, $headers);
+        $response = $this->json('POST', route('api:storm:storm-projects.create'), $data, $headers);
 
         $content = json_decode($response->getContent(), true);
 

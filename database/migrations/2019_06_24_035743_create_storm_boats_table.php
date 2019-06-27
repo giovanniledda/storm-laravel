@@ -6,6 +6,8 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateStormBoatsTable extends Migration
 {
+
+    
     /**
      * Run the migrations.
      *

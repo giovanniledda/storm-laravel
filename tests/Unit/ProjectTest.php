@@ -70,6 +70,8 @@ class ProjectTest extends TestCase
         $related_item =  $project->item;
         $this->assertEquals($item->name, $related_item->name);
 
+        $this->assertEquals($project->id, $item->itemable->id);
+
     }
 
     function test_can_create_storm_project_related_to_storm_site(){

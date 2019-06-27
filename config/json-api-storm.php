@@ -53,8 +53,8 @@ return [
     | `'posts' => App\Post::class`
     */
     'resources' => [
-        'documents' => \App\Storm\StormDocument::class,
-        'projects' => \App\Storm\StormProject::class
+        'storm-documents' => \App\Storm\StormDocument::class,
+        'storm-projects' => \App\Storm\StormProject::class
     ],
 
     /*
