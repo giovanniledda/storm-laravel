@@ -72,16 +72,18 @@ class JsonApiTest extends TestCase
             'Accept' => 'application/vnd.api+json',
         ];
 
-        $response = $this->json('GET', route('api:v1:projects.read', ['record' => $project->id ]), $data, $headers);
+        $this->json('GET', route('api:v1:projects.read', ['record' => $project->id ]), $data, $headers)
+        ->assertJsonStructure(['boatid' => 1]) ;
 
-
+        /*
         var_dump($response);
         $content = json_decode($response->getContent(), true);
 
         $this->assertEquals('', $content);;
-
-
-/*        $content = json_decode($response->getContent(), true);
+        $this->assertJsonStructure(['boatid' => 1], 
+        */
+/*
+       $content = json_decode($response->getContent(), true);
 
         $project_id = $content['data']['id'];
 
@@ -91,4 +93,48 @@ class JsonApiTest extends TestCase
 */
 
     }
+
+
+    // function test_get_project_and_his_item_foo(){
+
+    //     $project_name = $this->faker->sentence;
+    //     $project = new \App\Project([
+    //         'name' => $project_name
+    //     ]
+    //     );
+    //     $project->save();  
+
+
+
+    //     $item_name = $this->faker->sentence;
+    //     $item = new \App\Item([
+    //         'name' => $item_name
+    //     ]
+    //     );
+
+    //     // $item->project->save($project); 
+    //     // $item->save();
+
+    //     $project->barca()->save($item);
+
+    //     $data = [];
+     
+    //     $headers = [
+    //        'Content-type' => 'application/vnd.api+json',
+    //        'Accept' => 'application/vnd.api+json',
+    //    ];
+
+    //    $response = $this->json('GET', route('api:v1:projects.read', ['record' => $project->id ]), $data, $headers);
+
+
+    //    var_dump($response);
+    //    $content = json_decode($response->getContent(), true);
+
+    //    $this->assertEquals('', $content);;
+
+
+
+    // } 
+   
+
 }

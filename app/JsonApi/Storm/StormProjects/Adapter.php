@@ -20,6 +20,9 @@ class Adapter extends AbstractAdapter
      */
     protected $attributes = [];
 
+
+
+
     /**
      * Adapter constructor.
      *
@@ -39,5 +42,7 @@ class Adapter extends AbstractAdapter
     {
         // TODO
     }
+
+  
 
 }
