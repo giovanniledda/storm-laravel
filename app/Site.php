@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class Site extends Model
 {
 
-
     protected $fillable = [
         'name'
     ];
+
     /**
      * Get all of the models that own sites.
      */

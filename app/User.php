@@ -40,6 +40,11 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function projects()
+    {
+        return $this->morphMany('App\Project', 'projectable');
+    }
+
     public function setPasswordAttribute($password)
     {
 //        $this->attributes['password'] = bcrypt($password);
@@ -51,12 +56,10 @@ class User extends Authenticatable
         return $this->createToken(\Config::get('auth.token_clients.personal.name'))->accessToken;
     }
 
-
     public static function onlyOne()
     {
         return (User::all()->count() == 1);
     }
-
 
 
 }

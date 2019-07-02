@@ -2,7 +2,6 @@
 
 namespace App\Storm;
 
-use Illuminate\Database\Eloquent\Model;
 use App\ItemPart;
 
 class StormSection extends ItemPart

@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
+use App\Project;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -13,7 +14,7 @@ class JsonApiTest extends TestCase
 
     function test_can_create_project(){
         
-        $this->disableExceptionHandling();
+//        $this->disableExceptionHandling();
 
         $fake_name = $this->faker->sentence;
         $data = [
@@ -30,17 +31,17 @@ class JsonApiTest extends TestCase
             'Accept' => 'application/vnd.api+json',
         ];
 
-        $response = $this->json('POST', route('api:v1:projects.create'), $data, $headers);
+        $response = $this->json('POST', route('api:v1:projects.create'), $data, $headers)->assertJsonStructure(['data' => ['id']]);
 
         $content = json_decode($response->getContent(), true);
 
         $project_id = $content['data']['id'];
 
-        $project = \App\Project::find($project_id);
+        $project = Project::find($project_id);
+
+        $this->assertInstanceOf(Project::class, $project);
 
         $this->assertEquals($project->id, $project_id);
-
-
     }
 
 
