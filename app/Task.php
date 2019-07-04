@@ -3,13 +3,14 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\ModelStatus\HasStatuses;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class Task extends Model
 {
     protected $table = 'tasks';
 
-    use RevisionableTrait;
+    use RevisionableTrait, HasStatuses;
 
     protected $fillable = [
         'title'
@@ -18,11 +19,6 @@ class Task extends Model
     public function project()
     {
         return $this->belongsTo('App\Project');
-    }
-
-    public function status()
-    {
-        return $this->morphOne('App\Status', 'statusable');
     }
 
     public function comments()

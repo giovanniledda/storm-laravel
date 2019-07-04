@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "6fde7556f2fa5a7ee6cfce85e40ec67c",
+    "content-hash": "add4d6694473ffbb46a9016a4d78b7a0",
     "packages": [
         {
             "name": "benjamincrozat/laravel-dropbox-driver",
@@ -194,51 +194,6 @@
                 "object"
             ],
             "time": "2017-06-07T06:29:02+00:00"
-        },
-        {
-            "name": "cvsouth/entities",
-            "version": "5.8.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/cvsouth/entities.git",
-                "reference": "53f513fe9ac983abdea3ea7c8b76bc28234de1a5"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/cvsouth/entities/zipball/53f513fe9ac983abdea3ea7c8b76bc28234de1a5",
-                "reference": "53f513fe9ac983abdea3ea7c8b76bc28234de1a5",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/database": "5.6.*|5.7.*|5.8.*",
-                "illuminate/support": "5.6.*|5.7.*|5.8.*"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Cvsouth\\Entities\\Providers\\ServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Cvsouth\\Entities\\": "src/"
-                },
-                "files": []
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "proprietary"
-            ],
-            "authors": [
-                {
-                    "name": "Colin South",
-                    "email": "colin@riseresolution.com"
-                }
-            ],
-            "description": "Joined-table inheritance for Laravel",
-            "time": "2019-03-28T18:30:03+00:00"
         },
         {
             "name": "defuse/php-encryption",

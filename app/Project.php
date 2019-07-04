@@ -3,9 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\ModelStatus\HasStatuses;
 
 class Project extends Model
 {
+    use HasStatuses;
+
     protected $table = 'projects';
 
     protected $fillable = [
@@ -30,12 +33,6 @@ class Project extends Model
     public function site()
     {
         return $this->morphOne('App\Site', 'siteable');
-    }
-
-
-    public function status()
-    {
-        return $this->morphOne('App\Status', 'statusable');
     }
 
 

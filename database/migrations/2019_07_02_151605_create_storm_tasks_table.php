@@ -1,7 +1,6 @@
 <?php
 
 use App\Storm\StormTask;
-use Cvsouth\Entities\EntityType;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -21,9 +20,6 @@ class CreateStormTasksTable extends Migration
             $table->timestamps();
         });
 
-        // ereditarietà
-        $entity_type = new EntityType(['entity_class' => StormTask::class]);
-        $entity_type->save();
     }
 
     /**
@@ -35,10 +31,5 @@ class CreateStormTasksTable extends Migration
     {
         Schema::dropIfExists('storm_tasks');
 
-        // ereditarietà
-        $entity_type = EntityType::where('entity_class', StormTask::class)->first();
-        if ($entity_type) {
-            EntityType::destroy([$entity_type->id]);
-        };
     }
 }

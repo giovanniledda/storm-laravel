@@ -18,7 +18,7 @@ class CreateCommentsTable extends Migration
             $table->text('body');
             $table->timestamps();
 
-            // Polymorphic: statusable
+            // Polymorphic: commentable
             $table->nullableMorphs('commentable');
 
             // relations

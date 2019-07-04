@@ -1,7 +1,6 @@
 <?php
 
 use App\Task;
-use Cvsouth\Entities\EntityType;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -26,9 +25,6 @@ class CreateTasksTable extends Migration
             $table->foreign('project_id')->references('id')->on('projects');
         });
 
-        // ereditarietà
-        $entity_type = new EntityType(['entity_class' => Task::class]);
-        $entity_type->save();
     }
 
     /**
@@ -40,10 +36,5 @@ class CreateTasksTable extends Migration
     {
         Schema::dropIfExists('tasks');
 
-        // ereditarietà
-        $entity_type = EntityType::where('entity_class', Task::class)->first();
-        if ($entity_type) {
-            EntityType::destroy([$entity_type->id]);
-        };
     }
 }

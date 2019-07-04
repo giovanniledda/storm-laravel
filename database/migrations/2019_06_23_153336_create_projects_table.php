@@ -1,7 +1,6 @@
 <?php
 
 use App\Project;
-use Cvsouth\Entities\EntityType;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -27,9 +26,6 @@ class CreateProjectsTable extends Migration
             $table->nullableMorphs('projectable');
         });
 
-        // ereditarietà
-        $entity_type = new EntityType(['entity_class' => Project::class]);
-        $entity_type->save();
     }
 
     /**
@@ -40,11 +36,5 @@ class CreateProjectsTable extends Migration
     public function down()
     {
         Schema::dropIfExists('projects');
-
-        // ereditarietà
-        $entity_type = EntityType::where('entity_class', Project::class)->first();
-        if ($entity_type) {
-            EntityType::destroy([$entity_type->id]);
-        };
     }
 }
