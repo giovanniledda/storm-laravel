@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateStormProjectTable extends Migration
+class CreateStormProjectsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,7 +15,7 @@ class CreateStormProjectTable extends Migration
      */
     public function up()
     {
-        Schema::create('storm_project', function (Blueprint $table) {
+        Schema::create('storm_projects', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->text('name');
             $table->integer('entity_id')->unsigned()->nullable();
@@ -37,7 +37,7 @@ class CreateStormProjectTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('storm_project');
+        Schema::dropIfExists('storm_projects');
 
         // ereditarietà
         $entity_type = EntityType::where('entity_class', StormProject::class)->first();

@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class ItemPart extends Model
 {
-    
+
+    protected $table = 'item_parts';
 
     protected $fillable = [
         'name'

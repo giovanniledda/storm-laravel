@@ -10,7 +10,6 @@ use App\Storm\StormTask;
 
 class TaskTest extends TestCase
 {
-
     function test_can_create_task_without_project()
     {
         $fake_name = $this->faker->sentence;
@@ -19,10 +18,8 @@ class TaskTest extends TestCase
             ]
         );
         $task->save();
-
-        $this->assertDatabaseHas('task', ['title' => $fake_name]);
+        $this->assertDatabaseHas('tasks', ['title' => $fake_name]);
     }
-
 
     function test_can_create_project_related_to_task()
     {
@@ -42,10 +39,10 @@ class TaskTest extends TestCase
 
         $project->tasks()->save($task);
 
-        $this->assertDatabaseHas('project', ['name' => $project_name]);
-        $this->assertDatabaseHas('task', ['title' => $task_title, 'project_id' => $project->id]);
+        $this->assertDatabaseHas('projects', ['name' => $project_name]);
+        $this->assertDatabaseHas('tasks', ['project_id' => $project->id, 'title' => $task_title]);
+        $this->assertEquals($task->title, $task_title);
     }
-
 
 
     function test_can_create_storm_project_related_to_storm_task()
@@ -67,8 +64,8 @@ class TaskTest extends TestCase
 
 //        $project->site()->save($site);
 
-        $this->assertDatabaseHas('storm_project', ['name' => $storm_project_name]);
-//        $this->assertDatabaseHas('storm_task', ['title' => $storm_task_title]);
+        $this->assertDatabaseHas('storm_projects', ['name' => $storm_project_name]);
+//        $this->assertDatabaseHas('storm_tasks', ['title' => $storm_task_title]);
         $this->assertEquals($task->title, $storm_task_title);
 
 //        $related_site = $project->site();

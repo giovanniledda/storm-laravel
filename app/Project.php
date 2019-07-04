@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Project extends Model
 {
-    protected $table = 'project';
+    protected $table = 'projects';
 
     protected $fillable = [
         'name'
@@ -42,5 +42,11 @@ class Project extends Model
     public function tasks()
     {
         return $this->hasMany('App\Task');
+    }
+
+
+    public function comments()
+    {
+        return $this->morphMany('App\Comment', 'commentable');
     }
 }

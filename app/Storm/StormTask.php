@@ -6,7 +6,7 @@ use App\Task;
 
 class StormTask extends Task
 {
-    protected $table = 'storm_task';
+    protected $table = 'storm_tasks';
 
     public function site()
     {

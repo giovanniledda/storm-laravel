@@ -1,12 +1,12 @@
 <?php
 
-use App\Project;
+use App\Task;
 use Cvsouth\Entities\EntityType;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateProjectTable extends Migration
+class CreateTasksTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,20 +15,19 @@ class CreateProjectTable extends Migration
      */
     public function up()
     {
-        Schema::create('project', function (Blueprint $table) {
+        Schema::create('tasks', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->text('name');
-            $table->date('start_date')->nullable();
-            $table->date('end_date')->nullable();
+            $table->string('title');
             $table->integer('entity_id')->unsigned()->nullable();
             $table->timestamps();
 
             // relations
-            $table->nullableMorphs('projectable');
+            $table->unsignedBigInteger('project_id')->nullable();
+            $table->foreign('project_id')->references('id')->on('projects');
         });
 
         // ereditarietà
-        $entity_type = new EntityType(['entity_class' => Project::class]);
+        $entity_type = new EntityType(['entity_class' => Task::class]);
         $entity_type->save();
     }
 
@@ -39,10 +38,10 @@ class CreateProjectTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('project');
+        Schema::dropIfExists('tasks');
 
         // ereditarietà
-        $entity_type = EntityType::where('entity_class', Project::class)->first();
+        $entity_type = EntityType::where('entity_class', Task::class)->first();
         if ($entity_type) {
             EntityType::destroy([$entity_type->id]);
         };

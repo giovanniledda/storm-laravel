@@ -4,11 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Status extends Model
+class Comment extends Model
 {
-    protected $table = 'statuses';
+    protected $table = 'comments';
 
-    public function statusable()
+    public function commentable()
     {
         return $this->morphTo();
     }

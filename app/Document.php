@@ -26,6 +26,7 @@ class Document  extends Model implements HasMedia
         'title',
         'file'
     ];
+
     public function __construct(array $attributes = [])
     {
         if (isset($attributes['file'])){
@@ -35,6 +36,11 @@ class Document  extends Model implements HasMedia
             unset ($attributes['file']);
         }
         parent::__construct($attributes);
+    }
+
+    public function comments()
+    {
+        return $this->morphMany('App\Comment', 'commentable');
     }
 
     public function getFile(){

@@ -7,7 +7,7 @@ use Venturecraft\Revisionable\RevisionableTrait;
 
 class Task extends Model
 {
-    protected $table = 'task';
+    protected $table = 'tasks';
 
     use RevisionableTrait;
 
@@ -23,5 +23,10 @@ class Task extends Model
     public function status()
     {
         return $this->morphOne('App\Status', 'statusable');
+    }
+
+    public function comments()
+    {
+        return $this->morphMany('App\Comment', 'commentable');
     }
 }

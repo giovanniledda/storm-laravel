@@ -1,12 +1,12 @@
 <?php
 
-use App\Storm\StormTask;
+use App\Project;
 use Cvsouth\Entities\EntityType;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateStormTaskTable extends Migration
+class CreateProjectsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,14 +15,20 @@ class CreateStormTaskTable extends Migration
      */
     public function up()
     {
-        Schema::create('storm_task', function (Blueprint $table) {
+        Schema::create('projects', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->text('name');
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
             $table->integer('entity_id')->unsigned()->nullable();
             $table->timestamps();
+
+            // relations
+            $table->nullableMorphs('projectable');
         });
 
         // ereditarietà
-        $entity_type = new EntityType(['entity_class' => StormTask::class]);
+        $entity_type = new EntityType(['entity_class' => Project::class]);
         $entity_type->save();
     }
 
@@ -33,10 +39,10 @@ class CreateStormTaskTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('storm_task');
+        Schema::dropIfExists('projects');
 
         // ereditarietà
-        $entity_type = EntityType::where('entity_class', StormTask::class)->first();
+        $entity_type = EntityType::where('entity_class', Project::class)->first();
         if ($entity_type) {
             EntityType::destroy([$entity_type->id]);
         };
