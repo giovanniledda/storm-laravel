@@ -88,6 +88,22 @@ class TaskTest extends TestCase
         $this->assertEquals($s_task->project->name, $s_project->name); // parent attribute
         $this->assertEquals($s_task->project->type, $s_project->type); // child attribute
 
+    }
+
+
+    function test_querying_relations_with_s_projects_and_s_tasks()
+    {
+
+        $s_tasks = factory(StormTask::class, 5)->make([  // non è possibile usare la StormTaskFactory perché non sa come creare il parent
+            'title' => 'Abigail'
+        ]);
+
+//        $this->assertEquals($s_tasks[0]->title, 'Abigail'); // ...o meglio, te la fa usare, ma quando chiami questo chiama la getOwnAttributes() su un null
+
+//        foreach ($s_tasks as $s_task) {
+//            $this->assertEquals($s_task->title, 'Abigail');
+//        }
+
         // Querying Relations
     }
 
