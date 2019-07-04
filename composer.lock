@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "add4d6694473ffbb46a9016a4d78b7a0",
+    "content-hash": "41eca42ab48b14ff12a789985966d8cf",
     "packages": [
         {
             "name": "benjamincrozat/laravel-dropbox-driver",
@@ -1130,16 +1130,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v5.8.26",
+            "version": "v5.8.27",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "1d8ec9afdedc79314c18715056b8143d7e1fac31"
+                "reference": "f1dccffb96f614895393e27e4667105a05407af5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/1d8ec9afdedc79314c18715056b8143d7e1fac31",
-                "reference": "1d8ec9afdedc79314c18715056b8143d7e1fac31",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/f1dccffb96f614895393e27e4667105a05407af5",
+                "reference": "f1dccffb96f614895393e27e4667105a05407af5",
                 "shasum": ""
             },
             "require": {
@@ -1273,20 +1273,20 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2019-06-25T16:20:51+00:00"
+            "time": "2019-07-02T13:43:47+00:00"
         },
         {
             "name": "laravel/passport",
-            "version": "v7.3.0",
+            "version": "v7.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/passport.git",
-                "reference": "758e143052f0a353df8dff9349f84601579e457d"
+                "reference": "89c81aa8ced151f8e67f47972e1dab71d60e90b4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/passport/zipball/758e143052f0a353df8dff9349f84601579e457d",
-                "reference": "758e143052f0a353df8dff9349f84601579e457d",
+                "url": "https://api.github.com/repos/laravel/passport/zipball/89c81aa8ced151f8e67f47972e1dab71d60e90b4",
+                "reference": "89c81aa8ced151f8e67f47972e1dab71d60e90b4",
                 "shasum": ""
             },
             "require": {
@@ -1343,7 +1343,7 @@
                 "oauth",
                 "passport"
             ],
-            "time": "2019-05-28T16:06:20+00:00"
+            "time": "2019-07-02T15:36:59+00:00"
         },
         {
             "name": "laravel/telescope",
@@ -2209,6 +2209,48 @@
                 "php"
             ],
             "time": "2019-05-25T20:07:01+00:00"
+        },
+        {
+            "name": "norse-blue/parentity",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/norse-blue/php-parentity.git",
+                "reference": "bbc72857638b8d750c2974b12095880cfcadec9e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/norse-blue/php-parentity/zipball/bbc72857638b8d750c2974b12095880cfcadec9e",
+                "reference": "bbc72857638b8d750c2974b12095880cfcadec9e",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "~5.8.0"
+            },
+            "require-dev": {
+                "orchestra/testbench": "~3.8.0",
+                "phpstan/phpstan": "^0.11.2",
+                "phpunit/phpunit": "^8.0",
+                "squizlabs/php_codesniffer": "^3.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "NorseBlue\\Parentity\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Axel Pardemann",
+                    "email": "axel.pardemann@norse.blue"
+                }
+            ],
+            "description": "Parentity is a package that allows the use of MTI entities in Laravel 5.7+ using Eloquent models.",
+            "time": "2019-03-07T01:30:07+00:00"
         },
         {
             "name": "opis/closure",
@@ -6893,7 +6935,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "norse-blue/parentity": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

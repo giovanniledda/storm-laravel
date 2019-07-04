@@ -19,8 +19,11 @@ class CreateProjectsTable extends Migration
             $table->text('name');
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
-            $table->integer('entity_id')->unsigned()->nullable();
             $table->timestamps();
+
+            // Inheritance
+            $table->string('entity_type')->nullable();
+            $table->unsignedInteger('entity_id')->nullable();
 
             // relations
             $table->nullableMorphs('projectable');

@@ -4,15 +4,26 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Spatie\ModelStatus\HasStatuses;
+use NorseBlue\Parentity\Traits\IsMtiParentModel;
 
 class Project extends Model
 {
-    use HasStatuses;
+    use HasStatuses, IsMtiParentModel;
 
     protected $table = 'projects';
 
     protected $fillable = [
         'name'
+    ];
+
+    /** @optional */
+    protected $ownAttributes = [
+        'id',
+        'name',
+        'start_date',
+        'end_date',
+        'entity_type',
+        'entity_id',
     ];
 
     /**

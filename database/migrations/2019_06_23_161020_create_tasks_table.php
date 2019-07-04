@@ -16,13 +16,24 @@ class CreateTasksTable extends Migration
     {
         Schema::create('tasks', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->integer('number')->nullable();
             $table->string('title');
-            $table->integer('entity_id')->unsigned()->nullable();
+            $table->text('description');
+            $table->float('estimated_hours')->nullable();
+            $table->float('worked_hours')->nullable();
+            $table->boolean('for_admins')->nullable();
             $table->timestamps();
+
+            // Inheritance
+            $table->string('entity_type')->nullable();
+            $table->unsignedInteger('entity_id')->nullable();
 
             // relations
             $table->unsignedBigInteger('project_id')->nullable();
             $table->foreign('project_id')->references('id')->on('projects');
+
+            $table->unsignedBigInteger('author_id')->nullable();
+            $table->foreign('author_id')->references('id')->on('users');
         });
 
     }

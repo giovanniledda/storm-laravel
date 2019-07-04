@@ -3,17 +3,39 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use NorseBlue\Parentity\Traits\IsMtiParentModel;
 use Spatie\ModelStatus\HasStatuses;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class Task extends Model
 {
+    use RevisionableTrait, HasStatuses, IsMtiParentModel;
+
     protected $table = 'tasks';
 
-    use RevisionableTrait, HasStatuses;
-
     protected $fillable = [
-        'title'
+        'title',
+        'description',
+        'estimated_hours',
+        'worked_hours',
+        'for_admins',
+    ];
+
+
+
+
+    /** @optional */
+    protected $ownAttributes = [
+        'id',
+        'title',
+        'description',
+        'estimated_hours',
+        'worked_hours',
+        'for_admins',
+        'project_id',
+        'author_id',
+        'entity_type',
+        'entity_id',
     ];
 
     public function project()
@@ -24,5 +46,10 @@ class Task extends Model
     public function comments()
     {
         return $this->morphMany('App\Comment', 'commentable');
+    }
+
+    public function item_part()
+    {
+        return $this->belongsTo('App\ItemPart');
     }
 }

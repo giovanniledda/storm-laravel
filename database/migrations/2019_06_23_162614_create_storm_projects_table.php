@@ -16,8 +16,8 @@ class CreateStormProjectsTable extends Migration
     {
         Schema::create('storm_projects', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->text('name');
-            $table->integer('entity_id')->unsigned()->nullable();
+            $table->enum('type', ['newbuild', 'refit']);
+            $table->string('acronym', 50)->nullable();
             $table->timestamps();
 
             // Polymorphic: projectable

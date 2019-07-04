@@ -15,8 +15,11 @@ class CreateItemPartsTable extends Migration
     {
         Schema::create('item_parts', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->text('name');
             $table->timestamps();
+
+            // relations
+            $table->unsignedBigInteger('item_id')->nullable();
+            $table->foreign('item_id')->references('id')->on('items');
         });
     }
 

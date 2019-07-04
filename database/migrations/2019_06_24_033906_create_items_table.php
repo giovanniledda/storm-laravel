@@ -16,8 +16,12 @@ class CreateItemsTable extends Migration
         Schema::create('items', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->text('name');
-            $table->nullableMorphs('itemable');
             $table->timestamps();
+
+            // Polymorphic: itemable
+            $table->nullableMorphs('itemable');
+
+
         });
     }
 

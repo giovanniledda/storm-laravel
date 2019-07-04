@@ -16,10 +16,9 @@ class CreateStormTasksTable extends Migration
     {
         Schema::create('storm_tasks', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('entity_id')->unsigned()->nullable();
+            $table->enum('operation_type', ['idraulic', 'painting', 'electric', 'mechanic', 'damage'])->nullable();
             $table->timestamps();
         });
-
     }
 
     /**

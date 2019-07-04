@@ -15,7 +15,11 @@ class ItemPart extends Model
       
     public function item()
     {
-        return $this->morphOne('App\Item', 'itemable');
+        return $this->belongsTo('App\Item');
     }
 
+    public function tasks()
+    {
+        return $this->hasMany('App\Task');
+    }
 }

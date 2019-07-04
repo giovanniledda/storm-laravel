@@ -15,9 +15,16 @@ class Item extends Model
     /**
      * Get all of the models that own items.
      */
+
     public function itemable()
     {
         return $this->morphTo();
     }
-    
+
+    public function parts()
+    {
+        return $this->hasMany('App\ItemParts');
+    }
+
+
 }

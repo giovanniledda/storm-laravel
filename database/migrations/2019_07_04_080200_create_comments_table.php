@@ -22,8 +22,8 @@ class CreateCommentsTable extends Migration
             $table->nullableMorphs('commentable');
 
             // relations
-            $table->unsignedBigInteger('user_id')->nullable();
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->unsignedBigInteger('author_id')->nullable();
+            $table->foreign('author_id')->references('id')->on('users');
         });
     }
 
