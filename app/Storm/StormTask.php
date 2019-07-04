@@ -3,9 +3,10 @@
 namespace App\Storm;
 
 use App\Task;
+use Illuminate\Database\Eloquent\Model;
 use NorseBlue\Parentity\Traits\IsMtiChildModel;
 
-class StormTask
+class StormTask extends Model
 {
     use IsMtiChildModel;
 
@@ -22,6 +23,11 @@ class StormTask
     public function site()
     {
         return $this->morphOne('App\Storm\StormSite', 'siteable');
+    }
+
+    public function saySomething()
+    {
+        return 'Something';
     }
 
     // public function boat(){

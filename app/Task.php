@@ -34,6 +34,7 @@ class Task extends Model
         'for_admins',
         'project_id',
         'author_id',
+        'project',  // <-- IMPORTANTE: altrimenti chiamate come $task->project->id falliscono per via di IsMtiParentModel
         'entity_type',
         'entity_id',
     ];

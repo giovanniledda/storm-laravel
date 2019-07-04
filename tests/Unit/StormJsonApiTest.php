@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
+use App\Storm\StormProject;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -30,13 +31,13 @@ class StormJsonApiTest extends TestCase
             'Accept' => 'application/vnd.api+json',
         ];
 
-        $response = $this->json('POST', route('api:storm:storm-projects.create'), $data, $headers);
+        $response = $this->json('POST', route('api:storm:storm-projects.create'), $data, $headers)->assertJsonStructure(['data' => ['id']]);;
 
         $content = json_decode($response->getContent(), true);
 
         $project_id = $content['data']['id'];
 
-        $project = \App\Storm\StormProject::find($project_id);
+        $project = StormProject::find($project_id);
 
         $this->assertEquals($project->id, $project_id);
 

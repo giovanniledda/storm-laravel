@@ -3,9 +3,10 @@
 namespace App\Storm;
 
 use App\Project;
+use Illuminate\Database\Eloquent\Model;
 use NorseBlue\Parentity\Traits\IsMtiChildModel;
 
-class StormProject
+class StormProject extends Model
 {
     use IsMtiChildModel;
 

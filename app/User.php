@@ -7,11 +7,22 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Support\Facades\Hash;
+use NorseBlue\Parentity\Traits\IsMtiParentModel;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use Notifiable, HasApiTokens, HasRoles;
+    use Notifiable, HasApiTokens, HasRoles, IsMtiParentModel;
+
+    /** @optional */
+    protected $ownAttributes = [
+        'id',
+        'name',
+        'email',
+        'password',
+        'entity_type',
+        'entity_id',
+    ];
 
     /**
      * The attributes that are mass assignable.

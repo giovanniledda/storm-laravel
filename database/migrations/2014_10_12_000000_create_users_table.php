@@ -21,6 +21,10 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+
+            // Inheritance
+            $table->string('entity_type')->nullable();
+            $table->unsignedInteger('entity_id')->nullable();
         });
     }
 
