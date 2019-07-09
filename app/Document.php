@@ -9,7 +9,7 @@ use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 
     // class Document extends BaseMedia 
-class Document  extends Model implements HasMedia
+class Document extends Model implements HasMedia
 {
     // see https://docs.spatie.be/laravel-medialibrary/v7/basic-usage/preparing-your-model
     use HasMediaTrait;
