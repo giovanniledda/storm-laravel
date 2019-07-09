@@ -16,7 +16,6 @@ class CreateSitesTable extends Migration
         Schema::create('sites', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->text('name');
-            $table->nullableMorphs('siteable');
             $table->timestamps();
         });
     }

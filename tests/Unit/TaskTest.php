@@ -5,8 +5,6 @@ namespace Tests\Unit;
 use App\Task;
 use App\Project;
 use Tests\TestCase;
-use App\Storm\StormProject;
-use App\Storm\StormTask;
 
 class TaskTest extends TestCase
 {
@@ -49,62 +47,5 @@ class TaskTest extends TestCase
         $this->assertEquals($task->project->name, $project->name);
     }
 
-
-    function test_can_create_storm_project_related_to_storm_task()
-    {
-
-        $storm_task_title = $this->faker->sentence;
-        $storm_task_desc = $this->faker->text;
-
-        $s_task = Task::create(StormTask::class, [
-            'title' => $storm_task_title,
-            'description' => $storm_task_desc,
-            'operation_type' => 'idraulic',
-        ]);
-
-        $storm_project_name = $this->faker->sentence;
-
-        $s_project = Project::create(StormProject::class, [
-            'name' => $storm_project_name,
-            'type' => 'refit',
-            'start_date' => $this->faker->dateTime(),
-            'end_date' => $this->faker->dateTime(),
-        ]);
-
-        $this->assertEquals($s_task->title, $storm_task_title);  // parent attribute
-        $this->assertEquals($s_task->description, $storm_task_desc);  // parent attribute
-        $this->assertEquals($s_task->operation_type, 'idraulic');  // child attribute
-        $this->assertEquals($s_task->entity->saySomething(), 'Something');  // child method
-
-        $this->assertEquals($s_project->name, $storm_project_name);   // parent attribute
-        $this->assertEquals($s_project->type, 'refit');   // child attribute
-
-        $s_project->tasks()->save($s_task);  // parent method
-        $this->assertEquals($s_project->tasks()->first()->title, $s_task->title);  // parent attribute
-        $this->assertEquals($s_project->tasks()->first()->description, $s_task->description);  // parent attribute
-        $this->assertEquals($s_project->tasks()->first()->operation_type, $s_task->operation_type);  // child attribute
-        $this->assertEquals($s_project->tasks()->first()->entity->saySomething(), $s_task->entity->saySomething());  // child method
-
-        $this->assertEquals($s_task->project->name, $s_project->name); // parent attribute
-        $this->assertEquals($s_task->project->type, $s_project->type); // child attribute
-
-    }
-
-
-    function test_querying_relations_with_s_projects_and_s_tasks()
-    {
-
-        $s_tasks = factory(StormTask::class, 5)->make([  // non è possibile usare la StormTaskFactory perché non sa come creare il parent
-            'title' => 'Abigail'
-        ]);
-
-//        $this->assertEquals($s_tasks[0]->title, 'Abigail'); // ...o meglio, te la fa usare, ma quando chiami questo chiama la getOwnAttributes() su un null
-
-//        foreach ($s_tasks as $s_task) {
-//            $this->assertEquals($s_task->title, 'Abigail');
-//        }
-
-        // Querying Relations
-    }
 
 }

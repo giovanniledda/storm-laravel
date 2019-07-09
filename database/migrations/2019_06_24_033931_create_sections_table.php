@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateItemPartsTable extends Migration
+class CreateSectionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreateItemPartsTable extends Migration
      */
     public function up()
     {
-        Schema::create('item_parts', function (Blueprint $table) {
+        Schema::create('sections', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->timestamps();
 
             // relations
-            $table->unsignedBigInteger('item_id')->nullable();
-            $table->foreign('item_id')->references('id')->on('items');
+            $table->unsignedInteger('boat_id')->nullable();
+//            $table->foreign('boat_id')->references('id')->on('boats');
         });
     }
 
@@ -30,6 +30,6 @@ class CreateItemPartsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('item_parts');
+        Schema::dropIfExists('sections');
     }
 }

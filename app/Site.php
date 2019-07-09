@@ -12,11 +12,8 @@ class Site extends Model
         'name'
     ];
 
-    /**
-     * Get all of the models that own sites.
-     */
-    public function siteable()
+    public function projects()
     {
-        return $this->morphTo();
+        return $this->hasMany('App\Project');
     }
 }

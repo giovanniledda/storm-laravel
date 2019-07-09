@@ -19,14 +19,20 @@ class CreateProjectsTable extends Migration
             $table->text('name');
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
+            $table->enum('type', ['newbuild', 'refit']);
+            $table->string('acronym', 50)->nullable();
             $table->timestamps();
 
-            // Inheritance
-            $table->string('entity_type')->nullable();
-            $table->unsignedInteger('entity_id')->nullable();
+            // Relations:
 
-            // relations
-            $table->nullableMorphs('projectable');
+            // boat
+            $table->unsignedInteger('boat_id')->nullable();
+//            $table->foreign('boat_id')->references('id')->on('boats');
+
+            // site
+            $table->unsignedInteger('site_id')->nullable();
+//            $table->foreign('site_id')->references('id')->on('sites');
+
         });
 
     }

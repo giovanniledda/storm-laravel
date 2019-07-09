@@ -4,18 +4,18 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ItemPart extends Model
+class Section extends Model
 {
 
-    protected $table = 'item_parts';
+    protected $table = 'sections';
 
     protected $fillable = [
         'name'
     ];
       
-    public function item()
+    public function boat()
     {
-        return $this->belongsTo('App\Item');
+        return $this->belongsTo('App\Boat');
     }
 
     public function tasks()

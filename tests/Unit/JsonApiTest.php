@@ -4,7 +4,7 @@ namespace Tests\Unit;
 
 use Tests\TestCase;
 use App\Project;
-use App\Item;
+use App\Boat;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -16,7 +16,7 @@ class JsonApiTest extends TestCase
     function test_can_create_project()
     {
 
-//        $this->disableExceptionHandling();
+        $this->disableExceptionHandling();
 
         $fake_name = $this->faker->sentence;
         $data = [
@@ -33,7 +33,8 @@ class JsonApiTest extends TestCase
             'Accept' => 'application/vnd.api+json',
         ];
 
-        $response = $this->json('POST', route('api:v1:projects.create'), $data, $headers)->assertJsonStructure(['data' => ['id']]);
+        $response = $this->json('POST', route('api:v1:projects.create'), $data, $headers)
+            ->assertJsonStructure(['data' => ['id']]);
 
         $content = json_decode($response->getContent(), true);
 
@@ -41,29 +42,26 @@ class JsonApiTest extends TestCase
 
         $project = Project::find($project_id);
 
-        $this->assertInstanceOf(Project::class, $project);
-
         $this->assertEquals($project->id, $project_id);
     }
 
 
-    function test_get_project_and_his_item()
+    function test_get_project_and_his_boat()
     {
-        $item_name = $this->faker->sentence;
-        $item = new Item([
-                'name' => $item_name
+        $boat_name = $this->faker->sentence;
+        $boat = new Boat([
+                'name' => $boat_name
             ]
         );
-        $item->save();
+        $boat->save();
 
         $project_name = $this->faker->sentence;
         $project = new Project([
                 'name' => $project_name
             ]
         );
-        $project->save();
 
-        $project->item()->save($item);
+        $project->boat()->associate($boat)->save();
 
         $this->assertDatabaseHas('projects', ['name' => $project_name]);
 
@@ -74,27 +72,16 @@ class JsonApiTest extends TestCase
             'Accept' => 'application/vnd.api+json',
         ];
 
-        $response = $this->json('GET', route('api:v1:projects.read', ['record' => $project->id]), $data, $headers);
+        $response = $this->json('GET', route('api:v1:projects.read', ['record' => $project->id]), $data, $headers)
+            ->assertJsonStructure(['data' => ['attributes' => ['boatid']]]);
 
-        $response->assertJsonStructure(['data' => ['attributes' => ['boatid']]]);
-
-        /*
-        var_dump($response);
         $content = json_decode($response->getContent(), true);
 
-        $this->assertEquals('', $content);;
-        $this->assertJsonStructure(['boatid' => 1], 
-        */
-        /*
-               $content = json_decode($response->getContent(), true);
+        $boat_id = $content['data']['attributes']['boatid'];
 
-                $project_id = $content['data']['id'];
+        $boat = Boat::find($boat_id);
 
-                $project = \App\Project::find($project_id);
-
-                $this->assertEquals($project->id, $project_id);
-        */
-
+        $this->assertEquals($boat->id, $project->boat->id);
     }
 
 

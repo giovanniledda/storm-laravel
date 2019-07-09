@@ -4,10 +4,8 @@ namespace Tests\Unit;
 
 use App\Site;
 use App\Project;
-use App\Item;
+use App\Boat;
 use Tests\TestCase;
-use App\Storm\StormProject;
-use App\Storm\StormSite;
 
 class ProjectTest extends TestCase
 {
@@ -16,7 +14,7 @@ class ProjectTest extends TestCase
     {
         $fake_name = $this->faker->sentence;
 
-        $project = new \App\Project([
+        $project = new Project([
                 'name' => $fake_name
             ]
         );
@@ -44,20 +42,20 @@ class ProjectTest extends TestCase
 
         $this->assertDatabaseHas('projects', ['name' => $project_name]);
 
-        $project->site()->save($site);
-        $related_site = $project->site()->first();
-        $this->assertEquals($site->name, $related_site->name);
+        $project->site()->associate($site)->save();
+
+        $this->assertEquals($site->name, $project->site->name);
 
     }
 
-    function test_can_create_project_related_to_item()
+    function test_can_create_project_related_to_boat()
     {
-        $item_name = $this->faker->sentence;
-        $item = new Item([
-                'name' => $item_name
+        $boat_name = $this->faker->sentence;
+        $boat = new Boat([
+                'name' => $boat_name
             ]
         );
-        $item->save();
+        $boat->save();
 
         $project_name = $this->faker->sentence;
         $project = new Project([
@@ -66,39 +64,11 @@ class ProjectTest extends TestCase
         );
         $project->save();
 
-
         $this->assertDatabaseHas('projects', ['name' => $project_name]);
 
-        $project->item()->save($item);
-        $related_item = $project->item()->first();
-        $this->assertEquals($item->name, $related_item->name);
-        $this->assertEquals($project->id, $item->itemable->id);
+        $project->boat()->associate($boat)->save();
+
+        $this->assertEquals($boat->name, $project->boat->name);
     }
-
-    function test_can_create_storm_project_related_to_site()
-    {
-
-        $storm_site_name = $this->faker->sentence;
-        $site = new Site([
-                'name' => $storm_site_name
-            ]
-        );
-        $site->save();
-
-        $storm_project_name = $this->faker->sentence;
-        $s_project = Project::create(StormProject::class, [
-            'name' => $storm_project_name,
-            'type' => 'refit',
-            'start_date' => $this->faker->dateTime(),
-            'end_date' => $this->faker->dateTime(),
-        ]);
-
-        $s_project->site()->save($site);
-
-        $related_site = $s_project->site()->first();
-
-        $this->assertEquals($site->name, $related_site->name);
-    }
-
 
 }

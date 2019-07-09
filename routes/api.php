@@ -42,11 +42,6 @@ Route::post('/v1/documents', 'DocumentController@create')->name('api:v1:document
 // });
 
 
-JsonApi::register('storm')->routes(function ($api) {
-    $api->resource('storm-documents')->except('create');
-    $api->resource('storm-projects');
-});
-
 // Route::group(['prefix' => 'documents'], function() {
 //     Route::get('/{document}', 'DocumentController@show') -> name('documents.show');
 //     Route::post('/', 'DocumentController@store')->name('documents.store');

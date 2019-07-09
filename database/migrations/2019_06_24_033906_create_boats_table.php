@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateStormSitesTable extends Migration
+class CreateBoatsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,9 @@ class CreateStormSitesTable extends Migration
      */
     public function up()
     {
-        Schema::create('storm_sites', function (Blueprint $table) {
+        Schema::create('boats', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->text('name');
-            $table->nullableMorphs('siteable');
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ class CreateStormSitesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('storm_sites');
+        Schema::dropIfExists('boats');
     }
 }

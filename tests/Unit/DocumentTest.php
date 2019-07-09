@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Document;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -31,7 +32,7 @@ class DocumentTest extends TestCase
         $file = UploadedFile::fake()->create( $filename, $sizeInKilobytes);
 
         $fake_title = $this->faker->sentence;
-        $doc = new \App\Document([
+        $doc = new Document([
             'title' => $fake_title,
             'file' => $file
         ]);

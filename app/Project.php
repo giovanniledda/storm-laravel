@@ -4,11 +4,10 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Spatie\ModelStatus\HasStatuses;
-use NorseBlue\Parentity\Traits\IsMtiParentModel;
 
 class Project extends Model
 {
-    use HasStatuses, IsMtiParentModel;
+    use HasStatuses;
 
     protected $table = 'projects';
 
@@ -16,42 +15,20 @@ class Project extends Model
         'name'
     ];
 
-    /** @optional */
-    protected $ownAttributes = [
-        'id',
-        'name',
-        'start_date',
-        'end_date',
-        'entity_type',
-        'entity_id',
-    ];
-
-    /**
-     * Get all of the models that own projects.
-     */
-    public function projectable()
+    public function boat()
     {
-        return $this->morphTo();
+        return $this->belongsTo('App\Boat');
     }
-
-
-    public function item()
-    {
-        return $this->morphOne('App\Item', 'itemable');
-    }
-
 
     public function site()
     {
-        return $this->morphOne('App\Site', 'siteable');
+        return $this->belongsTo('App\Site');
     }
-
 
     public function tasks()
     {
         return $this->hasMany('App\Task');
     }
-
 
     public function comments()
     {
