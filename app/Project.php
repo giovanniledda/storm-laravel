@@ -34,4 +34,20 @@ class Project extends Model
     {
         return $this->morphMany('App\Comment', 'commentable');
     }
+
+    public function documents()
+    {
+        return $this->morphMany('App\Document', 'documentable');
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany('App\Users')
+            ->using('App\ProjectUser')
+            ->withPivot([
+                'role',
+                'created_by',
+                'updated_by'
+            ]);
+    }
 }

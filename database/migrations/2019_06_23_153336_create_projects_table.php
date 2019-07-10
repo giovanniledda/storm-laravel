@@ -25,6 +25,9 @@ class CreateProjectsTable extends Migration
 
             // Relations:
 
+            // user (N to M)
+            // project_user
+
             // boat
             $table->unsignedInteger('boat_id')->nullable();
 //            $table->foreign('boat_id')->references('id')->on('boats');

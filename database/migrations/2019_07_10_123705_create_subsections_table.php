@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCommentsTable extends Migration
+class CreateSubsectionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,17 @@ class CreateCommentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('comments', function (Blueprint $table) {
+        Schema::create('subsections', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->text('body');
+            $table->string('storm_id', 20)->nullable();
+            $table->text('name');
+            $table->text('comment')->nullable();
             $table->timestamps();
 
-            // Polymorphic: commentable
-            $table->nullableMorphs('commentable');
+            // Relations:
 
-            // relations
-            $table->unsignedBigInteger('author_id')->nullable();
-            $table->foreign('author_id')->references('id')->on('users');
+            // section
+            $table->unsignedInteger('section_id')->nullable();
         });
     }
 
@@ -34,6 +34,6 @@ class CreateCommentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('comments');
+        Schema::dropIfExists('subsections');
     }
 }

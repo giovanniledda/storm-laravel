@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCommentsTable extends Migration
+class CreateTaskInterventTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,10 @@ class CreateCommentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('comments', function (Blueprint $table) {
+        Schema::create('task_intervent_types', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->text('body');
+            $table->text('name');
             $table->timestamps();
-
-            // Polymorphic: commentable
-            $table->nullableMorphs('commentable');
-
-            // relations
-            $table->unsignedBigInteger('author_id')->nullable();
-            $table->foreign('author_id')->references('id')->on('users');
         });
     }
 
@@ -34,6 +27,6 @@ class CreateCommentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('comments');
+        Schema::dropIfExists('task_intervent_types');
     }
 }

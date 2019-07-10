@@ -12,13 +12,15 @@ class Boat extends Model
     protected $fillable = [
         'name'
     ];
-    /**
-     * Get all of the models that own items.
-     */
 
     public function sections()
     {
         return $this->hasMany('App\Section');
+    }
+
+    public function subsections()
+    {
+        return $this->hasManyThrough('App\Subsection', 'App\Section');
     }
 
     public function projects()
@@ -26,4 +28,19 @@ class Boat extends Model
         return $this->hasMany('App\Project');
     }
 
+    public function site()
+    {
+//        return $this->hasOneThrough('App\Site', 'App\Project');  // forse non funziona perché i progetti sono "many"
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany('App\Users')
+            ->using('App\BoatUser')
+            ->withPivot([
+                'role',
+                'created_by',
+                'updated_by'
+            ]);
+    }
 }

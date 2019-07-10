@@ -53,7 +53,24 @@ class User extends Authenticatable
 
     public function projects()
     {
-        return $this->morphMany('App\Project', 'projectable');
+        return $this->belongsToMany('App\Project')
+            ->using('App\ProjectUser')
+            ->withPivot([
+                'role',
+                'created_by',
+                'updated_by'
+            ]);
+    }
+
+    public function boats()
+    {
+        return $this->belongsToMany('App\Boat')
+            ->using('App\BoatUser')
+            ->withPivot([
+                'role',
+                'created_by',
+                'updated_by'
+            ]);
     }
 
     public function setPasswordAttribute($password)

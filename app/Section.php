@@ -20,6 +20,6 @@ class Section extends Model
 
     public function tasks()
     {
-        return $this->hasMany('App\Task');
+        return $this->hasManyThrough('App\Task', 'App\Subsection');
     }
 }

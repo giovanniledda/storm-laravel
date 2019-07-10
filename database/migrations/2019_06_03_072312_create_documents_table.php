@@ -16,13 +16,18 @@ class CreateDocumentsTable extends Migration
         Schema::create('documents', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->timestamps();
-            // $table->integer('user_id')->unsigned()->index();
             $table->string('title');
             $table->softDeletes();
-            // $table->foreign('user_id')
-            //       ->references('id')
-            //       ->on('users')
-            //       ->onDelete('cascade');
+
+            // Polymorphic: documentable
+            $table->nullableMorphs('documentable');
+
+            // Relations:
+
+            // user
+            $table->unsignedInteger('author_id')->nullable();
+//            $table->foreign('author_id')->references('id')->on('users');
+
         });
     }
 

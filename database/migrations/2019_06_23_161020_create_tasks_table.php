@@ -22,7 +22,6 @@ class CreateTasksTable extends Migration
             $table->float('estimated_hours')->nullable();
             $table->float('worked_hours')->nullable();
             $table->boolean('for_admins')->nullable();
-            $table->enum('operation_type', ['idraulic', 'painting', 'electric', 'mechanic', 'damage'])->nullable();
             $table->timestamps();
 
             // Relations:
@@ -32,11 +31,15 @@ class CreateTasksTable extends Migration
 //            $table->foreign('project_id')->references('id')->on('projects');
 
             // section
-            $table->unsignedInteger('section_id')->nullable();
+            $table->unsignedInteger('subsection_id')->nullable();
 //            $table->foreign('section_id')->references('id')->on('sections');
 
             // user
             $table->unsignedInteger('author_id')->nullable();
+//            $table->foreign('author_id')->references('id')->on('users');
+
+            // intervent_type
+            $table->unsignedInteger('intervent_type_id')->nullable();
 //            $table->foreign('author_id')->references('id')->on('users');
         });
 
