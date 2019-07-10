@@ -11,11 +11,17 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Laravel\Passport\ClientRepository;
 
-abstract class TestCase extends BaseTestCase
+abstract class TestApiCase extends BaseTestCase
 {
     use CreatesApplication, DatabaseMigrations;
 
     protected $faker;
+
+    protected $headers = [
+        'Content-type' => 'application/vnd.api+json',
+        'Accept' => 'application/vnd.api+json',
+    ];
+
 
     public function setUp(): void {
         parent::setUp();
@@ -41,5 +47,10 @@ abstract class TestCase extends BaseTestCase
         });
     }
 
+    public function logResponce(\Illuminate\Foundation\Testing\TestResponse $response) {
+        echo "\nStatusCode : ".$response->getStatusCode();
+        echo "\nResponce : ".$response->getContent();
+        echo "\n";
+    }
 
 }

@@ -2,7 +2,8 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
+use Tests\TestApiCase;
+
 use App\Project;
 use App\Boat;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -10,9 +11,10 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
-class JsonApiTest extends TestCase
+class ProjectJsonApiTest extends TestApiCase
 {
 
+    /** create **/
     function test_can_create_project()
     {
 
@@ -33,24 +35,24 @@ class JsonApiTest extends TestCase
             'Accept' => 'application/vnd.api+json',
         ];
 
-        $response = $this->json('POST', route('api:v1:projects.create'), $data, $headers)
+        $response = $this->json('POST', route('api:v1:projects.create'), $data, $this->headers)
             ->assertJsonStructure(['data' => ['id']]);
 
         $content = json_decode($response->getContent(), true);
 
         $project_id = $content['data']['id'];
-
         $project = Project::find($project_id);
-
         $this->assertEquals($project->id, $project_id);
+        $this->logResponce($response);
     }
 
-
+    /** create get entity */
     function test_get_project_and_his_boat()
     {
         $boat_name = $this->faker->sentence;
         $boat = new Boat([
-                'name' => $boat_name
+                'name' => $boat_name,
+                'registration_number'=> $this->faker->sentence($nbWords = 1)
             ]
         );
         $boat->save();
@@ -67,12 +69,7 @@ class JsonApiTest extends TestCase
 
         $data = [];
 
-        $headers = [
-            'Content-type' => 'application/vnd.api+json',
-            'Accept' => 'application/vnd.api+json',
-        ];
-
-        $response = $this->json('GET', route('api:v1:projects.read', ['record' => $project->id]), $data, $headers)
+        $response = $this->json('GET', route('api:v1:projects.read', ['record' => $project->id]), $data, $this->headers)
             ->assertJsonStructure(['data' => ['attributes' => ['boatid']]]);
 
         $content = json_decode($response->getContent(), true);
@@ -82,7 +79,37 @@ class JsonApiTest extends TestCase
         $boat = Boat::find($boat_id);
 
         $this->assertEquals($boat->id, $project->boat->id);
+        $this->logResponce($response);
+    }
+
+    /** get projects collections */
+    function test_get_projects_collection() {
+         for ($i=0; $i < 10; $i++) {
+            $this->createBoatAndHisProject();
+        }
+
+        $response = $this->json('GET', route('api:v1:projects.index'), [], $this->headers);
+
+        $content = json_decode($response->getContent(), true);
+        $this->assertEquals($response->getStatusCode(), 200);
+        $this->logResponce($response);
     }
 
 
+    function createBoatAndHisProject() {
+        $boat_name = $this->faker->sentence;
+        $boat = new Boat([
+                'name' => $boat_name,
+                'registration_number'=> $this->faker->sentence($nbWords = 1)
+            ]
+        );
+        $boat->save();
+
+        $project_name = $this->faker->sentence;
+        $project = new Project([
+                'name' => $project_name
+            ]
+        );
+        $project->boat()->associate($boat)->save();
+    }
 }
