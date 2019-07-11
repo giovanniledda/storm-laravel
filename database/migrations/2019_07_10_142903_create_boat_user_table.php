@@ -20,8 +20,11 @@ class CreateBoatUserTable extends Migration
 
             // Relations:
 
-            $table->unsignedInteger('boat_id');
-            $table->unsignedInteger('user_id');
+            $table->unsignedBigInteger('boat_id');
+            $table->foreign('boat_id')->references('id')->on('boats');
+
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

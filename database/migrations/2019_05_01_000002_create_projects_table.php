@@ -28,13 +28,13 @@ class CreateProjectsTable extends Migration
             // user (N to M)
             // project_user
 
-            // boat
-            $table->unsignedInteger('boat_id')->nullable();
-//            $table->foreign('boat_id')->references('id')->on('boats');
-
             // site
-            $table->unsignedInteger('site_id')->nullable();
-//            $table->foreign('site_id')->references('id')->on('sites');
+            $table->unsignedBigInteger('site_id')->nullable();
+            $table->foreign('site_id')->references('id')->on('sites');
+
+            // boat
+            $table->unsignedBigInteger('boat_id')->nullable();
+            $table->foreign('boat_id')->references('id')->on('boats');
 
         });
 

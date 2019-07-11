@@ -30,7 +30,8 @@ class Boat extends Model
 
     public function site()
     {
-//        return $this->hasOneThrough('App\Site', 'App\Project');  // forse non funziona perché i progetti sono "many"
+        return $this->hasOne('App\Site');
+//        return $this->hasOneThrough('App\Site', 'App\Project');  // funziona perché i progetti sono "many"
     }
 
     public function users()

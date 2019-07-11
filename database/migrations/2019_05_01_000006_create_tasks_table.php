@@ -27,20 +27,20 @@ class CreateTasksTable extends Migration
             // Relations:
 
             // project
-            $table->unsignedInteger('project_id')->nullable();
-//            $table->foreign('project_id')->references('id')->on('projects');
+            $table->unsignedBigInteger('project_id')->nullable();
+            $table->foreign('project_id')->references('id')->on('projects');
 
             // section
-            $table->unsignedInteger('subsection_id')->nullable();
-//            $table->foreign('section_id')->references('id')->on('sections');
+            $table->unsignedBigInteger('subsection_id')->nullable();
+            $table->foreign('subsection_id')->references('id')->on('subsections');
 
             // user
-            $table->unsignedInteger('author_id')->nullable();
-//            $table->foreign('author_id')->references('id')->on('users');
+            $table->unsignedBigInteger('author_id')->nullable();
+            $table->foreign('author_id')->references('id')->on('users');
 
             // intervent_type
-            $table->unsignedInteger('intervent_type_id')->nullable();
-//            $table->foreign('author_id')->references('id')->on('users');
+            $table->unsignedBigInteger('intervent_type_id')->nullable();
+            $table->foreign('intervent_type_id')->references('id')->on('task_intervent_types');
         });
 
     }

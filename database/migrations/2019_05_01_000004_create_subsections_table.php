@@ -23,7 +23,9 @@ class CreateSubsectionsTable extends Migration
             // Relations:
 
             // section
-            $table->unsignedInteger('section_id')->nullable();
+            $table->unsignedBigInteger('section_id')->nullable();
+            $table->foreign('section_id')->references('id')->on('sections');
+
         });
     }
 

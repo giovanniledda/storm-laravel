@@ -30,8 +30,8 @@ class CreateBoatsTable extends Migration
             // boat_user
 
             // site
-//            $table->unsignedInteger('site_id')->nullable();
-//            $table->foreign('site_id')->references('id')->on('sites');
+            $table->unsignedBigInteger('site_id')->nullable();
+            $table->foreign('site_id')->references('id')->on('sites');
 
         });
     }

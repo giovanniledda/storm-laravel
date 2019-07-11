@@ -25,9 +25,8 @@ class CreateDocumentsTable extends Migration
             // Relations:
 
             // user
-            $table->unsignedInteger('author_id')->nullable();
-//            $table->foreign('author_id')->references('id')->on('users');
-
+            $table->unsignedBigInteger('author_id')->nullable();
+            $table->foreign('author_id')->references('id')->on('users');
         });
     }
 
