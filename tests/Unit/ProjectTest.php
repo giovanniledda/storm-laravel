@@ -13,7 +13,6 @@ class ProjectTest extends TestCase
     function test_can_create_project_without_site()
     {
         $fake_name = $this->faker->sentence;
-
         $project = new Project([
                 'name' => $fake_name
             ]
@@ -63,11 +62,8 @@ class ProjectTest extends TestCase
             ]
         );
         $project->save();
-
         $this->assertDatabaseHas('projects', ['name' => $project_name]);
-
         $project->boat()->associate($boat)->save();
-
         $this->assertEquals($boat->name, $project->boat->name);
     }
 

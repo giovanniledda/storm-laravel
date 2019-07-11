@@ -10,7 +10,8 @@ class Boat extends Model
     protected $table = 'boats';
 
     protected $fillable = [
-        'name'
+        'name',
+        'registration_number'
     ];
 
     public function sections()
