@@ -190,6 +190,10 @@ return [
         BC\Laravel\DropboxDriver\ServiceProvider::class,
 
         Venturecraft\Revisionable\RevisionableServiceProvider::class,
+
+        // Gestione indirizzi
+        Lecturize\Addresses\AddressesServiceProvider::class,
+        Webpatser\Countries\CountriesServiceProvider::class,
     ],
 
     /*
@@ -245,6 +249,10 @@ return [
         // UI ruoli e permessi
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
+
+        // Gestione indirizzi
+        'Countries' => Webpatser\Countries\CountriesFacade::class,
+
     ],
 
 

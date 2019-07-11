@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "41eca42ab48b14ff12a789985966d8cf",
+    "content-hash": "3b5732de6df09cbef5a0f44efad4166f",
     "packages": [
         {
             "name": "benjamincrozat/laravel-dropbox-driver",
@@ -1864,6 +1864,64 @@
                 "server"
             ],
             "time": "2019-05-05T09:22:01+00:00"
+        },
+        {
+            "name": "lecturize/laravel-addresses",
+            "version": "v0.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Lecturize/Laravel-Addresses.git",
+                "reference": "75d00fb2277a181dc8a95b205d510ab2ffc8783f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Lecturize/Laravel-Addresses/zipball/75d00fb2277a181dc8a95b205d510ab2ffc8783f",
+                "reference": "75d00fb2277a181dc8a95b205d510ab2ffc8783f",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": ">=5.3",
+                "illuminate/support": ">=5.3",
+                "php": ">=5.6.4|^7.0",
+                "webpatser/laravel-countries": "^1.5"
+            },
+            "require-dev": {
+                "doctrine/dbal": "2.5.x",
+                "laravel/framework": ">=5.3",
+                "mockery/mockery": "0.9.*",
+                "phpunit/phpunit": "^6.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Lecturize\\Addresses\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alexander Manfred Poellmann",
+                    "homepage": "http://twitter.com/AMPoellmann",
+                    "role": "developer"
+                }
+            ],
+            "description": "Simple address and contact management for Laravel 5.",
+            "homepage": "https://github.com/Lecturize/Laravel-Addresses",
+            "keywords": [
+                "addresses",
+                "contacts",
+                "laravel",
+                "lecturize"
+            ],
+            "time": "2018-07-04T21:33:12+00:00"
         },
         {
             "name": "maennchen/zipstream-php",
@@ -5047,6 +5105,58 @@
                 "environment"
             ],
             "time": "2019-06-15T22:40:20+00:00"
+        },
+        {
+            "name": "webpatser/laravel-countries",
+            "version": "1.5.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webpatser/laravel-countries.git",
+                "reference": "000d7aaa67a1eb488275feafe6ab74a6b7544e84"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webpatser/laravel-countries/zipball/000d7aaa67a1eb488275feafe6ab74a6b7544e84",
+                "reference": "000d7aaa67a1eb488275feafe6ab74a6b7544e84",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Webpatser\\Countries": "src/"
+                },
+                "classmap": [
+                    "src/commands"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christoph Kempen",
+                    "email": "christoph@downsized.nl",
+                    "homepage": "http://downsized.nl/",
+                    "role": "developer"
+                },
+                {
+                    "name": "Paul Kievits",
+                    "role": "developer"
+                }
+            ],
+            "description": "Laravel Countries is a bundle for Laravel, providing Almost ISO 3166_2, 3166_3, currency, Capital and more for all countries.",
+            "homepage": "https://github.com/webpatser/laravel-countries",
+            "keywords": [
+                "countries",
+                "iso_3166_2",
+                "iso_3166_3",
+                "laravel"
+            ],
+            "time": "2018-05-16T06:37:24+00:00"
         },
         {
             "name": "zendframework/zend-diactoros",

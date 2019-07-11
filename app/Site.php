@@ -3,9 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Lecturize\Addresses\Traits\HasAddresses;
 
 class Site extends Model
 {
+    use HasAddresses;
+
     protected $table = 'sites';
 
     protected $fillable = [

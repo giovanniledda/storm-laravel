@@ -14,6 +14,12 @@ class Boat extends Model
         'registration_number'
     ];
 
+    public function site()
+    {
+        return $this->hasOne('App\Site');
+//        return $this->hasOneThrough('App\Site', 'App\Project');  // NON funziona perché i progetti sono "many" e il site è "one"
+    }
+
     public function sections()
     {
         return $this->hasMany('App\Section');
@@ -29,10 +35,9 @@ class Boat extends Model
         return $this->hasMany('App\Project');
     }
 
-    public function site()
+    public function documents()
     {
-        return $this->hasOne('App\Site');
-//        return $this->hasOneThrough('App\Site', 'App\Project');  // funziona perché i progetti sono "many"
+        return $this->morphMany('App\Document', 'documentable');
     }
 
     public function users()
