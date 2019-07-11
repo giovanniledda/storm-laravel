@@ -22,4 +22,9 @@ class Section extends Model
     {
         return $this->hasManyThrough('App\Task', 'App\Subsection');
     }
+
+    public function map_image()
+    {
+        return $this->morphOne('App\Document', 'documentable');
+    }
 }
