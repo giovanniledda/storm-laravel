@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Feature;
 
 use Tests\TestApiCase;
 
@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Storage;
 
 class ProjectJsonApiTest extends TestApiCase
 {
-
     /** create **/
     function test_can_create_project()
     {
@@ -89,9 +88,8 @@ class ProjectJsonApiTest extends TestApiCase
         }
 
         $response = $this->json('GET', route('api:v1:projects.index'), [], $this->headers);
-
-        $content = json_decode($response->getContent(), true);
-        $this->assertEquals($response->getStatusCode(), 200);
+         $this->assertEquals( 200, $response->getStatusCode()); /// prima il valore che ti aspetti poi quello da controllare
+        // possiamo anche scrivere cosi : $response->assertStatus(200);
         $this->logResponce($response);
     }
 

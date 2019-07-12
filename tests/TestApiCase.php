@@ -10,13 +10,16 @@ use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Laravel\Passport\ClientRepository;
+use Laravel\Passport\Passport;
+use App\User;
+
 
 abstract class TestApiCase extends BaseTestCase
 {
     use CreatesApplication, DatabaseMigrations;
 
     protected $faker;
-
+    private $log = true; // pushare con fase
     protected $headers = [
         'Content-type' => 'application/vnd.api+json',
         'Accept' => 'application/vnd.api+json',
@@ -29,6 +32,7 @@ abstract class TestApiCase extends BaseTestCase
 
         // To test Oauth Grants
         \Artisan::call('passport:install',['-vvv' => true]);
+        Passport::actingAs(factory(User::class)->create());
     }
 
     protected function disableExceptionHandling()
@@ -47,10 +51,15 @@ abstract class TestApiCase extends BaseTestCase
         });
     }
 
+
+
     public function logResponce(\Illuminate\Foundation\Testing\TestResponse $response) {
-        echo "\nStatusCode : ".$response->getStatusCode();
-        echo "\nResponce : ".$response->getContent();
-        echo "\n";
+        if ($this->log) {
+            echo "\nStatusCode : ".$response->getStatusCode();
+            echo "\nResponce : ".$response->getContent();
+            echo "\n";
+        }
     }
+
 
 }
