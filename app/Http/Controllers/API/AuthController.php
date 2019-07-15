@@ -31,10 +31,17 @@ class AuthController extends Controller
     {
         $validator = Validator::make($request->all(), $this->signup_rules);
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 401);
+            $errors = [];
+            foreach ($validator->errors() as $key => $err) {
+                $errors[] = [
+                    'status' => 401,
+                    'title' => $key,
+                    'detail' => $err
+                ];
+            }
+            return response()->json(['errors' => $validator->errors()], 401);  // TODO: rendere jsonapi compliant (il foreach sopra non funziona)
         }
         $input = $request->all();
-        $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
 
         $token = $user->createAndGetToken();
