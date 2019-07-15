@@ -19,7 +19,7 @@ abstract class TestApiCase extends BaseTestCase
     use CreatesApplication, DatabaseMigrations;
 
     protected $faker;
-    private $log = true; // pushare con fase
+    private $log = false; // pushare con fase
     protected $headers = [
         'Content-type' => 'application/vnd.api+json',
         'Accept' => 'application/vnd.api+json',

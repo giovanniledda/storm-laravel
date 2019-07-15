@@ -54,7 +54,8 @@ return [
     */
     'resources' => [
         'documents' => \App\Document::class,
-        'projects' => \App\Project::class
+        'projects' => \App\Project::class,
+        'tasks' => \App\Task::class,
     ],
 
     /*
