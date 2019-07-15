@@ -39,6 +39,7 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapWebRoutes();
 
+        $this->mapJsonApiRoutes();
         //
     }
 
@@ -67,12 +68,33 @@ class RouteServiceProvider extends ServiceProvider
     {
 
         // Per JSONApi suggeriscono questo per non duplicare "api" nella route, ma poi non funziona nulla
-//        Route::middleware('api')
-//            ->namespace($this->namespace)
-//            ->group(base_path('routes/api.php'));
+    //    Route::middleware('api')
+    //        ->namespace($this->namespace)
+    //        ->group(base_path('routes/api.php'));
+
+        Route::prefix('api') 
+        ->middleware('api') 
+            ->namespace($this->namespace)
+            ->group(base_path('routes/api.php'));
+    }
+
+    /**
+     * Define the "JsonApi" routes for the application.
+     *
+     * These routes are typically stateless.
+     *
+     * @return void
+     */
+    protected function mapJsonApiRoutes()
+    {
+
+        // Per JSONApi suggeriscono questo per non duplicare "api" nella route, ma poi non funziona nulla
+    //    Route::middleware('api')
+    //        ->namespace($this->namespace)
+    //        ->group(base_path('routes/api.php'));
 
         Route::middleware('api')
             ->namespace($this->namespace)
-            ->group(base_path('routes/api.php'));
+            ->group(base_path('routes/jsonApi.php'));
     }
 }
