@@ -14,7 +14,8 @@ use Laravel\Passport\Passport;
 use App\User;
 
 
-abstract class TestApiCase extends BaseTestCase
+//abstract class TestApiCase extends BaseTestCase
+abstract class TestApiCase extends TestCase
 {
     use CreatesApplication, DatabaseMigrations;
 
@@ -28,28 +29,28 @@ abstract class TestApiCase extends BaseTestCase
 
     public function setUp(): void {
         parent::setUp();
-        $this->faker = Factory::create();
+        // $this->faker = Factory::create();
 
-        // To test Oauth Grants
-        \Artisan::call('passport:install',['-vvv' => true]);
+        // // To test Oauth Grants
+        // \Artisan::call('passport:install',['-vvv' => true]);
         Passport::actingAs(factory(User::class)->create());
     }
 
-    protected function disableExceptionHandling()
-    {
-        $this->app->instance(ExceptionHandler::class, new class extends Handler {
-            public function __construct() {}
+    // protected function disableExceptionHandling()
+    // {
+    //     $this->app->instance(ExceptionHandler::class, new class extends Handler {
+    //         public function __construct() {}
 
-            public function report(\Exception $e)
-            {
-                // no-op
-            }
+    //         public function report(\Exception $e)
+    //         {
+    //             // no-op
+    //         }
 
-            public function render($request, \Exception $e) {
-                throw $e;
-            }
-        });
-    }
+    //         public function render($request, \Exception $e) {
+    //             throw $e;
+    //         }
+    //     });
+    // }
 
 
 
