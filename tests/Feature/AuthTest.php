@@ -74,7 +74,7 @@ class AuthTest extends TestCase
         // Send post request
         $response = $this->json('POST', route('api.auth.signup'), $data)
             ->assertStatus(200)
-            ->assertJsonStructure(['success' => ['token']]);
+            ->assertJsonStructure(['data' => ['attributes' => ['access_token']]]);
 
         // Delete data
         $this->_deleteTestUser();
@@ -95,7 +95,7 @@ class AuthTest extends TestCase
             'email' => $this->_user_data['email'],
             'password' => $this->_user_data['password'],
         ])->assertStatus(200)
-        ->assertJsonStructure(['success' => ['token']]);
+        ->assertJsonStructure(['data' => ['attributes' => ['access_token']]]);
 
         // Delete data
         $this->_deleteTestUser();
@@ -173,7 +173,7 @@ class AuthTest extends TestCase
         $token = $response->json()['access_token'];
         $response = $this->json('GET', route('api.auth.user'), [], ['Authorization' => 'Bearer '.$token])
             ->assertStatus(200)
-            ->assertJsonStructure(['success' => ['user']]);
+            ->assertJsonStructure(['data' => ['id', 'type', 'attributes']]);
 
         // Delete data
         $this->_deleteTestUser();
