@@ -1,11 +1,13 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Feature;
 
 use Tests\TestApiCase;
 
 use App\Project;
 use App\Boat;
+use App\Task;
+
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -13,7 +15,6 @@ use Illuminate\Support\Facades\Storage;
 
 class ProjectJsonApiTest extends TestApiCase
 {
-
     /** create **/
     function test_can_create_project()
     {
@@ -89,14 +90,45 @@ class ProjectJsonApiTest extends TestApiCase
         }
 
         $response = $this->json('GET', route('api:v1:projects.index'), [], $this->headers);
-
-        $content = json_decode($response->getContent(), true);
-        $this->assertEquals($response->getStatusCode(), 200);
+         $this->assertEquals( 200, $response->getStatusCode()); /// prima il valore che ti aspetti poi quello da controllare
+        // possiamo anche scrivere cosi : $response->assertStatus(200);
         $this->logResponce($response);
     }
+    /* crea un progetto e la sua boat e assegna 10 tasks
+       testa la rotta api/v1/projects/{record}/relationships/task
+    */
+    function test_get_project_and_tasks() {
+        $projectAndBoat = $this->createBoatAndHisProject();
+        $projectAndBoat['project'];
+        for ($i=0; $i < 10; $i++) {
+            $this->createProjectTask($projectAndBoat['project']);
+        }
+        $response = $this->json('GET',
+            route('api:v1:projects.relationships.tasks.read',
+                    ['record' => $projectAndBoat['project']->id]),
+                    [],
+                    $this->headers);
+                    $response->assertStatus(200);
 
+     $this->logResponce($response);
+    }
 
-    function createBoatAndHisProject() {
+    /* crea un nuovo task dato il progetto */
+    private function createProjectTask(\App\Project $project) : \App\Task {
+
+        $task_title = $this->faker->sentence;
+        $task = new Task([
+                'title' => $task_title,
+                'description' => $this->faker->text,
+            ]
+        );
+        $task->save();
+        $project->tasks()->save($task);
+        return $task;
+    }
+
+    /* crea un progetto con la barca relazionata */
+    private function createBoatAndHisProject() : array {
         $boat_name = $this->faker->sentence;
         $boat = new Boat([
                 'name' => $boat_name,
@@ -111,5 +143,9 @@ class ProjectJsonApiTest extends TestApiCase
             ]
         );
         $project->boat()->associate($boat)->save();
+        return ['boat'=>$boat, 'project'=>$project];
     }
+
+
+
 }
