@@ -22,6 +22,17 @@ class Schema extends SchemaProvider
         return (string) $resource->getRouteKey();
     }
 
+
+    public function getRelationships($post, $isPrimary, array $includeRelationships)
+    {
+        return [
+            'tasks' => [
+                self::SHOW_SELF => true,
+                self::SHOW_RELATED => true,
+            ],
+        ];
+    }
+
     /**
      * @param $resource
      *      the domain record being serialized.
@@ -35,4 +46,6 @@ class Schema extends SchemaProvider
             'updated-at' => $resource->updated_at->toAtomString(),
         ];
     }
+
+
 }

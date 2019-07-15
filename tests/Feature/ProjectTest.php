@@ -1,11 +1,12 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Feature;
 
 use App\Site;
 use App\Project;
 use App\Boat;
 use Tests\TestCase;
+use Faker\Provider\Base as fakerBase;
 
 class ProjectTest extends TestCase
 {
@@ -27,7 +28,9 @@ class ProjectTest extends TestCase
     {
         $site_name = $this->faker->sentence;
         $site = new Site([
-                'name' => $site_name
+                'name' => $site_name,
+                'lat' =>   $this->faker->randomFloat(2, -60,60),
+                'lng' =>  $this->faker->randomFloat(2, -60,60)
             ]
         );
         $site->save();
@@ -51,7 +54,8 @@ class ProjectTest extends TestCase
     {
         $boat_name = $this->faker->sentence;
         $boat = new Boat([
-                'name' => $boat_name
+                'name' => $boat_name,
+                'registration_number' => $this->faker->sentence($nbWords = 1)
             ]
         );
         $boat->save();

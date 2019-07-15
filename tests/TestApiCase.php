@@ -21,6 +21,7 @@ abstract class TestApiCase extends TestCase
 
     protected $faker;
     private $log = false; // pushare con fase
+
     protected $headers = [
         'Content-type' => 'application/vnd.api+json',
         'Accept' => 'application/vnd.api+json',
@@ -29,29 +30,10 @@ abstract class TestApiCase extends TestCase
 
     public function setUp(): void {
         parent::setUp();
-        // $this->faker = Factory::create();
-
         // // To test Oauth Grants
         // \Artisan::call('passport:install',['-vvv' => true]);
         Passport::actingAs(factory(User::class)->create());
     }
-
-    // protected function disableExceptionHandling()
-    // {
-    //     $this->app->instance(ExceptionHandler::class, new class extends Handler {
-    //         public function __construct() {}
-
-    //         public function report(\Exception $e)
-    //         {
-    //             // no-op
-    //         }
-
-    //         public function render($request, \Exception $e) {
-    //             throw $e;
-    //         }
-    //     });
-    // }
-
 
 
     public function logResponce(\Illuminate\Foundation\Testing\TestResponse $response) {

@@ -56,6 +56,7 @@ return [
         'documents' => \App\Document::class,
         'projects' => \App\Project::class,
         'tasks' => \App\Task::class,
+        'boats' => \App\Boat::class,
     ],
 
     /*

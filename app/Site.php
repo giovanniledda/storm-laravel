@@ -12,7 +12,9 @@ class Site extends Model
     protected $table = 'sites';
 
     protected $fillable = [
-        'name'
+        'name',
+        'lat',
+        'lng'
     ];
 
     public function projects()

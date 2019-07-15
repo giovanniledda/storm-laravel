@@ -1,6 +1,6 @@
 <?php
 
-namespace App\JsonApi\V1\Tasks;
+namespace App\JsonApi\V1\Boats;
 
 use Neomerx\JsonApi\Schema\SchemaProvider;
 
@@ -10,7 +10,7 @@ class Schema extends SchemaProvider
     /**
      * @var string
      */
-    protected $resourceType = 'tasks';
+    protected $resourceType = 'boats';
 
     /**
      * @param $resource
@@ -29,22 +29,9 @@ class Schema extends SchemaProvider
      */
     public function getAttributes($resource)
     {
-
         return [
-            'title' => $resource->title,
-            'description' => $resource->description,
             'created-at' => $resource->created_at->toAtomString(),
             'updated-at' => $resource->updated_at->toAtomString(),
         ];
-    }
-
-
-    /* creare link customizzati */
-    public function getResourceLinks($resource)
-    {
-        $links = parent::getResourceLinks($resource);
-      //  $links['foo'] = $this->createLink('posts/foo');
-
-        return $links;
     }
 }
