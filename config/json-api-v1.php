@@ -93,7 +93,7 @@ return [
     */
     'url' => [
         'host' => null,
-        'namespace' => '/v1',
+        'namespace' => '/api/v1',
         'name' => 'api:v1:',
     ],
 
