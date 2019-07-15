@@ -189,6 +189,8 @@ class AuthTest extends TestCase
         $user = $this->_createTestUser();
         $oauth_client = $this->_createTestPasswordGrantClient($user);
 
+        // LOGGO l'UTENTE
+
         //User's data
         $data_ok = [
             'grant_type' => 'password',
@@ -205,6 +207,8 @@ class AuthTest extends TestCase
             ->assertJsonStructure(['token_type', 'expires_in', 'access_token', 'refresh_token']);
 
         $refresh_token = $response->json()['refresh_token'];
+
+        // CHIEDO REFRESH TOKEN
 
         $refresh_token_data = [
             'grant_type' => 'refresh_token',
