@@ -19,8 +19,8 @@ use Illuminate\Http\Request;
  */
 
 Route::group(['prefix' => 'auth'], function () {
-//    Route::post('login', 'API\AuthController@login')->name('api.auth.login');  // per ora, nella mobile app non servono
-//    Route::post('signup', 'API\AuthController@signup')->name('api.auth.signup');  // per ora, nella mobile app non servono
+    Route::post('login', 'API\AuthController@login')->name('api.auth.login');  // per ora, nella mobile app non servono
+    Route::post('signup', 'API\AuthController@signup')->name('api.auth.signup');  // per ora, nella mobile app non servono
     Route::post('reset-password-request', 'API\AuthController@resetPasswordRequest')->name('api.auth.reset_pwd_request');
 
     Route::group(['middleware' => 'auth:api'], function () {

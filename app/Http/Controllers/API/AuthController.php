@@ -37,11 +37,17 @@ class AuthController extends Controller
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
 
-        $success = [
-            'token' => $user->createAndGetToken(),
-            'name' => $user->name,
+        $token = $user->createAndGetToken();
+        $data = [
+            'type' => 'token',
+            'id' => date('Y-m-dTH:i:s', time()),
+            'attributes' => [
+                'access_token' => $token,
+                'token_type' => 'Bearer',
+                'expires-in' => 3600
+            ]
         ];
-        return response()->json(['success' => $success], 200);  // TODO: rendere JSONAPI compliant
+        return response()->json(['data' => $data], 200);
     }
 
     /**
@@ -61,7 +67,7 @@ class AuthController extends Controller
             $token = $user->createAndGetToken();
             $data = [
                 'type' => 'token',
-                'id' => date('Y-m-dTH:i:sZ', time()),
+                'id' => date('Y-m-dTH:i:s', time()),
                 'attributes' => [
                     'access_token' => $token,
                     'token_type' => 'Bearer',
@@ -71,7 +77,7 @@ class AuthController extends Controller
             return response()->json(['data' => $data], 200);
         } else {
             $error = [
-                'id' => date('Y-m-dTH:i:sZ', time()),
+                'id' => date('Y-m-dTH:i:s', time()),
                 'status' => 401,
                 'title' => 'Unauthorised',
                 'detail' => 'You are not authorized to log in.'
