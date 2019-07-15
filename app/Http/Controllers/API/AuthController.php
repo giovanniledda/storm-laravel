@@ -110,6 +110,14 @@ class AuthController extends Controller
      */
     public function resetPasswordRequest(Request $request)
     {
+        // ricevo una richiesta sicura dall'utente
+
+        // invio una mail contenente un link al recupero password
+        //
+        // se utente ignora, il link scade dopo un tot
+        //
+        // se utente clicca, trova la classica form per inserimento nuova password
+
     }
 
     /**
