@@ -41,7 +41,7 @@ class AuthController extends Controller
             'token' => $user->createAndGetToken(),
             'name' => $user->name,
         ];
-        return response()->json(['success' => $success], 200);
+        return response()->json(['success' => $success], 200);  // TODO: rendere JSONAPI compliant
     }
 
     /**
@@ -58,10 +58,25 @@ class AuthController extends Controller
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $user = Auth::user();
-            $success['token'] = $user->createAndGetToken();
-            return response()->json(['success' => $success], 200);
+            $token = $user->createAndGetToken();
+            $data = [
+                'type' => 'token',
+                'id' => date('Y-m-dTH:i:sZ', time()),
+                'attributes' => [
+                    'access_token' => $token,
+                    'token_type' => 'Bearer',
+                    'expires-in' => 3600
+                ]
+            ];
+            return response()->json(['data' => $data], 200);
         } else {
-            return response()->json(['error' => 'Unauthorised'], 401);
+            $error = [
+                'id' => date('Y-m-dTH:i:sZ', time()),
+                'status' => 401,
+                'title' => 'Unauthorised',
+                'detail' => 'You are not authorized to log in.'
+            ];
+            return response()->json(['errors' => $error], 401);
         }
     }
 
@@ -72,8 +87,16 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        $request->user()->token()->revoke();
-        return response()->json(['message' => 'Successfully logged out']);
+        $request->user()->token()->revoke();  // $request->user() è l'utente autenticato e loggato
+        return response()->json(['data' => []], 204);
+    }
+
+    /**
+     * Send the email with a link to reset the password
+     *
+     */
+    public function resetPasswordRequest(Request $request)
+    {
     }
 
     /**
@@ -84,6 +107,11 @@ class AuthController extends Controller
     public function user(Request $request)
     {
         $user = Auth::user(); // $request->user() is the same
-        return response()->json(['success' => ['user' => $user]], 200);
+        $data = [
+            'type' => 'users',
+            'id' => $user->id,
+            'attributes' => $user
+        ];
+        return response()->json(['data' => $data], 200);
     }
 }
