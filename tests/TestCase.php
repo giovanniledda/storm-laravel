@@ -41,5 +41,8 @@ abstract class TestCase extends BaseTestCase
         });
     }
 
+    protected static function createBoatWithSectionsAndSubsections() {
+
+    }
 
 }

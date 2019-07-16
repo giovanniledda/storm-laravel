@@ -18,6 +18,11 @@ class Section extends Model
         return $this->belongsTo('App\Boat');
     }
 
+    public function subsections()
+    {
+        return $this->hasMany('App\Subsection');
+    }
+
     public function tasks()
     {
         return $this->hasManyThrough('App\Task', 'App\Subsection');

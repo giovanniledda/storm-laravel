@@ -21,7 +21,9 @@ class CreateSectionsTable extends Migration
             $table->string('code', 10)->nullable();
             $table->timestamps();
 
-            // relations
+            // Relations:
+
+            // boat
             $table->unsignedBigInteger('boat_id')->nullable();
             $table->foreign('boat_id')->references('id')->on('boats');
         });

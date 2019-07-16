@@ -2,6 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Boat;
+use App\Section;
+use App\Subsection;
 use App\Task;
 use App\Project;
 use Tests\TestCase;
@@ -47,5 +50,41 @@ class ModelTaskTest extends TestCase
         $this->assertEquals($task->project->name, $project->name);
     }
 
+
+    function test_can_create_tasks_related_to_subsections_and_sections()
+    {
+        $boat = factory(Boat::class)->make();
+        $this->assertInstanceOf(Boat::class, $boat);
+
+        $sections = factory(Section::class, $this->faker->randomDigitNotNull)->make();
+        $boat->sections()->saveMany($sections);
+
+        foreach ($sections as $section) {
+
+            $this->assertInstanceOf(Section::class, $section);
+
+            $subsections = factory(Subsection::class, $this->faker->randomDigitNotNull)->make();
+            $section->subsections()->saveMany($subsections);
+
+            foreach ($subsections as $subsection) {
+
+                $this->assertInstanceOf(Subsection::class, $subsection);
+
+                $tasks = factory(Task::class, $this->faker->randomDigitNotNull)->make();
+                $subsection->tasks()->saveMany($tasks);
+            }
+        }
+
+        foreach ($sections as $section) {
+            $section_tasks_num = $section->tasks()->count();
+            $subsection_tasks_num = 0;
+            foreach ($section->subsections as $subsection) {
+                $subsection_tasks_num +=  $subsection->tasks()->count();
+            }
+            $this->assertEquals($section_tasks_num, $subsection_tasks_num);
+            $this->assertNotEquals($subsection_tasks_num, 0);
+        }
+
+    }
 
 }

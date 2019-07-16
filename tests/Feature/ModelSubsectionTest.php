@@ -12,59 +12,55 @@ use Tests\TestCase;
 class ModelSubsectionTest extends TestCase
 {
 
-    function test_can_create_subsection_related_to_section()
+    // Creo una Boat...
+    // ...creo le sue sezioni, random
+    // ...ad ogni sezione associo delle sottosezioni
+    // ...che al mercato mio padre comprò.
+
+    function test_can_create_subsections_related_to_sections()
     {
-        $boat_name = $this->faker->sentence;
-        $boat = Boat::create([
-                'name' => $boat_name,
-                'registration_number' => $this->faker->sentence
-            ]
-        );
+        $boat = factory(Boat::class)->make();
 
-        $sections_types = ['left_side', 'right_side', 'deck'];
-        $sections = [];
-        $sections[] = Section::create([
-                'name' => 'Right side',
-                'type' => $this->faker->randomElements($sections_types)
-            ]
-        );
+        $this->assertInstanceOf(Boat::class, $boat);
 
-        $sections[] = Section::create([
-                'name' => 'Right side',
-                'type' => $this->faker->randomElements($sections_types)
-            ]
-        );
+        $sections = factory(Section::class, $this->faker->randomDigitNotNull)->make();
 
-        $sections[] = Section::create([
-                'name' => 'Desk 1',
-                'type' => $this->faker->randomElements($sections_types)
-            ]
-        );
-
-        $sections[] = Section::create([
-                'name' => 'Desk 2',
-                'type' => $this->faker->randomElements($sections_types)
-            ]
-        );
-
-        $sections[] = Section::create([
-                'name' => 'Desk 3',
-                'type' => $this->faker->randomElements($sections_types)
-            ]
-        );
+//        $boat->sections()->saveMany($sections);  // se faccio questo, non le associa alla boat
 
         foreach ($sections as $section) {
-            for ($i = 0; $i < 10; $i++) {
-                $sub_sect = Subsection::create([
-                        'name' => $this->faker->word,
-                    ]
-                );
-                $sub_sect->section()->associate($section);
-                $sub_sect->save();
+
+            $section->boat()->associate($boat);  // alternativa a $boat->sections()->saveMany($sections) ? Sembrerebbe di no...
+            $section->save();  // alternativa a $boat->sections()->saveMany($sections) ? Sembrerebbe di no...
+
+            $this->assertInstanceOf(Section::class, $section);
+            $this->assertEquals($section->boat->registration_number, $boat->registration_number);
+
+            $subsections = factory(Subsection::class, $this->faker->randomDigitNotNull)->make();
+//            $section->subsections()->saveMany($subsections);
+
+            foreach ($subsections as $subsection) {
+
+                $subsection->section()->associate($section);
+                $subsection->save();
             }
         }
 
-        $boat->sections()->saveMany($sections);
+        $this->assertNotEquals(count($sections), 0);
+        $this->assertEquals(count($boat->sections), count($sections));
+        $this->assertNotEquals($boat->sections()->count(), 0);
+        $this->assertEquals($boat->sections()->count(), count($sections));
+
+        $total_subsections_num = 0;
+        foreach ($boat->sections as $section) {
+
+            $this->assertInstanceOf(Section::class, $section);
+
+            $total_subsections_num += $section->subsections()->count();
+        }
+
+//        $this->assertEquals($boat->subsections()->count(), $total_subsections_num);
+//        $this->assertNotEquals($boat->subsections()->count(), 0);
+
     }
 
 
