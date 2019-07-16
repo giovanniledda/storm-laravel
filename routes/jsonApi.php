@@ -37,14 +37,10 @@ Route::group(['middleware' => 'auth:api'], function () {
     JsonApi::register('v1', ['namespace'=>'Api'])->routes(function ($api) {
         // $api->resource('documents')->controller('DocumentController') ; // uses the App\Http\Controllers\Api\DocumentController
         $api->resource('documents')->except('create');
-       /* $api->resource('projects', [
-            'has-one'=> ['boat'],
-            'has-many' => ['tasks']
-        ]);*/
-
+        $api->resource('boats');
         $api->resource('tasks');
         $api->resource('projects')->relationships(function ($relations) {
-            $relations->hasOne('boat');
+            $relations->hasOne('boat'); // punta al methodo dell'adapter /app/jsonApi/Projects/Adapter non alla risorsa.
             $relations->hasMany('tasks');
         });
 

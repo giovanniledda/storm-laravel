@@ -42,7 +42,7 @@ class Boat extends Model
 
     public function users()
     {
-        return $this->belongsToMany('App\Users')
+        return $this->belongsToMany('App\User')
             ->using('App\BoatUser')
             ->withPivot([
                 'role',

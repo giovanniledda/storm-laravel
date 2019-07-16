@@ -2,7 +2,8 @@
 
 return [
     'default' => [
-        'admin' => 'Administrator',
+        'admin' => 'Admin',
         'user' => 'User',
+
     ]
 ];

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\JsonApi\V1\Tasks;
+namespace App\JsonApi\V1\Boats;
 
 use CloudCreativity\LaravelJsonApi\Validation\AbstractValidators;
 
@@ -21,7 +21,7 @@ class Validators extends AbstractValidators
      * @var string[]|null
      *      the allowed fields, an empty array for none allowed, or null to allow all fields.
      */
-    protected $allowedSortParameters = ['title', 'description'];
+    protected $allowedSortParameters = [];
 
     /**
      * Get resource validation rules.

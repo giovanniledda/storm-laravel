@@ -47,5 +47,12 @@ class Schema extends SchemaProvider
         ];
     }
 
+/* creare link customizzati */
+public function getResourceLinks($resource)
+{
+    $links = parent::getResourceLinks($resource);
+    $links['foo'] = $this->createLink('posts/foo');
 
+    return $links;
+}
 }

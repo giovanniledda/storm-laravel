@@ -1,6 +1,6 @@
 <?php
 
-namespace App\JsonApi\V1\Projects;
+namespace App\JsonApi\V1\Boats;
 
 use CloudCreativity\LaravelJsonApi\Eloquent\AbstractAdapter;
 use CloudCreativity\LaravelJsonApi\Pagination\StandardStrategy;
@@ -10,8 +10,6 @@ use Illuminate\Support\Collection;
 class Adapter extends AbstractAdapter
 {
 
-    protected $fillable = ['name'];
-
     /**
      * Mapping of JSON API attribute field names to model keys.
      *
@@ -19,12 +17,6 @@ class Adapter extends AbstractAdapter
      */
     protected $attributes = [];
 
-      /**
-     * @inheritdoc
-     */
-    protected $relationships = [
-        'tasks','boat'
-    ];
     /**
      * Adapter constructor.
      *
@@ -32,7 +24,7 @@ class Adapter extends AbstractAdapter
      */
     public function __construct(StandardStrategy $paging)
     {
-        parent::__construct(new \App\Project(), $paging);
+        parent::__construct(new \App\Boat(), $paging);
     }
 
     /**
@@ -42,24 +34,24 @@ class Adapter extends AbstractAdapter
      */
     protected function filter($query, Collection $filters)
     {
+        $user = \Auth::user();
+        if (!$user->hasRole('Admin')) {
+            $query->whereHas('users', function($q) use ($user)
+            {
+             $q->whereUser_id($user->id);
+            });
+        }
 
+       // print_r(get_class($query));
+       /** se l'utente è admin visualizzo tutto altrimenti */
 
-        // TODO
+       /* if ($title = $filters->get('title')) {
+            $query->where('posts.title', 'like', "{$title}%");
+        }
+
+        if ($authors = $filters->get('authors')) {
+            $query->whereIn('posts.user_id', $authors);
+        }*/
     }
 
-    /**
-     * @return HasMany
-     */
-
-    protected function tasks() {
-        return $this->hasMany();
-    }
-
-      /**
-     * @return BelongsTo
-     */
-    protected function boat()
-    {
-        return $this->belongsTo();
-    }
 }
