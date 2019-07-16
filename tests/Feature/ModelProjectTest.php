@@ -5,10 +5,11 @@ namespace Tests\Feature;
 use App\Site;
 use App\Project;
 use App\Boat;
+use App\Task;
 use Tests\TestCase;
 use Faker\Provider\Base as fakerBase;
 
-class ProjectTest extends TestCase
+class ModelProjectTest extends TestCase
 {
 
     function test_can_create_project_without_site()
@@ -29,8 +30,8 @@ class ProjectTest extends TestCase
         $site_name = $this->faker->sentence;
         $site = new Site([
                 'name' => $site_name,
-                'lat' =>   $this->faker->randomFloat(2, -60,60),
-                'lng' =>  $this->faker->randomFloat(2, -60,60)
+                'lat' => $this->faker->randomFloat(2, -60, 60),
+                'lng' => $this->faker->randomFloat(2, -60, 60)
             ]
         );
         $site->save();
@@ -66,9 +67,18 @@ class ProjectTest extends TestCase
             ]
         );
         $project->save();
+
         $this->assertDatabaseHas('projects', ['name' => $project_name]);
+
         $project->boat()->associate($boat)->save();
+
         $this->assertEquals($boat->name, $project->boat->name);
+    }
+
+
+    function test_can_create_project_related_to_subsection()
+    {
+        // TODO...
     }
 
 }

@@ -13,7 +13,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
-class ProjectJsonApiTest extends TestApiCase
+class ApiProjectTest extends TestApiCase
 {
     /** create **/
     function test_can_create_project()

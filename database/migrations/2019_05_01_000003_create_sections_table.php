@@ -15,6 +15,7 @@ class CreateSectionsTable extends Migration
     {
         Schema::create('sections', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->text('name');
             $table->enum('type', ['left_side', 'right_side', 'deck']);
             $table->integer('position')->nullable();
             $table->string('code', 10)->nullable();

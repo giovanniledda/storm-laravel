@@ -6,7 +6,7 @@ use App\Task;
 use App\Project;
 use Tests\TestCase;
 
-class TaskTest extends TestCase
+class ModelTaskTest extends TestCase
 {
     function test_can_create_task_without_project()
     {
@@ -20,7 +20,7 @@ class TaskTest extends TestCase
         $this->assertDatabaseHas('tasks', ['title' => $fake_name]);
     }
 
-    function test_can_create_project_related_to_task()
+    function test_can_create_task_related_to_project()
     {
         $task_title = $this->faker->sentence;
         $task = new Task([

@@ -55,7 +55,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
                         // create user for Admin only
                         $this->createAdmin($role);
-                        $this->command->info("Role '$role' added successfully");
+                        $this->command->info("Role '$role_name' added successfully");
                     } else {
                         // for others by default only read access
                         $role->syncPermissions(Permission::where('name', 'LIKE', 'view_%')->get());
