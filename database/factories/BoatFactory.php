@@ -5,9 +5,14 @@
 use App\Boat;
 use Faker\Generator as Faker;
 
-$factory->define(Boat::class, function (Faker $faker) {
+$autoIncrement = autoIncrement();
+
+$factory->define(Boat::class, function (Faker $faker) use ($autoIncrement) {
+
+    $autoIncrement->next();
 
     return [
+        'id' => $autoIncrement->current(),
         'name' => $faker->sentence(3),
         'registration_number' => $faker->randomNumber(5),
         'flag' => $faker->country(),
