@@ -33,32 +33,35 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->command->info('Default Permissions added.');
 
         // Confirm roles needed
-        if ($this->command->confirm('Create Roles for user, default is admin and user? [y|N]', true)) {
+        if ($this->command->confirm('Create Roles for users? [y|N]', true)) {
 
             // Ask for roles from input
-            $input_roles = $this->command->ask('Enter roles in comma separate format.', 'Admin,User');
+//            $input_roles = $this->command->ask('Enter roles in comma separate format.', 'Admin,User');
+//            $roles_array = explode(',', $input_roles);
 
-            // Explode roles
-            $roles_array = explode(',', $input_roles);
+            // Get roles from config file
+            $roles_array = Role::defaultRoles();
 
             // add roles
-            foreach ($roles_array as $role) {
-                $role = Role::firstOrCreate(['name' => trim($role)]);
+            foreach ($roles_array as $role_key => $role_name) {
 
-                if ($role->name == 'Admin') {
-                    // assign all permissions
-                    $role->syncPermissions(Permission::all());
-                    $this->command->info('Admin granted all the permissions');
+                if ($this->command->confirm("Do you wish to create role '$role_name'?", true)) {
+                    $role = Role::firstOrCreate(['name' => trim($role_name)]);
 
-                    // create user for Admin only
-                    $this->createAdmin($role);
-                } else {
-                    // for others by default only read access
-                    $role->syncPermissions(Permission::where('name', 'LIKE', 'view_%')->get());
+                    if ($role->name == 'Admin') {
+                        // assign all permissions
+                        $role->syncPermissions(Permission::all());
+                        $this->command->info('Admin granted all the permissions');
+
+                        // create user for Admin only
+                        $this->createAdmin($role);
+                        $this->command->info("Role '$role' added successfully");
+                    } else {
+                        // for others by default only read access
+                        $role->syncPermissions(Permission::where('name', 'LIKE', 'view_%')->get());
+                    }
                 }
             }
-
-            $this->command->info('Roles ' . $input_roles . ' added successfully');
 
         } else {
             Role::firstOrCreate(['name' => 'User']);

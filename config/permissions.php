@@ -2,7 +2,7 @@
 
 return [
 
-    'permissions' => [
+    'default' => [
         'admin_roles_permissions' => 'Administer roles & permissions',
 
         'view_users' => 'View users',

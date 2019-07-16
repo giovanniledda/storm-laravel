@@ -67,9 +67,9 @@ ADMIN_PASSWORD=admin     (esempio)
 * php artisan db:seed --class="RolesAndPermissionsSeeder"
 
 Il comando è interattivo (con prompt sulla CLI) e permette di creare dei ruoli e permessi di base per l'applicazione.
-I ruoli di base sono "Admin" e "User", i permessi di base sono salvati nel seguente file: config/constants.php (che quindi può essere modificato a piacimento).
+I ruoli di base sono "Admin" e "User"; ruoli e permessi di base sono salvati nei seguenti file: config/roles.php e config/permissions.php (che quindi possono essere modificati a piacimento).
 
-Se il comando viene lanciato più volte (per errore) i ruoli e permessi esistenti non vengono duplicati, ma le assegnazioni dei permessi per i ruoli di User e Admin vengono sovrascritte.
+Se il comando viene lanciato più volte (per errore) i ruoli e permessi esistenti non vengono duplicati, ma le assegnazioni dei permessi vengono sovrascritte.
 
 
 

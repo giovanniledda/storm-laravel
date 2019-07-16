@@ -9,6 +9,6 @@ class Permission extends SpatiePermission
 {
     public static function defaultPermissions()
     {
-        return \Config::get('permissions');
+        return \Config::get('permissions.default');
     }
 }
