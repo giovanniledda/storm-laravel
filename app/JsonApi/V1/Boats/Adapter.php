@@ -41,17 +41,6 @@ class Adapter extends AbstractAdapter
              $q->whereUser_id($user->id);
             });
         }
-
-       // print_r(get_class($query));
-       /** se l'utente è admin visualizzo tutto altrimenti */
-
-       /* if ($title = $filters->get('title')) {
-            $query->where('posts.title', 'like', "{$title}%");
-        }
-
-        if ($authors = $filters->get('authors')) {
-            $query->whereIn('posts.user_id', $authors);
-        }*/
     }
 
 }

@@ -43,6 +43,7 @@ class Project extends Model
         return $this->morphMany('App\Document', 'documentable');
     }
 
+
     public function users()
     {
         return $this->belongsToMany('App\Users')

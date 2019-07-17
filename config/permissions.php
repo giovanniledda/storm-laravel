@@ -19,6 +19,11 @@ return [
         'add_permissions' => 'Add permissions',
         'edit_permissions' => 'Edit permissions',
         'delete_permissions' => 'Delete permissions',
+        'delete_permissions' => 'Delete permissions',
+
+        'admin' => 'Admin',
+        'boatmanager' => 'Boat manager',
+        'worker'=> 'Worker',
 
     ]
 

@@ -40,6 +40,10 @@ class Boat extends Model
         return $this->morphMany('App\Document', 'documentable');
     }
 
+    public function associatedUsers() {
+        return $this->hasMany('App\BoatUser');
+    }
+
     public function users()
     {
         return $this->belongsToMany('App\User')
