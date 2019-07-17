@@ -3,15 +3,15 @@
 /* @var $factory \Illuminate\Database\Eloquent\Factory */
 
 use App\Section;
+use App\Utils\Utils;
 use Faker\Generator as Faker;
 
-$autoIncrement = autoIncrement();
-
+$autoIncrement = Utils::autoIncrement();
 
 $factory->define(Section::class, function (Faker $faker) use ($autoIncrement)  {
 
     $autoIncrement->next();
-    $sections_types = ['left_side', 'right_side', 'deck'];
+    $sections_types = [SECTION_NAME_LEFT_SIDE, SECTION_NAME_RIGHT_SIDE, SECTION_NAME_DECK];
 
     return [
         'id' => $autoIncrement->current(),
@@ -23,9 +23,3 @@ $factory->define(Section::class, function (Faker $faker) use ($autoIncrement)  {
 });
 
 
-function autoIncrement()
-{
-    for ($i = 0; $i < 1000; $i++) {
-        yield $i;
-    }
-}

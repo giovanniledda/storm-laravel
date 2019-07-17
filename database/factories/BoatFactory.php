@@ -3,9 +3,10 @@
 /* @var $factory \Illuminate\Database\Eloquent\Factory */
 
 use App\Boat;
+use App\Utils\Utils;
 use Faker\Generator as Faker;
 
-$autoIncrement = autoIncrement();
+$autoIncrement = Utils::autoIncrement();
 
 $factory->define(Boat::class, function (Faker $faker) use ($autoIncrement) {
 
