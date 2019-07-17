@@ -1,5 +1,4 @@
 <?php
-
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
@@ -15,3 +14,16 @@ class BoatUser extends Model
     ];
 
 }
+/*
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Relations\Pivot;
+
+class BoatUser extends Pivot
+{
+
+}
+/**
+
+*/

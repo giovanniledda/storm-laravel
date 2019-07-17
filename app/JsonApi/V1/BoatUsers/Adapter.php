@@ -1,6 +1,6 @@
 <?php
 
-namespace App\JsonApi\V1\Boats;
+namespace App\JsonApi\V1\BoatUsers;
 
 use CloudCreativity\LaravelJsonApi\Eloquent\AbstractAdapter;
 use CloudCreativity\LaravelJsonApi\Pagination\StandardStrategy;
@@ -24,7 +24,7 @@ class Adapter extends AbstractAdapter
      */
     public function __construct(StandardStrategy $paging)
     {
-        parent::__construct(new \App\Boat(), $paging);
+        parent::__construct(new \App\BoatUser(), $paging);
     }
 
     /**
@@ -33,19 +33,8 @@ class Adapter extends AbstractAdapter
      * @return void
      */
     protected function filter($query, Collection $filters)
-    {/*
-        $user = \Auth::user();
-        if (!$user->can('admin')) {
-            $query->whereHas('users', function($q) use ($user)
-            {
-             $q->whereUser_id($user->id);
-            });
-        }*/
-        $user = \Auth::user();
-        $query->whereHas('users', function($q) use ($user)
-        {
-         $q->whereUser_id($user->id);
-        });
+    {
+        // TODO
     }
 
 }

@@ -37,6 +37,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     JsonApi::register('v1', ['namespace'=>'Api'])->routes(function ($api) {
         // $api->resource('documents')->controller('DocumentController') ; // uses the App\Http\Controllers\Api\DocumentController
         $api->resource('documents')->except('create');
+        $api->resource('boat-users');
         $api->resource('boats');
         $api->resource('tasks');
         $api->resource('projects')->relationships(function ($relations) {

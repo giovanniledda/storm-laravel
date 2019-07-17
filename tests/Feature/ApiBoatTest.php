@@ -41,29 +41,26 @@ class ApiBoatTest extends TestApiCase
         $bootmanagerPerm = Permission::create(['name' => 'bootmanager']);
         $workerPerm = Permission::create(['name' => 'worker']);
 
-
         $admin1       = $this->addUser($roles[0]);//admin
 
         $admin1->givePermissionTo($adminPerm);
         $admin1->givePermissionTo($bootmanagerPerm);
         $admin1->givePermissionTo($workerPerm);
 
-        $bootManager1 = $this->addUser($roles[1]);//boat manager
-        $bootManager2 = $this->addUser($roles[1]);//boat manager
+        $boatManager1 = $this->addUser($roles[1]);//boat manager
+        $boatManager2 = $this->addUser($roles[1]);//boat manager
         $user         = $this->addUser($roles[2]);//user
-
-        //   $permission = Permission::create(['name' => 'see other boot']);
 
         /** creo tre barche */
         $boat1 = $this->createBoat();
         $boat2 = $this->createBoat();
         $boat3 = $this->createBoat();
         /** associo la barca1 ad other e bootmanager1 */
-        $this->boatAssociate($user, $boat1);
-        $this->boatAssociate($bootManager1, $boat1);
+        $this->boatApiAssociate($admin1, $user, $boat1);
+        $this->boatApiAssociate($admin1, $boatManager1, $boat1);
 
-        $this->boatAssociate($bootManager2, $boat2);
-        $this->boatAssociate($user, $boat2);
+        $this->boatApiAssociate($admin1,$boatManager2, $boat2);
+        $this->boatApiAssociate($admin1,$user, $boat2);
 /*
         /*** test connessione con l'utente User */
    //     $tokenUser = $this->UserAuthenticatedRequest($user);
@@ -78,56 +75,23 @@ class ApiBoatTest extends TestApiCase
       /*  $response = $this->json('GET',
               route('api:v1:boats.index'), [], ['Authorization' => 'Bearer '.$tokenUser]);
 */
-        Passport::actingAs($admin1);
-        $response = $this->json('GET',
-              route('api.auth.user',[]),
-                      [],
-                      []);
-        $response->assertStatus(200);
-        $response->assertJsonStructure(['data' => ['id', 'type', 'attributes']]);
-        $this->logResponce($response);
 
-        $response = $this->json('GET',
-              route('api:v1:boats.index',[]),
-                      [],
-                      $this->headers);
-        $response->assertStatus(200);
+
         /// deve vedere tutte e tre le boat
-        $r = json_decode($response->getContent(), true);
-       // $this->logResponce($response);
-        $this->assertEquals( 3,   count($r['data']));
 
+        $this->getBoatList($boatManager1, 1);
+    }
+
+    private function getBoatList(User $user, int $expeted) {
         Passport::actingAs($user);
-        $response = $this->json('GET',
-        route('api:v1:boats.index',[]),
-                [],
-                $this->headers);
-        $response->assertStatus(200);
-        /// deve vedere 2 boat
-        $r = json_decode($response->getContent(), true);
-        $this->assertEquals( 2,   count($r['data']));
+        $r = $this->json('GET', route('api:v1:projects.index'), [], $this->headers);
+       /// $r = $this->json('GET', route('api:v1:boats.index'), [], $this->headers);
+        $r->assertStatus(200);
+        $re = json_decode($r->getContent(), true);
+        $c =   count($re['data']);
+        $this->logResponce($r);
+        $this->assertEquals( $expeted,   $c);
 
-        Passport::actingAs($bootManager1);
-        $response = $this->json('GET',
-
-        route('api:v1:boats.index',[]),
-                [],
-                $this->headers);
-        $response->assertStatus(200);
-        /// deve vedere 1 boat
-        $r = json_decode($response->getContent(), true);
-        $this->assertEquals( 1,   count($r['data']));
-
-        Passport::actingAs($bootManager2);
-        $response = $this->json('GET',
-
-        route('api:v1:boats.index',[]),
-                [],
-                $this->headers);
-        $response->assertStatus(200);
-        /// deve vedere 1 boat
-        $r = json_decode($response->getContent(), true);
-        $this->assertEquals( 1,   count($r['data']));
     }
 
 
@@ -144,7 +108,20 @@ class ApiBoatTest extends TestApiCase
         return $user;
     }
 
+ /** associa la barca all'utente via api*/
+ private function boatApiAssociate(User $connectedUser, User $user, Boat $boat) {
+     $data = [
+         'data'=>[
+             'type'=> 'boat-users',
+             'attributes' =>['role'=>'commander', 'boat_id'=>$boat->id ,'user_id'=>$user->id]
+             ]
+        ];
+     Passport::actingAs($connectedUser);
+     $response = $this->json('POST', route('api:v1:boat-users.create'), $data, $this->headers);
 
+     $this->logResponce($response);
+     $this->assertDatabaseHas('boat_user', [ 'boat_id'=>$boat->id,'user_id'=>$user->id ]);
+ }
 
     /** associa la barca all'utente */
     private function boatAssociate(User $user, Boat $boat) {
