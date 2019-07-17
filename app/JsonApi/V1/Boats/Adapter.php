@@ -35,7 +35,7 @@ class Adapter extends AbstractAdapter
     protected function filter($query, Collection $filters)
     {
         $user = \Auth::user();
-        if (!$user->hasRole('Admin')) {
+        if (!$user->can('admin')) {
             $query->whereHas('users', function($q) use ($user)
             {
              $q->whereUser_id($user->id);

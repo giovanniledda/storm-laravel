@@ -16,7 +16,7 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Laravel\Passport\Passport;
 
-class BoatsJsonApiTest extends TestApiCase
+class ApiBoatTest extends TestApiCase
 {
 
     /**
@@ -27,7 +27,7 @@ class BoatsJsonApiTest extends TestApiCase
      * verifica che tutti gli altri utenti veda solo le barche che ha assegnato
      */
 
-    private $roles = ['Admin', 'Boot Manager', 'User'];
+    private $roles = ['admin', 'bootmanager', 'worker'];
     /** crea un utente e lo associa al ruolo */
 
     function test_all() {
@@ -36,10 +36,22 @@ class BoatsJsonApiTest extends TestApiCase
            $roles[] = Role::create(['name' => $role]);
 
         }
+
+        $adminPerm = Permission::create(['name' => 'admin']);
+        $bootmanagerPerm = Permission::create(['name' => 'bootmanager']);
+        $workerPerm = Permission::create(['name' => 'worker']);
+
+
         $admin1       = $this->addUser($roles[0]);//admin
+
+        $admin1->givePermissionTo($adminPerm);
+        $admin1->givePermissionTo($bootmanagerPerm);
+        $admin1->givePermissionTo($workerPerm);
+
         $bootManager1 = $this->addUser($roles[1]);//boat manager
         $bootManager2 = $this->addUser($roles[1]);//boat manager
-        $user        = $this->addUser($roles[2]);//user
+        $user         = $this->addUser($roles[2]);//user
+
         //   $permission = Permission::create(['name' => 'see other boot']);
 
         /** creo tre barche */
@@ -54,13 +66,13 @@ class BoatsJsonApiTest extends TestApiCase
         $this->boatAssociate($user, $boat2);
 /*
         /*** test connessione con l'utente User */
-        $tokenUser = $this->UserAuthenticatedRequest($user);
+   //     $tokenUser = $this->UserAuthenticatedRequest($user);
          /*** test connessione con l'utente Admin */
-        $tokenAdmin = $this->UserAuthenticatedRequest($admin1);
+   //     $tokenAdmin = $this->UserAuthenticatedRequest($admin1);
         /*** test connessione con l'utente bootManager1 */
-        $tokenbootManager1 = $this->UserAuthenticatedRequest($bootManager1);
+   //     $tokenbootManager1 = $this->UserAuthenticatedRequest($bootManager1);
         /*** test connessione con l'utente bootManager2 */
-        $tokenbootManager2 = $this->UserAuthenticatedRequest($bootManager2);
+   //     $tokenbootManager2 = $this->UserAuthenticatedRequest($bootManager2);
 /*
         /** test api lista delle barche User */
       /*  $response = $this->json('GET',
@@ -82,8 +94,8 @@ class BoatsJsonApiTest extends TestApiCase
         $response->assertStatus(200);
         /// deve vedere tutte e tre le boat
         $r = json_decode($response->getContent(), true);
+       // $this->logResponce($response);
         $this->assertEquals( 3,   count($r['data']));
-        //->assertJsonStructure(['data' => ['id', 'type', 'attributes']]);
 
         Passport::actingAs($user);
         $response = $this->json('GET',
@@ -128,6 +140,7 @@ class BoatsJsonApiTest extends TestApiCase
         ];
         $user =  User::create( $user_data );
         $user->assignRole($ruolo);
+
         return $user;
     }
 

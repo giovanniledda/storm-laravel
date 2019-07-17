@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-
 use Faker\Factory;
 
 use App\Exceptions\Handler;
