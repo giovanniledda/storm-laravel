@@ -33,19 +33,16 @@ class Adapter extends AbstractAdapter
      * @return void
      */
     protected function filter($query, Collection $filters)
-    {/*
-        $user = \Auth::user();
-        if (!$user->can('admin')) {
+    {
+         $user = \Auth::user();
+
+        if (!$user->can('Admin')) {
             $query->whereHas('users', function($q) use ($user)
             {
              $q->whereUser_id($user->id);
             });
-        }*/
-        $user = \Auth::user();
-        $query->whereHas('users', function($q) use ($user)
-        {
-         $q->whereUser_id($user->id);
-        });
+        }
+
     }
 
 }
