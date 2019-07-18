@@ -22,7 +22,7 @@ class DocumentTest extends TestCase
      public function test_can_create_document(){
         $this->disableExceptionHandling();
 
-        $this->assertEquals([], Storage::allFiles());
+        // $this->assertEquals([], Storage::allFiles());
 
         $sizeInKilobytes = 200;
 
@@ -30,6 +30,7 @@ class DocumentTest extends TestCase
         $nonExistingFilename = 'missing.doc';
 
         $file = UploadedFile::fake()->create( $filename, $sizeInKilobytes);
+
 
         $fake_title = $this->faker->sentence;
         $doc = new Document([
@@ -55,6 +56,8 @@ class DocumentTest extends TestCase
 
 
     public function test_can_create_document_via_json_api (){
+
+
         $this->disableExceptionHandling();
 
         $sizeInKilobytes = 200;
@@ -65,21 +68,30 @@ class DocumentTest extends TestCase
         $file = UploadedFile::fake()->create( $filename, $sizeInKilobytes);
 
         $fake_title = $this->faker->sentence;
-        // $data = [
-        //     'data' => [
-        //         'attributes' => [
-        //             'title' => $fake_title,
-        //             'file' => $file
-        //         ],
-        //         'type' => 'documents',
-        //         // 'file' => $uploadedFile
-        //     ]   
-        // ];
+
+
+        $filename = __DIR__ . '/'. 'testDocument.txt';
+        $h = fopen($filename, 'r');
+        $file_content = fread($h, filesize($filename));
+        fclose($h);
+        $base64FileContent = base64_encode($file_content);
+
 
         $data = [
-            'title' => $fake_title,
-            'file' => $file
+            'data' => [
+                'attributes' => [
+                    'title' => $fake_title,
+                    'file' => $base64FileContent
+                ],
+                'type' => 'documents',
+                // 'file' => $uploadedFile
+            ]
         ];
+
+        // $data = [
+        //     'title' => $fake_title,
+        //     'file' => $base64FileContent
+        // ];
 
         $headers = [
             'Content-type' => 'multipart/form-data',
