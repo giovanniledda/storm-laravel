@@ -59,6 +59,7 @@ class Authorizer extends AbstractAuthorizer
     public function read($record, $request)
     {
         // TODO: Implement read() method.
+        $this->can('view', $record);
     }
 
     /**

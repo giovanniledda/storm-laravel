@@ -23,6 +23,7 @@ return [
 
         'admin' => 'Admin',
         'boatmanager' => 'Boat manager',
+        'backendmanager' => 'Backend manager',
         'worker'=> 'Worker',
 
     ]
