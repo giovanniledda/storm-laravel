@@ -40,7 +40,6 @@ class Authorizer extends AbstractAuthorizer
     public function create($type, $request)
     {
         $this->can('create', $type);
-        // TODO: Implement create() method.
     }
 
     /**
@@ -56,6 +55,7 @@ class Authorizer extends AbstractAuthorizer
      */
     public function read($record, $request)
     {
+
         // TODO: Implement read() method.
     }
 

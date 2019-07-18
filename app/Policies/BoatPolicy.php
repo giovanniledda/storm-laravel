@@ -3,8 +3,11 @@
 namespace App\Policies;
 
 use App\User;
-use App\Boat;
+use App\Boat ;
+use App\BoatUser;
+
 use Illuminate\Auth\Access\HandlesAuthorization;
+use PhpParser\Node\Stmt\TryCatch;
 
 class BoatPolicy
 {
@@ -30,7 +33,24 @@ class BoatPolicy
      */
     public function view(User $user, Boat $boat)
     {
-        //
+
+   //     var_dump($users);
+
+        if ($user->can('Admin')) {
+            return true;
+        }
+
+        if ($user->can('Boat manager')) {
+            return true;
+        }
+
+          $c =  \App\Boat::find($boat->id)->associatedUsers->where('user_id', $user->id)->count();
+        if ($c > 0) {
+            return true;
+        }
+
+        return false;
+
     }
 
     /**
@@ -41,11 +61,11 @@ class BoatPolicy
      */
     public function create(User $user)
     {
-        if ($user->hasRole('Admin')) {
+        if ($user->can('Admin')) {
             return true;
         }
 
-        if ($user->hasRole('Boat Manager')) {
+        if ($user->can('Boat manager')) {
             return true;
         }
 
@@ -61,13 +81,13 @@ class BoatPolicy
      */
     public function update(User $user, Boat $boat)
     {
-         if ($user->hasRole('Admin')) {
-            return true;
-        }
+        if ($user->can('Admin')) {
+        return true;
+    }
 
-        if ($user->hasRole('Boat Manager')) {
-            return true;
-        }
+    if ($user->can('Boat manager')) {
+        return true;
+    }
 
         return false;
     }
@@ -81,14 +101,13 @@ class BoatPolicy
      */
     public function delete(User $user, Boat $boat)
     {
-        if ($user->hasRole('Admin')) {
+        if ($user->can('Admin')) {
             return true;
         }
 
-        if ($user->hasRole('Boat Manager')) {
+        if ($user->can('Boat manager')) {
             return true;
         }
-
         return false;
     }
 
@@ -113,11 +132,11 @@ class BoatPolicy
      */
     public function forceDelete(User $user, Boat $boat)
     {
-        if ($user->hasRole('Admin')) {
+        if ($user->can('Admin')) {
             return true;
         }
 
-        if ($user->hasRole('Boat Manager')) {
+        if ($user->can('Boat manager')) {
             return true;
         }
 
