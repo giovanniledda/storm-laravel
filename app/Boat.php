@@ -10,7 +10,8 @@ class Boat extends Model
     protected $table = 'boats';
     protected $fillable = [
         'name',
-        'registration_number'
+        'registration_number',
+        'site_id'
     ];
 
     public function site()

@@ -22,7 +22,8 @@
             'csrfToken' => csrf_token(),
         ]) !!};
     </script>
-    <script src="https://use.fontawesome.com/9712be8772.js"></script>
+    {{--<script src="https://use.fontawesome.com/9712be8772.js"></script>--}}
+    <script src="https://use.fontawesome.com/releases/v5.9.0/js/all.js" data-auto-replace-svg="nest"></script>
 </head>
 <body>
 <div id="app">
@@ -60,30 +61,27 @@
                     @else
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                {{ Auth::user()->name }}
+                                @role('admin') <i class="fas fa-chess-king"></i> @endrole {{ Auth::user()->name }}
                             </a>
 
                             <ul class="dropdown-menu" role="menu">
                                 <li>
-                                    @if(User::onlyOne())
-                                        <a href="{{ route('roles.index') }}"><i class="fa fa-btn fa-key"></i> Roles</a>
+                                    @role('admin') {{-- Laravel-permission blade helper --}}
+                                        <a href="#"><i class="fas fa-chess-king"></i> Admin menu</a>
+                                        <hr />
+                                        <a href="{{ route('roles.index') }}"><i class="fa fa-btn fa-award"></i> Roles</a>
                                         <a href="{{ route('permissions.index') }}"><i class="fa fa-btn fa-key"></i> Permissions</a>
-                                    @else
-                                        @role('Admin') {{-- Laravel-permission blade helper --}}
-                                            <a href="#"><i class="fa fa-btn fa-unlock"></i>Admin</a>
-                                            <a href="{{ route('roles.index') }}"><i class="fa fa-btn fa-key"></i> Roles</a>
-                                            <a href="{{ route('permissions.index') }}"><i class="fa fa-btn fa-key"></i> Permissions</a>
-                                        @endrole
-                                    @endif
+                                        <a href="{{ route('users.index') }}"><i class="fa fa-btn fa-users"></i> Users</a>
+                                    @endrole
 
-                                    <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                        Logout
-                                    </a>
-
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                          style="display: none;">
-                                        {{ csrf_field() }}
-                                    </form>
+                                        <hr />
+                                        <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                            Logout
+                                        </a>
+                                        <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                              style="display: none;">
+                                            {{ csrf_field() }}
+                                        </form>
                                 </li>
                             </ul>
                         </li>

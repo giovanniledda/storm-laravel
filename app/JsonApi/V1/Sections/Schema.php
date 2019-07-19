@@ -1,6 +1,6 @@
 <?php
 
-namespace App\JsonApi\V1\Projects;
+namespace App\JsonApi\V1\Sections;
 
 use Neomerx\JsonApi\Schema\SchemaProvider;
 
@@ -10,7 +10,7 @@ class Schema extends SchemaProvider
     /**
      * @var string
      */
-    protected $resourceType = 'projects';
+    protected $resourceType = 'sections';
 
     /**
      * @param $resource
@@ -22,17 +22,6 @@ class Schema extends SchemaProvider
         return (string) $resource->getRouteKey();
     }
 
-
-    public function getRelationships($post, $isPrimary, array $includeRelationships)
-    {
-        return [
-            'tasks' => [
-                self::SHOW_SELF => true,
-                self::SHOW_RELATED => true,
-            ],
-        ];
-    }
-
     /**
      * @param $resource
      *      the domain record being serialized.
@@ -41,18 +30,8 @@ class Schema extends SchemaProvider
     public function getAttributes($resource)
     {
         return [
-            'boatid' => $resource->boat_id,
-            'status' => $resource->status,
             'created-at' => $resource->created_at->toAtomString(),
             'updated-at' => $resource->updated_at->toAtomString(),
         ];
     }
-
-/* creare link customizzati */
-public function getResourceLinks($resource)
-{
-    $links = parent::getResourceLinks($resource);
-
-    return $links;
-}
 }

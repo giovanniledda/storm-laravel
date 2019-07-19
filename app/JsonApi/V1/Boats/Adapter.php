@@ -35,8 +35,18 @@ class Adapter extends AbstractAdapter
     protected function filter($query, Collection $filters)
     {
          $user = \Auth::user();
+         /** implementa la ricerca per site_id */
+         if ($site_id = $filters->get('site_id')) {
+            $query->where('boats.site_id', '=', "{$site_id}");
+         }
+         /** implementa la ricerca per name */
+         if ($name = $filters->get('name')) {
+            $query->where('boats.name', 'like', "{$name}%");
+         }
 
-        if (!$user->can('Admin')) {
+
+         /** restringe il recordset in caso di mancanza di permessi */
+         if (!$user->can('Admin')) {
             $query->whereHas('users', function($q) use ($user)
             {
              $q->whereUser_id($user->id);

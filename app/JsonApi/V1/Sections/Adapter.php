@@ -1,6 +1,6 @@
 <?php
 
-namespace App\JsonApi\V1\Projects;
+namespace App\JsonApi\V1\Sections;
 
 use CloudCreativity\LaravelJsonApi\Eloquent\AbstractAdapter;
 use CloudCreativity\LaravelJsonApi\Pagination\StandardStrategy;
@@ -10,8 +10,6 @@ use Illuminate\Support\Collection;
 class Adapter extends AbstractAdapter
 {
 
-    protected $fillable = ['name'];
-
     /**
      * Mapping of JSON API attribute field names to model keys.
      *
@@ -19,12 +17,6 @@ class Adapter extends AbstractAdapter
      */
     protected $attributes = [];
 
-      /**
-     * @inheritdoc
-     */
-    protected $relationships = [
-        'tasks','boat'
-    ];
     /**
      * Adapter constructor.
      *
@@ -32,7 +24,7 @@ class Adapter extends AbstractAdapter
      */
     public function __construct(StandardStrategy $paging)
     {
-        parent::__construct(new \App\Project(), $paging);
+        parent::__construct(new \App\Section(), $paging);
     }
 
     /**
@@ -42,29 +34,7 @@ class Adapter extends AbstractAdapter
      */
     protected function filter($query, Collection $filters)
     {
-        /** implementa la ricerca per name */
-        if ($status = $filters->get('status')) {
-         //   $query->where('statuses.name', 'like', "{$name}");
-            // todo
-        }
-
-
         // TODO
     }
 
-    /**
-     * @return HasMany
-     */
-
-    protected function tasks() {
-        return $this->hasMany();
-    }
-
-      /**
-     * @return BelongsTo
-     */
-    protected function boat()
-    {
-        return $this->belongsTo();
-    }
 }
