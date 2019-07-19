@@ -8,6 +8,6 @@ class Role extends SpatieRole
 {
     public static function defaultRoles()
     {
-        return \Config::get('roles.default');
+        return \Config::get('roles-permissions.default');
     }
 }

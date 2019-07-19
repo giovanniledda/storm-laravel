@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 use App\User;
+use const ROLE_ADMIN;
 
 class Admin
 {
@@ -18,7 +19,7 @@ class Admin
     public function handle($request, Closure $next)
     {
         if (!User::onlyOne()) {
-            if (!Auth::user()->hasPermissionTo(\Config::get('permissions.default.admin_roles_permissions'))) // If user does //not have this permission
+            if (!Auth::user()->hasRole(ROLE_ADMIN)) // If user does //not have this permission
             {
                 abort('401');
             }

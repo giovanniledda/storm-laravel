@@ -4,9 +4,12 @@ use App\Permission;
 use App\Role;
 use App\User;
 use Illuminate\Database\Seeder;
+use Faker\Factory as Faker;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
+    protected $created_users;
+
     /**
      * Seed the application's database.
      *
@@ -15,59 +18,61 @@ class RolesAndPermissionsSeeder extends Seeder
     public function run()
     {
         // Ask for db migration refresh, default is no
-        if ($this->command->confirm('Do you wish to refresh migration before seeding, it will clear all old data ?')) {
+        if ($this->command->confirm('Do you wish to refresh migration before seeding, it will clear all old data ? [y|N]', false)) {
             // Call the php artisan migrate:refresh
             $this->command->call('migrate:refresh');
             $this->command->warn("Data cleared, starting from blank database.");
         }
 
+        $go_ahead = $this->command->confirm('Do you wish to FORCE every operation without prompt? [y|N]', false);
+
         // Seed the default permissions
-        $permissions = Permission::defaultPermissions();
+        $roles = Role::defaultRoles();
 
-        foreach ($permissions as $key => $name) {
-            if ($this->command->confirm("Do you wish to create permission $name?", true)) {
-                Permission::firstOrCreate(['name' => $name]);
-            }
-        }
+        foreach ($roles as $role_name => $role_data) {
+            if ($go_ahead || $this->command->confirm("Do you wish to create ROLE '{$role_data['label']}'? [Y|n]", true)) {
+                $role = Role::firstOrCreate(['name' => trim($role_name)]);
 
-        $this->command->info('Default Permissions added.');
+                if ($go_ahead || $this->command->confirm('Associate PERMISSIONS to this ROLE? [Y|n]', true)) {
 
-        // Confirm roles needed
-        if ($this->command->confirm('Create Roles for users? [y|N]', true)) {
+                    // add roles
+                    foreach ($role_data['permissions'] as $permission_name) {
 
-            // Ask for roles from input
-//            $input_roles = $this->command->ask('Enter roles in comma separate format.', 'Admin,User');
-//            $roles_array = explode(',', $input_roles);
+                        if ($go_ahead || $this->command->confirm("Do you wish to add PERMISSION '$permission_name' to ROLE '$role_name'?", true)) {
 
-            // Get roles from config file
-            $roles_array = Role::defaultRoles();
+                            $permission = Permission::firstOrCreate(['name' => trim($permission_name)]);
+                            $role->givePermissionTo(trim($permission_name));
+                            $this->command->info('Permission added.');
+                        }
+                    }
 
-            // add roles
-            foreach ($roles_array as $role_key => $role_name) {
-
-                if ($this->command->confirm("Do you wish to create role '$role_name'?", true)) {
-                    $role = Role::firstOrCreate(['name' => trim($role_name)]);
-
-                    if ($role->name == 'Admin') {
-                        // assign all permissions
-                        $role->syncPermissions(Permission::all());
-                        $this->command->info('Admin granted all the permissions');
-
-                        // create user for Admin only
-                        $this->createAdmin($role);
-                        $this->command->info("Role '$role_name' added successfully");
-                    } else {
-                        // for others by default only read access
-                        $role->syncPermissions(Permission::where('name', 'LIKE', 'view_%')->get());
+                    // create users
+                    if ($go_ahead || $this->command->confirm("Do you wish to create a USER with ROLE '$role_name'? [Y|n]", true)) {
+                        if ($role_name == ROLE_ADMIN) {
+                            $this->createAdmin();
+                        } else {
+                            $this->createUser($role_name);
+                        }
                     }
                 }
             }
-
-        } else {
-            Role::firstOrCreate(['name' => 'User']);
-            $this->command->info('Added only default user role.');
         }
 
+        $this->command->info('Default Roles and Permissions added.');
+
+        if (!empty($this->created_users)) {
+            $this->command->info('The following Users have been creted:');
+            foreach ($this->created_users as $password => $user) {
+                $this->command->warn('Username: '.$user->email);
+                $this->command->warn('Password: '.$password);
+                $this->command->warn('Roles: ');
+                $roles = $user->getRoleNames(); // Returns a collection
+                foreach ($roles as $role) {
+                    $this->command->warn('-  '.$role);
+                }
+                $this->command->info('-----------------------------');
+            }
+        }
     }
 
     /**
@@ -75,9 +80,8 @@ class RolesAndPermissionsSeeder extends Seeder
      *
      * @param $role
      */
-    private function createAdmin($role)
+    private function createAdmin()
     {
-
         // Must not already exist in the `email` column of `users` table
         $validator = Validator::make(['email' => \Config('auth.default_admin.username')], ['email' => 'unique:users']);
 
@@ -91,11 +95,35 @@ class RolesAndPermissionsSeeder extends Seeder
                 'email' => \Config('auth.default_admin.username'),
                 'password' => \Config('auth.default_admin.password'),
             ]);
-            $user->assignRole($role->name);
-
-            $this->command->info('Here is your admin details to login:');
-            $this->command->warn($user->email);
-            $this->command->warn('Password is "'.\Config('auth.default_admin.password').'"');
+            $user->assignRole(ROLE_ADMIN);
+            $this->created_users[\Config('auth.default_admin.password')] = $user;
         }
+    }
+
+    /**
+     * Create a user with given role
+     *
+     * @param $role
+     */
+    private function createUser($role_name)
+    {
+
+        $faker = Faker::create();
+        do {
+            $email = $faker->email;
+            // Must not already exist in the `email` column of `users` table
+            $validator = Validator::make(['email' => $email], ['email' => 'unique:users']);
+        } while($validator->fails());
+
+        // Register the new user or whatever.
+        $password = $faker->password();
+        $user = User::create([
+            'name' => $faker->name,
+            'email' => $email,
+            'password' => $password,
+        ]);
+
+        $user->assignRole($role_name);
+        $this->created_users[$password] = $user;
     }
 }
