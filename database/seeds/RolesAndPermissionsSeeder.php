@@ -3,7 +3,9 @@
 use App\Permission;
 use App\Role;
 use App\User;
+use App\Utils\Utils;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Validator;
 use Faker\Factory as Faker;
 
 class RolesAndPermissionsSeeder extends Seeder
@@ -24,7 +26,7 @@ class RolesAndPermissionsSeeder extends Seeder
             $this->command->warn("Data cleared, starting from blank database.");
         }
 
-        $go_ahead = $this->command->confirm('Do you wish to FORCE every operation without prompt? [y|N]', false);
+        $go_ahead = $this->command->confirm('Do you wish to FORCE every operation without prompt? [Y|n]', true);
 
         // Seed the default permissions
         $roles = Role::defaultRoles();
@@ -63,6 +65,7 @@ class RolesAndPermissionsSeeder extends Seeder
         if (!empty($this->created_users)) {
             $this->command->info('The following Users have been creted:');
             foreach ($this->created_users as $password => $user) {
+                $this->command->warn('Full name: '.$user->name);
                 $this->command->warn('Username: '.$user->email);
                 $this->command->warn('Password: '.$password);
                 $this->command->warn('Roles: ');
@@ -109,14 +112,10 @@ class RolesAndPermissionsSeeder extends Seeder
     {
 
         $faker = Faker::create();
-        do {
-            $email = $faker->email;
-            // Must not already exist in the `email` column of `users` table
-            $validator = Validator::make(['email' => $email], ['email' => 'unique:users']);
-        } while($validator->fails());
+        $email = Utils::getFakeStormEmail($role_name);
 
         // Register the new user or whatever.
-        $password = $faker->password();
+        $password = $role_name;
         $user = User::create([
             'name' => $faker->name,
             'email' => $email,
