@@ -1,6 +1,6 @@
 <?php
 
-namespace App\JsonApi\V1\Boats;
+namespace App\JsonApi\V1\Sections;
 
 use CloudCreativity\LaravelJsonApi\Validation\AbstractValidators;
 
@@ -45,10 +45,8 @@ class Validators extends AbstractValidators
     protected function queryRules(): array
     {
         return [
-            'filter.name' => 'filled|string',
-            'filter.site_id' => 'integer',
+            //
         ];
     }
-
 
 }
