@@ -18,6 +18,22 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        /*
+         * Per ora provo col Subscriber
+        'App\Events\TaskCreated' => [
+            'App\Listeners\SendTaskCreatedNotification',
+        ]
+        */
+    ];
+
+
+    /**
+     * The subscriber classes to register.
+     *
+     * @var array
+     */
+    protected $subscribe = [
+        'App\Listeners\TaskSubscriber',
     ];
 
     /**
