@@ -48,14 +48,32 @@ class Adapter extends AbstractAdapter
                 'id',
                 function (\Illuminate\Database\Query\Builder $query) {
                     $query
-                        ->select(\Illuminate\Support\Facades\DB::raw('max(id)'))
-                        ->from('statuses') // todo: get table name from somehwere
-                        ->where('model_type', 'App\Project')
+                        // ->select(\Illuminate\Support\Facades\DB::raw('max(id)'))
+                        ->select('model_id')
+                        // ->from(\App\Project::getStatusTableName) // 'statuses') // todo: get table name from somehwere
+                        ->from('statuses')
+                        ->where('model_type', 'App\\Project')
                         ->where('name', $this->status)
+
+                        ->whereIn(
+                            'id',
+                            function (\Illuminate\Database\Query\Builder $query) {
+                                $query
+                                    ->select(\Illuminate\Support\Facades\DB::raw('max(id)'))
+                                    ->from('statuses')
+                                    ->where('model_type', 'App\\Project')
+                                    // ->where('name', $this->status)
+                                    ->groupBy('model_id')
+                                    ;
+                                }
+                            )
+
                         ;
                 }
             );
         }
+
+        $a = 'dfd';
 
     }
 
