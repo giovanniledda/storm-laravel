@@ -68,9 +68,6 @@ class Adapter extends AbstractAdapter
                                 }
                             )
 
-
-                        // ->orderBy('id', 'desc')
-                        // ->limit(1)
                         ;
                 }
             );

@@ -8,27 +8,25 @@ use \Venturecraft\Revisionable\RevisionableTrait;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 
-    // class Document extends BaseMedia 
+    // class Document extends BaseMedia
 class Document extends Model implements HasMedia
 {
     // see https://docs.spatie.be/laravel-medialibrary/v7/basic-usage/preparing-your-model
     use HasMediaTrait;
 
-    // see https://github.com/VentureCraft/revisionable 
-    
+    // see https://github.com/VentureCraft/revisionable
     use RevisionableTrait;
 
     // protected $revisionCleanup = true; //Remove old revisions (works only when used with $historyLimit)
     // protected $historyLimit = 500; //Maintain a maximum of 500 changes at any point of time, while cleaning up old revisions.
-    // 
 
     protected $fillable = [
         'title',
-        'file'
     ];
 
     public function __construct(array $attributes = [])
     {
+        // this is when you create a Document from PHP (not via Json:API)
         if (isset($attributes['file'])){
             $path = $attributes['file']->getPathName();
             $name = $attributes['file']->getClientOriginalName();

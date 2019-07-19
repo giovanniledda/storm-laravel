@@ -4,98 +4,53 @@ namespace App\Http\Controllers;
 
 use App\Document;
 use Illuminate\Http\Request;
-
+use Illuminate\Http\Response;
+use Illuminate\Http\UploadedFile;
 class DocumentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
+
 
     /**
-     * Show the form for creating a new resource.
+     * Create a document and associate it to task {task} in request
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
-    {
+    public function createRelatedToTask(Request $request){
 
-        $files = $request->file('file');
+        $task = \App\Task::find($request->task);
+        // TODO check task exists
         $title = $request->title;
+        $base64File = $request->file;
+        $filename = $request->filename;
 
-        $attributes = [
-            'title' => $title,
-            'file' => $files //['parameters']['file']
-        ];
+        if ($base64File) {
+            $tmpFilename = uniqid('phpfile_') ;
+            $tmpFileFullPath = '/tmp/'. $tmpFilename;
+            $h = fopen ($tmpFileFullPath, 'w');
+            $decoded = base64_decode($base64File);
+            fwrite($h, $decoded, strlen($decoded));
+            fclose($h);
+        }
 
-        $document = new \App\Document($attributes);
-        $document->save();
 
-        // $document = Document::create($request->all());
-        return response()->json($document, 201);
+        $file =  new UploadedFile( $tmpFileFullPath, $filename, null ,null,null,true);
+
+        $doc = new Document([
+            'title' => $filename,
+            'file' => $file
+        ]);
+
+        $doc->save();
+
+        $task->documents()->save($doc);
+
+
+        $ret = ['data' => [
+            'id' => $doc->id
+        ]];
+        return new Response($ret, 201);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    { 
-        $document = Document::create($request->all());
-        return response()->json($document, 201);
- 
-    }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Document  $document
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Document $document)
-    {
-        return $document;
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Document  $document
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Document $document)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Document  $document
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Document $document)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Document  $document
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Document $document)
-    {
-        //
-    }
 }
