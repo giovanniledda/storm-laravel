@@ -26,9 +26,6 @@ class Task extends Model
         return $this->belongsTo('App\TaskInterventType');
     }
 
-        /**
-     * @return BelongsToMany
-     */
     public function project()
     {
         return $this->belongsTo('App\Project');
