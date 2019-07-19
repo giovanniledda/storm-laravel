@@ -5,6 +5,7 @@ use App\Permission;
 use App\Role;
 use App\User;
 use App\Boat;
+use App\Site;
 use Faker\Factory;
 
 class DatabaseSeeder extends Seeder
@@ -60,13 +61,27 @@ class DatabaseSeeder extends Seeder
 
             break;
             case 'boatmanager':
-                $boat1 = $this->createBoat();
+            $site_name = $this->faker->sentence;
+            $site      = new Site([
+                'name'=> $site_name,
+                'lat'=> $this->faker->randomDigitNotNull,
+                'lng'=> $this->faker->randomDigitNotNull,
+            ]);
+                $boat1 = $this->createBoat($site);
                 $this->boatAssociate($user, $boat1, $role='commander');
             break;
             case 'worker':
-                $boat1 = $this->createBoat();
-                $boat2 = $this->createBoat();
-                $boat3 = $this->createBoat();
+            $site_name = $this->faker->sentence;
+            $site      = new Site([
+                'name'=> $site_name,
+                'lat'=> $this->faker->randomDigitNotNull,
+                'lng'=> $this->faker->randomDigitNotNull,
+            ]);
+            $site->save();
+
+                $boat1 = $this->createBoat($site);
+                $boat2 = $this->createBoat($site);
+                $boat3 = $this->createBoat($site);
                 $this->boatAssociate($user, $boat1, $role='commander');
                 $this->boatAssociate($user, $boat2, $role='commander');
                 $this->boatAssociate($user, $boat2, $role='commander');
@@ -80,11 +95,13 @@ class DatabaseSeeder extends Seeder
              ->save();
      }
 
-    private function createBoat():Boat {
+    private function createBoat($site):Boat {
+
         $boat_name = $this->faker->sentence;
         $boat = new Boat([
                 'name' => $boat_name,
-                'registration_number'=> $this->faker->randomDigitNotNull
+                'registration_number'=> $this->faker->randomDigitNotNull,
+                'site_id'=>$site->id
             ]
         );
         $boat->save();

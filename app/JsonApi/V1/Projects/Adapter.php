@@ -42,9 +42,21 @@ class Adapter extends AbstractAdapter
      */
     protected function filter($query, Collection $filters)
     {
+        /** implementa la ricerca per name */
+        if ($this->status = $filters->get('status')) {
+            $query->whereIn(
+                'id',
+                function (\Illuminate\Database\Query\Builder $query) {
+                    $query
+                        ->select(\Illuminate\Support\Facades\DB::raw('max(id)'))
+                        ->from('statuses') // todo: get table name from somehwere
+                        ->where('model_type', 'App\Project')
+                        ->where('name', $this->status)
+                        ;
+                }
+            );
+        }
 
-
-        // TODO
     }
 
     /**
