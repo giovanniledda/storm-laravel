@@ -85,5 +85,13 @@ class Task extends Model
         }
         return [];
     }
-
+    
+    public static function boot()
+    {
+        parent::boot(); 
+        self::created(function($model){ 
+            $model->setStatus(TASKS_STATUSES[0]);
+        });
+ 
+    }
 }

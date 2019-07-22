@@ -51,11 +51,16 @@ Route::group(['middleware' => 'auth:api'], function () {
         $api->resource('sites');
 
         $api->resource('boat-users');
-        $api->resource('boats');
         $api->resource('tasks');
+        $api->resource('sections');
         $api->resource('task-intervent-types');
+        
+        $api->resource('boats')->relationships(function ($relations) { 
+            $relations->hasMany('sections'); // punta al methodo dell'adapter /app/jsonApi/boats/Adapter non al modello
+        });
+        
         $api->resource('projects')->relationships(function ($relations) {
-            $relations->hasOne('boat'); // punta al methodo dell'adapter /app/jsonApi/Projects/Adapter non alla risorsa.
+            $relations->hasOne('boat'); // punta al methodo dell'adapter /app/jsonApi/Projects/Adapter non al modello
             $relations->hasMany('tasks');
         });
 

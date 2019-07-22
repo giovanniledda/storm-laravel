@@ -54,5 +54,10 @@ class Adapter extends AbstractAdapter
         }
 
     }
-
+    
+    /* RELAZIONI PER LE RISORSE*/
+    public function sections()
+    {
+        return $this->hasMany();
+    }
 }

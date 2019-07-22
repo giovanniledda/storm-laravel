@@ -42,9 +42,15 @@ class Adapter extends AbstractAdapter
      * @return void
      */
     protected function filter($query, Collection $filters)
-    {
-        /** implementa la ricerca per name */
-        if ($this->status = $filters->get('status')) {
+    { 
+        if ($status = $filters->get('status')) {
+            $query->where('status', '=', "{$status}");
+        }
+        if ($boat_id = $filters->get('boat_id')) {
+            $query->where('boat_id', '=', "{$boat_id}");
+        }
+        /** implementa la ricerca per name non cancellare ma commentare */
+        /*if ($this->status = $filters->get('status')) {
             $query->whereIn(
                 'id',
                 function (\Illuminate\Database\Query\Builder $query) {
@@ -73,14 +79,10 @@ class Adapter extends AbstractAdapter
                 }
             );
         }
-        
+        */
 
     }
     
-     protected function createRecord(ResourceObject $resource)
-    {
-        return parent::createRecord($resource);
-    }
 
       /** @var Model $record */
      public function update($record, array $document, EncodingParametersInterface $parameters)
@@ -92,5 +94,20 @@ class Adapter extends AbstractAdapter
           $record->setStatus($status); 
         }
         return parent::update($record, $document, $parameters);
+    }
+    
+    
+    /**** RELAZIONI PER LE RISORSE **/
+
+    protected function tasks() {
+        return $this->hasMany();
+    }
+
+      /**
+     * @return BelongsTo
+     */
+    protected function boat()
+    {
+        return $this->belongsTo();
     }
 }

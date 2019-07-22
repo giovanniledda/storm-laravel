@@ -57,9 +57,11 @@ return [
         'projects' => \App\Project::class,
         'tasks' => \App\Task::class,
         'task-intervent-types' => \App\TaskInterventType::class,
-        'boats' => \App\Boat::class,
+        'boats' => \App\Boat::class, 
         'boat-users' => \App\BoatUser::class,
-        'updates' => \App\Update::class
+        'sections'=> \App\Section::class,
+        'updates' => \App\Update::class,
+        
     ],
 
     /*

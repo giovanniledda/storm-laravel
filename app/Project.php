@@ -54,7 +54,9 @@ class Project extends Model
                 'updated_at'
             ]);
     }
-
+    
+    
+    /* lasciare gli altri metodi solo su questo file in maniera da avere un how-to */
     public static function boot()
     {
         parent::boot();
