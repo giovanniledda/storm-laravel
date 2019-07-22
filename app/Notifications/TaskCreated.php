@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Task;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -11,14 +12,16 @@ class TaskCreated extends Notification
 {
     use Queueable;
 
+    public $task;
+
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Task $task)
     {
-        //
+        $this->task = $task;
     }
 
     /**

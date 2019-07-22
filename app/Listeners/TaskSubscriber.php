@@ -22,9 +22,11 @@ class TaskSubscriber
      */
     public function subscribe($events)
     {
+        /*
         $events->listen(
             'App\Events\TaskCreated',
             'App\Listeners\TaskSubscriber@handleTaskCreation'
         );
+        */
     }
 }

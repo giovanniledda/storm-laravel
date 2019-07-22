@@ -2,9 +2,11 @@
 
 namespace App\Utils;
 
+use App\User;
 use Faker\Factory as Faker;
 use Illuminate\Support\Facades\Validator;
 use function is_null;
+use const ROLE_BOAT_MANAGER;
 
 class Utils
 {
@@ -33,4 +35,8 @@ class Utils
         return $email;
     }
 
+    public static function getAllBoatManagers() {
+        return User::permission(PERMISSION_BOAT_MANAGER)->get();
+//        return User::role(ROLE_BOAT_MANAGER)->get();
+    }
 }

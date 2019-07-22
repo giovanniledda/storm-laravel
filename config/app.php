@@ -253,6 +253,8 @@ return [
         // Gestione indirizzi
         'Countries' => Webpatser\Countries\CountriesFacade::class,
 
+        // Laravel IDE helper
+        'Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider',
     ],
 
 

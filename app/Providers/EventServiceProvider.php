@@ -19,7 +19,8 @@ class EventServiceProvider extends ServiceProvider
             SendEmailVerificationNotification::class,
         ],
         /*
-         * Per ora provo col Subscriber
+         * Per ora provo col Subscriber (vedi sotto).
+         * L'alternativa è:
         'App\Events\TaskCreated' => [
             'App\Listeners\SendTaskCreatedNotification',
         ]

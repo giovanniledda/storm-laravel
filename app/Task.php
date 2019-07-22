@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\ModelStatus\HasStatuses;
 use Venturecraft\Revisionable\RevisionableTrait;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Events\TaskCreated;
 
 class Task extends Model
 {
@@ -19,6 +19,15 @@ class Task extends Model
         'estimated_hours',
         'worked_hours',
         'for_admins',
+    ];
+
+    /**
+     * The event map for the model.
+     *
+     * @var array
+     */
+    protected $dispatchesEvents = [
+        'created' => TaskCreated::class,
     ];
 
     public function intervent_type()
