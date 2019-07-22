@@ -14,7 +14,7 @@ class Update extends Model
 
 
     public function getMessage() {
-        return 'Hello!';
+        return 'Someone just created a new task on project X!';
     }
 
     public function getTaskId() {
