@@ -4,9 +4,8 @@ namespace App\Observers;
 
 use App\Notifications\TaskCreated;
 use App\Task;
-use App\User;
-use App\Utils\Utils;
-use const PERMISSION_BOAT_MANAGER;
+use Notification;
+use StormUtils;
 
 class TaskObserver
 {
@@ -18,8 +17,8 @@ class TaskObserver
      */
     public function created(Task $task)
     {
-        $users = Utils::getAllBoatManagers();
-//        Notification::send($users, new TaskCreated($task));
+        $users = StormUtils::getAllBoatManagers();
+        Notification::send($users, new TaskCreated($task));
 
 
     }

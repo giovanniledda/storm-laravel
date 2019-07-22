@@ -255,6 +255,9 @@ return [
 
         // Laravel IDE helper
         'Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider',
+
+        // Utility class for Storm Project
+        'StormUtils' => App\Utils\Utils::class,
     ],
 
 
