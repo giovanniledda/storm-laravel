@@ -15,7 +15,7 @@ class Project extends Model
     protected $table = 'projects';
 
     protected $fillable = [
-        'name'
+        'name',"boat_id", "status"
     ];
 
     public function boat()
@@ -58,7 +58,7 @@ class Project extends Model
     public static function boot()
     {
         parent::boot();
-
+    
         self::creating(function($model){
             // ... code here
         });
@@ -70,10 +70,12 @@ class Project extends Model
         });
 
         self::updating(function($model){
+
             // ... code here
         });
 
         self::updated(function($model){
+            
             // ... code here
         });
 
@@ -84,5 +86,5 @@ class Project extends Model
         self::deleted(function($model){
             // ... code here
         });
-    }
+}
 }

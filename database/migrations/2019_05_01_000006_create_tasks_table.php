@@ -22,6 +22,7 @@ class CreateTasksTable extends Migration
             $table->float('estimated_hours')->nullable();
             $table->float('worked_hours')->nullable();
             $table->boolean('for_admins')->nullable();
+            $table->string('status', 40)->default('draft');
             $table->timestamps();
 
             // Relations:
@@ -31,6 +32,10 @@ class CreateTasksTable extends Migration
             $table->foreign('project_id')->references('id')->on('projects');
 
             // section
+            $table->unsignedBigInteger('section_id')->nullable();
+            $table->foreign('section_id')->references('id')->on('sections');
+
+            // subsection
             $table->unsignedBigInteger('subsection_id')->nullable();
             $table->foreign('subsection_id')->references('id')->on('subsections');
 
@@ -41,6 +46,8 @@ class CreateTasksTable extends Migration
             // intervent_type
             $table->unsignedBigInteger('intervent_type_id')->nullable();
             $table->foreign('intervent_type_id')->references('id')->on('task_intervent_types');
+
+
         });
 
     }

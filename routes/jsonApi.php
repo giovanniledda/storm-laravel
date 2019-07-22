@@ -53,6 +53,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         $api->resource('boat-users');
         $api->resource('boats');
         $api->resource('tasks');
+        $api->resource('task-intervent-types');
         $api->resource('projects')->relationships(function ($relations) {
             $relations->hasOne('boat'); // punta al methodo dell'adapter /app/jsonApi/Projects/Adapter non alla risorsa.
             $relations->hasMany('tasks');

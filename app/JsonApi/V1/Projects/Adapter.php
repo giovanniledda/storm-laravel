@@ -4,6 +4,7 @@ namespace App\JsonApi\V1\Projects;
 
 use CloudCreativity\LaravelJsonApi\Eloquent\AbstractAdapter;
 use CloudCreativity\LaravelJsonApi\Pagination\StandardStrategy;
+use Neomerx\JsonApi\Contracts\Encoder\Parameters\EncodingParametersInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
@@ -72,24 +73,24 @@ class Adapter extends AbstractAdapter
                 }
             );
         }
-
-        $a = 'dfd';
+        
 
     }
-
-    /**
-     * @return HasMany
-     */
-
-    protected function tasks() {
-        return $this->hasMany();
-    }
-
-      /**
-     * @return BelongsTo
-     */
-    protected function boat()
+    
+     protected function createRecord(ResourceObject $resource)
     {
-        return $this->belongsTo();
+        return parent::createRecord($resource);
+    }
+
+      /** @var Model $record */
+     public function update($record, array $document, EncodingParametersInterface $parameters)
+    { 
+        $status = ( isset($document['data']['attributes']['status']) ) ? $document['data']['attributes']['status'] : null;
+        
+        // verifico che status sia stato passato e che corrisponda ad un stato valido per il task
+        if ($status && in_array($status, PROJECT_STATUSES)) {
+          $record->setStatus($status); 
+        }
+        return parent::update($record, $document, $parameters);
     }
 }

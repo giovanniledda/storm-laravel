@@ -46,7 +46,7 @@ class Adapter extends AbstractAdapter
 
 
          /** restringe il recordset in caso di mancanza di permessi */
-         if (!$user->can('Admin')) {
+         if (!$user->can(PERMISSION_ADMIN)) {
             $query->whereHas('users', function($q) use ($user)
             {
              $q->whereUser_id($user->id);

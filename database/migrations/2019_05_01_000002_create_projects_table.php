@@ -21,6 +21,7 @@ class CreateProjectsTable extends Migration
             $table->date('end_date')->nullable();
             $table->enum('type', ['newbuild', 'refit']);
             $table->string('acronym', 50)->nullable();
+            $table->string('status', 40)->default('open');
             $table->timestamps();
 
             // Relations:
