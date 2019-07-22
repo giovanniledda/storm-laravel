@@ -39,3 +39,15 @@ defined('PERMISSION_ADMIN') or define('PERMISSION_ADMIN', 'admin');
 defined('PERMISSION_BOAT_MANAGER') or define('PERMISSION_BOAT_MANAGER', 'boat_manager');
 defined('PERMISSION_BACKEND_MANAGER') or define('PERMISSION_BACKEND_MANAGER', 'backend_manager');
 defined('PERMISSION_WORKER') or define('PERMISSION_WORKER', 'worker');
+
+/*
+ * PROJECT STATUS
+ */
+
+defined('PROJECT_STATUSES') or define('PROJECT_STATUSES', ['open', 'closed']);
+
+/*
+ * TASKS  STATUS
+ */
+
+defined('TASKS_STATUSES') or define('TASKS_STATUSES', ['draft', 'submitted', 'accepted', 'closed', 'denied']);

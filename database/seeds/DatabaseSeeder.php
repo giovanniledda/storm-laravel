@@ -6,6 +6,9 @@ use App\Role;
 use App\User;
 use App\Boat;
 use App\Site;
+use App\Project;
+
+
 use Faker\Factory;
 
 class DatabaseSeeder extends Seeder
@@ -17,76 +20,79 @@ class DatabaseSeeder extends Seeder
      * @return void
      */
     public function run()
-    {
+    { 
         $this->faker = Factory::create();
-        /** crea un utente per ogni ruolo */
-        $roles_array = Role::defaultRoles();
-        foreach ($roles_array as $role_key => $role_name) {
-            if (trim($role_name)==='admin') {
-
-            }
-            $this->command->warn( $role_name);
-            $email =  $role_name.'@storm.net';
-            $validator = Validator::make(['email' => $email], ['email' => 'unique:users']);
-
-        if ($validator->fails()) {
-            $this->command->warn('Default '.$role_name.' user already created');
-        }
-        else {
-            // Register the new user or whatever.
-            $user = User::create([
-                'name' => $role_name,
-                'email' => $email,
-                'password' => \Config('auth.default_admin.password'),
+        // creo un sito
+        
+         $site_name = $this->faker->sentence;
+         $site      = new Site([
+                'name'=> $site_name,
+                'lat'=> $this->faker->randomDigitNotNull,
+                'lng'=> $this->faker->randomDigitNotNull,
             ]);
-
-            $this->computeRole($user);
-            $this->command->info('Here is your '.$role_name.' details to login:');
-            $this->command->warn($user->email);
-            $this->command->warn('Password is "'.\Config('auth.default_admin.password').'"');
+         $site->save(); 
+            
+        /** cerca tutti gli utenti inseriti nel precedente seeder*/
+        $boats =[];
+        /* creo 10 barche e le assegno agli utenti */
+        for ($i=0; $i<10; $i++) {
+            $boats[$i] = $this->createBoat($site);  
+            $this->command->info("Boat {$boats[$i]->name} created");
         }
-        }
-
+        
+        /**** creo i progetti ********/
+          
+        
+         $users = User::all();
+         
+         foreach ($users as $user) {
+           // WORKER
+           if ($user->hasRole(ROLE_WORKER)) {
+            
+              $this->boatAssociate($user, $boats[0], $role='commander'); 
+              $this->boatAssociate($user, $boats[1], $role='commander'); 
+              $this->boatAssociate($user, $boats[2], $role='commander'); 
+              $this->boatAssociate($user, $boats[3], $role='commander');
+              $this->boatAssociate($user, $boats[4], $role='commander');
+           }
+           // BACKEND_MANAGER
+           if ($user->hasRole(ROLE_BACKEND_MANAGER)) { 
+               $this->boatAssociate($user, $boats[0], $role='commander');
+           }
+           // BOAT_MANAGER
+           if ($user->hasRole(ROLE_BOAT_MANAGER)) { 
+               $this->boatAssociate($user, $boats[4], $role='commander'); 
+               $this->boatAssociate($user, $boats[5], $role='commander');
+           }
+           // ADMIN
+           if ($user->hasRole(ROLE_ADMIN)) {
+               // assegno gli altri permessi
+               $user->givePermissionTo(PERMISSION_BACKEND_MANAGER);
+               $user->givePermissionTo(PERMISSION_BOAT_MANAGER);
+               $user->givePermissionTo(PERMISSION_WORKER);
+               /* all'utente ADMIN non assegno barche, le dovrebbe vedere tutte.*/ 
+           }
+            
+            
+         }
+        $this->createProject($site, $boats[0]); 
+        
     }
-
-    private function computeRole(User $user) {
-        $role = Role::firstOrCreate(['name' => $user->name]);
-        $user->assignRole($role);
-        switch($user->name) {
-            case 'admin':
-                // assegno tutti i permessi
-                $user->givePermissionTo('Admin');
-            break;
-            case 'backendmanager':
-
-            break;
-            case 'boatmanager':
-            $site_name = $this->faker->sentence;
-            $site      = new Site([
-                'name'=> $site_name,
-                'lat'=> $this->faker->randomDigitNotNull,
-                'lng'=> $this->faker->randomDigitNotNull,
-            ]);
-                $boat1 = $this->createBoat($site);
-                $this->boatAssociate($user, $boat1, $role='commander');
-            break;
-            case 'worker':
-            $site_name = $this->faker->sentence;
-            $site      = new Site([
-                'name'=> $site_name,
-                'lat'=> $this->faker->randomDigitNotNull,
-                'lng'=> $this->faker->randomDigitNotNull,
-            ]);
-            $site->save();
-
-                $boat1 = $this->createBoat($site);
-                $boat2 = $this->createBoat($site);
-                $boat3 = $this->createBoat($site);
-                $this->boatAssociate($user, $boat1, $role='commander');
-                $this->boatAssociate($user, $boat2, $role='commander');
-                $this->boatAssociate($user, $boat2, $role='commander');
-            break;
-        }
+    
+    
+    private function createProject($site, $boat) {
+        $project_name = $this->faker->sentence;
+        $project = new Project([
+                'name' => $project_name,
+                'status' => PROJECT_STATUSES[0],
+                'site_id' =>$site->id
+            ]
+        );
+        $project->save();
+        $project->boat()->associate($boat)->save();
+        //$project->site()->associate($site)->save();
+            
+        return $project;
     }
 
     private function boatAssociate(User $user, Boat $boat, $role='commander') {

@@ -17,9 +17,15 @@ class Task extends Model
     protected $fillable = [
         'title',
         'description',
+        'number',
         'estimated_hours',
         'worked_hours',
         'for_admins',
+        'status',
+        'project_id',
+        'section_id',
+        'author_id',
+        'intervent_type_id'
     ];
 
     /**
@@ -60,6 +66,12 @@ class Task extends Model
     {
         return $this->morphMany('App\Document', 'documentable');
     }
+     public function taskIntervents()
+    {
+        return $this->hasOne('App\TaskInterventType');
+//        return $this->hasOneThrough('App\Site', 'App\Project');  // NON funziona perché i progetti sono "many" e il site è "one"
+    }
+     
 
     public function getUsersToNotify() {
 

@@ -56,6 +56,7 @@ return [
         'documents' => \App\Document::class,
         'projects' => \App\Project::class,
         'tasks' => \App\Task::class,
+        'task-intervent-types' => \App\TaskInterventType::class,
         'boats' => \App\Boat::class,
         'boat-users' => \App\BoatUser::class,
         'updates' => \App\Update::class
