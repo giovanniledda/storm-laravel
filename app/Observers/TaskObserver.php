@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Notifications\TaskCreated;
+use App\Notifications\TaskUpdated;
 use App\Task;
 use Notification;
 use StormUtils;
@@ -34,7 +35,7 @@ class TaskObserver
     {
         $users = $task->getUsersToNotify();
         if (!empty($users)) {
-            Notification::send($users, new TaskCreated($task));
+            Notification::send($users, new TaskUpdated($task));
         }
     }
 

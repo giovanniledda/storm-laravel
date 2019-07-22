@@ -58,6 +58,8 @@ Route::group(['middleware' => 'auth:api'], function () {
             $relations->hasMany('tasks');
         });
 
+        $api->resource('updates');
+
         // $api->resource('documents')->controller('DocumentController')->only('create');
     });
  });
