@@ -31,6 +31,8 @@ class Schema extends SchemaProvider
     {
         return [
             'task-id' => $resource->getTaskId(),
+            'boat' => $resource->getBoatName(),
+            'project' => $resource->getProjectName(),
             'message' => $resource->getMessage(),
             'created-at' => $resource->created_at->toAtomString(),
             'updated-at' => $resource->updated_at->toAtomString(),

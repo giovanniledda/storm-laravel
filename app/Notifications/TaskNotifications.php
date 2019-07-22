@@ -69,9 +69,27 @@ class TaskNotifications extends Notification
         ];
     }
 
+    /**
+     * Get the array representation of the notification.
+     *
+     * @param  mixed  $notifiable
+     * @return array
+     */
+    public function toDatabase($notifiable)
+    {
+        return [
+            'task_id' => $this->task->id,
+            'project_name' => $this->getProjectName(),
+            'boat_name' => $this->getBoatName(),
+            'title' => $this->task->title,
+            'description' => $this->task->description,
+        ];
+    }
+
+
     protected function getProjectId()
     {
-        return ($this->task->project) ? $this->task->project->id : null;
+        return is_object($this->task->project) ? $this->task->project->id : null;
     }
 
     protected function getProjectName()
@@ -89,14 +107,4 @@ class TaskNotifications extends Notification
         return is_object($this->task->getProjectBoat()) ? $this->task->getProjectBoat()->name : null;
     }
 
-    protected function getMobileAppMessage()
-    {
-
-        StormUtils::replacePlaceholders(TASK_CREATED_MOBILE_APP_TEXT, [
-            '@someone' => 'Someone',
-            '@task_id' => $this->task->id,
-            '@project_name' => $this->getProjectName(),
-            '@boat_name' => $this->getBoatName(),
-            ]);
-    }
 }

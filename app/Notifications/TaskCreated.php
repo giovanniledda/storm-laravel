@@ -27,19 +27,15 @@ class TaskCreated extends TaskNotifications
      */
     public function toDatabase($notifiable)
     {
-        return [
-            'task_id' => $this->task->id,
-            'project_id' => $this->getProjectId(),
-            'title' => $this->task->title,
-            'description' => $this->task->description,
-            'message' => $this->getMobileAppMessage(),
-        ];
+        $parent_result = parent::toDatabase($notifiable);
+        $parent_result['message'] = $this->getMobileAppMessage();
+        return $parent_result;
     }
 
     protected function getMobileAppMessage()
     {
 
-        StormUtils::replacePlaceholders(TASK_CREATED_MOBILE_APP_TEXT, [
+        return StormUtils::replacePlaceholders(TASK_CREATED_MOBILE_APP_TEXT, [
             '@someone' => 'Someone',
             '@task_id' => $this->task->id,
             '@project_name' => $this->getProjectName(),
