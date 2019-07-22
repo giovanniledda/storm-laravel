@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use function is_object;
 use Spatie\ModelStatus\HasStatuses;
 use Venturecraft\Revisionable\RevisionableTrait;
 use App\Events\TaskCreated;
@@ -71,5 +72,18 @@ class Task extends Model
 //        return $this->hasOneThrough('App\Site', 'App\Project');  // NON funziona perché i progetti sono "many" e il site è "one"
     }
      
+
+    public function getUsersToNotify() {
+
+        $proj = $this->project;
+        if (is_object($proj)) {
+            $users = $proj->users;
+            if (!empty($users)) {
+                // aggiungere qua altra logica, se serve (tipo filtri sui ruoli, etc)
+                return $users;
+            }
+        }
+        return [];
+    }
 
 }

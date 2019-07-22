@@ -46,12 +46,12 @@ class Project extends Model
 
     public function users()
     {
-        return $this->belongsToMany('App\Users')
+        return $this->belongsToMany('App\User')
             ->using('App\ProjectUser')
             ->withPivot([
                 'role',
-                'created_by',
-                'updated_by'
+                'created_at',
+                'updated_at'
             ]);
     }
 
