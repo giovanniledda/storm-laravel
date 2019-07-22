@@ -7,6 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use function is_object;
 
 class TaskCreated extends Notification
 {
@@ -75,7 +76,9 @@ class TaskCreated extends Notification
     {
         return [
             'task_id' => $this->task->id,
-            'title' => $this->task->title
+            'project_id' => is_object($this->task->project) ? $this->task->project->id : null,
+            'title' => $this->task->title,
+            'description' => $this->task->description
         ];
     }
 }
