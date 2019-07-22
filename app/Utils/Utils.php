@@ -6,7 +6,11 @@ use App\User;
 use Faker\Factory as Faker;
 use Illuminate\Support\Facades\Validator;
 use function is_null;
+use const PERMISSION_ADMIN;
+use const PERMISSION_WORKER;
+use const ROLE_ADMIN;
 use const ROLE_BOAT_MANAGER;
+use const ROLE_WORKER;
 
 class Utils
 {
@@ -35,8 +39,18 @@ class Utils
         return $email;
     }
 
+    public static function getAdmins() {
+        return User::permission(PERMISSION_ADMIN)->get();
+//        return User::role(ROLE_ADMIN)->get();
+    }
+
     public static function getAllBoatManagers() {
         return User::permission(PERMISSION_BOAT_MANAGER)->get();
 //        return User::role(ROLE_BOAT_MANAGER)->get();
+    }
+
+    public static function getAllWorkers() {
+        return User::permission(PERMISSION_WORKER)->get();
+        return User::role(ROLE_WORKER)->get();
     }
 }

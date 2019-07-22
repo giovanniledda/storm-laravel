@@ -19,8 +19,6 @@ class TaskObserver
     {
         $users = StormUtils::getAllBoatManagers();
         Notification::send($users, new TaskCreated($task));
-
-
     }
 
     /**

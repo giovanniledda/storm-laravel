@@ -74,7 +74,8 @@ class TaskCreated extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            //
+            'task_id' => $this->task->id,
+            'title' => $this->task->title
         ];
     }
 }
