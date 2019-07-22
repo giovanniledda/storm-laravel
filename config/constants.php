@@ -41,6 +41,14 @@ defined('PERMISSION_BACKEND_MANAGER') or define('PERMISSION_BACKEND_MANAGER', 'b
 defined('PERMISSION_WORKER') or define('PERMISSION_WORKER', 'worker');
 
 /*
+ * UPDATES/NOTIFICATIONS
+ */
+
+defined('TASK_CREATED_MOBILE_APP_TEXT') or define('TASK_CREATED_MOBILE_APP_TEXT', '@someone just created Task @task_id, on Project @project_name, Boat @boat_name.');
+defined('TASK_UPDATED_MOBILE_APP_TEXT') or define('TASK_UPDATED_MOBILE_APP_TEXT', 'Task @task_id, on Project @project_name, Boat @boat_name has been updated by @someone.');
+
+
+/*
  * PROJECT STATUS
  */
 
