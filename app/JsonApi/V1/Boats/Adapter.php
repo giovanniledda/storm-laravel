@@ -34,6 +34,7 @@ class Adapter extends AbstractAdapter
      */
     protected function filter($query, Collection $filters)
     {
+
          $user = \Auth::user();
          /** implementa la ricerca per site_id */
          if ($site_id = $filters->get('site_id')) {
@@ -60,4 +61,6 @@ class Adapter extends AbstractAdapter
     {
         return $this->hasMany();
     }
+    
+    
 }
