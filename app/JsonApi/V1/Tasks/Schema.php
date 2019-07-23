@@ -44,6 +44,7 @@ class Schema extends SchemaProvider
             'author'=> $resource->author ? $author->name : '',
             'project_id' => $resource->project_id,
             'section_id' => $resource->section_id,
+            'intervent_type_id' => $resource->intervent_type_id,
             'subsection_id' => $resource->subsection_id,
             'created-at' => $resource->created_at->toAtomString(),
             'updated-at' => $resource->updated_at->toAtomString(),

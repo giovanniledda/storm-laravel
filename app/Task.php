@@ -15,17 +15,8 @@ class Task extends Model
     protected $table = 'tasks';
 
     protected $fillable = [
-        'title',
-        'description',
-        'number',
-        'estimated_hours',
-        'worked_hours',
-        'for_admins',
-        'status',
-        'project_id',
-        'section_id',
-        'author_id',
-        'intervent_type_id'
+         'number', 'title', 'status','description','estimated_hours','worked_hours',
+        'for_admins', 'project_id', 'section_id', 'intervent_type_id','author_id','subsection_id'
     ];
 
     /**

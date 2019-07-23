@@ -24,6 +24,8 @@ class Boat extends Model
     {
         return $this->hasMany('App\Section');
     }
+    
+     
 
     public function subsections()
     {
