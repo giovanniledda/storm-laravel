@@ -49,13 +49,28 @@ defined('TASK_UPDATED_MOBILE_APP_TEXT') or define('TASK_UPDATED_MOBILE_APP_TEXT'
 
 
 /*
- * PROJECT STATUS
+ * PROJECT STATUSES
  */
 
-defined('PROJECT_STATUSES') or define('PROJECT_STATUSES', ['open', 'closed']);
+defined('PROJECT_STATUS_OPEN') or define('PROJECT_STATUS_OPEN', 'open');
+defined('PROJECT_STATUS_CLOSED') or define('PROJECT_STATUS_CLOSED', 'closed');
+defined('PROJECT_STATUSES') or define('PROJECT_STATUSES', [PROJECT_STATUS_OPEN, PROJECT_STATUS_CLOSED]);
+
+
+/*
+ * PROJECT TYPES
+ */
+
+defined('PROJECT_TYPE_NEWBUILD') or define('PROJECT_TYPE_NEWBUILD', 'newbuild');
+defined('PROJECT_TYPE_REFIT') or define('PROJECT_TYPE_REFIT', 'refit');
 
 /*
  * TASKS  STATUS
  */
 
-defined('TASKS_STATUSES') or define('TASKS_STATUSES', ['draft', 'submitted', 'accepted', 'closed', 'denied']);
+defined('TASKS_STATUS_DRAFT') or define('TASKS_STATUS_DRAFT', 'draft');
+defined('TASKS_STATUS_SUBMITTED') or define('TASKS_STATUS_SUBMITTED', 'submitted');
+defined('TASKS_STATUS_ACCEPTED') or define('TASKS_STATUS_ACCEPTED', 'accepted');
+defined('TASKS_STATUS_CLOSED') or define('TASKS_STATUS_CLOSED', 'closed');
+defined('TASKS_STATUS_DENIED') or define('TASKS_STATUS_DENIED', 'denied');
+defined('TASKS_STATUSES') or define('TASKS_STATUSES', [TASKS_STATUS_DRAFT, TASKS_STATUS_SUBMITTED, TASKS_STATUS_ACCEPTED, TASKS_STATUS_CLOSED, TASKS_STATUS_DENIED]);

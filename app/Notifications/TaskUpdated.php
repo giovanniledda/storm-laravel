@@ -4,7 +4,6 @@ namespace App\Notifications;
 
 use App\Task;
 use StormUtils;
-use const TASK_CREATED_MOBILE_APP_TEXT;
 use const TASK_UPDATED_MOBILE_APP_TEXT;
 
 class TaskUpdated extends TaskNotifications

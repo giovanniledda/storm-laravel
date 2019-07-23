@@ -13,16 +13,6 @@ class User extends Authenticatable
 {
     use Notifiable, HasApiTokens, HasRoles;
 
-    /** @optional */
-    protected $ownAttributes = [
-        'id',
-        'name',
-        'email',
-        'password',
-        'entity_type',
-        'entity_id',
-    ];
-
     /**
      * The attributes that are mass assignable.
      *

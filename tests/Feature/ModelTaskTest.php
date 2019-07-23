@@ -46,8 +46,9 @@ class ModelTaskTest extends TestCase
         $this->assertDatabaseHas('tasks', ['project_id' => $project->id, 'title' => $task_title]);
 
         $this->assertEquals($task->title, $task_title);
-        $this->assertEquals($task->project->id, $project->id);  // per poter chiamare $task->project devo aver messo "project" tra gli $ownAttributes, altrimenti devo chiamarlo con $task->project()->first()
-        $this->assertEquals($task->project->name, $project->name);
+
+        $this->assertEquals($task->project()->first()->id, $project->id);
+        $this->assertEquals($task->project()->first()->name, $project->name);
     }
 
 
@@ -64,14 +65,14 @@ class ModelTaskTest extends TestCase
             $this->assertInstanceOf(Section::class, $section);
 
             $subsections = factory(Subsection::class, $this->faker->randomDigitNotNull)->make();
-            $section->subsections()->saveMany($subsections);
+//            $section->subsections()->saveMany($subsections);
 
             foreach ($subsections as $subsection) {
 
                 $this->assertInstanceOf(Subsection::class, $subsection);
 
                 $tasks = factory(Task::class, $this->faker->randomDigitNotNull)->make();
-                $subsection->tasks()->saveMany($tasks);
+//                $subsection->tasks()->saveMany($tasks);
             }
         }
 
