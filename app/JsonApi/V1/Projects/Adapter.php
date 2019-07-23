@@ -82,20 +82,20 @@ class Adapter extends AbstractAdapter
         */
 
     }
-    
 
-      /** @var Model $record */
-     public function update($record, array $document, EncodingParametersInterface $parameters)
-    { 
-        $status = ( isset($document['data']['attributes']['status']) ) ? $document['data']['attributes']['status'] : null;
-        
-        // verifico che status sia stato passato e che corrisponda ad un stato valido per il task
-        if ($status && in_array($status, PROJECT_STATUSES)) {
-          $record->setStatus($status); 
-        }
-        return parent::update($record, $document, $parameters);
-    }
-    
+
+//      /** @var Model $record */
+//     public function update($record, array $document, EncodingParametersInterface $parameters)
+//    {
+//        $status = ( isset($document['data']['attributes']['status']) ) ? $document['data']['attributes']['status'] : null;
+//
+//        // verifico che status sia stato passato e che corrisponda ad un stato valido per il task
+//        if ($status && in_array($status, PROJECT_STATUSES)) {
+//          $record->setStatus($status);
+//        }
+//        return parent::update($record, $document, $parameters);
+//    }
+
     
     /**** RELAZIONI PER LE RISORSE **/
 

@@ -54,39 +54,5 @@ class Project extends Model
                 'updated_at'
             ]);
     }
-    
-    
-    /* lasciare gli altri metodi solo su questo file in maniera da avere un how-to */
-    public static function boot()
-    {
-        parent::boot();
-    
-        self::creating(function($model){
-            // ... code here
-        });
 
-        self::created(function($model){
-            // ... code here
-            /* dopo aver creato il record pongo il progetto in status aperto */
-            $model->setStatus('open');
-        });
-
-        self::updating(function($model){
-
-            // ... code here
-        });
-
-        self::updated(function($model){
-            
-            // ... code here
-        });
-
-        self::deleting(function($model){
-            // ... code here
-        });
-
-        self::deleted(function($model){
-            // ... code here
-        });
-}
 }

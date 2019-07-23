@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Observers\ProjectObserver;
 use App\Observers\TaskObserver;
+use App\Project;
 use App\Task;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
@@ -64,5 +66,6 @@ class EventServiceProvider extends ServiceProvider
         parent::boot();
 
         Task::observe(TaskObserver::class);
+        Project::observe(ProjectObserver::class);
     }
 }
