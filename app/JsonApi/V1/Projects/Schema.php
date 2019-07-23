@@ -44,6 +44,7 @@ class Schema extends SchemaProvider
             'name' => $resource->name,
             'boat_id' => $resource->boat_id,
             'status' => $resource->status,
+            'project_type'=> $resource->project_type,
             'created-at' => $resource->created_at->toAtomString(),
             'updated-at' => $resource->updated_at->toAtomString(),
         ];
