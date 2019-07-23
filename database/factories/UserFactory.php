@@ -16,8 +16,14 @@ use Faker\Generator as Faker;
 |
 */
 
-$factory->define(User::class, function (Faker $faker) {
+$autoIncrement = StormUtils::autoIncrement();
+
+$factory->define(User::class, function (Faker $faker) use ($autoIncrement) {
+
+    $autoIncrement->next();
+
     return [
+        'id' => $autoIncrement->current(),
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
         'email_verified_at' => now(),

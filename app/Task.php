@@ -55,13 +55,19 @@ class Task extends Model
     {
         return $this->morphMany('App\Document', 'documentable');
     }
-     public function taskIntervents()
+
+    public function taskIntervents()
     {
         return $this->hasOne('App\TaskInterventType');
 //        return $this->hasOneThrough('App\Site', 'App\Project');  // NON funziona perché i progetti sono "many" e il site è "one"
     }
-     
-    // TODO: commentare per spiegare che fa
+
+    /**
+     * @return array
+     *
+     * Restituisce gli utenti (e contiene la logica per recuperarli) che devono ricevere una notifica legata agi eventi del Task
+     */
+    // TODO: spostare la logica del recupero in un'altra funzione
     public function getUsersToNotify() {
 
         $proj = $this->project;

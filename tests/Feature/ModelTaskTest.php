@@ -40,15 +40,16 @@ class ModelTaskTest extends TestCase
         );
         $project->save();
 
-        $project->tasks()->save($task)->save();
+//        $project->tasks()->save($task)->save(); NOTA: se faccio questo, poi non posso fare $task->project ..mi dice che è nullo
+        $task->project()->associate($project)->save();
 
         $this->assertDatabaseHas('projects', ['name' => $project_name]);
         $this->assertDatabaseHas('tasks', ['project_id' => $project->id, 'title' => $task_title]);
 
         $this->assertEquals($task->title, $task_title);
 
-        $this->assertEquals($task->project()->first()->id, $project->id);
-        $this->assertEquals($task->project()->first()->name, $project->name);
+        $this->assertEquals($task->project->id, $project->id);
+        $this->assertEquals($task->project->name, $project->name);
     }
 
 

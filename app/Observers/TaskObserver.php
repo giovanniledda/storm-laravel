@@ -36,6 +36,8 @@ class TaskObserver
      */
     public function updated(Task $task)
     {
+        // devo notificare anche all'aggiornamento perché in fase di creazione il task potrebbe
+        // non essere stato associato ad un progetto e quindi non avere utenti
         $users = $task->getUsersToNotify();
         if (!empty($users)) {
             Notification::send($users, new TaskUpdated($task));
