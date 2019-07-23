@@ -19,7 +19,7 @@ class CreateProjectsTable extends Migration
             $table->text('name');
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
-            $table->enum('section_type', [PROJECT_TYPE_NEWBUILD, PROJECT_TYPE_REFIT]); // TODO: rinominare section_type
+            $table->enum('project_type', [PROJECT_TYPE_NEWBUILD, PROJECT_TYPE_REFIT]);
             $table->string('acronym', 50)->nullable();
             $table->string('status', 40)->default(PROJECT_STATUS_OPEN);
             $table->timestamps();

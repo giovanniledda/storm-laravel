@@ -5,9 +5,9 @@
  * BOAT, SECTIONS & SIMILAR
  */
 
-defined('SECTION_NAME_LEFT_SIDE') or define('SECTION_NAME_LEFT_SIDE', 'left_side');
-defined('SECTION_NAME_RIGHT_SIDE') or define('SECTION_NAME_RIGHT_SIDE',  'right_side');
-defined('SECTION_NAME_DECK') or define('SECTION_NAME_DECK', 'deck');
+defined('SECTION_TYPE_LEFT_SIDE') or define('SECTION_TYPE_LEFT_SIDE', 'left_side');
+defined('SECTION_TYPE_RIGHT_SIDE') or define('SECTION_TYPE_RIGHT_SIDE',  'right_side');
+defined('SECTION_TYPE_DECK') or define('SECTION_TYPE_DECK', 'deck');
 
 
 /*

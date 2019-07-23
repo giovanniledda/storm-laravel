@@ -58,10 +58,11 @@ class ModelTaskTest extends TestCase
         $this->assertInstanceOf(Boat::class, $boat);
 
         $sections = factory(Section::class, $this->faker->randomDigitNotNull)->make();
-        $boat->sections()->saveMany($sections);
+//        $boat->sections()->saveMany($sections);
 
         foreach ($sections as $section) {
 
+            $section->boat()->associate($boat)->save();
             $this->assertInstanceOf(Section::class, $section);
 
             $subsections = factory(Subsection::class, $this->faker->randomDigitNotNull)->make();
