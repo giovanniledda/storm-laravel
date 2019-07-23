@@ -5,8 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use function is_object;
 use Spatie\ModelStatus\HasStatuses;
+use StormUtils;
 use Venturecraft\Revisionable\RevisionableTrait;
-use App\Events\TaskCreated;
 
 class Task extends Model
 {
@@ -19,14 +19,6 @@ class Task extends Model
         'for_admins', 'project_id', 'section_id', 'intervent_type_id','author_id','subsection_id'
     ];
 
-    /**
-     * The event map for the model.
-     *
-     * @var array
-     */
-    protected $dispatchesEvents = [
-        'created' => TaskCreated::class,
-    ];
 
     public function intervent_type()
     {
@@ -69,7 +61,7 @@ class Task extends Model
 //        return $this->hasOneThrough('App\Site', 'App\Project');  // NON funziona perché i progetti sono "many" e il site è "one"
     }
      
-
+    // TODO: commentare per spiegare che fa
     public function getUsersToNotify() {
 
         $proj = $this->project;
@@ -83,12 +75,4 @@ class Task extends Model
         return [];
     }
     
-    public static function boot()
-    {
-        parent::boot(); 
-        self::created(function($model){ 
-            $model->setStatus(TASKS_STATUSES[0]);
-        });
- 
-    }
 }

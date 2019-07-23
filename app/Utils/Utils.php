@@ -51,7 +51,7 @@ class Utils
 
     public static function getAllWorkers() {
         return User::permission(PERMISSION_WORKER)->get();
-        return User::role(ROLE_WORKER)->get();
+//        return User::role(ROLE_WORKER)->get();
     }
 
     public static function replacePlaceholders($string = '', $placeholders = [])

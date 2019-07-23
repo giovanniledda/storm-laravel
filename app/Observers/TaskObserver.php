@@ -7,6 +7,7 @@ use App\Notifications\TaskUpdated;
 use App\Task;
 use Notification;
 use StormUtils;
+use const TASKS_STATUS_DRAFT;
 
 class TaskObserver
 {
@@ -18,6 +19,8 @@ class TaskObserver
      */
     public function created(Task $task)
     {
+        $task->setStatus(TASKS_STATUS_DRAFT);
+
 //        $users = StormUtils::getAllBoatManagers();
         $users = $task->getUsersToNotify();
         if (!empty($users)) {

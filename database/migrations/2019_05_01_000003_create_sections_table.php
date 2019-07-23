@@ -16,7 +16,7 @@ class CreateSectionsTable extends Migration
         Schema::create('sections', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->text('name');
-            $table->enum('section_type', ['left_side', 'right_side', 'deck']);
+            $table->enum('section_type', [SECTION_TYPE_LEFT_SIDE, SECTION_TYPE_RIGHT_SIDE, SECTION_TYPE_DECK])->default(SECTION_TYPE_DECK);
             $table->integer('position')->nullable();
             $table->string('code', 10)->nullable();
             $table->timestamps();

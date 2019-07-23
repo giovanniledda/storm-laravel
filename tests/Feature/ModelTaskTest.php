@@ -40,7 +40,7 @@ class ModelTaskTest extends TestCase
         );
         $project->save();
 
-        $project->tasks()->save($task);
+        $project->tasks()->save($task)->save();
 
         $this->assertDatabaseHas('projects', ['name' => $project_name]);
         $this->assertDatabaseHas('tasks', ['project_id' => $project->id, 'title' => $task_title]);
@@ -54,26 +54,25 @@ class ModelTaskTest extends TestCase
 
     function test_can_create_tasks_related_to_subsections_and_sections()
     {
-        $boat = factory(Boat::class)->make();
+        $boat = factory(Boat::class)->create();
         $this->assertInstanceOf(Boat::class, $boat);
 
-        $sections = factory(Section::class, $this->faker->randomDigitNotNull)->make();
-//        $boat->sections()->saveMany($sections);
+        $sections = factory(Section::class, $this->faker->randomDigitNotNull)->create();
+        $boat->sections()->saveMany($sections);
 
         foreach ($sections as $section) {
 
-            $section->boat()->associate($boat)->save();
             $this->assertInstanceOf(Section::class, $section);
 
-            $subsections = factory(Subsection::class, $this->faker->randomDigitNotNull)->make();
-//            $section->subsections()->saveMany($subsections);
+            $subsections = factory(Subsection::class, $this->faker->randomDigitNotNull)->create();
+            $section->subsections()->saveMany($subsections);
 
             foreach ($subsections as $subsection) {
 
                 $this->assertInstanceOf(Subsection::class, $subsection);
 
-                $tasks = factory(Task::class, $this->faker->randomDigitNotNull)->make();
-//                $subsection->tasks()->saveMany($tasks);
+                $tasks = factory(Task::class, $this->faker->randomDigitNotNull)->create();
+                $subsection->tasks()->saveMany($tasks);
             }
         }
 
