@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use App\Boat;
+use App\Notifications\TaskCreated;
+use App\Notifications\TaskUpdated;
 use App\Permission;
 use App\Project;
 use App\Role;
@@ -50,8 +52,18 @@ class ModelUpdateTest extends TestCase
 
         foreach ($tasks as $t) {
             $this->assertEquals($t->project_id, $project->id);
+
+            // modifico il task per scatenare l'update
+//            $t->title = $this->faker->sentence;
+//            $t->save();
         }
 
-
+        foreach ($users as $user) {
+//            $this->assertNotCount(0, $user->notifications);
+            foreach ($user->notifications as $notification) {
+                $this->assertEquals($notification->type, TaskUpdated::class);
+                $this->assertEquals($notification->type, TaskCreated::class);
+            }
+        }
     }
 }
