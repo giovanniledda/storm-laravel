@@ -62,23 +62,28 @@ class Task extends Model
 //        return $this->hasOneThrough('App\Site', 'App\Project');  // NON funziona perché i progetti sono "many" e il site è "one"
     }
 
+    public function getProjectUsers()
+    {
+        $proj = $this->project;
+        if (is_object($proj)) {
+            $users = $proj->users;
+            if (!empty($users)) {
+                return $users;
+            }
+        }
+        return [];
+    }
+
     /**
      * @return array
      *
      * Restituisce gli utenti (e contiene la logica per recuperarli) che devono ricevere una notifica legata agi eventi del Task
      */
-    // TODO: spostare la logica del recupero in un'altra funzione
     public function getUsersToNotify() {
 
-        $proj = $this->project;
-        if (is_object($proj)) {
-            $users = $proj->users;
-            if (!empty($users)) {
                 // aggiungere qua altra logica, se serve (tipo filtri sui ruoli, etc)
-                return $users;
-            }
-        }
-        return [];
+//        return StormUtils::getAllBoatManagers();
+        return $this->getProjectUsers();
     }
     
 }
