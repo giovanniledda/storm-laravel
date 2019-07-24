@@ -34,7 +34,7 @@ class ModelUpdateTest extends TestCase
 
         // Creo utenti da assegnare al progetto
         $users = factory(User::class, $this->faker->randomDigitNotNull)->create();
-        $this->assertNotCount(0, [1,2,3,4,5,5]);
+        $this->assertNotCount(0, [1, 2, 3, 4, 5, 5]);
 
         foreach ($users as $user) {
             // ruoli e permessi ad utente
@@ -49,28 +49,30 @@ class ModelUpdateTest extends TestCase
 
         // Creo i task e li assegno al progetto
         $tasks = factory(Task::class, $this->faker->randomDigitNotNull)->create();
-        $project->tasks()->saveMany($tasks);
+//        $project->tasks()->saveMany($tasks);  // Vedi mail di Ledda del 24 luglio: se uso questa poi $t->project è null :-(
 
         foreach ($tasks as $t) {
             $this->assertInstanceOf(Task::class, $t);
 
-//            $t->project()->associate($project)->save();
-//            $this->assertEquals($t->project_id, $project->id);
-            $this->isNull($t->project);
+            $t->project()->associate($project)->save();
+            $this->assertNotNull($t->project->id);
+            $this->assertEquals($t->project_id, $project->id);
 
             $task_users = $t->getUsersToNotify();
-//            $this->assertCount(count($users), $task_users);
-
-            // modifico il task per scatenare l'update
-            $t->title = $this->faker->sentence;
-            $t->save();
+            $this->assertCount(count($users), $task_users);
         }
 
+        // verifico che gli utenti abbiano le notifiche
         foreach ($users as $user) {
-//            $this->assertNotCount(0, $user->notifications);
+            $this->assertNotCount(0, $user->notifications);
+            $this->assertCount($user->unreadNotifications->count(), $user->notifications);
             foreach ($user->notifications as $notification) {
-//                $this->assertEquals($notification->type, TaskUpdated::class);
-//                $this->assertInstanceOf(TaskCreated::class, $notification->type);
+
+                $this->assertThat($notification->type,
+                    $this->logicalOr(
+                        'App\Notifications\TaskCreated',  // Se uso TaskCreated::class ottengo il paradosso: Failed asserting that 'App\Notifications\TaskUpdated' is instance of class "App\Notifications\TaskCreated" or is instance of class "App\Notifications\TaskUpdated".
+                        'App\Notifications\TaskUpdated'
+                    ));
             }
         }
     }

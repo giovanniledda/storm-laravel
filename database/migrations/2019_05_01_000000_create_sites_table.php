@@ -19,6 +19,8 @@ class CreateSitesTable extends Migration
             $table->double('lat', 17, 14);
             $table->double('lng', 17, 14);
             $table->timestamps();
+
+            // NOTA: per gli indirizzi è stato adottato questo Trait: https://github.com/Lecturize/Laravel-Addresses
         });
     }
 
