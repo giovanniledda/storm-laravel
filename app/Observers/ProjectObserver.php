@@ -27,7 +27,8 @@ class ProjectObserver
      * @return void
      */
     public function updated(Project $project)
-    { 
+    {
+
         $project->setStatus($project->project_status);
     }
 
