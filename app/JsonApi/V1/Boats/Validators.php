@@ -7,6 +7,24 @@ use CloudCreativity\LaravelJsonApi\Validation\AbstractValidators;
 class Validators extends AbstractValidators
 {
 
+    /* The messages variable. 
+     * @var string[]|null
+     */
+    protected $messages = [
+        'name.required' => 'name '.VALIDATOR_REQUIRED,
+        'name.string' => 'name '.VALIDATOR_STRING,
+        'registration_number.required' => 'registration_number '.VALIDATOR_REQUIRED,
+        'registration_number.numeric' => 'registration_number '.VALIDATOR_NUMERIC,
+        'manufacture_year.number' => 'manufacture_year '.VALIDATOR_NUMERIC,
+        'manufacture_year.required' => 'manufacture_year '.VALIDATOR_REQUIRED,
+        'length.number' => 'length '.VALIDATOR_NUMERIC,
+        'length.required' => 'length '.VALIDATOR_REQUIRED,
+        'draft.number' => 'draft '.VALIDATOR_NUMERIC,
+        'draft.required' => 'draft '.VALIDATOR_REQUIRED,
+        'beam.number' => 'beam '.VALIDATOR_NUMERIC,
+        'beam.required' => 'draft '.VALIDATOR_REQUIRED,
+    ];
+
     /**
      * The include paths a client is allowed to request.
      *
@@ -33,10 +51,15 @@ class Validators extends AbstractValidators
     protected function rules($record = null): array
     {
         return [
-            //
+           'name' => 'required|string|min:1|max:255',
+           'registration_number' => 'required|numeric',
+           'manufacture_year' => 'required|numeric',
+           'length' => 'required|numeric',
+           'draft' => 'required|numeric',
+           'beam' => 'required|numeric',
         ];
     }
-
+  
     /**
      * Get query parameter validation rules.
      *
@@ -49,6 +72,6 @@ class Validators extends AbstractValidators
             'filter.site_id' => 'integer',
         ];
     }
-
+    
 
 }

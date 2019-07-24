@@ -23,7 +23,7 @@ class Validators extends AbstractValidators
      */
     protected $allowedSortParameters = ['title', 'description'];
 
-        protected $messages = [
+    protected $messages = [
         'title.required' => 'title '.VALIDATOR_REQUIRED,
         'title.string' => 'title '.VALIDATOR_STRING,
         'number.required' => 'number '.VALIDATOR_REQUIRED,
@@ -34,7 +34,7 @@ class Validators extends AbstractValidators
         'project_id.required'=> 'project_id '.VALIDATOR_REQUIRED,
         'section_id.numeric'=> 'section_id '.VALIDATOR_NUMERIC,
         'section_id.required'=> 'section_id '.VALIDATOR_REQUIRED,
-        'status.in' => 'status '.VALIDATOR_IN.TASKS_STATUS_ACCEPTED.','.TASKS_STATUS_CLOSED.','.TASKS_STATUS_DENIED.','.TASKS_STATUS_SUBMITTED 
+        'status.in' => 'status '.VALIDATOR_IN.': '.TASKS_STATUS_ACCEPTED.','.TASKS_STATUS_CLOSED.','.TASKS_STATUS_DENIED.','.TASKS_STATUS_SUBMITTED
     ];
     /**
      * Get resource validation rules.
