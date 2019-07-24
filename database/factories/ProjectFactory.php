@@ -18,6 +18,6 @@ $factory->define(Project::class, function (Faker $faker) use ($autoIncrement) {
         'end_date' => $faker->date(),
         'project_type' => $faker->randomElement([PROJECT_TYPE_NEWBUILD, PROJECT_TYPE_REFIT]),
         'acronym' => $faker->word,
-        'status' => $faker->randomElement(PROJECT_STATUSES),
+        'project_status' => $faker->randomElement(PROJECT_STATUSES),
     ];
 });

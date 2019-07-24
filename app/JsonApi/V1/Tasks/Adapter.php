@@ -11,9 +11,22 @@ class Adapter extends AbstractAdapter
 {
 
     protected $fillable = [
-        'number', 'title', 'status','description','estimated_hours','worked_hours',
-        'for_admins', 'project_id', 'section_id', 'intervent_type_id','author_id','subsection_id'
+        'number',
+        'title',
+        'status',
+        'description',
+        'estimated_hours',
+        'worked_hours',
+        'for_admins',
+        'project_id',
+        'section_id',
+        'intervent_type_id',
+        'author_id',
+        'subsection_id',
+        'x_coord',
+        'y_coord',
         ];
+
     /**
      * Mapping of JSON API attribute field names to model keys.
      *

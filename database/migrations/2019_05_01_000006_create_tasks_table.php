@@ -23,6 +23,8 @@ class CreateTasksTable extends Migration
             $table->float('worked_hours')->nullable();
             $table->boolean('for_admins')->nullable();
             $table->string('task_status', 40)->default(TASKS_STATUS_DRAFT);
+            $table->float('x_coord')->nullable();
+            $table->float('y_coord')->nullable();
             $table->timestamps();
 
             // Relations:
