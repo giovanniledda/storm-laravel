@@ -11,15 +11,17 @@ use Illuminate\Support\Collection;
 class Adapter extends AbstractAdapter
 {
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'status', 'boat_id', 'project_type'];
 
     /**
      * Mapping of JSON API attribute field names to model keys.
      *
      * @var array
      */
-    protected $attributes = [];
-
+    
+    // mappa il nome della proprieta della risorsa API con il nome del campo nel database
+     protected $attributes = ['status'=> 'project_status'];
+ 
       /**
      * @inheritdoc
      */
@@ -44,7 +46,7 @@ class Adapter extends AbstractAdapter
     protected function filter($query, Collection $filters)
     { 
         if ($status = $filters->get('status')) {
-            $query->where('status', '=', "{$status}");
+            $query->where('project_status', '=', "{$status}");
         }
         if ($boat_id = $filters->get('boat_id')) {
             $query->where('boat_id', '=', "{$boat_id}");
@@ -83,6 +85,19 @@ class Adapter extends AbstractAdapter
 
     }
 
+    /**** RELAZIONI PER LE RISORSE **/
+
+    protected function tasks() {
+        return $this->hasMany();
+    }
+
+      /**
+     * @return BelongsTo
+     */
+    protected function boat()
+    {
+        return $this->belongsTo();
+    }
 
 //      /** @var Model $record */
 //     public function update($record, array $document, EncodingParametersInterface $parameters)
@@ -97,17 +112,4 @@ class Adapter extends AbstractAdapter
 //    }
 
     
-    /**** RELAZIONI PER LE RISORSE **/
-
-    protected function tasks() {
-        return $this->hasMany();
-    }
-
-      /**
-     * @return BelongsTo
-     */
-    protected function boat()
-    {
-        return $this->belongsTo();
-    }
 }

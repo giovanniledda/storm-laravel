@@ -39,7 +39,7 @@ class Schema extends SchemaProvider
             'number'=> $resource->number,
             'worked_hours'=> $resource->worked_hours,
             'estimated_hours'=> $resource->estimated_hours,
-            'status'=> $resource->status,
+            'status'=> $resource->task_status,
             'author_id'=> $resource->author ? $author->id : '',
             'author'=> $resource->author ? $author->name : '',
             'project_id' => $resource->project_id,

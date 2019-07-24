@@ -17,8 +17,7 @@ class ProjectObserver
      */
     public function created(Project $project)
     {
-        $project->setStatus(PROJECT_STATUS_OPEN);
-
+        $project->setStatus(PROJECT_STATUS_OPEN); 
     }
 
     /**
@@ -28,8 +27,8 @@ class ProjectObserver
      * @return void
      */
     public function updated(Project $project)
-    {
-        $project->setStatus($project->name);
+    { 
+        $project->setStatus($project->project_status);
     }
 
     /**

@@ -19,9 +19,10 @@ class TaskObserver
      */
     public function created(Task $task)
     {
+        /* Aggiornamento dello stato */
         $task->setStatus(TASKS_STATUS_DRAFT);
 
-//        $users = StormUtils::getAllBoatManagers();
+//      $users = StormUtils::getAllBoatManagers();
         $users = $task->getUsersToNotify();
         if (!empty($users)) {
             Notification::send($users, new TaskCreated($task));
@@ -35,8 +36,10 @@ class TaskObserver
      * @return void
      */
     public function updated(Task $task)
-    {
-        $users = $task->getUsersToNotify();
+    { 
+        /* Aggiornamento dello stato */ 
+     $task->setStatus($task->task_status);
+       $users = $task->getUsersToNotify();
         if (!empty($users)) {
             Notification::send($users, new TaskUpdated($task));
         }
