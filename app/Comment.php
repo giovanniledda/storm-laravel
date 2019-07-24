@@ -27,6 +27,7 @@ class Comment extends Model
 
     public function authorNickname()
     {
+        // auhtor è un App\User
         return $this->author ? $this->author->getNickname() : '-';
     }
 }

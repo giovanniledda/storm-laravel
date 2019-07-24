@@ -2,10 +2,13 @@
 
 namespace App\JsonApi\V1\Comments;
 
+use App\Comment;
+use App\Task;
 use CloudCreativity\LaravelJsonApi\Eloquent\AbstractAdapter;
 use CloudCreativity\LaravelJsonApi\Pagination\StandardStrategy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Neomerx\JsonApi\Contracts\Encoder\Parameters\EncodingParametersInterface;
 
 class Adapter extends AbstractAdapter
 {
@@ -47,4 +50,11 @@ class Adapter extends AbstractAdapter
         }
     }
 
+    protected function creating(Comment $comment, $resource): void
+    {
+        if ($task_id = isset($resource['task_id']) ? $resource['task_id'] : null) {
+            $comment->commentable_type = Task::class;
+            $comment->commentable_id = $resource['task_id'];
+        }
+    }
 }

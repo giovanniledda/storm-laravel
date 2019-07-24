@@ -6,7 +6,7 @@ use App\Boat;
 use App\Utils\Utils;
 use Faker\Generator as Faker;
 
-$autoIncrement = Utils::autoIncrement();
+$autoIncrement = StormUtils::autoIncrement();
 
 $factory->define(Boat::class, function (Faker $faker) use ($autoIncrement) {
 

@@ -4,6 +4,7 @@ namespace App\JsonApi\V1\Projects;
 
 use CloudCreativity\LaravelJsonApi\Eloquent\AbstractAdapter;
 use CloudCreativity\LaravelJsonApi\Pagination\StandardStrategy;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Neomerx\JsonApi\Contracts\Encoder\Parameters\EncodingParametersInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -28,6 +29,7 @@ class Adapter extends AbstractAdapter
     protected $relationships = [
         'tasks','boat'
     ];
+
     /**
      * Adapter constructor.
      *
@@ -91,7 +93,7 @@ class Adapter extends AbstractAdapter
         return $this->hasMany();
     }
 
-      /**
+    /**
      * @return BelongsTo
      */
     protected function boat()
