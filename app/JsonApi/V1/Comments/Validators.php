@@ -7,6 +7,18 @@ use CloudCreativity\LaravelJsonApi\Validation\AbstractValidators;
 class Validators extends AbstractValidators
 {
 
+    /*
+     * Messagi di errore per i campi
+     */
+    protected $messages = [
+        'author_id.required' => 'author_id ' . VALIDATOR_REQUIRED,
+        'author_id.numeric' => 'author_id ' . VALIDATOR_NUMERIC,
+        'task_id.required' => 'task_id ' . VALIDATOR_REQUIRED,
+        'task_id.numeric' => 'task_id ' . VALIDATOR_NUMERIC,
+        'body.required' => 'body ' . VALIDATOR_REQUIRED,
+    ];
+
+
     /**
      * The include paths a client is allowed to request.
      *
@@ -33,7 +45,9 @@ class Validators extends AbstractValidators
     protected function rules($record = null): array
     {
         return [
-            //
+            'body' => 'required|string|min:1|max:255',
+            'task_id' => 'required|numeric',
+            'author_id' => 'required|numeric',
         ];
     }
 

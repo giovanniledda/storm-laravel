@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Support\Facades\Hash;
+use function snake_case;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
@@ -39,6 +40,11 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public static function onlyOne()
+    {
+        return (User::all()->count() == 1);
+    }
 
     public function projects()
     {
@@ -73,10 +79,9 @@ class User extends Authenticatable
         return $this->createToken(\Config::get('auth.token_clients.personal.name'))->accessToken;
     }
 
-    public static function onlyOne()
+    public function getNickname()
     {
-        return (User::all()->count() == 1);
+        // per ora la logica è questa ma possiamo inserire anche un nuovo campo
+        return snake_case($this->name);
     }
-
-
 }
