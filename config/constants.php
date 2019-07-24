@@ -82,3 +82,12 @@ defined('TASKS_STATUS_ACCEPTED') or define('TASKS_STATUS_ACCEPTED', 'accepted');
 defined('TASKS_STATUS_CLOSED') or define('TASKS_STATUS_CLOSED', 'closed');
 defined('TASKS_STATUS_DENIED') or define('TASKS_STATUS_DENIED', 'denied');
 defined('TASKS_STATUSES') or define('TASKS_STATUSES', [TASKS_STATUS_DRAFT, TASKS_STATUS_SUBMITTED, TASKS_STATUS_ACCEPTED, TASKS_STATUS_CLOSED, TASKS_STATUS_DENIED]);
+
+
+/*
+ * VALIDATORS MESSAGES
+ */
+defined('VALIDATOR_REQUIRED') or define('VALIDATOR_REQUIRED', 'is required and cannot be null');
+defined('VALIDATOR_STRING') or define('VALIDATOR_STRING', 'is not a string');
+defined('VALIDATOR_NUMERIC') or define('VALIDATOR_NUMERIC', 'is not a numeric value');
+defined('VALIDATOR_IN') or define('VALIDATOR_IN', 'is not a valid value, valid values are : ');

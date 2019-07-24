@@ -23,6 +23,19 @@ class Validators extends AbstractValidators
      */
     protected $allowedSortParameters = ['title', 'description'];
 
+        protected $messages = [
+        'title.required' => 'title '.VALIDATOR_REQUIRED,
+        'title.string' => 'title '.VALIDATOR_STRING,
+        'number.required' => 'number '.VALIDATOR_REQUIRED,
+        'number.numeric' => 'number '.VALIDATOR_NUMERIC,
+        'worked_hours.numeric' => 'worked_hours '.VALIDATOR_NUMERIC,
+        'description.string' => 'description '.VALIDATOR_STRING,
+        'project_id.numeric'=> 'project_id '.VALIDATOR_NUMERIC,
+        'project_id.required'=> 'project_id '.VALIDATOR_REQUIRED,
+        'section_id.numeric'=> 'section_id '.VALIDATOR_NUMERIC,
+        'section_id.required'=> 'section_id '.VALIDATOR_REQUIRED,
+        'status.in' => 'status '.VALIDATOR_IN.TASKS_STATUS_ACCEPTED.','.TASKS_STATUS_CLOSED.','.TASKS_STATUS_DENIED.','.TASKS_STATUS_SUBMITTED 
+    ];
     /**
      * Get resource validation rules.
      *
@@ -32,8 +45,17 @@ class Validators extends AbstractValidators
      */
     protected function rules($record = null): array
     {
-        return [
-            //
+       return [
+        'title' => 'required|string|min:1|max:255',
+        'description' => 'string',
+        'number' => 'required|numeric',
+        'worked_hours' => 'numeric',
+        'estimated_hours' => 'numeric',
+        'status' => 'in:'.TASKS_STATUS_ACCEPTED.','.TASKS_STATUS_CLOSED.','.TASKS_STATUS_DENIED.','.TASKS_STATUS_SUBMITTED,
+        'project_id'=> 'required|numeric',
+        'section_id'=> 'required|numeric',
+        'intervent_type_id'=>'required|numeric',
+        'subsection_id'=>'numeric',
         ];
     }
 
