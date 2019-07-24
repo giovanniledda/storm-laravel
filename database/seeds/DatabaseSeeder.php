@@ -89,17 +89,27 @@ class DatabaseSeeder extends Seeder
 
     private function createTasksAndAssociateWithProject($project = null)
     {
-        // Creo i task e li assegno al progetto
-        $tasks = factory(Task::class, $this->faker->randomDigitNotNull)->create();
-//        $project->tasks()->saveMany($tasks);  // Vedi mail di Ledda del 24 luglio: se uso questa poi $t->project è null :-(
+        do {
+            try {
+                $tasks = factory(Task::class, $this->faker->randomDigitNotNull)->create();
+        //        $project->tasks()->saveMany($tasks);  // Vedi mail di Ledda del 24 luglio: se uso questa poi $t->project è null :-(
+                $created = true;
 
-        foreach ($tasks as $t) {
-            if ($project) {
-                $t->project()->associate($project)->save();
+            } catch (Exception $e) {
+                $created = false;
             }
+        } while (!$created);
+
+        if (isset($tasks)) {
+            foreach ($tasks as $t) {
+                if ($project) {
+                    $t->project()->associate($project)->save();
+                }
+            }
+            return $tasks;
         }
 
-        return $tasks;
+        return [];
     }
 
 
@@ -125,7 +135,6 @@ class DatabaseSeeder extends Seeder
         if (!empty($boats)) {
             foreach ($boats as $boat) {
                 do {
-                    $projs_created = false;
                     try {
                         $projects = factory(Project::class, $this->faker->randomDigitNotNull)->create();
                         $projs_created = true;
@@ -139,8 +148,8 @@ class DatabaseSeeder extends Seeder
                     foreach ($projects as $project) {
                         $project->boat()->associate($boat)->save();
                         $project->site()->associate($site)->save();
+                        $all_projects[] = $project;
                     }
-                    $all_projects = array_merge($all_projects, $projects);
                 }
             }
         }
