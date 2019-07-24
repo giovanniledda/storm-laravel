@@ -58,6 +58,14 @@ defined('PROJECT_STATUSES') or define('PROJECT_STATUSES', [PROJECT_STATUS_OPEN, 
 
 
 /*
+ * PROJECT-USERS ROLES
+ */
+
+defined('PROJECT_USER_ROLE_AUTHOR') or define('PROJECT_USER_ROLE_AUTHOR', 'author');
+defined('PROJECT_USER_ROLE_OWNER') or define('PROJECT_USER_ROLE_OWNER', 'owner');
+
+
+/*
  * PROJECT TYPES
  */
 
