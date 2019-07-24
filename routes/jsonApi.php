@@ -36,8 +36,8 @@ use Illuminate\Http\Request;
 // Route::group(['middleware' => 'auth:api'], function () {
 
     Route::post('api/v1/tasks/{task}/document',  'DocumentController@createRelatedToTask')->name('api:v1:tasks.createDocument');
-
-
+    Route::get('api/v1/project-statuses',  'ProjectController@projectStatuses')->name('api:v1:project-statuses');
+    Route::get('api/v1/task-statuses',  'TaskController@taskStatuses')->name('api:v1:task-statuses');
 // }
 
 Route::group(['middleware' => 'auth:api'], function () {
@@ -48,8 +48,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         $api->resource('documents');
         // $api->resource('documents')->only('create')->middleware('convertFileFromBase64');
 
-        $api->resource('sites');
-
+        $api->resource('sites'); 
         $api->resource('boat-users');
         $api->resource('tasks');
         $api->resource('sections');

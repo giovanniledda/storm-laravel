@@ -59,10 +59,9 @@ return [
         'task-intervent-types' => \App\TaskInterventType::class,
         'boats' => \App\Boat::class, 
         'boat-users' => \App\BoatUser::class,
-        'sections'=> \App\Section::class,
-        'updates' => \App\Update::class,
-        'comments' => \App\Comment::class,
-
+        'sections'=> \App\Section::class, 
+        'updates' => \App\Update::class,   
+        'comments' => \App\Comment::class, 
     ],
 
     /*
