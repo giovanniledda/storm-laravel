@@ -65,6 +65,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         });
 
         $api->resource('updates');
+        $api->resource('comments');
 
         // $api->resource('documents')->controller('DocumentController')->only('create');
     });

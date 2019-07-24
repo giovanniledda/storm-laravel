@@ -34,7 +34,7 @@ class ModelUpdateTest extends TestCase
 
         // Creo utenti da assegnare al progetto
         $users = factory(User::class, $this->faker->randomDigitNotNull)->create();
-        $this->assertNotCount(0, [1, 2, 3, 4, 5, 5]);
+        $this->assertNotCount(0, $users);
 
         foreach ($users as $user) {
             // ruoli e permessi ad utente
