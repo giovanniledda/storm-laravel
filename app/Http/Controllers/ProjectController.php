@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Project;
-use Illuminate\Http\Request;
-
+use Illuminate\Http\Request; 
+use Illuminate\Http\Response;
 class ProjectController extends Controller
 {
     /**
@@ -81,5 +81,15 @@ class ProjectController extends Controller
     public function destroy(Project $project)
     {
         //
+    }
+    
+    
+    public function projectStatuses(Request $request) {
+        
+        return new Response(["data"=>[
+             "type"=>"projects",
+             "attributes" =>["project-statuses"=>PROJECT_STATUSES] 
+            
+        ]], 201);
     }
 }

@@ -60,8 +60,7 @@ return [
         'boats' => \App\Boat::class, 
         'boat-users' => \App\BoatUser::class,
         'sections'=> \App\Section::class,
-        'updates' => \App\Update::class,
-        
+        'updates' => \App\Update::class, 
     ],
 
     /*

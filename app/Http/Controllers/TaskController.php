@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Task;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class TaskController extends Controller
 {
@@ -81,5 +82,14 @@ class TaskController extends Controller
     public function destroy(Task $task)
     {
         //
+    }
+    
+     public function taskStatuses(Request $request) {
+        
+        return new Response(["data"=>[
+             "type"=>"tasks",
+             "attributes" =>["task-statuses"=>TASKS_STATUSES] 
+            
+        ]], 201);
     }
 }
