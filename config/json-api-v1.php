@@ -61,7 +61,8 @@ return [
         'boat-users' => \App\BoatUser::class,
         'sections'=> \App\Section::class,
         'updates' => \App\Update::class,
-        
+        'comments' => \App\Comment::class,
+
     ],
 
     /*
