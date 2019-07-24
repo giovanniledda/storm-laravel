@@ -18,6 +18,8 @@ $factory->define(Task::class, function (Faker $faker) use ($autoIncrement) {
         'description' => $faker->text(),
         'estimated_hours' => $faker->randomFloat(1, $min = 0, $max = 100),
         'worked_hours' => $faker->randomFloat(1, $min = 0, $max = 100),
+        'x_coord' => $faker->randomFloat(2, $min = 0, $max = 100),
+        'y_coord' => $faker->randomFloat(2, $min = 0, $max = 100),
     ];
 });
 
