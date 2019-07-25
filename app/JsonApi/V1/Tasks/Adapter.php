@@ -53,7 +53,7 @@ class Adapter extends AbstractAdapter
      */
     protected function filter($query, Collection $filters)
     {
-        
+        // TODO IMPLEMENTARE L'ACCESSO HAI TASK A LIVELLO DI ACL
        // ricerca per status
        if ($status = $filters->get('status')) {
             $query->where('task_status', '=', "{$status}");
@@ -66,6 +66,10 @@ class Adapter extends AbstractAdapter
        // ricerca per section_id
        if ($section_id = $filters->get('section_id')) {
             $query->where('section_id', '=', "{$section_id}");
+       }
+       
+       if ($subsection_id = $filters->get('subsection_id')) {
+            $query->where('subsection_id', '=', "{$subsection_id}");
        }
        
        // ricerca per intervent_type_id
