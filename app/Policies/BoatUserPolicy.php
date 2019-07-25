@@ -13,7 +13,7 @@ class BoatUserPolicy
     /**
      * Determine whether the user can view any boat users.
      *
-     * @param  \App\User  $user
+     * @param  \App\User $user
      * @return mixed
      */
     public function viewAny(User $user)
@@ -24,8 +24,8 @@ class BoatUserPolicy
     /**
      * Determine whether the user can view the boat user.
      *
-     * @param  \App\User  $user
-     * @param  \App\BoatUser  $boatUser
+     * @param  \App\User $user
+     * @param  \App\BoatUser $boatUser
      * @return mixed
      */
     public function view(User $user, BoatUser $boatUser)
@@ -36,23 +36,22 @@ class BoatUserPolicy
     /**
      * Determine whether the user can create boat users.
      *
-     * @param  \App\User  $user
+     * @param  \App\User $user
      * @return mixed
      */
     public function create(User $user)
     {
-         if ($user->can('Admin') || $user->can('Boat manager')) {
-//             if ($user->can(PERMISSION_ADMIN) || $user->can(PERMISSION_BOAT_MANAGER)) {
-             return true;
-         }
-         return false;
+        if ($user->can(PERMISSION_ADMIN) || $user->can(PERMISSION_BOAT_MANAGER)) {
+            return true;
+        }
+        return false;
     }
 
     /**
      * Determine whether the user can update the boat user.
      *
-     * @param  \App\User  $user
-     * @param  \App\BoatUser  $boatUser
+     * @param  \App\User $user
+     * @param  \App\BoatUser $boatUser
      * @return mixed
      */
     public function update(User $user, BoatUser $boatUser)
@@ -63,8 +62,8 @@ class BoatUserPolicy
     /**
      * Determine whether the user can delete the boat user.
      *
-     * @param  \App\User  $user
-     * @param  \App\BoatUser  $boatUser
+     * @param  \App\User $user
+     * @param  \App\BoatUser $boatUser
      * @return mixed
      */
     public function delete(User $user, BoatUser $boatUser)
@@ -75,8 +74,8 @@ class BoatUserPolicy
     /**
      * Determine whether the user can restore the boat user.
      *
-     * @param  \App\User  $user
-     * @param  \App\BoatUser  $boatUser
+     * @param  \App\User $user
+     * @param  \App\BoatUser $boatUser
      * @return mixed
      */
     public function restore(User $user, BoatUser $boatUser)
@@ -87,8 +86,8 @@ class BoatUserPolicy
     /**
      * Determine whether the user can permanently delete the boat user.
      *
-     * @param  \App\User  $user
-     * @param  \App\BoatUser  $boatUser
+     * @param  \App\User $user
+     * @param  \App\BoatUser $boatUser
      * @return mixed
      */
     public function forceDelete(User $user, BoatUser $boatUser)

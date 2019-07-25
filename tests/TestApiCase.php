@@ -23,7 +23,7 @@ abstract class TestApiCase extends TestCase
         parent::setUp();
         // // To test Oauth Grants
         // \Artisan::call('passport:install',['-vvv' => true]);
-        Passport::actingAs(factory(User::class)->create());
+//        Passport::actingAs(factory(User::class)->create());
     }
 
     public function logResponce(\Illuminate\Foundation\Testing\TestResponse $response) {

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Tests\TestApiCase;
 use App\Boat;
 use App\User;
 use App\Permission;
@@ -15,7 +16,6 @@ use const ROLE_WORKER;
 use const PERMISSION_ADMIN;
 use const PERMISSION_BOAT_MANAGER;
 use const PERMISSION_WORKER;
-use Tests\TestApiCase;
 
 
 class ApiBoatTest extends TestApiCase
@@ -104,16 +104,16 @@ class ApiBoatTest extends TestApiCase
     private function getBoatList(User $user, int $expected)
     {
         // manca qualcosa del genere:
-        $data = [
-            'data' => [
-                'type' => 'boat-users',
-                'attributes' => [
-                    'user_id' => $user->id
-                ]
-            ]
-        ];
+//        $data = [
+//            'data' => [
+//                'type' => 'boat-users',
+//                'attributes' => [
+//                    'user_id' => $user->id
+//                ]
+//            ]
+//        ];
         Passport::actingAs($user);
-        $r = $this->json('GET', route('api:v1:boats.index'), $data, $this->headers);
+        $r = $this->json('GET', route('api:v1:boats.index'), [], $this->headers);
         $r->assertStatus(200);
         $re = json_decode($r->getContent(), true);
         $c = count($re['data']);
@@ -147,7 +147,7 @@ class ApiBoatTest extends TestApiCase
         Passport::actingAs($connectedUser);
         $response = $this->json('POST', route('api:v1:boat-users.create'), $data, $this->headers);
 
-//        $this->logResponce($response);
+        $this->logResponce($response);
         $this->assertDatabaseHas('boat_user', ['boat_id' => $boat->id, 'user_id' => $user->id]);
     }
 
