@@ -62,7 +62,7 @@ class ModelCommentTest extends TestCase
 
                 // ...e al task
                 $task->comments()->saveMany($comments);
-                $this->assertDatabaseHas('comments', ['commentable_type' => Task::class]);
+                $this->assertDatabaseHas('comments', ['commentable_type' => Task::class, 'commentable_id' => $task->id]);
             }
         }
 

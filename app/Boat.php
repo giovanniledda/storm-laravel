@@ -25,8 +25,6 @@ class Boat extends Model
         return $this->hasMany('App\Section');
     }
     
-     
-
     public function subsections()
     {
         return $this->hasManyThrough('App\Subsection', 'App\Section');

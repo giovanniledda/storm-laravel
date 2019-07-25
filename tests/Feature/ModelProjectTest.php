@@ -14,15 +14,8 @@ class ModelProjectTest extends TestCase
 
     function test_can_create_project_without_site()
     {
-        $fake_name = $this->faker->sentence;
-        $project = new Project([
-                'name' => $fake_name
-            ]
-        );
-
-        $project->save();
-
-        $this->assertDatabaseHas('projects', ['name' => $fake_name]);
+        $project = factory(Project::class)->create();
+        $this->assertDatabaseHas('projects', ['name' => $project->name]);
     }
 
     function test_can_create_project_related_to_site()
@@ -36,14 +29,9 @@ class ModelProjectTest extends TestCase
         );
         $site->save();
 
-        $project_name = $this->faker->sentence;
-        $project = new Project([
-                'name' => $project_name
-            ]
-        );
-        $project->save();
+        $project = factory(Project::class)->create();
 
-        $this->assertDatabaseHas('projects', ['name' => $project_name]);
+        $this->assertDatabaseHas('projects', ['name' => $project->name]);
 
         $project->site()->associate($site)->save();
 
@@ -61,24 +49,14 @@ class ModelProjectTest extends TestCase
         );
         $boat->save();
 
-        $project_name = $this->faker->sentence;
-        $project = new Project([
-                'name' => $project_name
-            ]
-        );
-        $project->save();
+        $project = factory(Project::class)->create();
 
-        $this->assertDatabaseHas('projects', ['name' => $project_name]);
+        $this->assertDatabaseHas('projects', ['name' => $project->name]);
 
         $project->boat()->associate($boat)->save();
 
         $this->assertEquals($boat->name, $project->boat->name);
     }
 
-
-    function test_can_create_project_related_to_subsection()
-    {
-        // TODO...
-    }
 
 }

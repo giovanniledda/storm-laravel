@@ -25,28 +25,14 @@ class ModelTaskTest extends TestCase
 
     function test_can_create_task_related_to_project()
     {
-        $task_title = $this->faker->sentence;
-        $task = new Task([
-                'title' => $task_title,
-                'description' => $this->faker->text,
-            ]
-        );
-        $task->save();
-
-        $project_name = $this->faker->sentence;
-        $project = new Project([
-                'name' => $project_name
-            ]
-        );
-        $project->save();
+        $task = factory(Task::class)->create();
+        $project = factory(Project::class)->create();
 
 //        $project->tasks()->save($task)->save(); NOTA: se faccio questo, poi non posso fare $task->project ..mi dice che è nullo
         $task->project()->associate($project)->save();
 
-        $this->assertDatabaseHas('projects', ['name' => $project_name]);
-        $this->assertDatabaseHas('tasks', ['project_id' => $project->id, 'title' => $task_title]);
-
-        $this->assertEquals($task->title, $task_title);
+        $this->assertDatabaseHas('projects', ['name' => $project->name]);
+        $this->assertDatabaseHas('tasks', ['project_id' => $project->id, 'title' => $task->title]);
 
         $this->assertEquals($task->project->id, $project->id);
         $this->assertEquals($task->project->name, $project->name);

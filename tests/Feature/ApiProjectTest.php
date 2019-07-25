@@ -20,12 +20,14 @@ class ApiProjectTest extends TestApiCase
     {
 
         $this->disableExceptionHandling();
+        $boat = factory(Boat::class)->create();
 
         $fake_name = $this->faker->sentence;
         $data = [
             'data' => [
                 'attributes' => [
                     'name' => $fake_name,
+                    'boat_id' => $boat->id,
                 ],
                 'type' => 'projects',
             ]
@@ -71,11 +73,11 @@ class ApiProjectTest extends TestApiCase
         $data = [];
 
         $response = $this->json('GET', route('api:v1:projects.read', ['record' => $project->id]), $data, $this->headers)
-            ->assertJsonStructure(['data' => ['attributes' => ['boatid']]]);
+            ->assertJsonStructure(['data' => ['attributes' => ['boat_id']]]);
 
         $content = json_decode($response->getContent(), true);
 
-        $boat_id = $content['data']['attributes']['boatid'];
+        $boat_id = $content['data']['attributes']['boat_id'];
 
         $boat = Boat::find($boat_id);
 
@@ -116,14 +118,8 @@ class ApiProjectTest extends TestApiCase
     /* crea un nuovo task dato il progetto */
     private function createProjectTask(\App\Project $project) : \App\Task {
 
-        $task_title = $this->faker->sentence;
-        $task = new Task([
-                'title' => $task_title,
-                'description' => $this->faker->text,
-            ]
-        );
-        $task->save();
-        $project->tasks()->save($task);
+        $task = factory(Task::class)->create();
+        $task->project()->associate($project)->save();
         return $task;
     }
 
