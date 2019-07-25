@@ -42,6 +42,7 @@ class BoatUserPolicy
     public function create(User $user)
     {
          if ($user->can('Admin') || $user->can('Boat manager')) {
+//             if ($user->can(PERMISSION_ADMIN) || $user->can(PERMISSION_BOAT_MANAGER)) {
              return true;
          }
          return false;
