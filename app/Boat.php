@@ -43,9 +43,12 @@ class Boat extends Model
     public function associatedUsers() {
         return $this->hasMany('App\BoatUser');
     }
-
+    
+    
+    // owner ed equipaggio
     public function users()
     {
+       
         return $this->belongsToMany('App\User')
             ->using('App\BoatUser')
             ->withPivot([

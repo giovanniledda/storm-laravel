@@ -35,7 +35,7 @@ class BoatPolicy
     {
 
    //     var_dump($users);
-
+        /*
         if ($user->can('Admin')) {
             return true;
         }
@@ -48,7 +48,26 @@ class BoatPolicy
         if ($c > 0) {
             return true;
         }
-
+        */
+        
+        // ADMIN VEDE SEMPRE TUTTE LE BARCHE
+        if ($user->can(PERMISSION_ADMIN)) {
+            return true;
+        }
+        
+        
+        // se il ruolo e' worker devo controllare che l'utente sia in project_user
+        if ($user->hasRole(ROLE_WORKER)) {
+            //todo
+            return true;
+        }
+        
+        // se il ruolo e' boat_manager devo controllare che l'utente sia in boat_user
+        if ($user->can(PERMISSION_ADMIN)) {
+            // todo
+            return true;
+        }
+        
         return false;
 
     }
@@ -61,11 +80,11 @@ class BoatPolicy
      */
     public function create(User $user)
     {
-        if ($user->can('Admin')) {
+        if ($user->can(PERMISSION_ADMIN)) {
             return true;
         }
 
-        if ($user->can('Boat manager')) {
+        if ($user->can(PERMISSION_BOAT_MANAGER)) {
             return true;
         }
 
@@ -81,11 +100,11 @@ class BoatPolicy
      */
     public function update(User $user, Boat $boat)
     {
-        if ($user->can('Admin')) {
+       if ($user->can(PERMISSION_ADMIN)) {
         return true;
     }
 
-    if ($user->can('Boat manager')) {
+     if ($user->can(PERMISSION_BOAT_MANAGER)) {
         return true;
     }
 
@@ -101,11 +120,11 @@ class BoatPolicy
      */
     public function delete(User $user, Boat $boat)
     {
-        if ($user->can('Admin')) {
+         if ($user->can(PERMISSION_ADMIN)) {
             return true;
         }
 
-        if ($user->can('Boat manager')) {
+        if ($user->can(PERMISSION_BOAT_MANAGER)) {
             return true;
         }
         return false;
@@ -132,11 +151,11 @@ class BoatPolicy
      */
     public function forceDelete(User $user, Boat $boat)
     {
-        if ($user->can('Admin')) {
+        if ($user->can(PERMISSION_ADMIN)) {
             return true;
         }
 
-        if ($user->can('Boat manager')) {
+        if ($user->can(PERMISSION_ADMIN)) {
             return true;
         }
 
