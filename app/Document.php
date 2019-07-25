@@ -34,6 +34,7 @@ class Document extends Model implements HasMedia
             unset ($attributes['file']);
         }
         parent::__construct($attributes);
+      
     }
 
     public function comments()
