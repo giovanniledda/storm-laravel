@@ -118,7 +118,7 @@ class ApiBoatTest extends TestApiCase
 
     private function getBoatList(User $user, int $expected)
     {
-        $this->refreshApplication();
+        $this->refreshApplication();  // Fa una sorta di pulizia della cache perché dopo la prima post, poi tutte le chiamate successive tornano sulla stessa route
 
         Passport::actingAs($user);
 
