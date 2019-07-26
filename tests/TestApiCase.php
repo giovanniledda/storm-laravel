@@ -33,7 +33,7 @@ abstract class TestApiCase extends TestCase
     public function logResponse(\Illuminate\Foundation\Testing\TestResponse $response) {
         if ($this->log) {
             echo "\nStatusCode : ".$response->getStatusCode();
-            echo "\nResponce : ".$response->getContent();
+            echo "\nResponse : ".$response->getContent();
             echo "\n";
         }
     }
@@ -83,8 +83,7 @@ abstract class TestApiCase extends TestCase
             'c_password' => 'fake123',
         ];
         $user = User::create($user_data);
-        // commentato perché non sta funzionando:  neanche con questo https://docs.spatie.be/laravel-permission/v2/advanced-usage/unit-testing/
-//        $user->assignRole($ruolo);
+        $user->assignRole($ruolo);
         return $user;
     }
 

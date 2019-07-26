@@ -34,7 +34,12 @@ class Adapter extends AbstractAdapter
      */
     protected function filter($query, Collection $filters)
     {
-        // TODO
+//        $user = \Auth::user();
+
+//         RUOLO BOOT MANAGER potrebbe essere questo il ruolo da assegnare all'equipaggio ? da discutere con Danilo
+//        if (1 || $user->hasRole(ROLE_BOAT_MANAGER)) {
+//            $query->whereUser_id($user->id);
+//        }
     }
 
 }

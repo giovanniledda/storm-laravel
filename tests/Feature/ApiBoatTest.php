@@ -80,6 +80,7 @@ class ApiBoatTest extends TestApiCase
         /** associo la barca2 ad other e bootmanager2 */
 //        $this->boatApiAssociate($admin1, $boatManager2, $boat2);
 
+//        $this->getBoatList($boatManager1, 0);
 
         /** creo N barche e le associo a $boatManager1 */
         $boats_for_bm1 = [];
@@ -97,7 +98,6 @@ class ApiBoatTest extends TestApiCase
         }
         $this->assertNotCount(0, $boats_for_bm2);
 
-
         /*** test connessione con l'utente $boatManager1 */
         $token = $this->_grantTokenPassword($boatManager1);
         $this->assertIsString($token);
@@ -111,32 +111,42 @@ class ApiBoatTest extends TestApiCase
 
         // deve vedere SOLO le boat di $boatManager1
         $this->getBoatList($boatManager1, count($boats_for_bm1));
+
+        // deve vedere SOLO le boat di $boatManager2
+        $this->getBoatList($boatManager2, count($boats_for_bm2));
     }
 
     private function getBoatList(User $user, int $expected)
     {
+        $this->refreshApplication();
+
         Passport::actingAs($user);
+
         $r = $this->json('GET', 'api/v1/boats', [], $this->headers);
+
         $r->assertStatus(200);
+
         $re = json_decode($r->getContent(), true);
-        $c = count($re['data']);
         $this->logResponse($r);
-        $this->assertEquals($expected, $c);
+
+        $this->assertCount($expected, $re['data']);
     }
 
     /** associa la barca all'utente via api*/
     private function boatApiAssociate(User $connectedUser, User $user, Boat $boat)
     {
+
         $data = [
             'data' => [
                 'type' => 'boat-users',
                 'attributes' => ['role' => 'commander', 'boat_id' => $boat->id, 'user_id' => $user->id]
             ]
         ];
-        Passport::actingAs($connectedUser);
+//        Passport::actingAs($connectedUser);
         $response = $this->json('POST', route('api:v1:boat-users.create'), $data, $this->headers);
+//        $response->assertStatus(201);
 
-//        $this->logResponce($response);
+        $this->logResponse($response);
         $this->assertDatabaseHas('boat_user', ['boat_id' => $boat->id, 'user_id' => $user->id]);
     }
 
