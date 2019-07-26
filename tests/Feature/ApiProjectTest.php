@@ -7,12 +7,6 @@ use Tests\TestApiCase;
 
 use App\Project;
 use App\Boat;
-use App\Task;
-
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 
 class ApiProjectTest extends TestApiCase
 {
@@ -53,7 +47,7 @@ class ApiProjectTest extends TestApiCase
         $project_id = $content['data']['id'];
         $project = Project::find($project_id);
         $this->assertEquals($project->id, $project_id);
-        $this->logResponce($response);
+        $this->logResponse($response);
     }
 
     /** create get entity */
@@ -85,7 +79,7 @@ class ApiProjectTest extends TestApiCase
         $boat = Boat::find($boat_id);
 
         $this->assertEquals($boat->id, $project->boat->id);
-        $this->logResponce($response);
+        $this->logResponse($response);
     }
 
     /** get projects collections */
@@ -105,7 +99,7 @@ class ApiProjectTest extends TestApiCase
         $response = $this->json('GET', route('api:v1:projects.index'), [], $this->headers);
         $this->assertEquals(200, $response->getStatusCode()); /// prima il valore che ti aspetti poi quello da controllare
         // possiamo anche scrivere cosi : $response->assertStatus(200);
-        $this->logResponce($response);
+        $this->logResponse($response);
     }
 
     /* crea un progetto e la sua boat e assegna 10 tasks
@@ -132,7 +126,7 @@ class ApiProjectTest extends TestApiCase
             $this->headers);
         $response->assertStatus(200);
 
-        $this->logResponce($response);
+        $this->logResponse($response);
     }
 
 }

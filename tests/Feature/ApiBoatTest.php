@@ -68,7 +68,7 @@ class ApiBoatTest extends TestApiCase
             ->assertStatus(200)
             ->assertJsonStructure(['data' => ['id', 'type', 'attributes']]);
 
-        $this->logResponce($response);
+        $this->logResponse($response);
 
         /** creo tre barche */
 //        $boat1 = $this->createBoat();
@@ -107,7 +107,7 @@ class ApiBoatTest extends TestApiCase
             ->assertStatus(200)
             ->assertJsonStructure(['data' => ['id', 'type', 'attributes']]);
 
-        $this->logResponce($response);
+        $this->logResponse($response);
 
         // deve vedere SOLO le boat di $boatManager1
         $this->getBoatList($boatManager1, count($boats_for_bm1));
@@ -120,7 +120,7 @@ class ApiBoatTest extends TestApiCase
         $r->assertStatus(200);
         $re = json_decode($r->getContent(), true);
         $c = count($re['data']);
-        $this->logResponce($r);
+        $this->logResponse($r);
         $this->assertEquals($expected, $c);
     }
 

@@ -30,7 +30,7 @@ abstract class TestApiCase extends TestCase
 //        Passport::actingAs(factory(User::class)->create());
     }
 
-    public function logResponce(\Illuminate\Foundation\Testing\TestResponse $response) {
+    public function logResponse(\Illuminate\Foundation\Testing\TestResponse $response) {
         if ($this->log) {
             echo "\nStatusCode : ".$response->getStatusCode();
             echo "\nResponce : ".$response->getContent();
@@ -89,7 +89,7 @@ abstract class TestApiCase extends TestCase
     }
 
     /* crea un nuovo task dato il progetto */
-    public function createProjectTask(\App\Project $project): \App\Task
+    public function createProjectTask(Project $project): Task
     {
         $task = factory(Task::class)->create();
         $task->project()->associate($project)->save();

@@ -30,6 +30,7 @@ class Schema extends SchemaProvider
     public function getAttributes($resource)
     {
         return [
+            'task-id' => $resource->commentable_id,
             'body' => $resource->body,
             'author' => $resource->authorNickname(),
             'created-at' => $resource->created_at->toAtomString(),
