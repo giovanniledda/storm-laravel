@@ -2,6 +2,9 @@
 
 namespace Tests;
 
+use App\Boat;
+use App\Project;
+use App\Task;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Passport\Passport;
 use App\User;
@@ -83,5 +86,22 @@ abstract class TestApiCase extends TestCase
         // commentato perché non sta funzionando:  neanche con questo https://docs.spatie.be/laravel-permission/v2/advanced-usage/unit-testing/
 //        $user->assignRole($ruolo);
         return $user;
+    }
+
+    /* crea un nuovo task dato il progetto */
+    public function createProjectTask(\App\Project $project): \App\Task
+    {
+        $task = factory(Task::class)->create();
+        $task->project()->associate($project)->save();
+        return $task;
+    }
+
+    /* crea un progetto con la barca relazionata */
+    public function createBoatAndHisProject(): array
+    {
+        $boat = factory(Boat::class)->create();
+        $project = factory(Project::class)->create();
+        $project->boat()->associate($boat)->save();
+        return ['boat' => $boat, 'project' => $project];
     }
 }

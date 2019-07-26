@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Storage;
 class ApiCommentTest extends TestApiCase
 {
     /** create **/
-    function test_can_create_comment_related_to_ask()
+    function test_can_create_comment_related_to_task()
     {
 
         $this->disableExceptionHandling();

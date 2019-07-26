@@ -135,23 +135,4 @@ class ApiProjectTest extends TestApiCase
         $this->logResponce($response);
     }
 
-    /* crea un nuovo task dato il progetto */
-    private function createProjectTask(\App\Project $project): \App\Task
-    {
-
-        $task = factory(Task::class)->create();
-        $task->project()->associate($project)->save();
-        return $task;
-    }
-
-    /* crea un progetto con la barca relazionata */
-    private function createBoatAndHisProject(): array
-    {
-        $boat = factory(Boat::class)->create();
-        $project = factory(Project::class)->create();
-        $project->boat()->associate($boat)->save();
-        return ['boat' => $boat, 'project' => $project];
-    }
-
-
 }
