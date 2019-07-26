@@ -22,6 +22,22 @@ class Schema extends SchemaProvider
         return (string) $resource->getRouteKey();
     }
 
+     public function getPrimaryMeta($resource)
+    {
+        //App\Boat resource
+          
+        return [
+            'image' => 'https://picsum.photos/200/300', 
+        ];
+        // TODO : mettere l'immagine tramite relazione con documents
+    }
+
+    public function getInclusionMeta($resource)
+    {
+
+        return $this->getPrimaryMeta($resource);
+    }
+    
     /**
      * @param $resource
      *      the domain record being serialized.

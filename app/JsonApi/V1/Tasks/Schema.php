@@ -23,6 +23,19 @@ class Schema extends SchemaProvider
         return (string) $resource->getRouteKey();
     }
 
+    
+     public function getPrimaryMeta($resource)
+    {
+       
+       return [];
+        // TODO : mettere sia il link documentale all'immagine della barca che il project_id
+    }
+
+    public function getInclusionMeta($resource)
+    {
+
+        return $this->getPrimaryMeta($resource);
+    }
     /**
      * @param $resource
      *      the domain record being serialized.
@@ -46,8 +59,11 @@ class Schema extends SchemaProvider
             'section_id' => $resource->section_id,
             'intervent_type_id' => $resource->intervent_type_id,
             'subsection_id' => $resource->subsection_id,
+            'x_coord' => $resource->x_coord,
+            'y_coord' => $resource->y_coord,
             'created-at' => $resource->created_at->toAtomString(),
             'updated-at' => $resource->updated_at->toAtomString(),
+            
         ];
     }
 
