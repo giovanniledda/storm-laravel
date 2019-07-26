@@ -65,6 +65,11 @@ class ApiBoatTest extends TestApiCase
         $token_admin = $this->_grantTokenPassword($admin1);
         $this->assertIsString($token_admin);
 
+        $response = $this->json('GET', route('api.auth.user'), [], ['Authorization' => 'Bearer '.$token_admin])
+            ->assertStatus(200)
+            ->assertJsonStructure(['data' => ['id', 'type', 'attributes']]);
+
+        $this->logResponce($response);
 
         /** creo tre barche */
 //        $boat1 = $this->createBoat();
@@ -93,27 +98,26 @@ class ApiBoatTest extends TestApiCase
         }
         $this->assertNotCount(0, $boats_for_bm2);
 
-        // deve vedere SOLO le sue boat
+
         /*** test connessione con l'utente $boatManager1 */
         $token = $this->_grantTokenPassword($boatManager1);
         $this->assertIsString($token);
+        Passport::actingAs($boatManager1);
 
+        $response = $this->json('GET', route('api.auth.user'), [], ['Authorization' => 'Bearer '.$token])
+            ->assertStatus(200)
+            ->assertJsonStructure(['data' => ['id', 'type', 'attributes']]);
+
+        $this->logResponce($response);
+
+        // deve vedere SOLO le boat di $boatManager1
         $this->getBoatList($boatManager1, count($boats_for_bm1));
     }
 
     private function getBoatList(User $user, int $expected)
     {
-        // manca qualcosa del genere:
-//        $data = [
-//            'data' => [
-//                'type' => 'boat-users',
-//                'attributes' => [
-//                    'user_id' => $user->id
-//                ]
-//            ]
-//        ];
         Passport::actingAs($user);
-        $r = $this->json('GET', route('api:v1:boats.index'), [], $this->headers);
+        $r = $this->json('GET', 'api/v1/boats', [], $this->headers);
         $r->assertStatus(200);
         $re = json_decode($r->getContent(), true);
         $c = count($re['data']);
@@ -147,7 +151,7 @@ class ApiBoatTest extends TestApiCase
         Passport::actingAs($connectedUser);
         $response = $this->json('POST', route('api:v1:boat-users.create'), $data, $this->headers);
 
-        $this->logResponce($response);
+//        $this->logResponce($response);
         $this->assertDatabaseHas('boat_user', ['boat_id' => $boat->id, 'user_id' => $user->id]);
     }
 

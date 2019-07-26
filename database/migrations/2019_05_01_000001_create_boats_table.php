@@ -17,7 +17,7 @@ class CreateBoatsTable extends Migration
             $table->bigIncrements('id');
             $table->text('name');
             $table->string('registration_number', 100);
-            $table->string('flag', 50)->nullable();
+            $table->string('flag', 100)->nullable();
             $table->year('manufacture_year')->nullable();
             $table->double('length', 8, 2)->nullable();
             $table->double('draft', 8, 2)->nullable();

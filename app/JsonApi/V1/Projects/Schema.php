@@ -19,7 +19,7 @@ class Schema extends SchemaProvider
      */
     public function getId($resource)
     {
-        return (string) $resource->getRouteKey();
+        return (string)$resource->getRouteKey();
     }
 
 
@@ -44,17 +44,17 @@ class Schema extends SchemaProvider
             'name' => $resource->name,
             'boat_id' => $resource->boat_id,
             'status' => $resource->status,
-            'project_type'=> $resource->project_type,
+            'project_type' => $resource->project_type,
             'created-at' => $resource->created_at->toAtomString(),
             'updated-at' => $resource->updated_at->toAtomString(),
         ];
     }
 
-/* creare link customizzati */
-public function getResourceLinks($resource)
-{
-    $links = parent::getResourceLinks($resource);
+    /* creare link customizzati */
+    public function getResourceLinks($resource)
+    {
+        $links = parent::getResourceLinks($resource);
 
-    return $links;
-}
+        return $links;
+    }
 }

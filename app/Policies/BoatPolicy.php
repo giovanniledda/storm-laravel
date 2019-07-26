@@ -3,10 +3,12 @@
 namespace App\Policies;
 
 use App\User;
-use App\Boat ;
+use App\Boat;
 use App\BoatUser;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
+use const PERMISSION_ADMIN;
+use const PERMISSION_BOAT_MANAGER;
 use PhpParser\Node\Stmt\TryCatch;
 
 class BoatPolicy
@@ -16,7 +18,7 @@ class BoatPolicy
     /**
      * Determine whether the user can view any boats.
      *
-     * @param  \App\User  $user
+     * @param  \App\User $user
      * @return mixed
      */
     public function viewAny(User $user)
@@ -27,24 +29,24 @@ class BoatPolicy
     /**
      * Determine whether the user can view the boat.
      *
-     * @param  \App\User  $user
-     * @param  \App\Boat  $boat
+     * @param  \App\User $user
+     * @param  \App\Boat $boat
      * @return mixed
      */
     public function view(User $user, Boat $boat)
     {
 
-   //     var_dump($users);
+        //     var_dump($users);
 
-        if ($user->can('Admin')) {
+        if ($user->can(PERMISSION_ADMIN)) {
             return true;
         }
 
-        if ($user->can('Boat manager')) {
+        if ($user->can(PERMISSION_BOAT_MANAGER)) {
             return true;
         }
 
-          $c =  \App\Boat::find($boat->id)->associatedUsers->where('user_id', $user->id)->count();
+        $c = Boat::find($boat->id)->associatedUsers->where('user_id', $user->id)->count();
         if ($c > 0) {
             return true;
         }
@@ -56,7 +58,7 @@ class BoatPolicy
     /**
      * Determine whether the user can create boats.
      *
-     * @param  \App\User  $user
+     * @param  \App\User $user
      * @return mixed
      */
     public function create(User $user)
@@ -75,19 +77,19 @@ class BoatPolicy
     /**
      * Determine whether the user can update the boat.
      *
-     * @param  \App\User  $user
-     * @param  \App\Boat  $boat
+     * @param  \App\User $user
+     * @param  \App\Boat $boat
      * @return mixed
      */
     public function update(User $user, Boat $boat)
     {
         if ($user->can('Admin')) {
-        return true;
-    }
+            return true;
+        }
 
-    if ($user->can('Boat manager')) {
-        return true;
-    }
+        if ($user->can('Boat manager')) {
+            return true;
+        }
 
         return false;
     }
@@ -95,8 +97,8 @@ class BoatPolicy
     /**
      * Determine whether the user can delete the boat.
      *
-     * @param  \App\User  $user
-     * @param  \App\Boat  $boat
+     * @param  \App\User $user
+     * @param  \App\Boat $boat
      * @return mixed
      */
     public function delete(User $user, Boat $boat)
@@ -114,8 +116,8 @@ class BoatPolicy
     /**
      * Determine whether the user can restore the boat.
      *
-     * @param  \App\User  $user
-     * @param  \App\Boat  $boat
+     * @param  \App\User $user
+     * @param  \App\Boat $boat
      * @return mixed
      */
     public function restore(User $user, Boat $boat)
@@ -126,8 +128,8 @@ class BoatPolicy
     /**
      * Determine whether the user can permanently delete the boat.
      *
-     * @param  \App\User  $user
-     * @param  \App\Boat  $boat
+     * @param  \App\User $user
+     * @param  \App\Boat $boat
      * @return mixed
      */
     public function forceDelete(User $user, Boat $boat)
