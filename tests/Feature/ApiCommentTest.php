@@ -112,9 +112,9 @@ class ApiCommentTest extends TestApiCase
 
 
         /*** recupero SOLO i commenti del task1 */
-        $data = ['task_id' => $task1->id];
-        $response = $this->json('GET', route('api:v1:comments.index'), $data, $this->headers)
-            ->assertJsonStructure(['data']);
+        $data = ['filter[task_id]' => $task1->id];
+        $response = $this->get(route('api:v1:comments.index', $data));
+
         $this->logResponse($response);
 
         $content = json_decode($response->getContent(), true);
