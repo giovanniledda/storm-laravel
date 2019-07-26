@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Laravel\Passport\Passport;
 use Tests\TestApiCase;
 
 use App\Project;
@@ -38,6 +39,12 @@ class ApiProjectTest extends TestApiCase
             'Accept' => 'application/vnd.api+json',
         ];
 
+        /*** connessione con l'utente Admin */
+        $admin1 = $this->_addUser(ROLE_ADMIN);
+        $token_admin = $this->_grantTokenPassword($admin1);
+        $this->assertIsString($token_admin);
+        Passport::actingAs($admin1);
+
         $response = $this->json('POST', route('api:v1:projects.create'), $data, $this->headers)
             ->assertJsonStructure(['data' => ['id']]);
 
@@ -52,25 +59,21 @@ class ApiProjectTest extends TestApiCase
     /** create get entity */
     function test_get_project_and_his_boat()
     {
-        $boat_name = $this->faker->sentence;
-        $boat = new Boat([
-                'name' => $boat_name,
-                'registration_number'=> $this->faker->sentence($nbWords = 1)
-            ]
-        );
-        $boat->save();
+        $boat = factory(Boat::class)->create();
 
-        $project_name = $this->faker->sentence;
-        $project = new Project([
-                'name' => $project_name
-            ]
-        );
+        $project = factory(Project::class)->create();
+
+        $this->assertDatabaseHas('projects', ['name' => $project->name]);
 
         $project->boat()->associate($boat)->save();
 
-        $this->assertDatabaseHas('projects', ['name' => $project_name]);
-
         $data = [];
+
+        /*** connessione con l'utente Admin */
+        $admin1 = $this->_addUser(ROLE_ADMIN);
+        $token_admin = $this->_grantTokenPassword($admin1);
+        $this->assertIsString($token_admin);
+        Passport::actingAs($admin1);
 
         $response = $this->json('GET', route('api:v1:projects.read', ['record' => $project->id]), $data, $this->headers)
             ->assertJsonStructure(['data' => ['attributes' => ['boat_id']]]);
@@ -86,37 +89,55 @@ class ApiProjectTest extends TestApiCase
     }
 
     /** get projects collections */
-    function test_get_projects_collection() {
-         for ($i=0; $i < 10; $i++) {
+    function test_get_projects_collection()
+    {
+
+        for ($i = 0; $i < 10; $i++) {
             $this->createBoatAndHisProject();
         }
 
+        /*** connessione con l'utente Admin */
+        $admin1 = $this->_addUser(ROLE_ADMIN);
+        $token_admin = $this->_grantTokenPassword($admin1);
+        $this->assertIsString($token_admin);
+        Passport::actingAs($admin1);
+
         $response = $this->json('GET', route('api:v1:projects.index'), [], $this->headers);
-         $this->assertEquals( 200, $response->getStatusCode()); /// prima il valore che ti aspetti poi quello da controllare
+        $this->assertEquals(200, $response->getStatusCode()); /// prima il valore che ti aspetti poi quello da controllare
         // possiamo anche scrivere cosi : $response->assertStatus(200);
         $this->logResponce($response);
     }
+
     /* crea un progetto e la sua boat e assegna 10 tasks
        testa la rotta api/v1/projects/{record}/relationships/task
     */
-    function test_get_project_and_tasks() {
+    function test_get_project_and_tasks()
+    {
         $projectAndBoat = $this->createBoatAndHisProject();
         $projectAndBoat['project'];
-        for ($i=0; $i < 10; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             $this->createProjectTask($projectAndBoat['project']);
         }
+
+        /*** connessione con l'utente Admin */
+        $admin1 = $this->_addUser(ROLE_ADMIN);
+        $token_admin = $this->_grantTokenPassword($admin1);
+        $this->assertIsString($token_admin);
+        Passport::actingAs($admin1);
+
         $response = $this->json('GET',
             route('api:v1:projects.relationships.tasks.read',
-                    ['record' => $projectAndBoat['project']->id]),
-                    [],
-                    $this->headers);
-                    $response->assertStatus(200);
+                ['record' => $projectAndBoat['project']->id]),
+            [],
+            $this->headers);
+        $response->assertStatus(200);
 
-     $this->logResponce($response);
+        $this->logResponce($response);
     }
 
     /* crea un nuovo task dato il progetto */
-    private function createProjectTask(\App\Project $project) : \App\Task {
+    private function createProjectTask(\App\Project $project): \App\Task
+    {
 
         $task = factory(Task::class)->create();
         $task->project()->associate($project)->save();
@@ -124,24 +145,13 @@ class ApiProjectTest extends TestApiCase
     }
 
     /* crea un progetto con la barca relazionata */
-    private function createBoatAndHisProject() : array {
-        $boat_name = $this->faker->sentence;
-        $boat = new Boat([
-                'name' => $boat_name,
-                'registration_number'=> $this->faker->sentence($nbWords = 1)
-            ]
-        );
-        $boat->save();
-
-        $project_name = $this->faker->sentence;
-        $project = new Project([
-                'name' => $project_name
-            ]
-        );
+    private function createBoatAndHisProject(): array
+    {
+        $boat = factory(Boat::class)->create();
+        $project = factory(Project::class)->create();
         $project->boat()->associate($boat)->save();
-        return ['boat'=>$boat, 'project'=>$project];
+        return ['boat' => $boat, 'project' => $project];
     }
-
 
 
 }

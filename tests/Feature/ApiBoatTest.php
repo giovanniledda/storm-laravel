@@ -7,7 +7,6 @@ use App\Boat;
 use App\User;
 use App\Permission;
 use App\Role;
-use Laravel\Passport\ClientRepository;
 use Laravel\Passport\Passport;
 
 use const ROLE_ADMIN;
@@ -55,9 +54,9 @@ class ApiBoatTest extends TestApiCase
         $admin_role->givePermissionTo($bootmanagerPerm);
         $admin_role->givePermissionTo($workerPerm);
 
-        $admin1 = $this->addUser(ROLE_ADMIN);
-        $boatManager1 = $this->addUser(ROLE_BOAT_MANAGER);
-        $boatManager2 = $this->addUser(ROLE_BOAT_MANAGER);
+        $admin1 = $this->_addUser(ROLE_ADMIN);
+        $boatManager1 = $this->_addUser(ROLE_BOAT_MANAGER);
+        $boatManager2 = $this->_addUser(ROLE_BOAT_MANAGER);
 //        $user = $this->addUser(ROLE_WORKER);
 
 
@@ -125,20 +124,6 @@ class ApiBoatTest extends TestApiCase
         $this->assertEquals($expected, $c);
     }
 
-    private function addUser($ruolo): User
-    {
-        $user_data = [
-            'name' => $this->faker->firstNameMale,
-            'email' => $this->faker->email,
-            'password' => 'fake123',
-            'c_password' => 'fake123',
-        ];
-        $user = User::create($user_data);
-        // commentato perché non sta funzionando:  neanche con questo https://docs.spatie.be/laravel-permission/v2/advanced-usage/unit-testing/
-//        $user->assignRole($ruolo);
-        return $user;
-    }
-
     /** associa la barca all'utente via api*/
     private function boatApiAssociate(User $connectedUser, User $user, Boat $boat)
     {
@@ -173,39 +158,5 @@ class ApiBoatTest extends TestApiCase
         return $boat;
     }
 
-    public function _grantTokenPassword(User $user)
-    {
-
-        $oauth_client = $this->_createTestPasswordGrantClient($user);
-
-        //User's data
-        $data_ok = [
-            'grant_type' => 'password',
-            'client_id' => $oauth_client->id,
-            'client_secret' => $oauth_client->secret,
-            'username' => $user->email,
-            'password' => 'fake123',
-            'scope' => '',
-        ];
-
-        //Send post request
-
-        $response = $this->json('POST', route('passport.token'), $data_ok);
-        $token = $response->json()['access_token'];
-
-        return ($token) ? $token : null;
-    }
-
-    /**
-     * Utility function: creates a Password Grant Token Client
-     */
-    private function _createTestPasswordGrantClient(User $user)
-    {
-        $clientRepository = new ClientRepository();
-        $clientRepository->createPasswordGrantClient($user->id, \Config::get('auth.token_clients.password.name'), '/');
-
-        $oauth_client_id = \Config::get('auth.token_clients.password.id');
-        return $clientRepository->find($oauth_client_id);
-    }
 
 }
