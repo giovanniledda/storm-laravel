@@ -25,10 +25,8 @@ class Adapter extends AbstractAdapter
      * @param StandardStrategy $paging
      */
     public function __construct(StandardStrategy $paging)
-    {
-
-        $document = new \App\Document();
-        
+    { 
+        $document = new \App\Document(); 
         parent::__construct($document, $paging);
     }
 

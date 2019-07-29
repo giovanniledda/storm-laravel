@@ -41,9 +41,11 @@ class Document extends Model implements HasMedia
     {
         return $this->morphMany('App\Comment', 'commentable');
     }
-
+ 
+    
     public function getFile(){
-        return $this->getFirstMedia('documents')->getPath();
+        return $this->getUrl();
+       // return $this->getFirstMedia('documents')->getPath();
     }
 
 }

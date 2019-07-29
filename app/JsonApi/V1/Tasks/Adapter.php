@@ -89,7 +89,31 @@ class Adapter extends AbstractAdapter
         if ($createdAtTo = $filters->get('created-at-to')) {
             $query->where('created_at', '<=', "{$createdAtTo}");
         }
-       
+         $user = \Auth::user();
+        /** restringe il recordset in caso di mancanza di permessi */
+         if (!$user->can(PERMISSION_ADMIN)) { 
+             // L'utente loggato non e' un admin   
+             // SE SI TRATTA DI UN DIPENDENTE  ALLORA MOSTRO SOLO QUELLI LEGATI A project_user
+             if ($user->hasRole(ROLE_WORKER)) {
+                 $query->Join('projects', 'tasks.project_id', '=', 'projects.id')->where('projects.project_status', '=', PROJECT_STATUS_OPEN)
+                    ->whereExists(function ($q) {
+                        $user = \Auth::user();
+                        $q->from('project_user')->whereRaw("project_user.user_id = {$user->id}");
+                  });
+             } 
+             
+             // RUOLO BOOT MANAGER potrebbe essere questo il ruolo da assegnare all'equipaggio ? da discutere con Danilo
+             if ($user->hasRole(ROLE_BOAT_MANAGER)) {
+                $query->whereHas('author', function($q) use ($user)
+                     {
+                        $q->whereUser_id($user->id);
+                     });
+             }
+         } 
+        
+        
+        
+        
     }
  
     

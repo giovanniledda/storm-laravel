@@ -59,7 +59,7 @@ class Adapter extends AbstractAdapter
              } 
              
              // RUOLO BOOT MANAGER potrebbe essere questo il ruolo da assegnare all'equipaggio ? da discutere con Danilo
-             if ($user->hasRole(ROLE_BOAT_MANAGER)) {
+             if ($user->can(ROLE_BOAT_MANAGER)) {
                 $query->whereHas('users', function($q) use ($user)
                      {
                         $q->whereUser_id($user->id);

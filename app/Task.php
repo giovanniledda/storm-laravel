@@ -93,7 +93,7 @@ class Task extends Model
      */
     public function getUsersToNotify() {
 
-                // aggiungere qua altra logica, se serve (tipo filtri sui ruoli, etc)
+// aggiungere qua altra logica, se serve (tipo filtri sui ruoli, etc)
 //        return StormUtils::getAllBoatManagers();
         return $this->getProjectUsers();
     }

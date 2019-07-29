@@ -21,7 +21,7 @@ class Validators extends AbstractValidators
      * @var string[]|null
      *      the allowed fields, an empty array for none allowed, or null to allow all fields.
      */
-    protected $allowedSortParameters = ['title', 'description'];
+    protected $allowedSortParameters = null;// ['title', 'description']; // tutti i campi abilitati all'ordinamento
 
     protected $messages = [
         'title.required' => 'title '.VALIDATOR_REQUIRED,

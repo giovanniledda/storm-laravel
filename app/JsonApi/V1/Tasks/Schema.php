@@ -27,7 +27,10 @@ class Schema extends SchemaProvider
      public function getPrimaryMeta($resource)
     {
        
-       return [];
+       return [
+           'image' => 'https://picsum.photos/200/300',  
+           
+       ];
         // TODO : mettere sia il link documentale all'immagine della barca che il project_id
     }
 
