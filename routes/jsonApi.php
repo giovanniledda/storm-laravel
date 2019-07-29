@@ -49,8 +49,10 @@ Route::group(['middleware' => 'auth:api'], function () {
         // $api->resource('documents')->only('create')->middleware('convertFileFromBase64');
 
         $api->resource('sites'); 
-        $api->resource('boat-users');
+        $api->resource('boat-users')->only('create'); // usato solo per associazione boat - user
+        $api->resource('project-users'); //->only('create'); // usato solo per associazione project  - user
         $api->resource('tasks');
+        $api->resource('users');
         $api->resource('sections');
         $api->resource('task-intervent-types');
         
@@ -62,6 +64,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         $api->resource('projects')->relationships(function ($relations) {
             $relations->hasOne('boat'); // punta al methodo dell'adapter /app/jsonApi/Projects/Adapter non al modello
             $relations->hasMany('tasks');
+            $relations->hasMany('users');
         });
 
         $api->resource('updates');

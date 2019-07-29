@@ -89,6 +89,12 @@ class Adapter extends AbstractAdapter
 
     /**** RELAZIONI PER LE RISORSE **/
 
+      protected function users() {
+        return $this->hasMany();
+    }
+    
+    
+    
     protected function tasks() {
         return $this->hasMany();
     }

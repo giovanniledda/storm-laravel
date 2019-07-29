@@ -1,4 +1,23 @@
 <?php
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class ProjectUser extends Model
+{
+    protected $table = 'project_user';
+
+    protected $fillable = [
+        'role',
+        'project_id',
+        'user_id'
+    ];
+
+}
+
+/*
+
+<?php
 
 namespace App;
 

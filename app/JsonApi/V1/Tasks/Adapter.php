@@ -104,13 +104,14 @@ class Adapter extends AbstractAdapter
              
              // RUOLO BOOT MANAGER potrebbe essere questo il ruolo da assegnare all'equipaggio ? da discutere con Danilo
              if ($user->hasRole(ROLE_BOAT_MANAGER)) {
-                $query->whereHas('author', function($q) use ($user)
-                     {
-                        $q->whereUser_id($user->id);
-                     });
+                 // TODO deve vedere solo i task relazionati alla barca 
+//                $query->whereHas('author', function($q) use ($user)
+//                     {
+//                        $q->whereUser_id($user->id);
+//                     });
              }
          } 
-        
+       
         
         
         
