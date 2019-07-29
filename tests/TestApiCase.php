@@ -16,7 +16,7 @@ abstract class TestApiCase extends TestCase
     use CreatesApplication, DatabaseMigrations;
 
     protected $faker;
-    private $log = true; // pushare con fase
+    private $log = false; // pushare con fase
 
     protected $headers = [
         'Content-type' => 'application/vnd.api+json',
@@ -27,7 +27,7 @@ abstract class TestApiCase extends TestCase
         parent::setUp();
         // // To test Oauth Grants
         // \Artisan::call('passport:install',['-vvv' => true]);
-//        Passport::actingAs(factory(User::class)->create());
+    //    Passport::actingAs(factory(User::class)->create());
     }
 
     public function logResponse(\Illuminate\Foundation\Testing\TestResponse $response) {
