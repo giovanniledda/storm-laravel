@@ -10,7 +10,7 @@ use App\Site;
 use App\Project;
 
 
-use Faker\Factory;
+use Faker\Factory as Faker;
 
 class DatabaseSeeder extends Seeder
 {
@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->faker = Factory::create();
+        $this->faker = Faker::create();
         // creo un sito
 
         $site_name = $this->faker->sentence;
@@ -166,15 +166,16 @@ class DatabaseSeeder extends Seeder
 
     private function createBoat($site): Boat
     {
-
-        $boat_name = $this->faker->sentence;
+        
+        $boat_name = $this->faker->name;
         $boat = new Boat([
                 'name' => $boat_name,
                 'registration_number' => $this->faker->randomDigitNotNull,
                 'site_id' => $site->id
             ]
         );
-        $boat->save();
+        $boat->save(); 
+         
         return $boat;
     }
 
