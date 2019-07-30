@@ -35,6 +35,18 @@ class Adapter extends AbstractAdapter
     protected function filter($query, Collection $filters)
     {
         // TODO implementare un filtro per boat_id e per project_id
+        
+         if ($boat_id = $filters->get('boat_id')) {
+             $query->Join('boat_user', 'users.id', '=', 'boat_user.user_id')->where('boat_user.user_id', '=', $boat_id);
+         } 
+        
+         if ($project_id = $filters->get('project_id')) {
+              $query->Join('project_user', 'users.id', '=', 'project_user.user_id')->where('project_user.project_id', '=', $project_id);
+         } 
+        
+        // $query->Join('project_user', 'user.id', '=', 'project_user.user_id');
+        
+        
     }
 
 }

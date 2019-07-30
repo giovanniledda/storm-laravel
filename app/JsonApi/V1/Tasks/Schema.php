@@ -50,7 +50,7 @@ class Schema extends SchemaProvider
         $author = $resource->author;
 
         return [
-            'title' => $resource->title,
+         //   'title' => $resource->title,
             'description' => $resource->description,
             'number'=> $resource->number,
             'worked_hours'=> $resource->worked_hours,
