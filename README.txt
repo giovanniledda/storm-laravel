@@ -47,11 +47,11 @@ Il comando crea due client per il consumo delle API dell'applicazione. I due cli
 # Personal access client
 PASSPORT_PERSONAL_AC_ID=1   (reale)
 PASSPORT_PERSONAL_AC_NAME="Storm-Laravel Personal Access Client"   (esempio)
-PASSPORT_PERSONAL_AC_SECRET=5uchAQdoCsohVoYx0zHCwmGVx2u9SxmmBZrE2ekL   (esempio)
+PASSPORT_PERSONAL_AC_SECRET=xVHlyxkCVh29XqeftjCwgTLjRH6rKvna8r6YGRKB   (esempio)
 # Password grant client
 PASSPORT_PASSWORD_AC_ID=2   (reale)
 PASSPORT_PASSWORD_AC_NAME="Storm-Laravel Password Grant Client"   (esempio)
-PASSPORT_PASSWORD_AC_SECRET=kzsScSVY4BvbYLQMwGFkDhXxAz7XNrs2K9XgGCMX     (esempio)
+PASSPORT_PASSWORD_AC_SECRET=zYh5HANGdBBNkOAxVGtKqPAcSYgBpUDqeNqBJtnc     (esempio)
 
 
 Sezione Ruoli e Permessi
@@ -71,6 +71,9 @@ I ruoli di base sono "Admin" e "User"; ruoli e permessi di base sono salvati nei
 
 Se il comando viene lanciato più volte (per errore) i ruoli e permessi esistenti non vengono duplicati, ma le assegnazioni dei permessi vengono sovrascritte.
 
+In caso di ambiente di staging avviare anche il seeder di stage con dati fake :
+
+* php artisan db:seed --class="StageSeeder"
 
 
 
