@@ -34,7 +34,7 @@ class Adapter extends AbstractAdapter
      */
     protected function filter($query, Collection $filters)
     {
-        // TODO
+        // TODO implementare un filtro per boat_id e per project_id
     }
 
 }

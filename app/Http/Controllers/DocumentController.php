@@ -45,8 +45,7 @@ class DocumentController extends Controller
             'file' => $file
         ]);
 
-        $doc->save();
-        
+        $doc->save(); 
         $task->documents()->save($doc);
         
 
@@ -61,7 +60,7 @@ class DocumentController extends Controller
      */
     public static function move(UploadedFile $file, $path)
     { 
-          env('MEDIA_DISK', 'local');
+         // env('MEDIA_DISK', 'local');
        
         file_put_contents($path , file_get_contents($file->getRealPath() ));
  

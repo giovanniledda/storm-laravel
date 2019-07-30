@@ -128,9 +128,12 @@ class AuthController extends Controller
     public function user(Request $request)
     {
         $user = Auth::user(); // $request->user() is the same
+         
+        $user->getRoleNames();
+        $user->getPermissionNames();
         $data = [
-            'type' => 'users',
             'id' => $user->id,
+            'type' => 'users', 
             'attributes' => $user
         ];
         return response()->json(['data' => $data], 200);

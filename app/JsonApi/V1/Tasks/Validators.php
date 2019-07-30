@@ -26,7 +26,7 @@ class Validators extends AbstractValidators
     protected $messages = [
         'title.required' => 'title '.VALIDATOR_REQUIRED,
         'title.string' => 'title '.VALIDATOR_STRING,
-        'number.required' => 'number '.VALIDATOR_REQUIRED,
+      //  'number.required' => 'number '.VALIDATOR_REQUIRED,
         'number.numeric' => 'number '.VALIDATOR_NUMERIC,
         'worked_hours.numeric' => 'worked_hours '.VALIDATOR_NUMERIC,
         'description.string' => 'description '.VALIDATOR_STRING,
@@ -34,7 +34,7 @@ class Validators extends AbstractValidators
         'project_id.required'=> 'project_id '.VALIDATOR_REQUIRED,
         'section_id.numeric'=> 'section_id '.VALIDATOR_NUMERIC,
         'section_id.required'=> 'section_id '.VALIDATOR_REQUIRED,
-        'status.in' => 'status '.VALIDATOR_IN.': '.TASKS_STATUS_ACCEPTED.','.TASKS_STATUS_CLOSED.','.TASKS_STATUS_DENIED.','.TASKS_STATUS_SUBMITTED,
+        'status.in' => 'status '.VALIDATOR_IN.': '.TASKS_STATUS_ACCEPTED.', '.TASKS_STATUS_ACCEPTED.', '.TASKS_STATUS_CLOSED.', '.TASKS_STATUS_DENIED.', '.TASKS_STATUS_SUBMITTED,
         'x_coord.required'=> 'x_coord '.VALIDATOR_REQUIRED,
         'x_coord.numeric'=> 'x_coord '.VALIDATOR_NUMERIC,
         'y_coord.required'=> 'y_coord '.VALIDATOR_REQUIRED,
@@ -52,7 +52,7 @@ class Validators extends AbstractValidators
        return [
         'title' => 'required|string|min:1|max:255',
         'description' => 'string',
-        'number' => 'required|numeric',
+        'number' => 'numeric',
         'worked_hours' => 'numeric',
         'estimated_hours' => 'numeric',
         'status' => 'in:'.TASKS_STATUS_ACCEPTED.','.TASKS_STATUS_CLOSED.','.TASKS_STATUS_DENIED.','.TASKS_STATUS_SUBMITTED,
