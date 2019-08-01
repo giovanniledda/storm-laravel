@@ -83,16 +83,5 @@ class ProjectController extends Controller
         //
     }
 
-    public function projectStatuses(Request $request) {
-
-        $resp = Response(["data"=>[
-             "type"=>"projects",
-             "attributes" =>["project-statuses"=>PROJECT_STATUSES]
-
-        ]], 201);
-
-        $resp->header('Content-Type', 'application/vnd.api+json');
-
-        return $resp;
-    }
+   
 }
