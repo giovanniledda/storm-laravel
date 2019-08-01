@@ -51,7 +51,7 @@ class User extends Authenticatable
         return $this->belongsToMany('App\Project')
             ->using('App\ProjectUser')
             ->withPivot([
-                'role',
+                'profession_id',
                 'created_by',
                 'updated_by'
             ]);
@@ -62,7 +62,7 @@ class User extends Authenticatable
         return $this->belongsToMany('App\Boat')
             ->using('App\BoatUser')
             ->withPivot([
-                'role',
+                'profession_id',
                 'created_by',
                 'updated_by'
             ]);

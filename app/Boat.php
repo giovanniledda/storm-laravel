@@ -24,7 +24,7 @@ class Boat extends Model
     {
         return $this->hasMany('App\Section');
     }
-    
+
     public function subsections()
     {
         return $this->hasManyThrough('App\Subsection', 'App\Section');
@@ -43,16 +43,16 @@ class Boat extends Model
     public function associatedUsers() {
         return $this->hasMany('App\BoatUser');
     }
-    
-    
+
+
     // owner ed equipaggio
     public function users()
     {
-       
+
         return $this->belongsToMany('App\User')
             ->using('App\BoatUser')
             ->withPivot([
-                'role',
+                'profession_id',
                 'created_by',
                 'updated_by'
             ]);

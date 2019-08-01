@@ -8,7 +8,8 @@ class ProjectUser extends Model
     protected $table = 'project_user';
 
     protected $fillable = [
-        'role',
+        // 'role',
+        'profession_id',
         'project_id',
         'user_id'
     ];

@@ -49,7 +49,8 @@ class Project extends Model
         return $this->belongsToMany('App\User')
             ->using('App\ProjectUser')
             ->withPivot([
-                'role',
+                // 'role',
+                'profession_id',
                 'created_at',
                 'updated_at'
             ]);
