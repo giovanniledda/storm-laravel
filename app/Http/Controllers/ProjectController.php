@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Project;
-use Illuminate\Http\Request; 
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 class ProjectController extends Controller
 {
@@ -82,14 +82,17 @@ class ProjectController extends Controller
     {
         //
     }
-    
-    
+
     public function projectStatuses(Request $request) {
-        
-        return new Response(["data"=>[
+
+        $resp = Response(["data"=>[
              "type"=>"projects",
-             "attributes" =>["project-statuses"=>PROJECT_STATUSES] 
-            
+             "attributes" =>["project-statuses"=>PROJECT_STATUSES]
+
         ]], 201);
+
+        $resp->header('Content-Type', 'application/vnd.api+json');
+
+        return $resp;
     }
 }

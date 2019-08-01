@@ -83,13 +83,18 @@ class TaskController extends Controller
     {
         //
     }
-    
+
      public function taskStatuses(Request $request) {
-        
-        return new Response(["data"=>[
+
+        $resp = new Response(["data"=>[
              "type"=>"tasks",
-             "attributes" =>["task-statuses"=>TASKS_STATUSES] 
-            
+             "attributes" =>["task-statuses"=>TASKS_STATUSES]
+
         ]], 201);
+
+
+        $resp->header('Content-Type', 'application/vnd.api+json');
+
+        return $resp;
     }
 }
