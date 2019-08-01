@@ -11,6 +11,8 @@ class DocumentController extends Controller
 {
 
 
+
+
     /**
      * Create a document and associate it to task {task} in request
      *
@@ -34,11 +36,7 @@ class DocumentController extends Controller
             fclose($h);
         }
 
-
         $file =  new UploadedFile( $tmpFileFullPath, $filename, null ,null, true);
-        // la seguente riga crea un file nel file system definito in .env
-        // https://hotexamples.com/examples/illuminate.http/UploadedFile/-/php-uploadedfile-class-examples.html
-        // self::move($file, storage_path('app') . DIRECTORY_SEPARATOR. $filename);
 
         $doc = new Document([
             'title' => $filename,
@@ -55,15 +53,5 @@ class DocumentController extends Controller
         return new Response($ret, 201);
     }
 
-    /* registro il file su storage
-     * attenzione !!! bisogna riscrivere questa parte per drop box e prendere la configurazione
-     */
-    // public static function move(UploadedFile $file, $path)
-    // {
-    //      // env('MEDIA_DISK', 'local');
-
-    //     file_put_contents($path , file_get_contents($file->getRealPath() ));
-
-    // }
 
 }

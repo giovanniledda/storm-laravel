@@ -35,6 +35,7 @@ use Illuminate\Http\Request;
 
 // Route::group(['middleware' => 'auth:api'], function () {
 
+     //uses the App\Http\Controllers\DocumentController
     Route::post('api/v1/tasks/{task}/document',  'DocumentController@createRelatedToTask')->name('api:v1:tasks.createDocument');
     Route::get('api/v1/project-statuses',  'ProjectController@projectStatuses')->name('api:v1:project-statuses');
     Route::get('api/v1/task-statuses',  'TaskController@taskStatuses')->name('api:v1:task-statuses');
@@ -43,24 +44,29 @@ use Illuminate\Http\Request;
 Route::group(['middleware' => 'auth:api'], function () {
 
     JsonApi::register('v1', ['namespace'=>'Api'])->routes(function ($api) {
-        // $api->resource('documents')->controller('DocumentController') ; // uses the App\Http\Controllers\Api\DocumentController
-        // $api->resource('documents')->except('create');
-        $api->resource('documents');
-        // $api->resource('documents')->only('create')->middleware('convertFileFromBase64');
 
-        $api->resource('sites'); 
+        $api->resource('documents')->except('create');
+
+        // $api->resource('documents')->only('show')->controller('DocumentController') //uses the App\Http\Controllers\Api\DocumentController
+        $api->resource('documents')->only('show')->controller('DocumentController') //uses the App\Http\Controllers\Api\DocumentController
+        ->routes(function ($gets){
+                $gets->get('{record}/show', 'show')->name('show');
+            })
+
+            ;
+         $api->resource('sites');
         $api->resource('boat-users')->only('create'); // usato solo per associazione boat - user
         $api->resource('project-users'); //->only('create'); // usato solo per associazione project  - user
         $api->resource('tasks');
         $api->resource('users');
         $api->resource('sections');
         $api->resource('task-intervent-types');
-        
-        $api->resource('boats')->relationships(function ($relations) { 
+
+        $api->resource('boats')->relationships(function ($relations) {
             $relations->hasMany('sections'); // punta al methodo dell'adapter /app/jsonApi/boats/Adapter non al modello
         });
-        
-        
+
+
         $api->resource('projects')->relationships(function ($relations) {
             $relations->hasOne('boat'); // punta al methodo dell'adapter /app/jsonApi/Projects/Adapter non al modello
             $relations->hasMany('tasks');
