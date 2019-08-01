@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Document;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Http\UploadedFile; 
+use Illuminate\Http\UploadedFile;
 
 class DocumentController extends Controller
 {
@@ -24,7 +24,7 @@ class DocumentController extends Controller
         $title = $request->title;
         $base64File = $request->file;
         $filename = $request->filename;
-         
+
         if ($base64File) {
             $tmpFilename = uniqid('phpfile_') ;
             $tmpFileFullPath = '/tmp/'. $tmpFilename;
@@ -35,35 +35,35 @@ class DocumentController extends Controller
         }
 
 
-        $file =  new UploadedFile( $tmpFileFullPath, $filename, null ,null,null,true);
+        $file =  new UploadedFile( $tmpFileFullPath, $filename, null ,null, true);
         // la seguente riga crea un file nel file system definito in .env
         // https://hotexamples.com/examples/illuminate.http/UploadedFile/-/php-uploadedfile-class-examples.html
         // self::move($file, storage_path('app') . DIRECTORY_SEPARATOR. $filename);
-        
+
         $doc = new Document([
             'title' => $filename,
             'file' => $file
         ]);
 
-        $doc->save(); 
+        $doc->save();
         $task->documents()->save($doc);
-        
+
 
         $ret = ['data' => [
-            'id' => $doc->id, 
+            'id' => $doc->id,
         ]];
         return new Response($ret, 201);
     }
-    
-    /* registro il file su storage 
-     * attenzione !!! bisogna riscrivere questa parte per drop box e prendere la configurazione 
+
+    /* registro il file su storage
+     * attenzione !!! bisogna riscrivere questa parte per drop box e prendere la configurazione
      */
     // public static function move(UploadedFile $file, $path)
-    // { 
+    // {
     //      // env('MEDIA_DISK', 'local');
-       
+
     //     file_put_contents($path , file_get_contents($file->getRealPath() ));
- 
+
     // }
 
 }
