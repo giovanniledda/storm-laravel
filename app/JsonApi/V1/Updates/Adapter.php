@@ -42,6 +42,21 @@ class Adapter extends AbstractAdapter
             $query->where('notifiable_type', '=','App\\User')
                 ->where('notifiable_id', $user->id);
         }
+        
+         if ($author_id = $filters->get('author_id')) {
+             $query->where('notifications.data', 'regexp' , '"author_id":"[[:<:]]'.$author_id.'[[:>:]]"');
+         }
+         
+         if ($boat_id = $filters->get('boat_id')) {
+             $query->where('notifications.data', 'regexp' , '"boat_id":"[[:<:]]'.$boat_id.'[[:>:]]"');
+         }
+        
+        //SELECT * FROM `notifications` where data REGEXP '"author_id":"[[:<:]]2[[:>:]]"'
+//        
+//        if ($site_id = $filters->get('site_id')) {
+//            $query->where('boats.site_id', '=', "{$site_id}");
+//        }
+        
     }
 
 }

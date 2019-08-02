@@ -75,7 +75,11 @@ class BoatPolicy
             return true;
         }
 
-        if ($user->can(PERMISSION_BOAT_MANAGER)) {
+        if ($user->can(PERMISSION_WORKER)) {
+            return true;
+        }
+        
+        if ($user->can(PERMISSION_BACKEND_MANAGER)) {
             return true;
         }
 
@@ -95,9 +99,10 @@ class BoatPolicy
             return true;
         }
 
-        if ($user->can(PERMISSION_BOAT_MANAGER)) {
+       if ($user->can(PERMISSION_BACKEND_MANAGER)) {
             return true;
         }
+        
         return false;
     }
 
@@ -114,7 +119,7 @@ class BoatPolicy
             return true;
         }
 
-        if ($user->can(PERMISSION_BOAT_MANAGER)) {
+        if ($user->can(PERMISSION_BACKEND_MANAGER)) {
             return true;
         }
         return false;

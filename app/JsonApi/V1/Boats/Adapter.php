@@ -47,7 +47,7 @@ class Adapter extends AbstractAdapter
 
 
          /** restringe il recordset in caso di mancanza di permessi */
-         if (!$user->can(PERMISSION_ADMIN)) { 
+         if (!$user->can(PERMISSION_ADMIN) || !$user->can(PERMISSION_BACKEND_MANAGER)) { 
              // L'utente loggato non e' un admin   
              // SE SI TRATTA DI UN DIPENDENTE  ALLORA MOSTRO SOLO QUELLI LEGATI A project_user
              if ($user->hasRole(ROLE_WORKER)) {

@@ -11,9 +11,15 @@ class Boat extends Model
     protected $fillable = [
         'name',
         'registration_number',
-        'site_id'
+        'site_id',
+        'flag',
+        'manufacture_year',
+        'length',
+        'draft',
+        'beam'
+        
     ];
-
+ 
     public function site()
     {
         return $this->hasOne('App\Site');

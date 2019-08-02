@@ -79,6 +79,10 @@ class TaskNotifications extends Notification
     {
         return [
             'task_id' => $this->task->id,
+            'project_id' => $this->task->project_id,
+            'boat_id'=> (string) $this->getBoatId(), // casto a string perchè nel json mi serve formattarlo tipo boat_id : "2"
+            'author_id' => $this->task->author_id,
+            'section_id' =>  $this->task->section_id,
             'project_name' => $this->getProjectName(),
             'boat_name' => $this->getBoatName(),
             'title' => $this->task->title,

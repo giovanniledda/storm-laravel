@@ -65,12 +65,7 @@ class ApiMobileCicleTest extends TestApiCase
      */
     
     function test_02_B03() {
-       $token = $this->_getToken(ROLE_ADMIN, PERMISSION_ADMIN);
-        
-        $responce = $this->json('GET', route('api.auth.user'), [], ['Authorization' => 'Bearer '.$token])
-            ->assertStatus(200)
-            ->assertJsonStructure(['data' => ['id', 'type', 'attributes']]); 
-        
+       $token = $this->_getToken(ROLE_WORKER, PERMISSION_WORKER); 
           
         $this->refreshApplication();  // Fa una sorta di pulizia della cache perché dopo la prima post, poi tutte le chiamate successive tornano sulla stessa route
         
