@@ -7,12 +7,22 @@ use Tests\TestApiCase;
 
 use App\Project;
 use App\Boat;
+use App\Role;
+use App\Permission;
+
+
+use const ROLE_ADMIN;
+use const PERMISSION_ADMIN;
+
 
 class ApiProjectTest extends TestApiCase
 {
+    
     /** create **/
     function test_can_create_project()
     {
+         Role::firstOrCreate(['name' => ROLE_ADMIN]);
+         Permission::firstOrCreate(['name' => PERMISSION_ADMIN]);      
 
         $this->disableExceptionHandling();
         $boat = factory(Boat::class)->create();
@@ -32,6 +42,8 @@ class ApiProjectTest extends TestApiCase
             'Content-type' => 'application/vnd.api+json',
             'Accept' => 'application/vnd.api+json',
         ];
+   // creo ruoli e permessi BOAT (in futuro potremmo dover limitare le notifiche in base a questi)
+       
 
         /*** connessione con l'utente Admin */
         $admin1 = $this->_addUser(ROLE_ADMIN);
@@ -53,6 +65,8 @@ class ApiProjectTest extends TestApiCase
     /** create get entity */
     function test_get_project_and_his_boat()
     {
+        Role::firstOrCreate(['name' => ROLE_ADMIN]);
+         Permission::firstOrCreate(['name' => PERMISSION_ADMIN]); 
         $boat = factory(Boat::class)->create();
 
         $project = factory(Project::class)->create();
@@ -85,7 +99,9 @@ class ApiProjectTest extends TestApiCase
     /** get projects collections */
     function test_get_projects_collection()
     {
-
+        Role::firstOrCreate(['name' => ROLE_ADMIN]);
+        Permission::firstOrCreate(['name' => PERMISSION_ADMIN]); 
+         
         for ($i = 0; $i < 10; $i++) {
             $this->createBoatAndHisProject();
         }
@@ -107,6 +123,9 @@ class ApiProjectTest extends TestApiCase
     */
     function test_get_project_and_tasks()
     {
+        Role::firstOrCreate(['name' => ROLE_ADMIN]);
+        Permission::firstOrCreate(['name' => PERMISSION_ADMIN]); 
+         
         $projectAndBoat = $this->createBoatAndHisProject();
         $projectAndBoat['project'];
         for ($i = 0; $i < 10; $i++) {

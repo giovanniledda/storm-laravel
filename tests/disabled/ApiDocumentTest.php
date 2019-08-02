@@ -20,15 +20,12 @@ class ApiDocumentTest extends TestApiCase
 
     }
 
-    public function dont_test_can_create_document_via_json_api (){
+    public function test_can_create_document_via_json_api (){
 
 
         $this->disableExceptionHandling();
 
-
-
-
-
+ 
 
 
         // $this->withoutExceptionHandling();

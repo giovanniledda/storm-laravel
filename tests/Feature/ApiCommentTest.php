@@ -9,6 +9,8 @@ use Tests\TestApiCase;
 use App\Project;
 use App\Boat;
 use App\Task;
+use App\Role;
+use App\Permission;
 
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -20,7 +22,8 @@ class ApiCommentTest extends TestApiCase
     /** create **/
     function test_can_create_comment_related_to_task()
     {
-
+        Role::firstOrCreate(['name' => ROLE_ADMIN]);
+        Permission::firstOrCreate(['name' => PERMISSION_ADMIN]);      
         $this->disableExceptionHandling();
 
         $proj_boat = $this->createBoatAndHisProject();
@@ -58,6 +61,8 @@ class ApiCommentTest extends TestApiCase
     function test_can_create_multiple_comments_related_to_task()
     {
 
+         Role::firstOrCreate(['name' => ROLE_ADMIN]);
+        Permission::firstOrCreate(['name' => PERMISSION_ADMIN]);      
         $this->disableExceptionHandling();
 
         $proj_boat = $this->createBoatAndHisProject();

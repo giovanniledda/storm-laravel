@@ -7,6 +7,7 @@ use App\Notifications\TaskCreated;
 use App\Notifications\TaskUpdated;
 use App\Permission;
 use App\Project;
+use App\Profession;
 use App\Role;
 use App\Task;
 use Tests\TestCase;
@@ -19,6 +20,7 @@ class ModelUpdateTest extends TestCase
 {
     function test_can_create_notifications_related_to_task_creation()
     {
+        $this->_populateProfessions();
         // Creo barca
         $boat = factory(Boat::class)->create();
 
@@ -43,8 +45,8 @@ class ModelUpdateTest extends TestCase
             $this->assertTrue($user->can(PERMISSION_BOAT_MANAGER));
 
             // associo utente al progetto
-            $user->projects()->attach($project->id, ['role' => PROJECT_USER_ROLE_OWNER]);
-            $this->assertDatabaseHas('project_user', ['project_id' => $project->id, 'user_id' => $user->id]);
+            $user->projects()->attach($project->id, [ 'profession_id' => 1]);
+            $this->assertDatabaseHas('project_user', ['project_id' => $project->id, 'user_id' => $user->id, 'profession_id' => 1]);
         }
 
         // Creo i task e li assegno al progetto
@@ -75,5 +77,14 @@ class ModelUpdateTest extends TestCase
                     ));
             }
         }
+    }
+    
+     private function _populateProfessions() {
+        $professions = ['owner','chief engineer', 'captain', 'ship\'s boy'];
+        foreach ($professions as $profession) {
+            $prof = Profession::create(['name'=>$profession]);
+            $prof->save();
+        } 
+        
     }
 }

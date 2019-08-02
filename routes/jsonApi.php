@@ -37,8 +37,8 @@ use Illuminate\Http\Request;
 
      //uses the App\Http\Controllers\DocumentController
     Route::post('api/v1/tasks/{task}/document',  'DocumentController@createRelatedToTask')->name('api:v1:tasks.createDocument');
-    Route::get('api/v1/project-statuses',  'ProjectController@projectStatuses')->name('api:v1:project-statuses');
-    Route::get('api/v1/task-statuses',  'TaskController@taskStatuses')->name('api:v1:task-statuses');
+   // Route::get('api/v1/project-statuses',  'ProjectController@projectStatuses')->name('api:v1:project-statuses');
+   // Route::get('api/v1/task-statuses',  'TaskController@taskStatuses')->name('api:v1:task-statuses');
 // }
 
 Route::group(['middleware' => 'auth:api'], function () {

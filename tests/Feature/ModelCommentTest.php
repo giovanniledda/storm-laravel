@@ -9,6 +9,7 @@ use App\Notifications\TaskUpdated;
 use App\Permission;
 use App\Project;
 use App\Role;
+use App\Profession;
 use App\Task;
 use Tests\TestCase;
 use App\User;
@@ -20,6 +21,7 @@ class ModelCommentTest extends TestCase
 {
     function test_can_create_comment_related_to_task()
     {
+        $this->_populateProfessions();
         // Creo barca
         $boat = factory(Boat::class)->create();
 
@@ -37,7 +39,7 @@ class ModelCommentTest extends TestCase
             // ruoli e permessi ad utente
 
             // associo utente al progetto
-            $user->projects()->attach($project->id, ['role' => PROJECT_USER_ROLE_OWNER]);
+            $user->projects()->attach($project->id, ['profession_id' => 1]);
             $this->assertDatabaseHas('project_user', ['project_id' => $project->id, 'user_id' => $user->id]);
         }
 
@@ -67,5 +69,13 @@ class ModelCommentTest extends TestCase
         }
 
 
+    }
+    private function _populateProfessions() {
+        $professions = ['owner','chief engineer', 'captain', 'ship\'s boy'];
+        foreach ($professions as $profession) {
+            $prof = Profession::create(['name'=>$profession]);
+            $prof->save();
+        } 
+        
     }
 }
