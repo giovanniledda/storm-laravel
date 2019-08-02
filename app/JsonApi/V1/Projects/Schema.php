@@ -4,6 +4,8 @@ namespace App\JsonApi\V1\Projects;
 
 use Neomerx\JsonApi\Schema\SchemaProvider;
 
+use App\Boat;
+
 class Schema extends SchemaProvider
 {
 
@@ -23,13 +25,15 @@ class Schema extends SchemaProvider
     }
 
 
-    public function getRelationships($post, $isPrimary, array $includeRelationships)
+    public function getRelationships($project, $isPrimary, array $includeRelationships)
     {
+       
+        
         return [
             'tasks' => [
-                self::SHOW_SELF => true,
+             //   self::SHOW_SELF => true,
                 self::SHOW_RELATED => true,
-            ],
+            ]
         ];
     }
 
@@ -40,9 +44,12 @@ class Schema extends SchemaProvider
      */
     public function getAttributes($resource)
     {
+        $boat =  Boat::find($resource->boat_id);
+        
         return [
             'name' => $resource->name,
             'boat_id' => $resource->boat_id,
+            'boat' =>$boat,
             'status' => $resource->status,
             'project_type' => $resource->project_type,
             'created-at' => $resource->created_at->toAtomString(),
