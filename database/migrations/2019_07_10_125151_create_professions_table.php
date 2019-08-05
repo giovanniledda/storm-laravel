@@ -16,6 +16,7 @@ class CreateProfessionsTable extends Migration
         Schema::create('professions', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
+            $table->boolean('is_storm')->nullable();
             $table->timestamps();
         });
     }

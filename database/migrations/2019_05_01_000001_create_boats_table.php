@@ -22,6 +22,7 @@ class CreateBoatsTable extends Migration
             $table->double('length', 8, 2)->nullable();
             $table->double('draft', 8, 2)->nullable();
             $table->double('beam', 8, 2)->nullable();
+            $table->enum('boat_type', [BOAT_TYPE_SAIL, BOAT_TYPE_MOTOR])->default(BOAT_TYPE_MOTOR);
             $table->timestamps();
 
             // Relations:

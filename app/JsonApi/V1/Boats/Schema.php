@@ -54,6 +54,7 @@ class Schema extends SchemaProvider
             'length' => $resource->length,
             'draft' => $resource->draft,
             'beam' => $resource->beam,
+            'boat_type' => $resource->boat_type,
             'site_id' => $resource->site_id,
             'created-at' => $resource->created_at->toAtomString(),
             'updated-at' => $resource->updated_at->toAtomString(),

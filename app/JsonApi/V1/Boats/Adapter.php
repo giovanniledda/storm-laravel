@@ -44,6 +44,10 @@ class Adapter extends AbstractAdapter
          if ($name = $filters->get('name')) {
             $query->where('boats.name', 'like', "{$name}%");
          }
+         /** implementa la ricerca per boat_type */
+         if ($boat_type = $filters->get('boat_type')) {
+            $query->where('boats.boat_type', '=', "{$boat_type}");
+         }
 
 
          /** restringe il recordset in caso di mancanza di permessi */

@@ -2,6 +2,8 @@
 
 namespace App\JsonApi\V1\Boats;
 
+use const BOAT_TYPE_MOTOR;
+use const BOAT_TYPE_SAIL;
 use CloudCreativity\LaravelJsonApi\Validation\AbstractValidators;
 
 class Validators extends AbstractValidators
@@ -23,6 +25,7 @@ class Validators extends AbstractValidators
         'draft.required' => 'draft '.VALIDATOR_REQUIRED,
         'beam.number' => 'beam '.VALIDATOR_NUMERIC,
         'beam.required' => 'draft '.VALIDATOR_REQUIRED,
+        'boat_type.in' => 'type '.VALIDATOR_IN.': '.BOAT_TYPE_SAIL.','.BOAT_TYPE_MOTOR,
     ];
 
     /**
@@ -57,6 +60,7 @@ class Validators extends AbstractValidators
            'length' => 'required|numeric',
            'draft' => 'required|numeric',
            'beam' => 'required|numeric',
+           'boat_type' => 'in:'.BOAT_TYPE_MOTOR.','.BOAT_TYPE_SAIL,
         ];
     }
   

@@ -73,6 +73,13 @@ defined('PROJECT_TYPE_NEWBUILD') or define('PROJECT_TYPE_NEWBUILD', 'newbuild');
 defined('PROJECT_TYPE_REFIT') or define('PROJECT_TYPE_REFIT', 'refit');
 
 /*
+ * BOAT TYPES
+ */
+
+defined('BOAT_TYPE_SAIL') or define('BOAT_TYPE_SAIL', 'S/Y');
+defined('BOAT_TYPE_MOTOR') or define('BOAT_TYPE_MOTOR', 'M/Y');
+
+/*
  * TASKS  STATUS
  */
 
