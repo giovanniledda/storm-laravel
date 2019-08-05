@@ -16,7 +16,7 @@ class CreateProfessionsTable extends Migration
         Schema::create('professions', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
-            $table->boolean('is_storm')->nullable();
+            $table->boolean('is_storm')->default(0); // di default è un ruolo di equipaggio
             $table->timestamps();
         });
     }
