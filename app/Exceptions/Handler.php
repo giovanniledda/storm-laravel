@@ -20,7 +20,7 @@ class Handler extends ExceptionHandler
     protected $dontReport = [
         //
         JsonApiException::class,
- 
+
     ];
 
     /**
@@ -36,7 +36,7 @@ class Handler extends ExceptionHandler
     /**
      * Report or log an exception.
      *
-     * @param  \Exception  $exception
+     * @param  \Exception $exception
      * @return void
      */
     public function report(Exception $exception)
@@ -47,25 +47,25 @@ class Handler extends ExceptionHandler
     /**
      * Render an exception into an HTTP response.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Exception  $exception
+     * @param  \Illuminate\Http\Request $request
+     * @param  \Exception $exception
      * @return \Illuminate\Http\Response
      */
     public function render($request, Exception $exception)
     {
-       /* soluzione provvisoria indagare meglio */
-       // if ($this->isJsonApi($request, $exception)) {
-        return $this->renderJsonApi($request, $exception);
-         // }
-        //return parent::render($request, $exception);
+        /* soluzione provvisoria indagare meglio */
+        if ($this->isJsonApi($request, $exception)) {
+            return $this->renderJsonApi($request, $exception);
+        }
+        return parent::render($request, $exception);
     }
 
     protected function prepareException(Exception $e)
     {
         if ($e instanceof JsonApiException) {
-          return $this->prepareJsonApiException($e);
+            return $this->prepareJsonApiException($e);
         }
-  
+
         return parent::prepareException($e);
     }
 }

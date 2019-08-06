@@ -2,17 +2,17 @@
 
 namespace App;
 
+use App\Notifications\StormResetPasswordNotification;
+use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
-use Illuminate\Support\Facades\Hash;
 use function snake_case;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use Notifiable, HasApiTokens, HasRoles;
+    use Notifiable, HasApiTokens, HasRoles, CanResetPassword;
 
     /**
      * The attributes that are mass assignable.
@@ -70,8 +70,8 @@ class User extends Authenticatable
 
     public function setPasswordAttribute($password)
     {
-//        $this->attributes['password'] = bcrypt($password);
-        $this->attributes['password'] = Hash::make($password);
+        $this->attributes['password'] = bcrypt($password);
+//        $this->attributes['password'] = Hash::make($password);
     }
 
     public function createAndGetToken()
@@ -84,4 +84,18 @@ class User extends Authenticatable
         // per ora la logica è questa ma possiamo inserire anche un nuovo campo
         return snake_case($this->name);
     }
+
+    /**
+     * OVERRIDES TRAIT (CanResetPassword) FUNCTION
+     *
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new StormResetPasswordNotification($token));
+    }
+
 }

@@ -3,13 +3,24 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\User;
+use App\Utils\Utils as StormUtils;
 use Validator;
+use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
+use Illuminate\Foundation\Auth\ResetsPasswords;
 
 class AuthController extends Controller
 {
+
+    // vedere: https://github.com/laravel/framework/issues/28377
+    use SendsPasswordResetEmails, ResetsPasswords {
+        SendsPasswordResetEmails::broker insteadof ResetsPasswords;
+        ResetsPasswords::credentials insteadof SendsPasswordResetEmails;
+    }
+
     protected $signup_rules = [
         'name' => 'required',
         'email' => 'required|email|unique:users',
@@ -118,6 +129,49 @@ class AuthController extends Controller
         //
         // se utente clicca, trova la classica form per inserimento nuova password
 
+        return $this->sendResetLinkEmail($request);
+    }
+
+
+    /**
+     * OVVERIDES PARENT FUNCTION!
+     * Get the response for a successful password reset link.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  string $response
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     */
+    protected function sendResetLinkResponse(Request $request, $response)
+    {
+        $data = [
+            'success' => true,
+            'message' => PASSWORD_RESET_LINK_SENT,
+            'data' => [],
+        ];
+
+        return StormUtils::renderStandardJsonapiResponse($data, 201);
+    }
+
+    /**
+     * OVVERIDES PARENT FUNCTION!
+     * Get the response for a failed password reset link.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  string $response
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     */
+    protected function sendResetLinkFailedResponse(Request $request, $response)
+    {
+
+        $data = [
+            'errors' => [
+                'status' => 500,
+                'title' => $response,
+                'detail' => trans($response),
+            ]
+        ];
+
+        return StormUtils::renderStandardJsonapiResponse($data, 500);
     }
 
     /**
@@ -128,12 +182,12 @@ class AuthController extends Controller
     public function user(Request $request)
     {
         $user = Auth::user(); // $request->user() is the same
-         
+
         $user->getRoleNames();
         $user->getPermissionNames();
         $data = [
             'id' => $user->id,
-            'type' => 'users', 
+            'type' => 'users',
             'attributes' => $user
         ];
         return response()->json(['data' => $data], 200);

@@ -58,4 +58,13 @@ class Utils
     {
         return strtr($string, $placeholders);
     }
+
+    public static function renderStandardJsonapiResponse($data, $code)
+    {
+        $resp = Response($data, $code);
+        $resp->header('Content-Type', 'application/vnd.api+json');
+        return $resp;
+    }
+
+
 }

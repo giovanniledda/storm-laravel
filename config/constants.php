@@ -94,7 +94,15 @@ defined('TASKS_STATUSES') or define('TASKS_STATUSES', [TASKS_STATUS_DRAFT, TASKS
 /*
  * VALIDATORS MESSAGES
  */
+
 defined('VALIDATOR_REQUIRED') or define('VALIDATOR_REQUIRED', 'is required and cannot be null');
 defined('VALIDATOR_STRING') or define('VALIDATOR_STRING', 'is not a string');
 defined('VALIDATOR_NUMERIC') or define('VALIDATOR_NUMERIC', 'is not a numeric value');
 defined('VALIDATOR_IN') or define('VALIDATOR_IN', 'is not a valid value, valid values are : ');
+
+
+/*
+ * RESET PASSWORD MESSAGES
+ */
+
+defined('PASSWORD_RESET_LINK_SENT') or define('PASSWORD_RESET_LINK_SENT', 'Password reset link sent via email!');
