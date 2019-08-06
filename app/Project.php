@@ -6,18 +6,21 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\ModelStatus\HasStatuses;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasMany; 
+use Venturecraft\Revisionable\RevisionableTrait;
+use Log;
 
 class Project extends Model
 {
-    use HasStatuses;
+    use HasStatuses, RevisionableTrait;
 
     protected $table = 'projects';
 
     protected $fillable = [
        'name', 'project_status', 'boat_id', 'project_type'
     ];
-
+  
+    
     public function boat()
     {
         return $this->belongsTo('App\Boat');
@@ -31,6 +34,11 @@ class Project extends Model
     public function tasks()
     {
         return $this->hasMany(Task::class);
+    }
+    
+    public function history()
+    {
+        return $this->hasMany('App\ProjectHistory');
     }
 
     public function comments()
@@ -55,5 +63,5 @@ class Project extends Model
                 'updated_at'
             ]);
     }
-
+     
 }

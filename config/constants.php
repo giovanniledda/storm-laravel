@@ -64,6 +64,21 @@ defined('PROJECT_STATUSES') or define('PROJECT_STATUSES', [PROJECT_STATUS_OPEN, 
 defined('PROJECT_USER_ROLE_AUTHOR') or define('PROJECT_USER_ROLE_AUTHOR', 'author');
 defined('PROJECT_USER_ROLE_OWNER') or define('PROJECT_USER_ROLE_OWNER', 'owner'); //?? discutere con danilo
 
+/*
+ * PROJECT EVENT TYPES
+ */
+
+defined('PROJECT_EVENT_TYPE_MARK_COMPLETED') or define('PROJECT_EVENT_TYPE_MARK_COMPLETED', 1);
+defined('PROJECT_EVENT_TYPE_PROGRESS') or define('PROJECT_EVENT_TYPE_PROGRESS', 2);
+
+/*
+ * PROJECT EVENTS STRINGS 
+ */
+
+defined('PROJECT_EVENT_MARK_COMPLETED') or define('PROJECT_EVENT_MARK_COMPLETED', ' points marked as completed');
+defined('PROJECT_EVENT_PROGRESS') or define('PROJECT_EVENT_PROGRESS', '% percentage');
+
+
 
 /*
  * PROJECT TYPES

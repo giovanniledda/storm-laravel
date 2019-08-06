@@ -51,9 +51,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         $api->resource('documents')->only('show')->controller('DocumentController') //uses the App\Http\Controllers\Api\DocumentController
         ->routes(function ($gets){
                 $gets->get('{record}/show', 'show')->name('show');
-            })
-
-            ;
+            })  ;
         $api->resource('sites');
         $api->resource('boat-users')->only('create'); // usato solo per associazione boat - user
         $api->resource('project-users'); //->only('create'); // usato solo per associazione project  - user
@@ -64,8 +62,8 @@ Route::group(['middleware' => 'auth:api'], function () {
             });
         $api->resource('users');
         $api->resource('sections');
-        $api->resource('task-intervent-types');
-
+        $api->resource('task-intervent-types'); 
+        
         $api->resource('boats')->relationships(function ($relations) {
             $relations->hasMany('sections'); // punta al methodo dell'adapter /app/jsonApi/boats/Adapter non al modello
         });
@@ -73,12 +71,17 @@ Route::group(['middleware' => 'auth:api'], function () {
         $api->resource('projects')->only('statuses')->controller('ProjectController') //uses the App\Http\Controllers\Api\DocumentController
         ->routes(function ($gets){
                 $gets->get('/statuses', 'statuses')->name('statuses');
+                
             });
-        
+        $api->resource('projects')->only('history')->controller('ProjectController') //uses the App\Http\Controllers\Api\DocumentController
+        ->routes(function ($gets){
+                $gets->get('{record}/history', 'history')->name('history');
+                
+            });
+            
         $api->resource('projects')->relationships(function ($relations) {
             $relations->hasOne('boat'); // punta al methodo dell'adapter /app/jsonApi/Projects/Adapter non al modello
-            $relations->hasMany('tasks');
-            $relations->hasMany('users');
+            $relations->hasMany('tasks', 'users');  
         });
 
         $api->resource('updates');
