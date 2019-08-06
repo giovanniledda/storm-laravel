@@ -4,7 +4,7 @@ namespace App\JsonApi\V1\Tasks;
 
 use Neomerx\JsonApi\Schema\SchemaProvider;
 use App\User;
-
+ 
 class Schema extends SchemaProvider
 {
 
@@ -49,8 +49,7 @@ class Schema extends SchemaProvider
 //        $author = User::where('id', $resource->author_id)->first();
         $author = $resource->author;
 
-        return [
-         //   'title' => $resource->title,
+        return [ 
             'description' => $resource->description,
             'number'=> $resource->number,
             'worked_hours'=> $resource->worked_hours,

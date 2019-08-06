@@ -63,7 +63,7 @@ return [
         'users' => \App\User::class,
         'sections'=> \App\Section::class, 
         'updates' => \App\Update::class,   
-        'comments' => \App\Comment::class, 
+        'comments' => \App\Comment::class,  
     ],
 
     /*

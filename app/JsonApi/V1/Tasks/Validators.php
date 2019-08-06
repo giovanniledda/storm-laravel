@@ -58,8 +58,7 @@ class Validators extends AbstractValidators
         'status' => 'in:'.TASKS_STATUS_ACCEPTED.','.TASKS_STATUS_CLOSED.','.TASKS_STATUS_DENIED.','.TASKS_STATUS_SUBMITTED,
         'project_id'=> 'required|numeric',
         'section_id'=> 'required|numeric',
-        'intervent_type_id'=>'required|numeric',
-        'subsection_id'=>'numeric',
+        'intervent_type_id'=>'required|numeric', 
         'x_coord'=>'required|numeric',
         'y_coord'=>'required|numeric',
         ];
