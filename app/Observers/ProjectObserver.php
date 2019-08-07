@@ -43,6 +43,8 @@ class ProjectObserver
         // è cambiato il tipo del progetto
         if (isset($original['project_type']) && isset($project->project_type) && $original['project_type']!=$project->project_type) {
            
+            
+            
         }
         
          // è cambiato lo stato di avanzamento
