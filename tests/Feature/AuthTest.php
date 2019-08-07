@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\User;
+use function get_class_methods;
 use Laravel\Passport\ClientRepository;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -221,6 +222,48 @@ class AuthTest extends TestCase
         $response = $this->json('POST', route('passport.token'), $refresh_token_data) // oauth/token
             ->assertStatus(200)
             ->assertJsonStructure(['expires_in', 'access_token', 'refresh_token']);
+
+        // Delete data
+        $this->_deleteTestUser();
+    }
+
+    /**
+     * @test
+     * Test reset some User's password
+     */
+    public function testResetPasswordRequest()
+    {
+
+        $user = $this->_createTestUser();
+
+        // User's WRONG data
+        $data_ko = [
+            'email' => $this->_user_data['email'].'wrong',
+        ];
+
+        // Send post request
+        $response = $this->json('POST', route('api.auth.password.reset'), $data_ko) // oauth/token
+        ->assertStatus(500)
+            ->assertJsonStructure(['errors']);
+
+        // User's data
+        $data_ok = [
+            'email' => $this->_user_data['email'],
+        ];
+
+        // Send post request
+        $response = $this->json('POST', route('api.auth.password.reset'), $data_ok) // oauth/token
+            ->assertStatus(200)
+            ->assertJsonStructure(['success', 'message', 'data']);
+
+        // https://laracasts.com/discuss/channels/testing/testing-if-email-was-sent-with-out-sending-it?page=1#reply=402801
+        $emails = $this->app->make('swift.transport')->driver()->messages();
+//        dd(get_class_methods($emails[0]));
+
+        $this->assertCount(1, $emails);
+        $this->assertEquals([$this->_user_data['email']], array_keys($emails[0]->getTo()));
+        $this->assertContains(config('app.name'), $emails[0]->getSubject());
+        $this->assertContains('password/reset/', $emails[0]->getBody());
 
         // Delete data
         $this->_deleteTestUser();

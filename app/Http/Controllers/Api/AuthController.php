@@ -149,7 +149,7 @@ class AuthController extends Controller
             'data' => [],
         ];
 
-        return StormUtils::renderStandardJsonapiResponse($data, 201);
+        return StormUtils::renderStandardJsonapiResponse($data, 200);
     }
 
     /**
