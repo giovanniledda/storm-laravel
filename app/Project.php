@@ -7,12 +7,12 @@ use Spatie\ModelStatus\HasStatuses;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany; 
-use Venturecraft\Revisionable\RevisionableTrait;
+//use Venturecraft\Revisionable\RevisionableTrait;
 use Log;
 
 class Project extends Model
 {
-    use HasStatuses, RevisionableTrait;
+    use HasStatuses;
 
     protected $table = 'projects';
 
@@ -37,7 +37,7 @@ class Project extends Model
     
     public function history()
     {
-        return $this->hasMany('App\ProjectHistory');
+        return $this->morphMany('App\History', 'historyable');
     }
     
      public function sections()

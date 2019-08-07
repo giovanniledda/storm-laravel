@@ -31,6 +31,6 @@ class CreateProjectSectionTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('project_sections');
+        Schema::dropIfExists('project_section');
     }
 }

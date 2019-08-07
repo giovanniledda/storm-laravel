@@ -45,6 +45,11 @@ class Boat extends Model
     {
         return $this->morphMany('App\Document', 'documentable');
     }
+    
+    public function history()
+    {
+        return $this->morphMany('App\History', 'historyable');
+    }
 
     public function associatedUsers() {
         return $this->hasMany('App\BoatUser');

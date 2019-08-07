@@ -23,7 +23,7 @@ class ProjectController extends Controller
         $resp = Response(["data"=>[
              "type"=>"projects",
              "attributes" =>["project-statuses"=>PROJECT_STATUSES] 
-        ]], 201);
+        ]], 200);
 
         $resp->header('Content-Type', 'application/vnd.api+json');
 
@@ -37,9 +37,9 @@ class ProjectController extends Controller
         foreach ($histories as $history) {
             array_push($data, [ 
                 "type"=>"projects" , 
-                "attributes"=>['author_id'=>$history['author_id'], 'event'=>$history['event']]]);
+                "attributes"=>['event'=>$history['event_body']]]);
         }
-        $resp = Response(["data"=>$data], 201);
+        $resp = Response(["data"=>$data], 200);
         $resp->header('Content-Type', 'application/vnd.api+json');
 
         return $resp;
