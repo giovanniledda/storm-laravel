@@ -36,7 +36,7 @@ class ProjectObserver
      * @param  \App\Project  $project
      * @return void
      */
-    public function updating(Project $project)
+ /*   public function updating(Project $project)
     { 
         $original = $project->getOriginal();
         
@@ -54,7 +54,7 @@ class ProjectObserver
          
         
     }
-    
+    */
     
     /**
      * Handle the project "created" event.

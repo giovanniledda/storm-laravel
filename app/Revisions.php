@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Revisions extends Model
 {   
-    protected $table = 'revisions'; 
+    protected $table = 'statuses'; 
 }

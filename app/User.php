@@ -9,10 +9,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
 use function snake_case;
 use Spatie\Permission\Traits\HasRoles;
+use Lecturize\Addresses\Traits\HasAddresses;
+
 
 class User extends Authenticatable
 {
-    use Notifiable, HasApiTokens, HasRoles, CanResetPassword;
+    use Notifiable, HasApiTokens, HasRoles, CanResetPassword, HasAddresses;
 
     /**
      * The attributes that are mass assignable.
@@ -68,6 +70,11 @@ class User extends Authenticatable
             ]);
     }
 
+    public function phones()
+    {
+        return $this->hasMany('App\UsersTel');
+    }
+    
     public function setPasswordAttribute($password)
     {
         $this->attributes['password'] = bcrypt($password);

@@ -54,7 +54,8 @@ Route::group(['middleware' => 'auth:api'], function () {
             })  ;
         $api->resource('sites');
         $api->resource('boat-users')->only('create'); // usato solo per associazione boat - user
-        $api->resource('project-users'); //->only('create'); // usato solo per associazione project  - user
+        $api->resource('project-users')->only('create'); //->only('create'); // usato solo per associazione project  - user
+        $api->resource('project-sections')->only('create'); //->only('create'); // usato solo per associazione project  - user
         $api->resource('tasks');
         $api->resource('tasks')->only('statuses')->controller('TaskController') //uses the App\Http\Controllers\Api\DocumentController
         ->routes(function ($gets){
@@ -70,18 +71,18 @@ Route::group(['middleware' => 'auth:api'], function () {
         
         $api->resource('projects')->only('statuses')->controller('ProjectController') //uses the App\Http\Controllers\Api\DocumentController
         ->routes(function ($gets){
-                $gets->get('/statuses', 'statuses')->name('statuses');
-                
+                $gets->get('/statuses', 'statuses')->name('statuses'); 
             });
         $api->resource('projects')->only('history')->controller('ProjectController') //uses the App\Http\Controllers\Api\DocumentController
         ->routes(function ($gets){
-                $gets->get('{record}/history', 'history')->name('history');
-                
+                $gets->get('{record}/history', 'history')->name('history'); 
             });
             
         $api->resource('projects')->relationships(function ($relations) {
             $relations->hasOne('boat'); // punta al methodo dell'adapter /app/jsonApi/Projects/Adapter non al modello
-            $relations->hasMany('tasks', 'users');  
+            $relations->hasMany('tasks');  
+            $relations->hasMany('users');  
+            $relations->hasMany('sections');  
         });
 
         $api->resource('updates');

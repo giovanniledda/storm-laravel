@@ -64,8 +64,7 @@ class Schema extends SchemaProvider
             'x_coord' => $resource->x_coord,
             'y_coord' => $resource->y_coord,
             'created-at' => $resource->created_at->toAtomString(),
-            'updated-at' => $resource->updated_at->toAtomString(),
-            
+            'updated-at' => $resource->updated_at->toAtomString(), 
         ];
     }
 

@@ -19,8 +19,7 @@ class Project extends Model
     protected $fillable = [
        'name', 'project_status', 'boat_id', 'project_type'
     ];
-  
-    
+   
     public function boat()
     {
         return $this->belongsTo('App\Boat');
@@ -39,6 +38,18 @@ class Project extends Model
     public function history()
     {
         return $this->hasMany('App\ProjectHistory');
+    }
+    
+     public function sections()
+    {
+         return $this->belongsToMany('App\Section')
+            ->using('App\ProjectSections');
+            /*->withPivot([
+                // 'role',
+                'profession_id',
+                'created_at',
+                'updated_at'
+            ]);*/
     }
 
     public function comments()
