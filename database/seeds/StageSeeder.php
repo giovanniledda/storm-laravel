@@ -5,6 +5,7 @@ use Illuminate\Database\Seeder;
 use App\User;
 use App\Boat;
 use App\Section;
+use App\ProjectSections;
 use App\Site;
 use App\Project;
 use App\Profession;
@@ -39,7 +40,7 @@ class StageSeeder extends Seeder
         $boat1 = $this->createBoat($site);
         
         // creo i ponti NO FAKER !!
-        $this->createDeck(
+        $p1 = $this->createDeck(
                 [   
                     'name'=>'Lower Deck', 
                     'section_type'=>'deck', 
@@ -47,7 +48,7 @@ class StageSeeder extends Seeder
                     'code'=>'LD',
                     'boat_id' => $boat1->id
                 ]); 
-        $this->createDeck(
+        $p2 =$this->createDeck(
                 [   
                     'name'=>'Main Deck', 
                     'section_type'=>'deck', 
@@ -102,7 +103,7 @@ class StageSeeder extends Seeder
         $boat3 = $this->createBoat($site);
         
          
-        $this->createDeck(
+       $p3 =  $this->createDeck(
                 [   
                     'name'=>'Deck 1', 
                     'section_type'=>'deck', 
@@ -118,7 +119,7 @@ class StageSeeder extends Seeder
                     'code'=>'D2',
                     'boat_id' => $boat3->id
                 ]); 
-         $this->createDeck(
+         $p4 = $this->createDeck(
                 [   
                     'name'=>'Deck 3', 
                     'section_type'=>'deck', 
@@ -126,7 +127,7 @@ class StageSeeder extends Seeder
                     'code'=>'D3',
                     'boat_id' => $boat3->id
                 ]); 
-         $this->createDeck(
+         $p5 = $this->createDeck(
                 [   
                     'name'=>'Deck 4', 
                     'section_type'=>'deck', 
@@ -140,9 +141,9 @@ class StageSeeder extends Seeder
          $this->boatAssociate($user_2, $boat3, 1);
          
          // creo i relativi progetti
-         $this->createProject($site, $boat1);
-         $this->createProject($site, $boat2);
-         $this->createProject($site, $boat3);
+         $this->createProject($site, $boat1, [$p1, $p2]);
+         $this->createProject($site, $boat2, [$p3]);
+         $this->createProject($site, $boat3, [$p4, $p5]);
          
     } 
     
@@ -163,6 +164,7 @@ class StageSeeder extends Seeder
     private function createDeck($deck) {
         $d = Section::create( $deck );
         $d->save();
+        return $d;
     }
     
     
@@ -202,7 +204,7 @@ class StageSeeder extends Seeder
         return $boat;
     }
     
-    private function createProject($site, $boat)
+    private function createProject($site, $boat, $decks)
     {
         $project_name = $this->faker->sentence;
         $project = new Project([
@@ -213,6 +215,10 @@ class StageSeeder extends Seeder
         );
         $project->save();
         $project->boat()->associate($boat)->save();
+        foreach ($decks as $deck) {
+            ProjectSections::create(['project_id' => $project->id, 'section_id'  => $deck->id])->save();
+        }
+        
          
         return $project;
     }

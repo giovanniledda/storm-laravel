@@ -21,6 +21,8 @@ class CreateProjectSectionTable extends Migration
              // project
             $table->unsignedBigInteger('project_id');
             $table->foreign('project_id')->references('id')->on('projects');
+            
+             $table->timestamps();
         });
     }
 
