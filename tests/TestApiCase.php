@@ -5,9 +5,9 @@ namespace Tests;
 use App\Boat;
 use App\Project;
 use App\Task;
+use App\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Passport\Passport;
-use App\User;
 use Laravel\Passport\ClientRepository;
 
 //abstract class TestApiCase extends BaseTestCase
@@ -26,7 +26,7 @@ abstract class TestApiCase extends TestCase
     public function setUp(): void {
         parent::setUp();
         // // To test Oauth Grants
-        // \Artisan::call('passport:install',['-vvv' => true]);
+//         \Artisan::call('passport:install',['-vvv' => true]);
         //  Passport::actingAs(factory(User::class)->create());
     }
 
@@ -39,7 +39,7 @@ abstract class TestApiCase extends TestCase
     }
 
 
-    public function _grantTokenPassword(User $user)
+    public function _grantTokenPassword(User $user, $password = null)
     {
 
         $oauth_client = $this->_createTestPasswordGrantClient($user);
@@ -50,7 +50,7 @@ abstract class TestApiCase extends TestCase
             'client_id' => $oauth_client->id,
             'client_secret' => $oauth_client->secret,
             'username' => $user->email,
-            'password' => 'fake123',
+            'password' => $password ? $password : 'fake123',
             'scope' => '',
         ];
 
@@ -85,6 +85,20 @@ abstract class TestApiCase extends TestCase
         $user = User::create($user_data);
         $user->assignRole($ruolo);
         return $user;
+    }
+
+    public function _testUserConnection($user, $password = null)
+    {
+        /*** test connessione con l'utente $user */
+        $token = $this->_grantTokenPassword($user, $password);
+        $this->assertIsString($token);
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', route('api.auth.user'), [], ['Authorization' => 'Bearer '.$token])
+            ->assertStatus(200)
+            ->assertJsonStructure(['data' => ['id', 'type', 'attributes']]);
+
+        $this->logResponse($response);
     }
 
     /* crea un nuovo task dato il progetto */

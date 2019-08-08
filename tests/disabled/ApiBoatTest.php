@@ -44,7 +44,7 @@ class ApiBoatTest extends TestApiCase
 
     function test_all()
     {
-        
+
         $this->populateProfessions();
         $admin_role = Role::firstOrCreate(['name' => ROLE_ADMIN]);
         $boat_manager_role = Role::firstOrCreate(['name' => ROLE_BOAT_MANAGER]);
@@ -61,19 +61,19 @@ class ApiBoatTest extends TestApiCase
         $admin1 = $this->_addUser(ROLE_ADMIN);
         $boatManager1 = $this->_addUser(ROLE_BOAT_MANAGER); // equipaggio ??
         $boatManager1->givePermissionTo($bootmanagerPerm);
-          
+
         $boatManager2 = $this->_addUser(ROLE_BOAT_MANAGER); // equipaggio ??
         $boatManager2->givePermissionTo($bootmanagerPerm);
-        
-        
+
+
         $user = $this->_addUser(ROLE_WORKER);
-      
+
 
         /*** test connessione con l'utente Admin */
         $token_admin = $this->_grantTokenPassword($admin1);
         $this->assertIsString($token_admin);
 
-        $response = $this->json('GET', route('api.auth.user'), [], ['Authorization' => 'Bearer '.$token_admin])
+        $response = $this->json('GET', route('api.auth.user'), [], ['Authorization' => 'Bearer ' . $token_admin])
             ->assertStatus(200)
             ->assertJsonStructure(['data' => ['id', 'type', 'attributes']]);
 
@@ -92,7 +92,7 @@ class ApiBoatTest extends TestApiCase
 //        $this->getBoatList($boatManager1, 0);
 
         /** creo N barche e le associo a $boatManager1 */
-       $boats_for_bm1 = [];
+        $boats_for_bm1 = [];
         for ($i = 0; $i <= $this->faker->randomDigitNotNull(); $i++) {
             $boats_for_bm1[$i] = $this->createBoat();
             $this->boatApiAssociate($admin1, $boatManager1, $boats_for_bm1[$i]);
@@ -100,49 +100,48 @@ class ApiBoatTest extends TestApiCase
         $this->assertNotCount(0, $boats_for_bm1);
 
         /** creo N barche e le associo a $boatManager2 */
-      $boats_for_bm2 = [];
+        $boats_for_bm2 = [];
         for ($i = 0; $i <= $this->faker->randomDigitNotNull(); $i++) {
             $boats_for_bm2[$i] = $this->createBoat();
             $this->boatApiAssociate($admin1, $boatManager2, $boats_for_bm2[$i]);
         }
         $this->assertNotCount(0, $boats_for_bm2);
 
-      /*** test connessione con l'utente $boatManager1 */
-       $token = $this->_grantTokenPassword($boatManager1);
+        /*** test connessione con l'utente $boatManager1 */
+        $token = $this->_grantTokenPassword($boatManager1);
         $this->assertIsString($token);
         Passport::actingAs($boatManager1);
-
-        $response = $this->json('GET', route('api.auth.user'), [], ['Authorization' => 'Bearer '.$token])
+        $response = $this->json('GET', route('api.auth.user'), [], ['Authorization' => 'Bearer ' . $token])
             ->assertStatus(200)
             ->assertJsonStructure(['data' => ['id', 'type', 'attributes']]);
 
         $this->logResponse($response);
 
         // deve vedere SOLO le boat di $boatManager1
-     //   $this->getBoatList($boatManager1, count($boats_for_bm1)); 
+        //   $this->getBoatList($boatManager1, count($boats_for_bm1));
         // deve vedere SOLO le boat di $boatManager2
-     //   $this->getBoatList($boatManager2, count($boats_for_bm2));
-        
-        
-    //    $this->getBoatList($user,  0); // non deve vedere nessuna boat il suo ruolo è worker con nessun permesso
-        
-    //    $user->givePermissionTo($adminPerm); // do il permesso all'utente di admin e deve vedere tutto
-  
-       // $this->getBoatList($user,  count($boats_for_bm1) + count($boats_for_bm2)); 
+        //   $this->getBoatList($boatManager2, count($boats_for_bm2));
+
+
+        //    $this->getBoatList($user,  0); // non deve vedere nessuna boat il suo ruolo è worker con nessun permesso
+
+        //    $user->givePermissionTo($adminPerm); // do il permesso all'utente di admin e deve vedere tutto
+
+        // $this->getBoatList($user,  count($boats_for_bm1) + count($boats_for_bm2));
         // do all'utente $user il permesso di 
-          
+
     }
 
     private function getBoatList(User $user, int $expected)
     {
         $this->refreshApplication();  // Fa una sorta di pulizia della cache perché dopo la prima post, poi tutte le chiamate successive tornano sulla stessa route
-        Passport::actingAs($user); 
+        Passport::actingAs($user);
         $r = $this->json('GET', 'api/v1/boats', [], $this->headers);
 
         $r->assertStatus(200);
 
-        $re = json_decode($r->getContent(), true); 
-        $this->logResponse($r);  
+        $re = json_decode($r->getContent(), true);
+        $this->logResponse($r);
         $this->assertCount($expected, $re['data']);
     }
 
@@ -157,7 +156,7 @@ class ApiBoatTest extends TestApiCase
             ]
         ];
         $this->refreshApplication();  // Fa una sorta di pulizia della cache perché dopo la prima post, poi tutte le chiamate successive tornano sulla stessa route
-        Passport::actingAs($connectedUser); 
+        Passport::actingAs($connectedUser);
         $response = $this->json('POST', route('api:v1:boat-users.create'), $data, $this->headers);
         $response->assertStatus(201);
 
@@ -182,16 +181,17 @@ class ApiBoatTest extends TestApiCase
         $this->assertDatabaseHas('boats', ['name' => $boat->name]);
         return $boat;
     }
-    
-    
-    private function populateProfessions() {
-        $professions = ['owner','chief engineer', 'captain', 'ship\'s boy'];
+
+
+    private function populateProfessions()
+    {
+        $professions = ['owner', 'chief engineer', 'captain', 'ship\'s boy'];
         foreach ($professions as $profession) {
-            $prof = Profession::create(['name'=>$profession]);
+            $prof = Profession::create(['name' => $profession]);
             $prof->save();
         }
-        
-        
+
+
     }
 
 
