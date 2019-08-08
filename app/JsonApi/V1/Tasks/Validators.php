@@ -34,12 +34,14 @@ class Validators extends AbstractValidators
         'project_id.required'=> 'project_id '.VALIDATOR_REQUIRED,
         'section_id.numeric'=> 'section_id '.VALIDATOR_NUMERIC,
         'section_id.required'=> 'section_id '.VALIDATOR_REQUIRED,
-        'status.in' => 'status '.VALIDATOR_IN.' '.TASKS_STATUS_DRAFT.', '.TASKS_STATUS_ACCEPTED.', '.TASKS_STATUS_ACCEPTED.', '.TASKS_STATUS_CLOSED.', '.TASKS_STATUS_DENIED.', '.TASKS_STATUS_SUBMITTED,
+        'status.in' => 'status '.VALIDATOR_IN.' '.TASKS_STATUS_DRAFT.', '.TASKS_STATUS_SUBMITTED.', '.TASKS_STATUS_ACCEPTED.', '.TASKS_STATUS_IN_PROGRESS.', '.TASKS_STATUS_DENIED.', '.TASKS_STATUS_REMARKED.', '.TASKS_STATUS_MONITORED,
         'x_coord.required'=> 'x_coord '.VALIDATOR_REQUIRED,
         'x_coord.numeric'=> 'x_coord '.VALIDATOR_NUMERIC,
         'y_coord.required'=> 'y_coord '.VALIDATOR_REQUIRED,
         'y_coord.numeric'=> 'y_coord '.VALIDATOR_NUMERIC,
         ];
+     
+    
     /**
      * Get resource validation rules.
      *
@@ -55,7 +57,7 @@ class Validators extends AbstractValidators
         'number' => 'numeric',
         'worked_hours' => 'numeric',
         'estimated_hours' => 'numeric',
-        'status' => 'in:'.TASKS_STATUS_DRAFT.','.TASKS_STATUS_ACCEPTED.','.TASKS_STATUS_CLOSED.','.TASKS_STATUS_DENIED.','.TASKS_STATUS_SUBMITTED,
+        'status' => 'in:'.TASKS_STATUS_DRAFT.','.TASKS_STATUS_SUBMITTED.','.TASKS_STATUS_ACCEPTED.','.TASKS_STATUS_IN_PROGRESS.','.TASKS_STATUS_DENIED.','.TASKS_STATUS_REMARKED.','.TASKS_STATUS_MONITORED,
         'project_id'=> 'required|numeric',
         'section_id'=> 'required|numeric',
         'intervent_type_id'=>'required|numeric', 

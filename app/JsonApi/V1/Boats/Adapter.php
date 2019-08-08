@@ -55,7 +55,7 @@ class Adapter extends AbstractAdapter
              // L'utente loggato non e' un admin   
              // SE SI TRATTA DI UN DIPENDENTE  ALLORA MOSTRO SOLO QUELLI LEGATI A project_user
              if ($user->hasRole(ROLE_WORKER)) {
-                 $query->Join('projects', 'boats.id', '=', 'projects.boat_id')->where('projects.project_status', '=', PROJECT_STATUS_OPEN)
+                 $query->Join('projects', 'boats.id', '=', 'projects.boat_id')->where('projects.project_status', '=', PROJECT_STATUS_IN_SITE)
                     ->whereExists(function ($q) {
                         $user = \Auth::user();
                         $q->from('project_user')->whereRaw("project_user.user_id = {$user->id}");

@@ -28,7 +28,8 @@ class Task extends Model
         'author_id',
         'subsection_id',
         'x_coord',
-        'y_coord'
+        'y_coord',
+        'is_open',
     ];
 
 
