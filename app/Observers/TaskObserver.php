@@ -5,8 +5,8 @@ namespace App\Observers;
 use App\Notifications\TaskCreated;
 use App\Notifications\TaskUpdated;
 use App\Task; 
-use App\ProjectHistory;
-use App\Revisions; 
+use App\History; 
+use App\Project;
 use Notification;
 use StormUtils;
 use Log;
@@ -25,13 +25,25 @@ class TaskObserver
      * @param  \App\Project  $project
      * @return void
      */
-    public function saved(Task $task)
-    {  
-      /*  $original       = $task->getOriginal(); 
+    public function updating(Task $task)
+    {   
+         $original       = $task->getOriginal(); 
+          
+         if (isset($original['is_open']) &&  $original['is_open']!=$task->is_open && $task->is_open==0) {
+             // metto nella history del progetto
+             $project = Project::find($task->project_id)
+                            ->history()
+                            ->create(
+                                    ['event_date'=> date("Y-m-d H:i:s", time()), 
+                                     'event_body'=>'Task number #'.$task->number.' marked to closed']);
+         }
+         
+         
+      /*  
         $revisions      = new Revisions();
         
-        $projectHistory = new ProjectHistory();
-        $user = \Auth::user();
+       
+        
         /** parte che impatta sullo storico dei progetti **/
         
         // è cambiato lo stato del task
@@ -105,6 +117,14 @@ class TaskObserver
         if (!empty($users)) {
             Notification::send($users, new TaskCreated($task));
         }
+         
+        /** setto la variabile added_by_storm **/
+        $user = \Auth::user();
+        
+        if ($user->can(PERMISSION_BOAT_MANAGER)) { // se sei in boat_user
+            $task->update(['added_by_storm'=>0]);
+        }
+        
     }
 
     /**

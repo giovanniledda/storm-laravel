@@ -16,7 +16,7 @@ class CreateHistoryTable extends Migration
         Schema::create('history', function (Blueprint $table) {
            $table->bigIncrements('id'); // 
             $table->text('event_body');
-            $table->date('event_date'); 
+            $table->datetime('event_date'); 
             
             // Polymorphic: commentable
             $table->nullableMorphs('historyable'); 

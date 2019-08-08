@@ -48,7 +48,10 @@ class Schema extends SchemaProvider
     {
 //        $author = User::where('id', $resource->author_id)->first();
         $author = $resource->author;
-
+/**
+ *      $table->boolean('is_open')->default(true);
+            $table->boolean('added_by_storm')->default(false);
+ */
         return [ 
             'description' => $resource->description,
             'number'=> $resource->number,
@@ -57,6 +60,8 @@ class Schema extends SchemaProvider
             'status'=> $resource->task_status,
             'author_id'=> $resource->author ? $author->id : '',
             'author'=> $resource->author ? $author->name : '',
+            'is_open' => $resource->is_open,
+            'added_by_storm' => $resource->added_by_storm,
             'project_id' => $resource->project_id,
             'section_id' => $resource->section_id,
             'intervent_type_id' => $resource->intervent_type_id,

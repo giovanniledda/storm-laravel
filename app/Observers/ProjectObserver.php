@@ -21,9 +21,7 @@ restored
  */
 namespace App\Observers;
 
-use App\Project;
-use function file_put_contents;
-use const PROJECT_STATUS_OPEN;
+use App\Project; 
 use Log;
 
 class ProjectObserver
@@ -64,7 +62,7 @@ class ProjectObserver
      */
     public function created(Project $project)
     {
-        $project->setStatus(PROJECT_STATUS_OPEN); 
+        $project->setStatus(PROJECT_STATUS_IN_SITE); 
     }
 
     /**

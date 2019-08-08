@@ -16,7 +16,7 @@ class Validators extends AbstractValidators
         'boat_id.required' => 'boat_id '.VALIDATOR_REQUIRED,
         'boat_id.numeric' => 'boat_id '.VALIDATOR_NUMERIC,
         'project_type.in' => 'status '.VALIDATOR_IN.': '.PROJECT_TYPE_NEWBUILD.','.PROJECT_TYPE_REFIT,
-        'status.in' => 'status '.VALIDATOR_IN.': '.PROJECT_STATUS_OPEN.','.PROJECT_STATUS_CLOSED
+        'status.in' => 'status '.VALIDATOR_IN.': '.PROJECT_STATUS_OPERATIONAL.','.PROJECT_STATUS_IN_SITE.','.PROJECT_STATUS_CLOSED
     ];
 
     /**
@@ -50,7 +50,7 @@ class Validators extends AbstractValidators
            'name' => 'required|string|min:1|max:255',
            'boat_id' => 'required|numeric',
            'project_type' => 'in:'.PROJECT_TYPE_NEWBUILD.','.PROJECT_TYPE_REFIT,
-           'status' => 'in:'.PROJECT_STATUS_OPEN.','.PROJECT_STATUS_CLOSED
+           'status' => 'in:'.PROJECT_STATUS_IN_SITE.','.PROJECT_STATUS_OPERATIONAL.','.PROJECT_STATUS_CLOSED
         ];
     }
 

@@ -50,11 +50,18 @@ defined('TASK_UPDATED_MOBILE_APP_TEXT') or define('TASK_UPDATED_MOBILE_APP_TEXT'
 
 /*
  * PROJECT STATUSES
+ *  
+ * OPERATIONAL / ISPECTION 
+ * 
+ * refit e new build sono gestiti da project_type.
+ * 
  */
 
-defined('PROJECT_STATUS_OPEN') or define('PROJECT_STATUS_OPEN', 'open');
+defined('PROJECT_STATUS_OPERATIONAL') or define('PROJECT_STATUS_OPERATIONAL', 'operational'); // a mare
+defined('PROJECT_STATUS_IN_SITE') or define('PROJECT_STATUS_IN_SITE', 'in_site'); // in refit in cantiere.
 defined('PROJECT_STATUS_CLOSED') or define('PROJECT_STATUS_CLOSED', 'closed');
-defined('PROJECT_STATUSES') or define('PROJECT_STATUSES', [PROJECT_STATUS_OPEN, PROJECT_STATUS_CLOSED]);
+
+defined('PROJECT_STATUSES') or define('PROJECT_STATUSES', [PROJECT_STATUS_IN_SITE, PROJECT_STATUS_OPERATIONAL, PROJECT_STATUS_CLOSED]);
 
 
 /*
@@ -64,18 +71,12 @@ defined('PROJECT_STATUSES') or define('PROJECT_STATUSES', [PROJECT_STATUS_OPEN, 
 defined('PROJECT_USER_ROLE_AUTHOR') or define('PROJECT_USER_ROLE_AUTHOR', 'author');
 defined('PROJECT_USER_ROLE_OWNER') or define('PROJECT_USER_ROLE_OWNER', 'owner'); //?? discutere con danilo
 
-/*
- * PROJECT EVENT TYPES
- */
-
-defined('PROJECT_EVENT_TYPE_MARK_COMPLETED') or define('PROJECT_EVENT_TYPE_MARK_COMPLETED', 1);
-defined('PROJECT_EVENT_TYPE_PROGRESS') or define('PROJECT_EVENT_TYPE_PROGRESS', 2);
 
 /*
  * PROJECT EVENTS STRINGS 
  */
 
-defined('PROJECT_EVENT_MARK_COMPLETED') or define('PROJECT_EVENT_MARK_COMPLETED', ' points marked as completed');
+defined('PROJECT_EVENT_MARK_COMPLETED') or define('PROJECT_EVENT_MARK_COMPLETED', ' marked as completed');
 defined('PROJECT_EVENT_PROGRESS') or define('PROJECT_EVENT_PROGRESS', '% percentage');
 
 
@@ -95,15 +96,34 @@ defined('BOAT_TYPE_SAIL') or define('BOAT_TYPE_SAIL', 'S/Y');
 defined('BOAT_TYPE_MOTOR') or define('BOAT_TYPE_MOTOR', 'M/Y');
 
 /*
- * TASKS  STATUS
+ * TASKS  STATUS  
+accepted (l'utente l'ha inviato e il backend l'ha accettato)
+in_progress (questo stato non e' presente nell'inVision capire se serve - il task e' in lavorazione)
+denied (l'utente l'ha inviato e il backend l'ha rifiutato)
+remarked (il backend l'ha chiuso, ma l'utente l'ha segnalato come non concluso. E' lo stesso stato di "in lavorazione" se lo mettiamo, oppure di accepted altrimenti)
+monitored (e' ancora aperto, ma il progetto e' chiuso, e sono i task da tenere d'occhio)
+ * 
+ * 
  */
 
 defined('TASKS_STATUS_DRAFT') or define('TASKS_STATUS_DRAFT', 'draft');
 defined('TASKS_STATUS_SUBMITTED') or define('TASKS_STATUS_SUBMITTED', 'submitted');
 defined('TASKS_STATUS_ACCEPTED') or define('TASKS_STATUS_ACCEPTED', 'accepted');
-defined('TASKS_STATUS_CLOSED') or define('TASKS_STATUS_CLOSED', 'closed');
+defined('TASKS_STATUS_IN_PROGRESS') or define('TASKS_STATUS_IN_PROGRESS', 'in progress');
 defined('TASKS_STATUS_DENIED') or define('TASKS_STATUS_DENIED', 'denied');
-defined('TASKS_STATUSES') or define('TASKS_STATUSES', [TASKS_STATUS_DRAFT, TASKS_STATUS_SUBMITTED, TASKS_STATUS_ACCEPTED, TASKS_STATUS_CLOSED, TASKS_STATUS_DENIED]);
+defined('TASKS_STATUS_REMARKED') or define('TASKS_STATUS_REMARKED', 'remarked');
+defined('TASKS_STATUS_MONITORED') or define('TASKS_STATUS_MONITORED', 'monitored');
+
+defined('TASKS_STATUSES') or define('TASKS_STATUSES', 
+        [
+         TASKS_STATUS_DRAFT,
+         TASKS_STATUS_SUBMITTED, 
+         TASKS_STATUS_ACCEPTED, 
+         TASKS_STATUS_IN_PROGRESS, 
+         TASKS_STATUS_DENIED, 
+         TASKS_STATUS_REMARKED,
+         TASKS_STATUS_MONITORED
+         ]);
 
 
 /*

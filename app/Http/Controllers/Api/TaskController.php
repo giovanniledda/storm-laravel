@@ -37,7 +37,7 @@ class TaskController extends Controller
         $resp->header('Content-Type', 'application/vnd.api+json');
 
         return $resp;
-         
+        
       //  exit();
     }
     

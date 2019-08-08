@@ -210,7 +210,7 @@ class StageSeeder extends Seeder
         $project = new Project([
                 'name' => $project_name,
                 'site_id' => $site->id,
-                'project_status'=> PROJECT_STATUS_OPEN
+                'project_status'=> PROJECT_STATUS_IN_SITE
             ]
         );
         $project->save();

@@ -25,7 +25,7 @@ class Schema extends SchemaProvider
     public function getPrimaryMeta($resource)
     {
         //App\Boat resource
-        $project_active = $resource->projects()->where('project_status', PROJECT_STATUS_OPEN)->first();
+        $project_active = $resource->projects()->where('project_status', PROJECT_STATUS_OPERATIONAL)->first();
           
         return [
             'image' => 'https://picsum.photos/200/300',
