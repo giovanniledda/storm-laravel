@@ -19,6 +19,12 @@ class CreateDocumentsTable extends Migration
             $table->string('title');
             $table->softDeletes();
 
+            $table->string('type')->default(\App\Document::GENERIC_DOCUMENT_TYPE);
+
+
+            // $table->longText('file');
+            // $table->string('filename');
+
             // Polymorphic: documentable
             $table->nullableMorphs('documentable');
 

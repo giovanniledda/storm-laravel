@@ -26,7 +26,7 @@ return [
     |
     */
 
-    'cloud' => env('FILESYSTEM_CLOUD', 's3'),
+    'cloud' => env('FILESYSTEM_CLOUD', 'dropbox'),
 
     /*
     |--------------------------------------------------------------------------
@@ -70,7 +70,7 @@ return [
 
         'dropbox' => [ //  as seen on https://medium.com/hello-laravel/dropbox-filesystem-laravel-5-4-dfb60a618d6e
             'driver' => 'dropbox',
-            'app_secret' => env('DROPBOX_APP_SECRET'),
+            // 'app_secret' => env('DROPBOX_APP_SECRET'),
             'token' => env('DROPBOX_TOKEN'),
         ],
 

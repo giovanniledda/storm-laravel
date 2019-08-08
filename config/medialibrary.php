@@ -9,7 +9,7 @@ return [
     // 'disk_name' => 'public',
     'disk_name' => env('MEDIA_DISK', 'public'),
 
-    
+
 
     /*
      * The maximum file size of an item in bytes.
@@ -36,9 +36,9 @@ return [
         'domain' => 'https://'.env('AWS_BUCKET').'.s3.amazonaws.com',
     ],
 
-    'dropbox' => [
-        'domain' => 'http://localhost:8000'
-    ],
+    // 'dropbox' => [
+    //     'domain' => 'http://localhost:8000'
+    // ],
 
     'remote' => [
         /*
@@ -83,6 +83,7 @@ return [
      * if your files are stored locally above the site root or on s3.
      */
     'url_generator' => null,
+    // 'url_generator' => App\UrlGenerator\DropboxUrlGenerator::class,
 
     /*
      * The class that contains the strategy for determining a media file's path.

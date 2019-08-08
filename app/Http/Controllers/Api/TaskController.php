@@ -12,38 +12,47 @@ use Validator;
 
 class TaskController extends Controller
 {
-   
-    public function statuses(Request $request) { 
+
+    public function statuses(Request $request) {
         $resp = new Response(["data"=>[
              "type"=>"tasks",
              "attributes" =>["task-statuses"=>TASKS_STATUSES]
 
-        ]], 201); 
+        ]], 201);
         $resp->header('Content-Type', 'application/vnd.api+json');
 
-        return $resp; 
+        return $resp;
     }
-    
+
     public function history(Request $request, $related) {
         $task = json_decode($related, true);
         $histories = Task::find($task['id'])->history()->get()->toArray();
-        $data = [];     
+        $data = [];
         foreach ($histories as $history) {
-            array_push($data, [ 
-                "type"=>"tasks" , 
+            array_push($data, [
+                "type"=>"tasks" ,
                 "attributes"=>['event'=>$history['event_body']]]);
         }
         $resp = Response(["data"=>$data], 200);
         $resp->header('Content-Type', 'application/vnd.api+json');
 
         return $resp;
-        
+
       //  exit();
     }
-    
-    
+
+    public function addDocument(Request $request){
+        $task = Task::find($request->task);
+
+        $body = $request->body;
+
+
+        $task();
+
+    }
+
+
 }
 
 
 
- 

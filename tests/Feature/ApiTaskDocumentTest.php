@@ -19,6 +19,12 @@ class ApiTaskDocumenttTest extends TestApiCase
     function test_can_associate_document_to_task()
     {
 
+
+        $admin1 = $this->_addUser(ROLE_ADMIN);
+        $token_admin = $this->_grantTokenPassword($admin1);
+        $this->assertIsString($token_admin);
+        Passport::actingAs($admin1);
+
         $task_name = $this->faker->sentence;
         $task = new \App\Task(['title'=>$task_name, 'description' => '']);
         $task->save();
@@ -34,18 +40,21 @@ class ApiTaskDocumenttTest extends TestApiCase
         $data = [
                     'title' => $filename,
                     'file' => $base64FileContent,
-                    'filename' =>  'testDocument.txt'
+                    'filename' =>  'testDocument.txt',
+                    'type' => 'task_detailed_image'
+
         ];
 
 
 
-        $headers = [
-            'Content-type' => 'application/json',
-            'Accept' => 'application/json',
-        ];
+        // $headers = [
+        //     'Content-type' => 'application/json',
+        //     'Accept' => 'application/json',
+        // ];
 
-        $response = $this->json('POST', route('api:v1:tasks.createDocument', ['task'=>$task->id]), $data, $headers )
-         ->assertJsonStructure(['data' => ['id']]);
+        $response = $this->json('POST', route('api:v1:tasks.document', ['task'=>$task->id]), $data, $this->headers );
+
+        // ->assertJsonStructure(['data' => ['id']]);
 
         $content = json_decode($response->getContent(), true);
 

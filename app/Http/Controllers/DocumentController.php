@@ -19,7 +19,11 @@ class DocumentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function createRelatedToTask(Request $request){
+    public function createRelatedToTask(Request $request, $related){
+
+
+
+
 
         $task = \App\Task::find($request->task);
         // TODO check task exists
@@ -45,6 +49,7 @@ class DocumentController extends Controller
 
         $doc->save();
         $task->documents()->save($doc);
+
 
 
         $ret = ['data' => [

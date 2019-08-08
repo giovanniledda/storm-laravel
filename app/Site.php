@@ -21,4 +21,14 @@ class Site extends Model
     {
         return $this->hasMany('App\Project');
     }
+
+
+    // public function addDocument(\App\Document $document, $type=false){
+    //     $this->documents()->save($document);
+    // }
+
+    // public function documents()
+    // {
+    //     return $this->morphMany('App\Document', 'documentable');
+    // }
 }

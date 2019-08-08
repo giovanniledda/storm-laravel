@@ -7,9 +7,15 @@ use function is_object;
 use Spatie\ModelStatus\HasStatuses;
 use StormUtils;
 use Venturecraft\Revisionable\RevisionableTrait;
+use function GuzzleHttp\json_decode;
 
 class Task extends Model
 {
+
+    public const DETAILED_IMAGE_TYPE = 'task_detailed_image';
+    public const GENERIC_IMAGE_TYPE = 'task_generic_image';
+    public const ADDITIONAL_IMAGE_TYPE = 'task_additional_image';
+
     use RevisionableTrait, HasStatuses;
 
     protected $table = 'tasks';
@@ -64,16 +70,56 @@ class Task extends Model
         return $this->morphMany('App\Comment', 'commentable');
     }
 
-    public function documents()
-    {
-        return $this->morphMany('App\Document', 'documentable');
+    public function addDetailedImage(\App\Document $doc){
+        $doc->type = self::DETAILED_IMAGE_TYPE;
+        $doc->save();
+        $this->documents()->save($doc);
     }
 
-       public function history()
+    public function addAdditionalImage(\App\Document $doc){
+        $doc->type = self::ADDITIONAL_IMAGE_TYPE;
+        $doc->save();
+        $this->documents()->save($doc);
+    }
+
+    public function addGenericImage(\App\Document $doc){
+        $doc->type = self::GENERIC_IMAGE_TYPE;
+        $doc->save();
+        $this->documents()->save($doc);
+    }
+
+    public function addGenericDocument(\App\Document $doc){
+        $doc->type = Document::GENERIC_DOCUMENT_TYPE;
+        $doc->save();
+        $this->documents()->save($doc);
+    }
+
+    public function detailed_images(){
+        return $this->documents()->where('type', self::DETAILED_IMAGE_TYPE);
+    }
+
+    public function additional_images(){
+        return $this->documents()->where('type', self::ADDITIONAL_IMAGE_TYPE);
+    }
+
+    public function generic_images(){
+        return $this->documents()->where('type', self::GENERIC_IMAGE_TYPE);
+    }
+
+    public function generic_documents(){
+        return $this->documents()->where('type', Document::GENERIC_DOCUMENT_TYPE);
+    }
+
+    public function documents(){
+            return $this->morphMany('App\Document', 'documentable');
+    }
+
+
+    public function history()
     {
         return $this->morphMany('App\History', 'historyable');
     }
-    
+
     public function taskIntervents()
     {
         return $this->hasOne('App\TaskInterventType');
@@ -103,5 +149,5 @@ class Task extends Model
 //        return StormUtils::getAllBoatManagers();
         return $this->getProjectUsers();
     }
-    
+
 }

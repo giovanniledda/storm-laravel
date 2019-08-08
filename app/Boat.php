@@ -17,9 +17,9 @@ class Boat extends Model
         'length',
         'draft',
         'beam'
-        
+
     ];
- 
+
     public function site()
     {
         return $this->hasOne('App\Site');
@@ -45,7 +45,7 @@ class Boat extends Model
     {
         return $this->morphMany('App\Document', 'documentable');
     }
-    
+
     public function history()
     {
         return $this->morphMany('App\History', 'historyable');

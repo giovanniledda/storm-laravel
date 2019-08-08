@@ -17,10 +17,15 @@ class Document extends Model implements HasMedia
     // see https://github.com/VentureCraft/revisionable
     use RevisionableTrait;
 
+
+    public const GENERIC_DOCUMENT_TYPE = 'generic_document';
+
+
     // protected $revisionCleanup = true; //Remove old revisions (works only when used with $historyLimit)
     // protected $historyLimit = 500; //Maintain a maximum of 500 changes at any point of time, while cleaning up old revisions.
 
     protected $fillable = [
+
         'title',
     ];
 
@@ -34,18 +39,27 @@ class Document extends Model implements HasMedia
             unset ($attributes['file']);
         }
         parent::__construct($attributes);
-      
+
     }
 
     public function comments()
     {
         return $this->morphMany('App\Comment', 'commentable');
     }
- 
-    
+
+
     public function getFile(){
         return $this->getUrl();
        // return $this->getFirstMedia('documents')->getPath();
     }
+
+
+
+
+    static function createFromBase64(){
+
+    }
+
+
 
 }
