@@ -43,6 +43,10 @@ class ApiUpdateTest extends TestApiCase
             $user->projects()->attach($project->id, [ 'profession_id' => 1]);
         }
 
+        // Devo "loggare" un utente altrimenti il TaskObserver si incazza
+        $this->_testUserConnection($users[0], USER_FAKE_PASSWORD);
+//        $this->refreshApplication();  // Fa una sorta di pulizia della cache perché dopo la prima post, poi tutte le chiamate successive tornano sulla stessa route
+
         // Creo i task e li assegno al progetto
         $tasks = factory(Task::class, $this->faker->randomDigitNotNull)->create();
 
@@ -57,10 +61,17 @@ class ApiUpdateTest extends TestApiCase
             $this->_testUserConnection($user, USER_FAKE_PASSWORD);
             $this->refreshApplication();  // Fa una sorta di pulizia della cache perché dopo la prima post, poi tutte le chiamate successive tornano sulla stessa route
             Passport::actingAs($user);
-            $r = $this->json('GET', 'api/v1/updates', [], $this->headers)
+            $response = $this->json('GET', 'api/v1/updates', [], $this->headers)
                 ->assertStatus(200)
-                ->assertJsonStructure(['data' => ['id', 'type', 'attributes']]);
+                ->assertJsonStructure(['data']);
 
+            $notifications = $response->json()['data'];
+
+            // devo avere tante notifiche per utente quanti sono i task
+            $this->assertNotCount(0, $notifications);
+            $this->assertCount(count($tasks), $notifications);
+
+//            dd($r);
         }
     }
     

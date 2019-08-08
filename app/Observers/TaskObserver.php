@@ -7,6 +7,7 @@ use App\Notifications\TaskUpdated;
 use App\Task; 
 use App\History; 
 use App\Project;
+use function is_object;
 use Notification;
 use StormUtils;
 use Log;
@@ -121,7 +122,7 @@ class TaskObserver
         /** setto la variabile added_by_storm **/
         $user = \Auth::user();
         
-        if ($user->can(PERMISSION_BOAT_MANAGER)) { // se sei in boat_user
+        if (is_object($user) && $user->can(PERMISSION_BOAT_MANAGER)) { // se sei in boat_user
             $task->update(['added_by_storm'=>0]);
         }
         
@@ -137,7 +138,9 @@ class TaskObserver
     {
         // devo notificare anche all'aggiornamento perché in fase di creazione il task potrebbe
         // non essere stato associato ad un progetto e quindi non avere utenti
-        $task->setStatus($task->task_status);
+        if ($task->task_status) {
+            $task->setStatus($task->task_status);
+        }
         $users = $task->getUsersToNotify();
         if (!empty($users)) {
             Notification::send($users, new TaskUpdated($task));
