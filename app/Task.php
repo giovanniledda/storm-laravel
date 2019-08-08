@@ -94,6 +94,13 @@ class Task extends Model
         $this->documents()->save($doc);
     }
 
+
+    public function addDocumentWithType(\App\Document $doc, $type){
+        $doc->type = $type;
+        $doc->save();
+        $this->documents()->save($doc);
+
+    }
     public function detailed_images(){
         return $this->documents()->where('type', self::DETAILED_IMAGE_TYPE);
     }

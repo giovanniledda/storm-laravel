@@ -26,7 +26,7 @@ class Document extends Model implements HasMedia
 
     protected $fillable = [
 
-        'title',
+        'title', 'type'
     ];
 
     public function __construct(array $attributes = [])

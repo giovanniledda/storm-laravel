@@ -10,6 +10,11 @@ use App\Task;
 use App\User;
 use Validator;
 
+
+use App\Document;
+use Illuminate\Http\UploadedFile;
+
+
 class TaskController extends Controller
 {
 
@@ -41,13 +46,42 @@ class TaskController extends Controller
       //  exit();
     }
 
-    public function addDocument(Request $request){
-        $task = Task::find($request->task);
+    public function addDocument(Request $request, $related){
+        $task = Task::find($request->record);
 
-        $body = $request->body;
+        $task = json_decode($related, true);
+        $task = Task::find($task['id']);
+        $body = $request->getContent();
 
+        $type = $request->type;
+        $title = $request->title;
+        $base64File = $request->file;
+        $filename = $request->filename;
 
-        $task();
+        if ($base64File) {
+            $tmpFilename = uniqid('phpfile_') ;
+            $tmpFileFullPath = '/tmp/'. $tmpFilename;
+            $h = fopen ($tmpFileFullPath, 'w');
+            $decoded = base64_decode($base64File);
+            fwrite($h, $decoded, strlen($decoded));
+            fclose($h);
+        }
+
+        $file =  new UploadedFile( $tmpFileFullPath, $filename, null ,null, true);
+
+        $doc = new Document([
+            'title' => $filename,
+            'file' => $file,
+        ]);
+
+        $doc->save();
+        $task->addDocumentWithType($doc, $type);
+
+        $ret = ['data' => [
+            'id' => $doc->id,
+        ]];
+        return new Response($ret, 201);
+
 
     }
 

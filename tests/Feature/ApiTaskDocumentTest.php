@@ -12,6 +12,16 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Laravel\Passport\Passport;
+
+
+use App\Role;
+use App\Permission;
+
+
+use const ROLE_ADMIN;
+use const PERMISSION_ADMIN;
+
 
 class ApiTaskDocumenttTest extends TestApiCase
 {
@@ -19,7 +29,8 @@ class ApiTaskDocumenttTest extends TestApiCase
     function test_can_associate_document_to_task()
     {
 
-
+        Role::firstOrCreate(['name' => ROLE_ADMIN]);
+        Permission::firstOrCreate(['name' => PERMISSION_ADMIN]);
         $admin1 = $this->_addUser(ROLE_ADMIN);
         $token_admin = $this->_grantTokenPassword($admin1);
         $this->assertIsString($token_admin);
@@ -45,12 +56,6 @@ class ApiTaskDocumenttTest extends TestApiCase
 
         ];
 
-
-
-        // $headers = [
-        //     'Content-type' => 'application/json',
-        //     'Accept' => 'application/json',
-        // ];
 
         $response = $this->json('POST', route('api:v1:tasks.document', ['task'=>$task->id]), $data, $this->headers );
 
