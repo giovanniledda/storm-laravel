@@ -20,12 +20,21 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::group( ['middleware' => ['auth', 'isAdmin']], function() {
+    // Users
     Route::resource('users', 'UserController');
     Route::resource('roles', 'RoleController');
     Route::resource('permissions', 'PermissionController');
 
-    // extra resource routes
+    // Sites, Boats & Co.
+    Route::resource('sites', 'SiteController');
+
+    /** Extra resource routes **/
+
+    // Users
     Route::get('/users/delete-confirm/{id}', 'UserController@confirmDestroy')->name('users.delete.confirm');
     Route::get('/roles/delete-confirm/{id}', 'RoleController@confirmDestroy')->name('roles.delete.confirm');
     Route::get('/permissions/delete-confirm/{id}', 'PermissionController@confirmDestroy')->name('permissions.delete.confirm');
+
+    // Sites, Boats & Co.
+    Route::get('/sites/delete-confirm/{id}', 'SiteController@confirmDestroy')->name('sites.delete.confirm');
 });
