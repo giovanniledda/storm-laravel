@@ -47,7 +47,7 @@ class Schema extends SchemaProvider
     public function getAttributes($resource)
     {
 //        $author = User::where('id', $resource->author_id)->first();
-        $author = $resource->author;
+         $author = $resource->author;
 /**
  *      $table->boolean('is_open')->default(true);
             $table->boolean('added_by_storm')->default(false);

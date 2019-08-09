@@ -28,11 +28,11 @@ class TaskObserver
      */
     public function updating(Task $task)
     {
-         $original       = $task->getOriginal();
+        $original       = $task->getOriginal();
 
-         if (isset($original['is_open']) &&  $original['is_open']!=$task->is_open && $task->is_open==0) {
+        if (isset($original['is_open']) &&  $original['is_open']!=$task->is_open && $task->is_open==0) {
              // metto nella history del progetto
-             $project = Project::find($task->project_id)
+             Project::find($task->project_id)
                             ->history()
                             ->create(
                                     ['event_date'=> date("Y-m-d H:i:s", time()),

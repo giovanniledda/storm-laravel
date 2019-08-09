@@ -34,25 +34,31 @@ class ProjectObserver
      * @param  \App\Project  $project
      * @return void
      */
- /*   public function updating(Project $project)
+   public function updating(Project $project)
     { 
         $original = $project->getOriginal();
         
-        // è cambiato il tipo del progetto
-        if (isset($original['project_type']) && isset($project->project_type) && $original['project_type']!=$project->project_type) {
-           
-            
+        // è cambiato lo stato del progetto
+        if (isset($original['project_status']) && isset($project->project_status) && $original['project_status']!=$project->project_status) {
+           Project::find($project->id)
+                            ->history()
+                            ->create(
+                                    ['event_date'=> date("Y-m-d H:i:s", time()),
+                                     'event_body'=>'project status changed to '.$project->project_status]); 
             
         }
         
          // è cambiato lo stato di avanzamento
         if (isset($original['project_progress']) && isset($project->project_progress) && $original['project_progress']!=$project->project_progress) {
-           
+           Project::find($project->id)
+                            ->history()
+                            ->create(
+                                    ['event_date'=> date("Y-m-d H:i:s", time()),
+                                     'event_body'=>$project->project_progress].'% oercentage'); 
         }
          
         
     }
-    */
     
     /**
      * Handle the project "created" event.
