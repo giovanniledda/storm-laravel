@@ -20,10 +20,10 @@ class BoatController extends Controller
         $boat = json_decode($related, true);
         $boat = Boat::find($boat['id']);
 
-        $type = $request->type;
-        $title = $request->title;
-        $base64File = $request->file;
-        $filename = $request->filename;
+        $type = $request->data['attributes']['type'];
+        $title = $request->data['attributes']['title'];
+        $base64File = $request->data['attributes']['file'];
+        $filename = $request->data['attributes']['filename'];
 
         $file = Document::createUploadedFileFromBase64( $base64File, $filename);
 
@@ -37,8 +37,10 @@ class BoatController extends Controller
         $ret = ['data' => [
             'id' => $doc->id,
         ]];
-        return new Response($ret, 201);
+        $resp = Response($ret , 200);
+        $resp->header('Content-Type', 'application/vnd.api+json');
 
+        return $resp;
 
     }
 

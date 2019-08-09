@@ -61,11 +61,15 @@ class ApiTaskDocumenttTest extends TestApiCase
 
 
         $data = [
+            'data' => [
+                'attributes' => [
                     'title' => $filename,
                     'file' => $base64FileContent,
                     'filename' =>  'testDocument.txt',
-                    'type' => 'task_detailed_image'
-
+                    'type' => \App\Document::DETAILED_IMAGE_TYPE
+                ],
+                'type' => 'tasks',
+            ]
         ];
 
 
