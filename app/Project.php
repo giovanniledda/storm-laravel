@@ -18,7 +18,7 @@ class Project extends Model
     protected $table = 'projects';
 
     protected $fillable = [
-       'name', 'project_status', 'boat_id', 'project_type'
+       'name', 'project_status', 'boat_id', 'project_type', 'project_progress'
     ];
 
     public function boat()

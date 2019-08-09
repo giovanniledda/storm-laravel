@@ -54,7 +54,7 @@ class ProjectObserver
                             ->history()
                             ->create(
                                     ['event_date'=> date("Y-m-d H:i:s", time()),
-                                     'event_body'=>$project->project_progress].'% oercentage'); 
+                                     'event_body'=>$project->project_progress.'% percentage']); 
         }
          
         
