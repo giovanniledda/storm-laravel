@@ -38,7 +38,7 @@
             </table>
         </div>
 
-        <a href="{{ URL::to('sites/create') }}" class="btn btn-success">{{ __('Add dockyard') }}</a>
+        <a href="{{ URL::to('sites/create') }}" class="btn btn-success">{{ __('Add site') }}</a>
 
     </div>
 

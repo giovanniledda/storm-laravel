@@ -21,6 +21,9 @@ class Document extends Model implements HasMedia
 
 
     public const GENERIC_DOCUMENT_TYPE = 'generic_document';
+    public const DETAILED_IMAGE_TYPE = 'detailed_image';
+    public const GENERIC_IMAGE_TYPE = 'generic_image';
+    public const ADDITIONAL_IMAGE_TYPE = 'additional_image';
 
 
     // protected $revisionCleanup = true; //Remove old revisions (works only when used with $historyLimit)
@@ -70,9 +73,14 @@ class Document extends Model implements HasMedia
             $decoded = base64_decode($base64File, true);
             fwrite($h, $decoded, strlen($decoded));
             fclose($h);
-        }
 
         return new \Symfony\Component\HttpFoundation\File\UploadedFile( $tmpFileFullPath, $filename, null ,null, true);
+
+        } else {
+            //TODO: raise exception
+            return "ERRORE!";
+        }
+
     }
 
 

@@ -26,18 +26,21 @@ class SiteController extends Controller
      */
     public function create()
     {
-        //
+        return view('sites.create');
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\RequestSite  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(RequestSite $request)
     {
-        //
+        $validated = $request->validated();
+        $site = Site::create($validated);
+        return redirect()->route('sites.index')
+            ->with('flash_message', __('Site :name updated!', ['name' => $site->name]));
     }
 
     /**
@@ -72,11 +75,7 @@ class SiteController extends Controller
     public function update(RequestSite $request, Site $site)
     {
 
-//        $site = Site::findOrFail($id);
-
         $validated = $request->validated();
-
-//        $input = $request->all();
         $site->fill($validated)->save();
 
         return redirect()->route('sites.index')

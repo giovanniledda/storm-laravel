@@ -14,6 +14,8 @@ class StormMediaPathGenerator implements PathGenerator
         $media_id = $media->id;
         // we put the file in some dir depending on the related object
 
+        $path = 'media/';
+
         switch (get_class($model)){
             case "App\Task":
 
@@ -21,20 +23,46 @@ class StormMediaPathGenerator implements PathGenerator
                 $project = $task->project;
                 $project_id = $project->id;
                 $task_id = $task->id;
-                $path = 'projects' . DIRECTORY_SEPARATOR . $project_id . DIRECTORY_SEPARATOR . 'tasks' . DIRECTORY_SEPARATOR .
+                $path .= 'projects' . DIRECTORY_SEPARATOR . $project_id . DIRECTORY_SEPARATOR . 'tasks' . DIRECTORY_SEPARATOR .
                         $task_id . DIRECTORY_SEPARATOR . $document->type . DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
-                return $path;
 
            break;
+
+           case "App\Project":
+
+                $project = $model;
+                $project_id = $project->id;
+                $path .= 'projects' . DIRECTORY_SEPARATOR . $project_id . DIRECTORY_SEPARATOR . $document->type .
+                         DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
+
+            break;
+
+            case "App\Boat":
+
+                $boat = $model;
+                $boat_id = $boat->id;
+                $path .= 'boats' . DIRECTORY_SEPARATOR . $boat_id . DIRECTORY_SEPARATOR . $document->type .
+                       DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
+            break;
+
+
+            case "App\Section":
+
+                $section = $model;
+                $section_id = $section->id;
+                $boat = $section->boat;
+                $boat_id = $boat->id;
+                $path .= 'boats' . DIRECTORY_SEPARATOR . $boat_id . DIRECTORY_SEPARATOR . 'sections ' . DIRECTORY_SEPARATOR . $section_id .
+                            DIRECTORY_SEPARATOR . $document->type . DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
+                break;
 
            default:
-                return DIRECTORY_SEPARATOR . 'lost_and_found_documents' . DIRECTORY_SEPARATOR;
-           break;
-
-
-
-
+                $path .= DIRECTORY_SEPARATOR . 'lost_and_found_documents' . DIRECTORY_SEPARATOR;
+            break;
         }
+
+
+        return $path;
     }
     public function getPathForConversions(Media $media) : string
     {

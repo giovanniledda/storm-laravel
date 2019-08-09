@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', '| Edit Role')
+@section('title', '| Edit Dockyard/Site')
 
 @section('content')
 
