@@ -65,7 +65,6 @@ class TaskController extends Controller
             'file' => $file,
         ]);
 
-        $path = $task->getFileBasePath();
         // $doc->save();
         $task->addDocumentWithType($doc, $type);
 

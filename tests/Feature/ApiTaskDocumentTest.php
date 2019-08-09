@@ -36,9 +36,21 @@ class ApiTaskDocumenttTest extends TestApiCase
         $this->assertIsString($token_admin);
         Passport::actingAs($admin1);
 
+
+        $boat = factory(Boat::class)->create();
+
+        $project = factory(Project::class)->create();
+
+
+
+
         $task_name = $this->faker->sentence;
         $task = new \App\Task(['title'=>$task_name, 'description' => '']);
+
         $task->save();
+
+        $task->project()->associate($project)->save();
+
 
         $filename = 'testDocument.txt';
         $filepath = __DIR__ . '/'.  $filename;
