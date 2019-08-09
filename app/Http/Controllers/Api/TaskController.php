@@ -47,21 +47,20 @@ class TaskController extends Controller
     }
 
     public function addDocument(Request $request, $related){
-        $task = Task::find($request->record);
+        // $task = Task::find($request->record);
 
         $task = json_decode($related, true);
         $task = Task::find($task['id']);
-        $body = $request->getContent();
 
-        $type = $request->type;
-        $title = $request->title;
-        $base64File = $request->file;
-        $filename = $request->filename;
+        $type = $request->data['attributes']['type'];
+        $title = $request->data['attributes']['title'];
+        $base64File = $request->data['attributes']['file'];
+        $filename = $request->data['attributes']['filename'];
 
         $file = Document::createUploadedFileFromBase64( $base64File, $filename);
 
         $doc = new Document([
-            'title' => $filename,
+            'title' => $title,
             'file' => $file,
         ]);
 
@@ -71,8 +70,10 @@ class TaskController extends Controller
         $ret = ['data' => [
             'id' => $doc->id,
         ]];
-        return new Response($ret, 201);
+        $resp = Response($ret , 200);
+        $resp->header('Content-Type', 'application/vnd.api+json');
 
+        return $resp;
 
     }
 

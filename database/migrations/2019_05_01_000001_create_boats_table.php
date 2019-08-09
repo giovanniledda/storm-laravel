@@ -16,11 +16,11 @@ class CreateBoatsTable extends Migration
         Schema::create('boats', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->text('name');
-            $table->string('registration_number', 100);
+            $table->string('registration_number', 100)->nullable();
             $table->string('flag', 100)->nullable();
             $table->year('manufacture_year')->nullable();
-            $table->double('length', 8, 2)->nullable();
-            $table->double('draft', 8, 2)->nullable();
+            $table->double('length', 8, 2);
+            $table->double('draft', 8, 2);
             $table->double('beam', 8, 2)->nullable();
             $table->enum('boat_type', [BOAT_TYPE_SAIL, BOAT_TYPE_MOTOR])->default(BOAT_TYPE_MOTOR);
             $table->timestamps();
