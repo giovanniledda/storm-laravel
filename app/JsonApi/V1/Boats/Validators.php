@@ -55,11 +55,11 @@ class Validators extends AbstractValidators
     {
         return [
            'name' => 'required|string|min:1|max:255',
-           'registration_number' => 'required|numeric',
-           'manufacture_year' => 'required|numeric',
+        //   'registration_number' => 'required|numeric',
+        //   'manufacture_year' => 'required|numeric',
            'length' => 'required|numeric',
            'draft' => 'required|numeric',
-           'beam' => 'required|numeric',
+        //   'beam' => 'required|numeric',
            'boat_type' => 'in:'.BOAT_TYPE_MOTOR.','.BOAT_TYPE_SAIL,
         ];
     }
