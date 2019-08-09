@@ -85,12 +85,15 @@ class SiteController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Site  $site
+     * @param  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Site $site)
+    public function destroy($id)
     {
-        //
+        Site::findOrFail($id)->delete();
+
+        return redirect()->route('sites.index')
+            ->with('flash_message', __('Site deleted'));
     }
 
 

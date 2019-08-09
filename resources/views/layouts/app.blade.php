@@ -67,25 +67,17 @@
                             <ul class="dropdown-menu" role="menu">
                                 <li>
                                     @role('admin') {{-- Laravel-permission blade helper --}}
-                                        <a href="#"><i class="fas fa-chess-king"></i> Admin menu</a>
-                                        <hr />
-                                        <a href="{{ route('roles.index') }}"><i class="fa fa-btn fa-award"></i> Roles</a>
-                                        <a href="{{ route('permissions.index') }}"><i class="fa fa-btn fa-key"></i> Permissions</a>
-                                        <a href="{{ route('users.index') }}"><i class="fa fa-btn fa-users"></i> Users</a>
-
-                                        <hr />
-                                        <a href="{{ route('sites.index') }}"><i class="fa fa-btn fa-anchor"></i> Dockyards/sites</a>
-
+                                        @include('includes/main-menu')
                                     @endrole
 
-                                        <hr />
-                                        <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                            Logout
-                                        </a>
-                                        <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                              style="display: none;">
-                                            {{ csrf_field() }}
-                                        </form>
+                                    <hr />
+                                    <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                        Logout
+                                    </a>
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                          style="display: none;">
+                                        {{ csrf_field() }}
+                                    </form>
                                 </li>
                             </ul>
                         </li>

@@ -81,7 +81,6 @@
 
             <div class="content">
                 <div class="title m-b-md">
-
                     @component('components.gobbo', ['foo' => 'Oggi: '])
                         @slot('title')
                             Welcome to STORM

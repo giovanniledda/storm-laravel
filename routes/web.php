@@ -27,6 +27,7 @@ Route::group( ['middleware' => ['auth', 'isAdmin']], function() {
 
     // Sites, Boats & Co.
     Route::resource('sites', 'SiteController');
+    Route::resource('professions', 'ProfessionController');
 
     /** Extra resource routes **/
 
@@ -37,4 +38,5 @@ Route::group( ['middleware' => ['auth', 'isAdmin']], function() {
 
     // Sites, Boats & Co.
     Route::get('/sites/delete-confirm/{id}', 'SiteController@confirmDestroy')->name('sites.delete.confirm');
+    Route::get('/professions/delete-confirm/{id}', 'ProfessionController@confirmDestroy')->name('professions.delete.confirm');
 });
