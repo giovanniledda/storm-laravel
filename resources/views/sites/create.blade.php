@@ -1,31 +1,38 @@
 @extends('layouts.app')
 
-@section('title', '| Add Role')
+@section('title', '| Add Dockyard/Site')
 
 @section('content')
 
     <div class='col-lg-4 col-lg-offset-4'>
 
-        <h1><i class='fa fa-key'></i> Add Role</h1>
+        <h1><i class='fa fa-key'></i> {{ __('Add Dockyard/Site') }}</h1>
         <hr>
 
-        {{ Form::open(array('url' => 'roles')) }}
+        {{ Form::open(array('url' => 'sites')) }}
 
         <div class="form-group">
-            {{ Form::label('name', 'Name') }}
+            {{ Form::label('name', __('Name')) }}
             {{ Form::text('name', null, array('class' => 'form-control')) }}
         </div>
 
-        <h5><b>Assign Permissions</b></h5>
 
-        <div class='form-group'>
-            @foreach ($permissions as $permission)
-                {{ Form::checkbox('permissions[]',  $permission->id ) }}
-                {{ Form::label($permission->name, ucfirst($permission->name)) }}<br>
-            @endforeach
+        <div class="form-group">
+            {{ Form::label('location', __('Location')) }}
+            {{ Form::text('location', null, array('class' => 'form-control')) }}
         </div>
 
-        {{ Form::submit('Add', array('class' => 'btn btn-primary')) }}
+        <div class="form-group">
+            {{ Form::label('lat', __('Latitude')) }}
+            {{ Form::text('lat', null, array('class' => 'form-control')) }}
+        </div>
+
+        <div class="form-group">
+            {{ Form::label('lng', __('Longitude')) }}
+            {{ Form::text('lng', null, array('class' => 'form-control')) }}
+        </div>
+
+        {{ Form::submit(__('Add'), array('class' => 'btn btn-primary')) }}
 
         {{ Form::close() }}
 
