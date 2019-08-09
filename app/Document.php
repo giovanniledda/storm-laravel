@@ -8,10 +8,12 @@ use \Venturecraft\Revisionable\RevisionableTrait;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 
+
     // class Document extends BaseMedia
 class Document extends Model implements HasMedia
+// class Document extends BaseMedia //implements HasMedia
 {
-    // see https://docs.spatie.be/laravel-medialibrary/v7/basic-usage/preparing-your-model
+    // see https:/docs/.spatie.be/laravel-medialibrary/v7/basic-usage/preparing-your-model
     use HasMediaTrait;
 
     // see https://github.com/VentureCraft/revisionable
@@ -55,11 +57,27 @@ class Document extends Model implements HasMedia
 
 
 
-
-    static function createFromBase64(){
-
+    public function documentable(): \Illuminate\Database\Eloquent\Relations\MorphTo {
+        return $this->morphTo();
     }
 
 
+    static function createUploadedFileFromBase64($base64File,  $filename){
+        if ($base64File) {
+            $tmpFilename = uniqid('phpfile_') ;
+            $tmpFileFullPath = '/tmp/'. $tmpFilename;
+            $h = fopen ($tmpFileFullPath, 'w');
+            $decoded = base64_decode($base64File, true);
+            fwrite($h, $decoded, strlen($decoded));
+            fclose($h);
+        }
+
+        return new \Symfony\Component\HttpFoundation\File\UploadedFile( $tmpFileFullPath, $filename, null ,null, true);
+    }
+
+
+    public function getShowApiUrl(){
+        return route('api:v1:documents.show', [$this->id]);
+    }
 
 }

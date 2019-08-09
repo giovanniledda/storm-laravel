@@ -72,32 +72,27 @@ class Task extends Model
 
     public function addDetailedImage(\App\Document $doc){
         $doc->type = self::DETAILED_IMAGE_TYPE;
-        $doc->save();
         $this->documents()->save($doc);
     }
 
     public function addAdditionalImage(\App\Document $doc){
         $doc->type = self::ADDITIONAL_IMAGE_TYPE;
-        $doc->save();
         $this->documents()->save($doc);
     }
 
     public function addGenericImage(\App\Document $doc){
         $doc->type = self::GENERIC_IMAGE_TYPE;
-        $doc->save();
         $this->documents()->save($doc);
     }
 
     public function addGenericDocument(\App\Document $doc){
         $doc->type = Document::GENERIC_DOCUMENT_TYPE;
-        $doc->save();
         $this->documents()->save($doc);
     }
 
 
     public function addDocumentWithType(\App\Document $doc, $type){
         $doc->type = $type;
-        $doc->save();
         $this->documents()->save($doc);
 
     }
