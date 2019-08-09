@@ -56,6 +56,33 @@ class Boat extends Model
     }
 
 
+    public function detailed_images(){
+        return $this->documents()->where('type', \App\Document::DETAILED_IMAGE_TYPE);
+    }
+
+    public function additional_images(){
+        return $this->documents()->where('type', \App\Document::ADDITIONAL_IMAGE_TYPE);
+    }
+
+    public function generic_images(){
+        return $this->documents()->where('type', \App\Document::GENERIC_IMAGE_TYPE);
+    }
+
+    public function generic_documents(){
+        return $this->documents()->where('type', \App\Document::GENERIC_DOCUMENT_TYPE);
+    }
+
+    public function addDocumentWithType(\App\Document $doc, $type){
+        if ($type){
+            $doc->type = $type;
+        } else {
+            $doc->type = \App\Document::GENERIC_DOCUMENT_TYPE;
+        }
+        $this->documents()->save($doc);
+
+    }
+
+
     // owner ed equipaggio
     public function users()
     {

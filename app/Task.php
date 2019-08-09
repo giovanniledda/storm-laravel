@@ -12,10 +12,6 @@ use function GuzzleHttp\json_decode;
 class Task extends Model
 {
 
-    public const DETAILED_IMAGE_TYPE = 'task_detailed_image';
-    public const GENERIC_IMAGE_TYPE = 'task_generic_image';
-    public const ADDITIONAL_IMAGE_TYPE = 'task_additional_image';
-
     use RevisionableTrait, HasStatuses;
 
     protected $table = 'tasks';
@@ -71,17 +67,17 @@ class Task extends Model
     }
 
     public function addDetailedImage(\App\Document $doc){
-        $doc->type = self::DETAILED_IMAGE_TYPE;
+        $doc->type = \App\Document::DETAILED_IMAGE_TYPE;
         $this->documents()->save($doc);
     }
 
     public function addAdditionalImage(\App\Document $doc){
-        $doc->type = self::ADDITIONAL_IMAGE_TYPE;
+        $doc->type = \App\Document::ADDITIONAL_IMAGE_TYPE;
         $this->documents()->save($doc);
     }
 
     public function addGenericImage(\App\Document $doc){
-        $doc->type = self::GENERIC_IMAGE_TYPE;
+        $doc->type = \App\Document::GENERIC_IMAGE_TYPE;
         $this->documents()->save($doc);
     }
 
@@ -92,20 +88,24 @@ class Task extends Model
 
 
     public function addDocumentWithType(\App\Document $doc, $type){
-        $doc->type = $type;
+        if ($type){
+            $doc->type = $type;
+        } else {
+            $doc->type = \App\Document::GENERIC_DOCUMENT_TYPE;
+        }
         $this->documents()->save($doc);
 
     }
     public function detailed_images(){
-        return $this->documents()->where('type', self::DETAILED_IMAGE_TYPE);
+        return $this->documents()->where('type', \App\Document::DETAILED_IMAGE_TYPE);
     }
 
     public function additional_images(){
-        return $this->documents()->where('type', self::ADDITIONAL_IMAGE_TYPE);
+        return $this->documents()->where('type', \App\Document::ADDITIONAL_IMAGE_TYPE);
     }
 
     public function generic_images(){
-        return $this->documents()->where('type', self::GENERIC_IMAGE_TYPE);
+        return $this->documents()->where('type', \App\Document::GENERIC_IMAGE_TYPE);
     }
 
     public function generic_documents(){

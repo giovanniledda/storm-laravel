@@ -24,11 +24,35 @@ class Schema extends SchemaProvider
         return (string)$resource->getRouteKey();
     }
 
+    public function getPrimaryMeta($resource)
+    {
+
+
+        $generic_documents = $resource->generic_documents;
+
+
+        $gdu = [];
+        foreach ($generic_documents as $i){
+            $gdu []= $i->getShowApiUrl();
+        }
+
+        return [
+            'generic_documents' => $gdu,
+
+        ];
+        // TODO : mettere sia il link documentale all'immagine della barca che il project_id
+    }
+
+    public function getInclusionMeta($resource)
+    {
+
+        return $this->getPrimaryMeta($resource);
+    }
 
     public function getRelationships($project, $isPrimary, array $includeRelationships)
     {
-       
-        
+
+
         return [
             'tasks' => [
              //   self::SHOW_SELF => true,
@@ -45,7 +69,7 @@ class Schema extends SchemaProvider
     public function getAttributes($resource)
     {
         $boat =  Boat::find($resource->boat_id);
-        
+
         return [
             'name' => $resource->name,
             'boat_id' => $resource->boat_id,

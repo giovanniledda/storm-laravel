@@ -47,11 +47,10 @@ class TaskController extends Controller
     }
 
     public function addDocument(Request $request, $related){
-        $task = Task::find($request->record);
+        // $task = Task::find($request->record);
 
         $task = json_decode($related, true);
         $task = Task::find($task['id']);
-        $body = $request->getContent();
 
         $type = $request->type;
         $title = $request->title;
@@ -61,7 +60,7 @@ class TaskController extends Controller
         $file = Document::createUploadedFileFromBase64( $base64File, $filename);
 
         $doc = new Document([
-            'title' => $filename,
+            'title' => $title,
             'file' => $file,
         ]);
 

@@ -26,10 +26,32 @@ class Schema extends SchemaProvider
     {
         //App\Boat resource
         $project_active = $resource->projects()->where('project_status', PROJECT_STATUS_OPERATIONAL)->first();
-          
+
+
+
+        $generic_images = $resource->generic_images;
+        $generic_documents = $resource->generic_documents;
+
+
+
+        // $giu = [];
+        // foreach ($generic_images as $i){
+        //     $giu []= $i->getShowApiUrl();
+        // }
+
+        $gdu = [];
+        foreach ($generic_documents as $i){
+            $gdu []= $i->getShowApiUrl();
+        }
+
+        $image = $resource->generic_images->last();
+        if (!$image) {
+            $image = $resource->detailed_images->first();
+        }
         return [
-            'image' => 'https://picsum.photos/200/300',
-            'project_id'=>($project_active) ? $project_active->id : null 
+            'generic_documents' => $gdu,
+            'image' => $image ? $image->getShowApiUrl() : null,
+            'project_id'=>($project_active) ? $project_active->id : null
         ];
         // TODO : mettere sia il link documentale all'immagine della barca che il project_id
     }
@@ -48,7 +70,7 @@ class Schema extends SchemaProvider
     {
         return [
             'name' => $resource->name,
-            'registration_number' => $resource->registration_number, 
+            'registration_number' => $resource->registration_number,
             'flag' => $resource->flag,
             'manufacture_year' => $resource->manufacture_year,
             'length' => $resource->length,
