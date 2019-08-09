@@ -16,6 +16,22 @@
 
                     You are logged in!
                 </div>
+
+                @role('admin') {{-- Laravel-permission blade helper --}}
+                    <div class="card-body">
+
+                        <h4>Users</h4>
+                        <a href="{{ route('roles.index') }}"><i class="fa fa-btn fa-award"></i> Roles</a>
+                        <a href="{{ route('permissions.index') }}"><i class="fa fa-btn fa-key"></i> Permissions</a>
+                        <a href="{{ route('users.index') }}"><i class="fa fa-btn fa-users"></i> Users</a>
+
+                        <h4>Boat system</h4>
+                        <a href="{{ route('sites.index') }}"><i class="fa fa-btn fa-anchor"></i> Dockyards</a>
+
+                    </div>
+
+                @endrole
+
             </div>
         </div>
     </div>

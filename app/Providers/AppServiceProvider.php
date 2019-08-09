@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use CloudCreativity\LaravelJsonApi\LaravelJsonApi;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Blade;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -37,7 +39,11 @@ class AppServiceProvider extends ServiceProvider
 
         // TODO: make this work:
         // Schema::defaultStringLength(191);
-    
-        //
+
+        /** Blade extensions [https://laravel.com/docs/5.8/blade#extending-blade] **/
+
+        Blade::directive('datetime', function ($expression) {
+            return "<?php echo date('m/d/Y H:i', $expression); ?>";
+        });
     }
 }

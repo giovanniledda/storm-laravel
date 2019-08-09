@@ -4,8 +4,13 @@ namespace App\Providers;
 
 use App\Observers\ProjectObserver;
 use App\Observers\TaskObserver;
+use App\Observers\CommentObserver;
+
+
 use App\Project;
 use App\Task;
+use App\Comment;
+
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -67,5 +72,6 @@ class EventServiceProvider extends ServiceProvider
 
         Task::observe(TaskObserver::class);
         Project::observe(ProjectObserver::class);
+        Comment::observe(CommentObserver::class);
     }
 }

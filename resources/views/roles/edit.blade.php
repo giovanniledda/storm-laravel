@@ -21,7 +21,7 @@
             {{ Form::label($permission->name, ucfirst($permission->name)) }}<br>
         @endforeach
         <br>
-        {{ Form::submit('Edit', array('class' => 'btn btn-primary')) }}
+        {{ Form::submit(__('Save'), array('class' => 'btn btn-primary')) }}
         <a href="{{ @route('roles.delete.confirm', ['id' => $role->id]) }}" class="btn btn-danger">{{ __('Delete') }}</a>
 
         {{ Form::close() }}

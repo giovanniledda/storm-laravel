@@ -4,6 +4,8 @@ namespace App\JsonApi\V1\Sections;
 
 use Neomerx\JsonApi\Schema\SchemaProvider;
 
+use App\Boat;
+
 class Schema extends SchemaProvider
 {
 
@@ -45,14 +47,21 @@ class Schema extends SchemaProvider
      */
     public function getAttributes($resource)
     {
+        $boat = Boat::find($resource->boat_id);
+        
+        $dimension_fraction =   ($boat->length > 0) && ($boat->draft > 0)  ? $boat->length/$boat->draft : null;
+        
+        
         return [
             'name' => $resource->name,
             'section_type' => $resource->section_type, 
             'position' => $resource->position,
             'code' => $resource->code,
             'boat_id' => $resource->boat_id,
+            'dimension_factor'=>$dimension_fraction,
             'created-at' => $resource->created_at->toAtomString(),
             'updated-at' => $resource->updated_at->toAtomString(),
+            
         ];
     }
 }

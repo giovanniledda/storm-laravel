@@ -28,8 +28,7 @@ Route::group(['middleware' => 'auth:api'], function () {
                 $docs->get('{record}/show/{size}', 'show')->name('show_with_size');
                 $docs->get('{record}/show', 'show')->name('show');
             })  ;
-
-
+ 
         $api->resource('sites');
         $api->resource('boat-users')->only('create'); // usato solo per associazione boat - user
         $api->resource('project-users')->only('create'); //->only('create'); // usato solo per associazione project  - user
@@ -39,6 +38,11 @@ Route::group(['middleware' => 'auth:api'], function () {
         ->routes(function ($tasks){
                 $tasks->get('/statuses', 'statuses')->name('statuses');
                 $tasks->post('/{record}/document', 'addDocument')->name('document');
+            });
+       
+        $api->resource('tasks')->only('history')->controller('TaskController') //uses the App\Http\Controllers\Api\DocumentController
+        ->routes(function ($task){
+                $task->get('{record}/history', 'history')->name('history');
             });
         $api->resource('users');
         $api->resource('sections');
