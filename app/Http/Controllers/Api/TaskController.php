@@ -58,23 +58,14 @@ class TaskController extends Controller
         $base64File = $request->file;
         $filename = $request->filename;
 
-        if ($base64File) {
-            $tmpFilename = uniqid('phpfile_') ;
-            $tmpFileFullPath = '/tmp/'. $tmpFilename;
-            $h = fopen ($tmpFileFullPath, 'w');
-            $decoded = base64_decode($base64File);
-            fwrite($h, $decoded, strlen($decoded));
-            fclose($h);
-        }
-
-        $file =  new UploadedFile( $tmpFileFullPath, $filename, null ,null, true);
+        $file = Document::createUploadedFileFromBase64( $base64File, $filename);
 
         $doc = new Document([
             'title' => $filename,
             'file' => $file,
         ]);
 
-        $doc->save();
+        // $doc->save();
         $task->addDocumentWithType($doc, $type);
 
         $ret = ['data' => [

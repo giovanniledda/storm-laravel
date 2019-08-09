@@ -25,6 +25,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         // $api->resource('documents')->only('show')->controller('DocumentController') //uses the App\Http\Controllers\Api\DocumentController
         $api->resource('documents')->only('show')->controller('DocumentController') //uses the App\Http\Controllers\Api\DocumentController
         ->routes(function ($docs){
+                $docs->get('{record}/show/{size}', 'show')->name('show_with_size');
                 $docs->get('{record}/show', 'show')->name('show');
             })  ;
  
@@ -49,11 +50,13 @@ Route::group(['middleware' => 'auth:api'], function () {
 
         $api->resource('boats')->relationships(function ($relations) {
             $relations->hasMany('sections'); // punta al methodo dell'adapter /app/jsonApi/boats/Adapter non al modello
+
         });
 
         $api->resource('projects')->only('statuses')->controller('ProjectController') //uses the App\Http\Controllers\Api\DocumentController
         ->routes(function ($projects){
                 $projects->get('/statuses', 'statuses')->name('statuses');
+                $projects->post('/{record}/document', 'addDocument')->name('document');
             });
         $api->resource('projects')->only('history')->controller('ProjectController') //uses the App\Http\Controllers\Api\DocumentController
         ->routes(function ($projects){

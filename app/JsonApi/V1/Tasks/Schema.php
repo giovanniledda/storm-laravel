@@ -4,7 +4,7 @@ namespace App\JsonApi\V1\Tasks;
 
 use Neomerx\JsonApi\Schema\SchemaProvider;
 use App\User;
- 
+
 class Schema extends SchemaProvider
 {
 
@@ -23,14 +23,47 @@ class Schema extends SchemaProvider
         return (string) $resource->getRouteKey();
     }
 
-    
+
      public function getPrimaryMeta($resource)
     {
-       
-       return [
-           'image' => 'https://picsum.photos/200/300',  
-           
-       ];
+
+
+        $detailed_images = $resource->detailed_images;
+        $generic_images = $resource->generic_images;
+        $additional_images = $resource->additional_images;
+        $generic_documents = $resource->generic_documents;
+
+        $diu = [];
+        foreach ($detailed_images as $i){
+            $diu []= $i->getShowApiUrl();
+        }
+
+        // $giu = [];
+        // foreach ($generic_images as $i){
+        //     $giu []= $i->getShowApiUrl();
+        // }
+
+        $aiu = [];
+        foreach ($additional_images as $i){
+            $aiu []= $i->getShowApiUrl();
+        }
+
+        $gdu = [];
+        foreach ($generic_documents as $i){
+            $gdu []= $i->getShowApiUrl();
+        }
+
+        $image = $resource->generic_images->last();
+        if (!$image) {
+            $image = $resource->detailed_images->first();
+        }
+        return [
+            'detailed_images' => $diu,
+            'additional_images' => $aiu,
+            'generic_documents' => $gdu,
+            'image' => $image ? $image->getShowApiUrl() : null
+
+        ];
         // TODO : mettere sia il link documentale all'immagine della barca che il project_id
     }
 
@@ -47,12 +80,11 @@ class Schema extends SchemaProvider
     public function getAttributes($resource)
     {
 //        $author = User::where('id', $resource->author_id)->first();
-         $author = $resource->author;
-/**
- *      $table->boolean('is_open')->default(true);
-            $table->boolean('added_by_storm')->default(false);
- */
-        return [ 
+        $author = $resource->author;
+
+
+        return [
+
             'description' => $resource->description,
             'number'=> $resource->number,
             'worked_hours'=> $resource->worked_hours,
@@ -69,7 +101,7 @@ class Schema extends SchemaProvider
             'x_coord' => $resource->x_coord,
             'y_coord' => $resource->y_coord,
             'created-at' => $resource->created_at->toAtomString(),
-            'updated-at' => $resource->updated_at->toAtomString(), 
+            'updated-at' => $resource->updated_at->toAtomString(),
         ];
     }
 
