@@ -26,6 +26,7 @@ class RequestSite extends FormRequest
     {
         return [
             'name' => 'required|max:50',
+            'location' => 'required|string',
             'lat' => 'numeric',
             'lng' => 'numeric',
         ];

@@ -26,7 +26,7 @@
                         <a href="{{ route('users.index') }}"><i class="fa fa-btn fa-users"></i> Users</a>
 
                         <h4>Boat system</h4>
-                        <a href="{{ route('sites.index') }}"><i class="fa fa-btn fa-anchor"></i> Dockyards</a>
+                        <a href="{{ route('sites.index') }}"><i class="fa fa-btn fa-anchor"></i> Dockyards/sites</a>
 
                     </div>
 
