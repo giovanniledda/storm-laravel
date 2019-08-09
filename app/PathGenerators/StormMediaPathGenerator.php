@@ -45,9 +45,20 @@ class StormMediaPathGenerator implements PathGenerator
                        DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
             break;
 
+
+            case "App\Section":
+
+                $section = $model;
+                $section_id = $section->id;
+                $boat = $section->boat;
+                $boat_id = $boat->id;
+                $path .= 'boats' . DIRECTORY_SEPARATOR . $boat_id . DIRECTORY_SEPARATOR . 'sections ' . DIRECTORY_SEPARATOR . $section_id .
+                            DIRECTORY_SEPARATOR . $document->type . DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
+                break;
+
            default:
                 $path .= DIRECTORY_SEPARATOR . 'lost_and_found_documents' . DIRECTORY_SEPARATOR;
-           break;
+            break;
         }
 
 

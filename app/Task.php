@@ -109,7 +109,7 @@ class Task extends Model
     }
 
     public function generic_documents(){
-        return $this->documents()->where('type', Document::GENERIC_DOCUMENT_TYPE);
+        return $this->documents()->where('type', \App\Document::GENERIC_DOCUMENT_TYPE);
     }
 
     public function documents(){

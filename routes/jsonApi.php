@@ -34,7 +34,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         $api->resource('project-users')->only('create'); //->only('create'); // usato solo per associazione project  - user
         $api->resource('project-sections')->only('create'); //->only('create'); // usato solo per associazione project  - user
         $api->resource('tasks');
-        $api->resource('tasks')->only('statuses')->controller('TaskController') //uses the App\Http\Controllers\Api\TaskController
+        $api->resource('tasks')->only('statuses', 'document')->controller('TaskController') //uses the App\Http\Controllers\Api\TaskController
         ->routes(function ($tasks){
                 $tasks->get('/statuses', 'statuses')->name('statuses');
                 $tasks->post('/{record}/document', 'addDocument')->name('document');
@@ -46,6 +46,10 @@ Route::group(['middleware' => 'auth:api'], function () {
             });
         $api->resource('users');
         $api->resource('sections');
+        $api->resource('sections')->only('addDocument')->controller('SectionController') //uses the App\Http\Controllers\Api\SectionController
+        ->routes(function ($boats){
+                $boats->post('/{record}/document', 'addDocument')->name('document');
+            });
         $api->resource('task-intervent-types');
 
         $api->resource('boats')->relationships(function ($relations) {
@@ -57,7 +61,7 @@ Route::group(['middleware' => 'auth:api'], function () {
                 $boats->post('/{record}/document', 'addDocument')->name('document');
             });
 
-        $api->resource('projects')->only('statuses')->controller('ProjectController') //uses the App\Http\Controllers\Api\ProjectsController
+        $api->resource('projects')->only('statuses', 'document')->controller('ProjectController') //uses the App\Http\Controllers\Api\ProjectsController
         ->routes(function ($projects){
                 $projects->get('/statuses', 'statuses')->name('statuses');
                 $projects->post('/{record}/document', 'addDocument')->name('document');
