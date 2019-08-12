@@ -52,7 +52,7 @@ class StormMediaPathGenerator implements PathGenerator
                 $section_id = $section->id;
                 $boat = $section->boat;
                 $boat_id = $boat->id;
-                $path .= 'boats' . DIRECTORY_SEPARATOR . $boat_id . DIRECTORY_SEPARATOR . 'sections ' . DIRECTORY_SEPARATOR . $section_id .
+                $path .= 'boats' . DIRECTORY_SEPARATOR . $boat_id . DIRECTORY_SEPARATOR . 'sections' . DIRECTORY_SEPARATOR . $section_id .
                             DIRECTORY_SEPARATOR . $document->type . DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
                 break;
 
