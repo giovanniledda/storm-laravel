@@ -10,4 +10,4 @@ php artisan passport:install
 php artisan db:seed --class="RolesAndPermissionsSeeder"
 
 #seeder ambiente stage
-php artisan db:seed --class="StageSeeder"
+#php artisan db:seed --class="StageSeeder"
