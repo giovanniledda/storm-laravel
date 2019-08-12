@@ -10,4 +10,5 @@
 <h4>Storm entities</h4>
 <a href="{{ route('sites.index') }}"><i class="fa fa-btn fa-anchor"></i> Dockyards/sites</a>
 <a href="{{ route('professions.index') }}"><i class="fa fa-btn fa-user-tie"></i> Professions</a>
+<a href="{{ route('task_intervent_types.index') }}"><i class="fa fa-btn fa-hammer"></i> Intervent types</a>
 

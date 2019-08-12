@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\RequestTaskInterventType;
 use App\TaskInterventType;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,8 @@ class TaskInterventTypeController extends Controller
      */
     public function index()
     {
-        //
+        $intervent_types = TaskInterventType::all();
+        return view('task_intervent_types.index')->with('intervent_types', $intervent_types);
     }
 
     /**
@@ -24,18 +26,21 @@ class TaskInterventTypeController extends Controller
      */
     public function create()
     {
-        //
+        return view('task_intervent_types.create');
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\RequestTaskInterventType  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(RequestTaskInterventType $request)
     {
-        //
+        $validated = $request->validated();
+        $intervent_type = TaskInterventType::create($validated);
+        return redirect()->route('task_intervent_types.index')
+            ->with('flash_message', __('Intervent type :name updated!', ['name' => $intervent_type->name]));
     }
 
     /**
@@ -57,29 +62,50 @@ class TaskInterventTypeController extends Controller
      */
     public function edit(TaskInterventType $taskInterventType)
     {
-        //
+        return view('task_intervent_types.edit')->with('intervent_type', $taskInterventType);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\RequestTaskInterventType  $request
      * @param  \App\TaskInterventType  $taskInterventType
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, TaskInterventType $taskInterventType)
+    public function update(RequestTaskInterventType $request, TaskInterventType $taskInterventType)
     {
-        //
+
+        $validated = $request->validated();
+        $taskInterventType->fill($validated)->save();
+
+        return redirect()->route('task_intervent_types.index')
+            ->with('flash_message', __('Intervent types :name updated!', ['name' => $taskInterventType->name]));
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\TaskInterventType  $taskInterventType
+     * @param  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(TaskInterventType $taskInterventType)
+    public function destroy($id)
     {
-        //
+        TaskInterventType::findOrFail($id)->delete();
+
+        return redirect()->route('task_intervent_types.index')
+            ->with('flash_message', __('Intervent type deleted'));
+    }
+
+
+    /**
+     * Ask confirmation about the specified resource from storage to remove.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function confirmDestroy($id)
+    {
+        $taskInterventType = TaskInterventType::findOrFail($id);
+        return view('task_intervent_types.delete')->with('intervent_type', $taskInterventType);
     }
 }
