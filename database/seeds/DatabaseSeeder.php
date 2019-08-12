@@ -1,5 +1,6 @@
 <?php
 
+use App\Profession;
 use App\Task;
 use Illuminate\Database\Seeder;
 use App\Permission;
@@ -159,19 +160,29 @@ class DatabaseSeeder extends Seeder
 
     private function boatAssociate(User $user, Boat $boat, $role = 'commander')
     {
+//        $profession = factory(Profession::class)->create();
+        $profession = Profession::create([
+            'name' => $this->faker->sentence(),
+        ]);
+
         $boat->associatedUsers()
-            ->create(['role' => $role, 'boat_id' => $boat->id, 'user_id' => $user->id])
+            ->create(['profession_id' => $profession->id,'boat_id' => $boat->id, 'user_id' => $user->id])
             ->save();
     }
 
     private function createBoat($site): Boat
     {
-        
+
+//        return factory(Boat::class)->create();
+
         $boat_name = $this->faker->name;
         $boat = new Boat([
                 'name' => $boat_name,
                 'registration_number' => $this->faker->randomDigitNotNull,
-                'site_id' => $site->id
+                'site_id' => $site->id,
+                'length' => $this->faker->randomFloat(4, 1, 200),
+                'draft' => $this->faker->randomFloat(4, 1, 40),
+                'beam' => $this->faker->randomFloat(4, 1, 3),
             ]
         );
         $boat->save(); 
