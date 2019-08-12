@@ -64,7 +64,8 @@ return [
         'sections'=> \App\Section::class, 
         'updates' => \App\Update::class,   
         'comments' => \App\Comment::class,  
-        'project-sections' => \App\ProjectSections::class
+        'project-sections' => \App\ProjectSections::class,
+        'sites' => \App\Site::class,
     ],
 
     /*

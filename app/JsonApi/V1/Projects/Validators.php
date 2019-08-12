@@ -15,6 +15,9 @@ class Validators extends AbstractValidators
         'name.string' => 'name '.VALIDATOR_STRING,
         'boat_id.required' => 'boat_id '.VALIDATOR_REQUIRED,
         'boat_id.numeric' => 'boat_id '.VALIDATOR_NUMERIC,
+        'site_id.required' => 'site_id '.VALIDATOR_REQUIRED,
+        'site_id.numeric' => 'site_id '.VALIDATOR_NUMERIC,
+        'project_type.required' =>'project_type '.VALIDATOR_REQUIRED,
         'project_type.in' => 'status '.VALIDATOR_IN.': '.PROJECT_TYPE_NEWBUILD.','.PROJECT_TYPE_REFIT,
         'status.in' => 'status '.VALIDATOR_IN.': '.PROJECT_STATUS_OPERATIONAL.','.PROJECT_STATUS_IN_SITE.','.PROJECT_STATUS_CLOSED
     ];
@@ -49,7 +52,8 @@ class Validators extends AbstractValidators
         return [
            'name' => 'required|string|min:1|max:255',
            'boat_id' => 'required|numeric',
-           'project_type' => 'in:'.PROJECT_TYPE_NEWBUILD.','.PROJECT_TYPE_REFIT,
+           'project_type' => 'required|in:'.PROJECT_TYPE_NEWBUILD.','.PROJECT_TYPE_REFIT,
+           'site_id'  => 'required|numeric',
            'status' => 'in:'.PROJECT_STATUS_IN_SITE.','.PROJECT_STATUS_OPERATIONAL.','.PROJECT_STATUS_CLOSED
         ];
     }

@@ -31,7 +31,7 @@ class Schema extends SchemaProvider
     {
         return [
             'project-id' => $resource->project_id,
-            'boat_id' => $resource->boat_id,
+            'section-id' => $resource->section_id,
             'created-at' => $resource->created_at->toAtomString(),
             'updated-at' => $resource->updated_at->toAtomString(),
         ];
