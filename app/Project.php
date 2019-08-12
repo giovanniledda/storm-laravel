@@ -44,13 +44,13 @@ class Project extends Model
      public function sections()
     {
          return $this->belongsToMany('App\Section')
-            ->using('App\ProjectSections');
-            /*->withPivot([
-                // 'role',
-                'profession_id',
+            ->using('App\ProjectSection')
+            ->withPivot([
+                'project_id',
+                'section_id',
                 'created_at',
                 'updated_at'
-            ]);*/
+            ]);
     }
 
     public function comments()

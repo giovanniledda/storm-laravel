@@ -28,7 +28,7 @@ class Adapter extends AbstractAdapter
      */
     public function __construct(StandardStrategy $paging)
     {
-        parent::__construct(new \App\ProjectUser(), $paging);
+        parent::__construct(new \App\ProjectSection(), $paging);
     }
 
     /**

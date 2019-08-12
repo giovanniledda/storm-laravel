@@ -25,6 +25,8 @@ class StageSeeder extends Seeder
         $this->populateTaskTypes();
         // popolo la tabella professions;
         $this->populateProfessions();
+        
+        /*
         // creo due utenti con profilo boot_manager
         $user_1 = $this->createUser(ROLE_BOAT_MANAGER);
         // do il permesso all'utente BOAT_MANAGER
@@ -144,7 +146,7 @@ class StageSeeder extends Seeder
          $this->createProject($site, $boat1, [$p1, $p2]);
          $this->createProject($site, $boat2, [$p3]);
          $this->createProject($site, $boat3, [$p4, $p5]);
-         
+         */
     } 
     
     private function populateTaskTypes() {
@@ -170,9 +172,18 @@ class StageSeeder extends Seeder
     
     
     private function populateProfessions() {
+        $this->command->info("Creating Professions :");
         $professions = ['owner','chief engineer', 'captain', 'ship\'s boy'];
         foreach ($professions as $profession) {
-            $prof = Profession::create(['name'=>$profession]);
+            $prof = Profession::create(['name'=>$profession, 'is_storm'=>0]);
+            $prof->save();
+            $this->command->info("$profession");
+        }
+        $this->command->info("Storm Professions :");
+        $professions_storm = ['Manager','3d Desiner', 'captain', 'ship\'s boy'];
+        foreach ($professions_storm as $profession_storm) {
+            $prof = Profession::create(['name'=>$profession_storm, 'is_storm'=>1]);
+            $this->command->info("$profession_storm");
             $prof->save();
         }
     }
