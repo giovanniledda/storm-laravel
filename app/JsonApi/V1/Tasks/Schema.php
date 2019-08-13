@@ -25,9 +25,9 @@ class Schema extends SchemaProvider
 
 
      public function getPrimaryMeta($resource)
-    {
-
-
+    { 
+         
+        
         $detailed_images = $resource->detailed_images;
         $generic_images = $resource->generic_images;
         $additional_images = $resource->additional_images;
@@ -38,10 +38,10 @@ class Schema extends SchemaProvider
             $diu []= $i->getShowApiUrl();
         }
 
-        // $giu = [];
-        // foreach ($generic_images as $i){
-        //     $giu []= $i->getShowApiUrl();
-        // }
+        $giu = [];
+        foreach ($generic_images as $i){
+             $giu []= $i->getShowApiUrl();
+        }
 
         $aiu = [];
         foreach ($additional_images as $i){
@@ -86,8 +86,7 @@ class Schema extends SchemaProvider
     {
 //        $author = User::where('id', $resource->author_id)->first();
         $author = $resource->author;
-
-
+        $comments = $resource->comments()->get();
         return [
 
             'description' => $resource->description,
@@ -105,6 +104,7 @@ class Schema extends SchemaProvider
             'subsection_id' => $resource->subsection_id,
             'x_coord' => $resource->x_coord,
             'y_coord' => $resource->y_coord,
+            'comments'=> $comments,
             'created-at' => $resource->created_at->toAtomString(),
             'updated-at' => $resource->updated_at->toAtomString(),
         ];

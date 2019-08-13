@@ -25,15 +25,11 @@ class Schema extends SchemaProvider
     public function getPrimaryMeta($resource)
     {
         //App\Boat resource
-        $project_active = $resource->projects()->where('project_status', PROJECT_STATUS_OPERATIONAL)->first();
-
-
-
-        $generic_images = $resource->generic_images;
+        
+        
         $generic_documents = $resource->generic_documents;
 
-
-
+         
         // $giu = [];
         // foreach ($generic_images as $i){
         //     $giu []= $i->getShowApiUrl();
@@ -55,8 +51,7 @@ class Schema extends SchemaProvider
         }
         return [
             'generic_documents' => $gdu,
-            'image' => $image ? $image->getShowApiUrl() : null,
-            'project_id'=>($project_active) ? $project_active->id : null
+            'image' => $image ? $image->getShowApiUrl() : null, 
         ];
         // TODO : mettere sia il link documentale all'immagine della barca che il project_id
     }
@@ -73,6 +68,10 @@ class Schema extends SchemaProvider
      */
     public function getAttributes($resource)
     {
+        $project_active = $resource->projects()
+                ->where('project_status', PROJECT_STATUS_OPERATIONAL)
+                ->orWhere('project_status', PROJECT_STATUS_IN_SITE)
+                ->first();
         return [
             'name' => $resource->name,
             'registration_number' => $resource->registration_number,
@@ -83,6 +82,7 @@ class Schema extends SchemaProvider
             'beam' => $resource->beam,
             'boat_type' => $resource->boat_type,
             'site_id' => $resource->site_id,
+            'project'  => $project_active,
             'created-at' => $resource->created_at->toAtomString(),
             'updated-at' => $resource->updated_at->toAtomString(),
         ];
