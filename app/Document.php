@@ -32,19 +32,32 @@ class Document extends Model implements HasMedia
         'title', 'type'
     ];
 
+    
     public function __construct(array $attributes = [])
     {
         // this is when you create a Document from PHP (not via Json:API)
         if (isset($attributes['file'])){
             $path = $attributes['file']->getPathName();
             $name = $attributes['file']->getClientOriginalName();
-            $this->addMedia($path)->usingFileName($name)->toMediaCollection('documents', env('MEDIA_DISK', 'local'));
+             
+            $media = $this->addMedia($path)->usingFileName($name)->toMediaCollection('documents', env('MEDIA_DISK', 'local'));
+           
             unset ($attributes['file']);
         }
         parent::__construct($attributes);
 
     }
-
+    /**
+     * definisce un'immagine thumb
+     */
+    public function registerMediaConversions(BaseMedia $media = null)
+    {    
+        $this->addMediaConversion('thumb')
+              ->width(368)
+              ->height(232)
+              ->sharpen(10);
+    }
+    
     public function comments()
     {
         return $this->morphMany('App\Comment', 'commentable');

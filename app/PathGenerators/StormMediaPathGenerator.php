@@ -12,6 +12,7 @@ class StormMediaPathGenerator implements PathGenerator
         $document = $media->model;
         $model = $document->documentable;
         $media_id = $media->id;
+        
         // we put the file in some dir depending on the related object
 
         $path = 'media/';

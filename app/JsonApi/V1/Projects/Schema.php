@@ -73,12 +73,12 @@ class Schema extends SchemaProvider
      */
     public function getAttributes($resource)
     {
-        $boat =  Boat::find($resource->boat_id);
+      //  $boat =  Boat::find($resource->boat_id);
 
         return [
             'name' => $resource->name,
             'boat_id' => $resource->boat_id,
-            'boat' =>$boat,
+            //'boat' =>$boat,
             'status' => $resource->status,
             'project_progress'=> $resource->project_progress,
             'project_type' => $resource->project_type,

@@ -53,6 +53,9 @@ class Adapter extends AbstractAdapter
         if ($boat_id = $filters->get('boat_id')) {
             $query->where('boat_id', '=', "{$boat_id}");
         }
+        
+        
+        
         /** implementa la ricerca per name non cancellare ma commentare */
         /*if ($this->status = $filters->get('status')) {
             $query->whereIn(
