@@ -120,11 +120,17 @@ class TaskObserver
         }
 
         /** setto la variabile added_by_storm **/
-        $user = \Auth::user();
-        if (is_object($user) && $user->can(PERMISSION_BOAT_MANAGER)) { // se sei in boat_user
-            $task->update(['added_by_storm'=>0]);
-        }
-
+        $user = \Auth::user(); 
+        
+        if (is_object($user)) {
+            // se sei in boat_user
+            if ($user->can(PERMISSION_BOAT_MANAGER)) {
+                $task->update(['added_by_storm'=>0, 'author_id'=>$user->id]);
+            }
+            if ($user->can(PERMISSION_ADMIN) || $user->can(PERMISSION_WORKER) || $user->can(PERMISSION_BACKEND_MANAGER)) {
+                $task->update(['added_by_storm'=>1, 'author_id'=>$user->id]);
+            } 
+        } 
     }
 
     /**

@@ -8,10 +8,10 @@ use Spatie\ModelStatus\HasStatuses;
 use StormUtils;
 use Venturecraft\Revisionable\RevisionableTrait;
 use function GuzzleHttp\json_decode;
+use App\Document;
 
 class Task extends Model
-{
-
+{  
     use RevisionableTrait, HasStatuses;
 
     protected $table = 'tasks';
@@ -66,28 +66,11 @@ class Task extends Model
         return $this->morphMany('App\Comment', 'commentable');
     }
 
-    public function addDetailedImage(\App\Document $doc){
-        $doc->type = \App\Document::DETAILED_IMAGE_TYPE;
-        $this->documents()->save($doc);
+    public function documents(){
+            return $this->morphMany('App\Document', 'documentable');
     }
-
-    public function addAdditionalImage(\App\Document $doc){
-        $doc->type = \App\Document::ADDITIONAL_IMAGE_TYPE;
-        $this->documents()->save($doc);
-    }
-
-    public function addGenericImage(\App\Document $doc){
-        $doc->type = \App\Document::GENERIC_IMAGE_TYPE;
-        $this->documents()->save($doc);
-    }
-
-    public function addGenericDocument(\App\Document $doc){
-        $doc->type = Document::GENERIC_DOCUMENT_TYPE;
-        $this->documents()->save($doc);
-    }
-
-
-    public function addDocumentWithType(\App\Document $doc, $type){
+    
+    public function addDocumentWithType(Document $doc, $type){
         if ($type){
             $doc->type = $type;
         } else {
@@ -96,25 +79,25 @@ class Task extends Model
         $this->documents()->save($doc);
 
     }
-    public function detailed_images(){
+    
+    
+    public function detailed_images(){ 
         return $this->documents()->where('type', \App\Document::DETAILED_IMAGE_TYPE);
     }
 
-    public function additional_images(){
+    public function additional_images(){ 
         return $this->documents()->where('type', \App\Document::ADDITIONAL_IMAGE_TYPE);
     }
 
-    public function generic_images(){
+    public function generic_images(){ 
         return $this->documents()->where('type', \App\Document::GENERIC_IMAGE_TYPE);
     }
 
-    public function generic_documents(){
+    public function generic_documents(){ 
         return $this->documents()->where('type', \App\Document::GENERIC_DOCUMENT_TYPE);
     }
 
-    public function documents(){
-            return $this->morphMany('App\Document', 'documentable');
-    }
+    
 
 
     public function history()

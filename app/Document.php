@@ -1,5 +1,4 @@
 <?php
-
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
@@ -17,8 +16,7 @@ class Document extends Model implements HasMedia
     use HasMediaTrait;
 
     // see https://github.com/VentureCraft/revisionable
-    use RevisionableTrait;
-
+    use RevisionableTrait; 
 
     public const GENERIC_DOCUMENT_TYPE = 'generic_document';
     public const DETAILED_IMAGE_TYPE = 'detailed_image';
@@ -34,19 +32,32 @@ class Document extends Model implements HasMedia
         'title', 'type'
     ];
 
+    
     public function __construct(array $attributes = [])
     {
         // this is when you create a Document from PHP (not via Json:API)
         if (isset($attributes['file'])){
             $path = $attributes['file']->getPathName();
             $name = $attributes['file']->getClientOriginalName();
-            $this->addMedia($path)->usingFileName($name)->toMediaCollection('documents', env('MEDIA_DISK', 'local'));
+             
+            $media = $this->addMedia($path)->usingFileName($name)->toMediaCollection('documents', env('MEDIA_DISK', 'local'));
+           
             unset ($attributes['file']);
         }
         parent::__construct($attributes);
 
     }
-
+    /**
+     * definisce un'immagine thumb
+     */
+    public function registerMediaConversions(BaseMedia $media = null)
+    {    
+        $this->addMediaConversion('thumb')
+              ->width(368)
+              ->height(232)
+              ->sharpen(10);
+    }
+    
     public function comments()
     {
         return $this->morphMany('App\Comment', 'commentable');
@@ -57,8 +68,7 @@ class Document extends Model implements HasMedia
         return $this->getUrl();
        // return $this->getFirstMedia('documents')->getPath();
     }
-
-
+ 
 
     public function documentable(): \Illuminate\Database\Eloquent\Relations\MorphTo {
         return $this->morphTo();
@@ -85,7 +95,8 @@ class Document extends Model implements HasMedia
 
 
     public function getShowApiUrl(){
-        return route('api:v1:documents.show', [$this->id]);
+        return $this->id; // su richiesta di Giovanni Miscali per semplificare la parte dello storage in assenza di connesione
+      //  return route('api:v1:documents.show', [$this->id]);
     }
 
 }
