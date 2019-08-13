@@ -23,12 +23,12 @@
                 <tbody>
                 @foreach ($sites as $site)
                     <tr>
-
                         <td>{{ $site->name }}</td>
                         <td>{{ $site->location }}</td>
                         <td>{{ $site->lat }}, {{ $site->lng }}</td>
                         <td>
-                            <a href="{{ URL::to('sites/'.$site->id.'/edit') }}" class="btn btn-info pull-left" style="margin-right: 3px;">{{ __('Edit') }}</a>
+                            <a href="{{ @route('sites.addresses.index', ['id' => $site->id]) }}" class="btn btn-outline-info pull-left" style="margin-right: 3px;"><i class="fa fa-map-marked-alt"></i> {{ __('Addresses (:addrs)', ['addrs' => $site->countAddresses()]) }}</a>
+                            <a href="{{ URL::to('sites/'.$site->id.'/edit') }}" class="btn btn-info">{{ __('Edit') }}</a>
                             <a href="{{ @route('sites.delete.confirm', ['id' => $site->id]) }}" class="btn btn-danger">{{ __('Delete') }}</a>
                         </td>
                     </tr>

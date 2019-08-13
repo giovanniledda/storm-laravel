@@ -11,9 +11,15 @@ use const PERMISSION_WORKER;
 use const ROLE_ADMIN;
 use const ROLE_BOAT_MANAGER;
 use const ROLE_WORKER;
+use Webpatser\Countries\Countries;
 
 class Utils
 {
+    /**
+     * Get an incremental ID for factories use
+     *
+     * @return \Generator
+     */
     public static function autoIncrement()
     {
         for ($i = 0; $i < 1000; $i++) {
@@ -54,11 +60,22 @@ class Utils
 //        return User::role(ROLE_WORKER)->get();
     }
 
+    /**
+     * An alias for the strstr function
+     *
+     * @param string $string
+     * @param array $placeholders
+     * @return string
+     */
     public static function replacePlaceholders($string = '', $placeholders = [])
     {
         return strtr($string, $placeholders);
     }
 
+    /**
+     * Returns a Response with JSONAPI header
+     *
+     */
     public static function renderStandardJsonapiResponse($data, $code)
     {
         $resp = Response($data, $code);
@@ -66,5 +83,14 @@ class Utils
         return $resp;
     }
 
-
+    /**
+     * Get the list of countries for @countries component
+     *
+     */
+    public static function getCountriesList()
+    {
+        return Countries::orderBy('full_name')
+            ->whereNotNull('full_name')
+            ->pluck('full_name', 'iso_3166_2');
+    }
 }

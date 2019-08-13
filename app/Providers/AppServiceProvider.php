@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use CloudCreativity\LaravelJsonApi\LaravelJsonApi;
+use Countries;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
 
@@ -40,10 +41,28 @@ class AppServiceProvider extends ServiceProvider
         // TODO: make this work:
         // Schema::defaultStringLength(191);
 
+
+        /** Blade Components Aliasing [https://laravel.com/docs/5.8/blade#components-and-slots] **/
+
+        /**
+         * Generates a select with all the countries as options
+         *
+         * Usage: @countries() @endcountries
+         */
+        Blade::component('components.countries', 'countries');
+
+
         /** Blade extensions [https://laravel.com/docs/5.8/blade#extending-blade] **/
 
+        /**
+         * Generates a datetime string
+         *
+         * Usage: @datetime(time())
+         */
         Blade::directive('datetime', function ($expression) {
             return "<?php echo date('m/d/Y H:i', $expression); ?>";
         });
+
+
     }
 }

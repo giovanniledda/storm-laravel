@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\RequestAddress;
 use App\Http\Requests\RequestSite;
 use App\Site;
+use Countries;
 use Illuminate\Http\Request;
 
 class SiteController extends Controller
@@ -107,5 +109,67 @@ class SiteController extends Controller
     {
         $site = Site::findOrFail($id);
         return view('sites.delete')->withSite($site);
+    }
+
+
+    /*
+     * *************************************************************
+     *                      ADDRESSES
+     * *************************************************************
+     */
+
+    /**
+     * Addresses list for a Site
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function addressesIndex($id)
+    {
+        $site = Site::findOrFail($id);
+        $addresses = $site->getAddresses();
+        return view('sites.addresses.index')->with(['addresses' => $addresses, 'site' => $site]);
+    }
+
+    /**
+     * Show the form for creating a new addresses for the Site.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function addressesCreate($id)
+    {
+        return view('sites.addresses.create')->with(['site' => Site::findOrFail($id)]);
+    }
+
+
+    /**
+     * Store a newly created addresses for the Site in storage.
+     *
+     * @param  \App\Http\Requests\RequestAddress  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function addressesStore(RequestAddress $request)
+    {
+        $validated = $request->validated();
+        $site = Site::findOrFail($validated['site_id']);
+        unset($validated['site_id']);
+
+        try {
+            // Qua si innesca anche il Validator della HasAddresses che segue queste regole:
+//            'street'       => 'required|string|min:3|max:60',
+//            'street_extra' => 'string|min:3|max:60',
+//            'city'         => 'required|string|min:3|max:60',
+//            'state'        => 'string|min:3|max:60',
+//            'post_code'    => 'required|min:4|max:10|AlphaDash',
+//            'country_id'   => 'required|integer',
+            // ...la country viene gestite ricercando al stringa nei campi iso_3166_2 o iso_3166_3 di countries
+            $site->addAddress($validated);
+        } catch (\Exception $e) {
+
+        }
+
+        return redirect()->route('sites.index')
+            ->with('flash_message', __('New address added for site :name!', ['name' => $site->name]));
     }
 }

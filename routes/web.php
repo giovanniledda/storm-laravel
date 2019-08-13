@@ -39,6 +39,9 @@ Route::group( ['middleware' => ['auth', 'isAdmin']], function() {
 
     // Sites, Boats & Co.
     Route::get('/sites/delete-confirm/{id}', 'SiteController@confirmDestroy')->name('sites.delete.confirm');
+    Route::get('/sites/{id}/addresses', 'SiteController@addressesIndex')->name('sites.addresses.index');
+    Route::get('/sites/{id}/addresses/create', 'SiteController@addressesCreate')->name('sites.addresses.create');
+    Route::post('/sites/addresses/store', 'SiteController@addressesStore')->name('sites.addresses.store');
     Route::get('/professions/delete-confirm/{id}', 'ProfessionController@confirmDestroy')->name('professions.delete.confirm');
-    Route::get('/task_intervent_types//delete-confirm/{id}', 'TaskInterventTypeController@confirmDestroy')->name('task_intervent_types.delete.confirm');
+    Route::get('/task_intervent_types/delete-confirm/{id}', 'TaskInterventTypeController@confirmDestroy')->name('task_intervent_types.delete.confirm');
 });

@@ -32,4 +32,14 @@ class Site extends Model
     // {
     //     return $this->morphMany('App\Document', 'documentable');
     // }
+
+    public function getAddresses()
+    {
+        return $this->hasAddress() ? $this->addresses()->get() : [];
+    }
+
+    public function countAddresses()
+    {
+        return $this->addresses()->count();
+    }
 }

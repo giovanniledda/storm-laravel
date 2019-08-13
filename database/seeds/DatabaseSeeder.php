@@ -9,8 +9,6 @@ use App\User;
 use App\Boat;
 use App\Site;
 use App\Project;
-
-
 use Faker\Factory as Faker;
 
 class DatabaseSeeder extends Seeder
@@ -30,6 +28,7 @@ class DatabaseSeeder extends Seeder
         $site_name = $this->faker->sentence;
         $site = new Site([
             'name' => $site_name,
+            'location' => $this->faker->address,
             'lat' => $this->faker->randomDigitNotNull,
             'lng' => $this->faker->randomDigitNotNull,
         ]);
