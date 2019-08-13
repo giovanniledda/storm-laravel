@@ -79,6 +79,8 @@ class Task extends Model
         $this->documents()->save($doc);
 
     }
+    
+    
     public function detailed_images(){ 
         return $this->documents()->where('type', \App\Document::DETAILED_IMAGE_TYPE);
     }

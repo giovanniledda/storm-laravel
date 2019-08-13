@@ -68,8 +68,7 @@ class Document extends Model implements HasMedia
         return $this->getUrl();
        // return $this->getFirstMedia('documents')->getPath();
     }
-
-
+ 
 
     public function documentable(): \Illuminate\Database\Eloquent\Relations\MorphTo {
         return $this->morphTo();

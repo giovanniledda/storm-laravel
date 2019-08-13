@@ -65,6 +65,9 @@ class StormMediaPathGenerator implements PathGenerator
 
         return $path;
     }
+    
+    
+    
     public function getPathForConversions(Media $media) : string
     {
         return $this->getPath($media).'c' . DIRECTORY_SEPARATOR;

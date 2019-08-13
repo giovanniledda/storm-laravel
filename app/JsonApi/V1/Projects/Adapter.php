@@ -54,6 +54,18 @@ class Adapter extends AbstractAdapter
             $query->where('boat_id', '=', "{$boat_id}");
         }
         
+        $user = \Auth::user();
+        if (!$user->can(PERMISSION_ADMIN) || !$user->can(PERMISSION_BACKEND_MANAGER)) { 
+            if ($user->hasRole(ROLE_WORKER)) {
+                 $query->Join('project_user', 'projects.id', '=', 'project_user.project_id')->where('project_user.user_id', '=', $user->id) ;
+             } 
+              if ($user->can(PERMISSION_BOAT_MANAGER)) { 
+                $query->Join('boat_user', 'projects.boat_id', '=', 'boat_user.boat_id')  
+                        ->where('boat_user.user_id', '=', $user->id) ;
+                
+             }    
+        } 
+        
         
         
         /** implementa la ricerca per name non cancellare ma commentare */
