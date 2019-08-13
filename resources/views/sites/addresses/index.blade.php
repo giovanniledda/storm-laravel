@@ -20,7 +20,6 @@
                     <th>{{ __('State') }}</th>
                     <th>{{ __('Country') }}</th>
                     <th>{{ __('Note') }}</th>
-                    <th>{{ __('Country') }}</th>
                     <th>{{ __('Primary') }}</th>
                     <th>{{ __('Operation') }}</th>
                 </tr>
@@ -40,9 +39,8 @@
                         <td>{{ $addr->note }}</td>
                         <td>{{ $addr->is_primary }}</td>
                         <td>
-{{--                            <a href="{{ @route('sites.addresses.index', ['id' => $site->id]) }}" class="btn btn-outline-info pull-left" style="margin-right: 3px;"><i class="fa fa-map-marked-alt"></i> {{ __('Addresses') }}</a>--}}
-{{--                            <a href="{{ URL::to('sites/'.$site->id.'/edit') }}" class="btn btn-info">{{ __('Edit') }}</a>--}}
-{{--                            <a href="{{ @route('sites.delete.confirm', ['id' => $site->id]) }}" class="btn btn-danger">{{ __('Delete') }}</a>--}}
+                            <a href="{{ @route('sites.addresses.edit', ['site_id' => $site->id, 'address_id' => $addr->id]) }}" class="btn btn-info">{{ __('Edit') }}</a>
+                            <a href="{{ @route('sites.addresses.delete.confirm', ['site_id' => $site->id, 'address_id' => $addr->id]) }}" class="btn btn-danger">{{ __('Delete') }}</a>
                         </td>
                     </tr>
                 @endforeach

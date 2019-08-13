@@ -89,8 +89,8 @@ class Utils
      */
     public static function getCountriesList()
     {
-        return Countries::orderBy('full_name')
-            ->whereNotNull('full_name')
-            ->pluck('full_name', 'iso_3166_2');
+        return Countries::orderBy('name')
+            ->whereNotNull('name')
+            ->pluck('name', 'iso_3166_2');
     }
 }

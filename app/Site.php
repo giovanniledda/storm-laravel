@@ -38,6 +38,11 @@ class Site extends Model
         return $this->hasAddress() ? $this->addresses()->get() : [];
     }
 
+    public function getAddress($address_id)
+    {
+        return $this->addresses()->where('id', $address_id)->first();
+    }
+
     public function countAddresses()
     {
         return $this->addresses()->count();

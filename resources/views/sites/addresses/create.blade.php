@@ -9,7 +9,7 @@
         <h1><i class='fa fa-map-marked-alt'></i> {{ __('Add address') }}</h1>
         <hr>
 
-        <form method="POST" action="/sites/addresses/store">
+        <form method="POST" action="{{ @route('sites.addresses.store', ['id' => $site->id])  }}">
 
         @csrf
 
