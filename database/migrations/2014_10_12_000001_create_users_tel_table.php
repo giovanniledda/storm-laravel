@@ -25,9 +25,6 @@ class CreateUsersTelTable extends Migration
             // user
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
-
-            // country
-            $table->integer('country_id')->nullable()->unsigned()->index();
         });
     }
 

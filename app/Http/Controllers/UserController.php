@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\RequestPhone;
+use App\Phone;
 use Illuminate\Http\Request;
 use Session;
 use App\User;
@@ -223,23 +225,23 @@ class UserController extends Controller
     /**
      * Store a newly created addresses for the Site in storage.
      *
-     * @param  \App\Http\Requests\RequestAddress  $request
+     * @param  \App\Http\Requests\RequestPhone  $request
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function addressesStore(RequestAddress $request, $id)
+    public function phonesStore(RequestPhone $request, $id)
     {
         $validated = $request->validated();
         $user = User::findOrFail($id);
 
         try {
-//            $site->addAddress($validated);
-            $message = __('New address added for site :name!', ['name' => $user->name]);
+            $phone = Phone::create($validated); // si porta dietro user_id
+            $message = __('New phone added for user :name!', ['name' => $user->name]);
         } catch (\Exception $e) {
-            $message = __('Something went wrong adding new address, check your data!');
+            $message = __('Something went wrong adding new phone, check your data! [:msg]', ['msg' => $e->getMessage()]);
         }
 
-        return redirect()->route('sites.addresses.index', ['id' => $id])->with('flash_message', $message);
+        return redirect()->route('users.phones.index', ['id' => $id])->with('flash_message', $message);
     }
 
 }

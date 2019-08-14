@@ -11,6 +11,8 @@ use const PERMISSION_WORKER;
 use const ROLE_ADMIN;
 use const ROLE_BOAT_MANAGER;
 use const ROLE_WORKER;
+use const USER_PHONE_TYPE_FIXED;
+use const USER_PHONE_TYPE_MOBILE;
 use Webpatser\Countries\Countries;
 
 class Utils
@@ -100,6 +102,7 @@ class Utils
      */
     public static function getPhoneTypes()
     {
-        return USER_PHONE_TYPES;
+        return [USER_PHONE_TYPE_MOBILE => USER_PHONE_TYPE_MOBILE,
+                USER_PHONE_TYPE_FIXED => USER_PHONE_TYPE_FIXED];
     }
 }

@@ -11,9 +11,11 @@
         </h1>
         <hr>
 
-        <form method="POST" action="{{ @route('users.phones.store', ['id' => $user->id])  }}">
+        <form method="POST" action="{{ @route('users.phones.store', ['id' => $user->id]) }}">
 
             @csrf
+
+            {{ Form::hidden('user_id', $user->id) }}
 
             <div class="form-group">
                 {{ Form::label('phone_number', 'Number') }}
@@ -22,9 +24,6 @@
 
             @phonetypes()
             @endphonetypes
-
-            @countries()
-            @endcountries
 
             {{ Form::submit('Add', array('class' => 'btn btn-primary')) }}
 
