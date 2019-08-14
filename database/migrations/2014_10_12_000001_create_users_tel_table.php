@@ -18,10 +18,16 @@ class CreateUsersTelTable extends Migration
             $table->string('phone_type');
             $table->string('phone_number');
             $table->string('notes')->nullable();
-            // user relactionship 
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users'); 
             $table->timestamps();
+
+            // Relations:
+
+            // user
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
+
+            // country
+            $table->integer('country_id')->nullable()->unsigned()->index();
         });
     }
 

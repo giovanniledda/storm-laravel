@@ -34,6 +34,10 @@ Route::group( ['middleware' => ['auth', 'isAdmin']], function() {
 
     // Users
     Route::get('/users/{id}/confirm-destroy', 'UserController@confirmDestroy')->name('users.confirm.destroy');
+    Route::get('/users/{id}/phones', 'UserController@phonesIndex')->name('users.phones.index');
+    Route::get('/users/{id}/phones/create', 'UserController@phonesCreate')->name('users.phones.create');
+    Route::post('/users/{id}/phones/store', 'UserController@phonesStore')->name('users.phones.store');
+
     Route::get('/roles/{id}/confirm-destroy', 'RoleController@confirmDestroy')->name('roles.confirm.destroy');
     Route::get('/permissions/{id}/confirm-destroy', 'PermissionController@confirmDestroy')->name('permissions.confirm.destroy');
 

@@ -74,7 +74,13 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\UsersTel');
     }
-    
+
+    public function countPhones()
+    {
+        return $this->hasMany('App\UsersTel')->count();
+    }
+
+
     public function setPasswordAttribute($password)
     {
         $this->attributes['password'] = bcrypt($password);

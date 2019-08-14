@@ -47,9 +47,16 @@ class AppServiceProvider extends ServiceProvider
         /**
          * Generates a select with all the countries as options
          *
-         * Usage: @countries() @endcountries
+         * Usage: @countries(['selected_country' => $country]) @endcountries
          */
         Blade::component('components.countries', 'countries');
+
+        /**
+         * Generates a select with all the countries as options
+         *
+         * Usage: @phonetypes(['selected_type' => $phone->phone_type]) @endphonetypes
+         */
+        Blade::component('components.phonetypes', 'phonetypes');
 
 
         /** Blade extensions [https://laravel.com/docs/5.8/blade#extending-blade] **/

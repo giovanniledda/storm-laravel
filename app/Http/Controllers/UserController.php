@@ -186,4 +186,60 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         return view('users.delete')->withUser($user);
     }
+
+
+    /*
+     * *************************************************************
+     *                      TELEPHONES
+     * *************************************************************
+     */
+
+
+    /**
+     * Phones list for a user
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function phonesIndex($id)
+    {
+        $user = User::findOrFail($id);
+        $phones = $user->phones;
+        return view('users.phones.index')->with(['phones' => $phones, 'user' => $user]);
+    }
+
+    /**
+     * Show the form for creating a new phones for the user.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function phonesCreate($id)
+    {
+        return view('users.phones.create')->with(['user' => User::findOrFail($id)]);
+    }
+
+
+    /**
+     * Store a newly created addresses for the Site in storage.
+     *
+     * @param  \App\Http\Requests\RequestAddress  $request
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function addressesStore(RequestAddress $request, $id)
+    {
+        $validated = $request->validated();
+        $user = User::findOrFail($id);
+
+        try {
+//            $site->addAddress($validated);
+            $message = __('New address added for site :name!', ['name' => $user->name]);
+        } catch (\Exception $e) {
+            $message = __('Something went wrong adding new address, check your data!');
+        }
+
+        return redirect()->route('sites.addresses.index', ['id' => $id])->with('flash_message', $message);
+    }
+
 }

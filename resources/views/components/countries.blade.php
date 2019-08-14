@@ -1,5 +1,5 @@
 @php
-    $selected = isset($country) ? $country->iso_3166_2 : null;
+    $selected = isset($selected_country) ? $selected_country->iso_3166_2 : null;
 @endphp
 
 <div class="form-group">

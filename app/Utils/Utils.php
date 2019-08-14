@@ -93,4 +93,13 @@ class Utils
             ->whereNotNull('name')
             ->pluck('name', 'iso_3166_2');
     }
+
+    /**
+     * Get the list of telephone types defined in constants
+     *
+     */
+    public static function getPhoneTypes()
+    {
+        return USER_PHONE_TYPES;
+    }
 }

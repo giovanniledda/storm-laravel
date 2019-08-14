@@ -190,11 +190,15 @@ return [
         */
         BC\Laravel\DropboxDriver\ServiceProvider::class,
 
+        // Gestione revisioni dei modelli
         Venturecraft\Revisionable\RevisionableServiceProvider::class,
 
         // Gestione indirizzi
         Lecturize\Addresses\AddressesServiceProvider::class,
         Webpatser\Countries\CountriesServiceProvider::class,
+
+        // Gestione numeri di telefono
+        Propaganistas\LaravelPhone\PhoneServiceProvider::class,
     ],
 
     /*

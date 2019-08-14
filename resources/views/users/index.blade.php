@@ -31,7 +31,8 @@
                         <td>{{ $user->created_at->format('F d, Y h:ia') }}</td>
                         <td>{{ $user->roles()->pluck('name')->implode(' ') }}</td>{{-- Retrieve array of roles associated to a user and convert to string --}}
                         <td>
-                            <a href="{{ route('users.edit', $user->id) }}" class="btn btn-info pull-left" style="margin-right: 3px;">Edit</a>
+                            <a href="{{ @route('users.phones.index', ['id' => $user->id]) }}" class="btn btn-outline-info pull-left" style="margin-right: 3px;"><i class="fa fa-phone"></i> {{ __('Phones (:phones)', ['phones' => $user->countPhones()]) }}</a>
+                            <a href="{{ @route('users.edit', $user->id) }}" class="btn btn-info pull-left" style="margin-right: 3px;">Edit</a>
                             <a href="{{ @route('users.confirm.destroy', ['id' => $user->id]) }}" class="btn btn-danger">{{ __('Delete') }}</a>
                         </td>
                     </tr>

@@ -16,6 +16,9 @@ defined('SECTION_TYPE_DECK') or define('SECTION_TYPE_DECK', 'deck');
 
 defined('STORM_EMAIL_SUFFIX') or define('STORM_EMAIL_SUFFIX', '@storm.net');
 defined('USER_FAKE_PASSWORD') or define('USER_FAKE_PASSWORD', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi');
+defined('USER_PHONE_TYPE_MOBILE') or define('USER_PHONE_TYPE_MOBILE', 'mobile');
+defined('USER_PHONE_TYPE_FIXED') or define('USER_PHONE_TYPE_FIXED', 'fixed line');
+defined('USER_PHONE_TYPES') or define('USER_PHONE_TYPES', [USER_PHONE_TYPE_MOBILE, USER_PHONE_TYPE_FIXED]);
 
 
 /*

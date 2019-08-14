@@ -37,7 +37,7 @@
             {{ Form::text('state', $address->state, array('class' => 'form-control')) }}
         </div>
 
-        @countries(['country' => $address->country])
+        @countries(['selected_country' => $address->country])
         @endcountries
 
         <div class="form-group">

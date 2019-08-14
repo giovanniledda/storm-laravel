@@ -12,7 +12,7 @@
         {{ Form::model($user, array('route' => array('users.update', $user->id), 'method' => 'PUT')) }}{{-- Form model binding to automatically populate our fields with user data --}}
 
         @csrf
-        
+
         <div class="form-group">
             {{ Form::label('name', 'Name') }}
             {{ Form::text('name', null, array('class' => 'form-control')) }}
@@ -41,7 +41,6 @@
         <div class="form-group">
             {{ Form::label('password', 'Confirm Password') }}<br>
             {{ Form::password('password_confirmation', array('class' => 'form-control')) }}
-
         </div>
 
         {{ Form::submit(__('Save'), array('class' => 'btn btn-primary')) }}
