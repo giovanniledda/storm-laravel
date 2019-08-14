@@ -6,7 +6,7 @@
 
     <div class="col-lg-10 col-lg-offset-1">
         <h1>
-            <i class="fa fa-map-marked-alt"></i> {{ __('Addresses') }}
+            <i class="fa fa-map-marked-alt"></i> {{ __('Addresses for site in :city', ['city' => $site->location]) }}
         </h1>
         <hr>
         <div class="table-responsive">
@@ -40,7 +40,7 @@
                         <td>{{ $addr->is_primary }}</td>
                         <td>
                             <a href="{{ @route('sites.addresses.edit', ['site_id' => $site->id, 'address_id' => $addr->id]) }}" class="btn btn-info">{{ __('Edit') }}</a>
-                            <a href="{{ @route('sites.addresses.delete.confirm', ['site_id' => $site->id, 'address_id' => $addr->id]) }}" class="btn btn-danger">{{ __('Delete') }}</a>
+                            <a href="{{ @route('sites.addresses.confirm.destroy', ['site_id' => $site->id, 'address_id' => $addr->id]) }}" class="btn btn-danger">{{ __('Delete') }}</a>
                         </td>
                     </tr>
                 @endforeach
@@ -49,7 +49,7 @@
             </table>
         </div>
 
-        <a href="{{ URL::to("/sites/{$site->id}/addresses/create") }}" class="btn btn-success">{{ __('Add address') }}</a>
+        <a href="{{ @route('sites.addresses.create', ['site_id' => $site->id]) }}" class="btn btn-success">{{ __('Add address') }}</a>
 
     </div>
 

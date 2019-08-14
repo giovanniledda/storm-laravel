@@ -29,7 +29,7 @@
                         <td>
                             <a href="{{ @route('sites.addresses.index', ['id' => $site->id]) }}" class="btn btn-outline-info pull-left" style="margin-right: 3px;"><i class="fa fa-map-marked-alt"></i> {{ __('Addresses (:addrs)', ['addrs' => $site->countAddresses()]) }}</a>
                             <a href="{{ URL::to('sites/'.$site->id.'/edit') }}" class="btn btn-info">{{ __('Edit') }}</a>
-                            <a href="{{ @route('sites.delete.confirm', ['id' => $site->id]) }}" class="btn btn-danger">{{ __('Delete') }}</a>
+                            <a href="{{ @route('sites.confirm.destroy', ['id' => $site->id]) }}" class="btn btn-danger">{{ __('Delete') }}</a>
                         </td>
                     </tr>
                 @endforeach

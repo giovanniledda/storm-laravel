@@ -25,7 +25,7 @@
                         <td>{{ $type->name }}</td>
                         <td>
                             <a href="{{ URL::to('task_intervent_types/'.$type->id.'/edit') }}" class="btn btn-info pull-left" style="margin-right: 3px;">{{ __('Edit') }}</a>
-                            <a href="{{ @route('task_intervent_types.delete.confirm', ['id' => $type->id]) }}" class="btn btn-danger">{{ __('Delete') }}</a>
+                            <a href="{{ @route('task_intervent_types.confirm.destroy', ['id' => $type->id]) }}" class="btn btn-danger">{{ __('Delete') }}</a>
                         </td>
                     </tr>
                 @endforeach

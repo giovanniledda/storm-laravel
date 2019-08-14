@@ -54,7 +54,7 @@
 
         <br>
         {{ Form::submit(__('Save'), array('class' => 'btn btn-primary')) }}
-        <a href="{{ @route('sites.addresses.delete.confirm', ['site_id' => $site->id, 'address_id' => $address->id]) }}" class="btn btn-danger">{{ __('Delete') }}</a>
+        <a href="{{ @route('sites.addresses.confirm.destroy', ['site_id' => $site->id, 'address_id' => $address->id]) }}" class="btn btn-danger">{{ __('Delete') }}</a>
 
         </form>
     </div>

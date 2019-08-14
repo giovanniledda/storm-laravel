@@ -25,7 +25,6 @@ class RequestAddress extends FormRequest
     {
         // Verificate secondo Address::getValidationRules()
         return [
-            'site_id' => 'required',
             'street'       => 'required|string|min:3|max:60',
             'street_extra' => 'string|min:3|max:60',
             'city'         => 'required|string|min:3|max:60',

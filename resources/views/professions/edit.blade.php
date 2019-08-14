@@ -22,7 +22,7 @@
 
         <br>
         {{ Form::submit(__('Save'), array('class' => 'btn btn-primary')) }}
-        <a href="{{ @route('professions.delete.confirm', ['id' => $profession->id]) }}" class="btn btn-danger">{{ __('Delete') }}</a>
+        <a href="{{ @route('professions.confirm.destroy', ['id' => $profession->id]) }}" class="btn btn-danger">{{ __('Delete') }}</a>
 
         {{ Form::close() }}
     </div>

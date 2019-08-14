@@ -17,7 +17,7 @@
 
         <br>
         {{ Form::submit(__('Save'), array('class' => 'btn btn-primary')) }}
-        <a href="{{ @route('task_intervent_types.delete.confirm', ['id' => $intervent_type->id]) }}" class="btn btn-danger">{{ __('Delete') }}</a>
+        <a href="{{ @route('task_intervent_types.confirm.destroy', ['id' => $intervent_type->id]) }}" class="btn btn-danger">{{ __('Delete') }}</a>
 
         {{ Form::close() }}
     </div>

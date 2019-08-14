@@ -148,13 +148,13 @@ class SiteController extends Controller
      * Store a newly created addresses for the Site in storage.
      *
      * @param  \App\Http\Requests\RequestAddress  $request
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function addressesStore(RequestAddress $request)
+    public function addressesStore(RequestAddress $request, $id)
     {
         $validated = $request->validated();
-        $site = Site::findOrFail($validated['site_id']);
-        unset($validated['site_id']);
+        $site = Site::findOrFail($id);
 
         try {
             // Qua si innesca anche il Validator della HasAddresses che segue queste regole:
@@ -166,20 +166,20 @@ class SiteController extends Controller
 //            'country_id'   => 'required|integer',
             // ...la country viene gestite ricercando al stringa nei campi iso_3166_2 o iso_3166_3 di countries
             $site->addAddress($validated);
+            $message = __('New address added for site :name!', ['name' => $site->name]);
         } catch (\Exception $e) {
-            // TODO: ...
+            $message = __('Something went wrong adding new address, check your data!');
         }
 
-        return redirect()->route('sites.index')
-            ->with('flash_message', __('New address added for site :name!', ['name' => $site->name]));
+        return redirect()->route('sites.addresses.index', ['id' => $id])->with('flash_message', $message);
     }
 
 
     /**
      * Show the form for editing the specified addresses for the Site.
      *
-     * @param  $site_id
-     * @param  $address_id
+     * @param  int $site_id
+     * @param  int $address_id
      * @return \Illuminate\Http\Response
      */
     public function addressesEdit($site_id, $address_id)
@@ -194,49 +194,57 @@ class SiteController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\RequestAddress  $request
+     * @param  int $site_id
+     * @param  int $address_id
      * @return \Illuminate\Http\Response
      */
     public function addressesUpdate(RequestAddress $request, $site_id, $address_id)
     {
+        $message = __('Address [:id] has not been updated!', ['id' => $address_id]);
         $validated = $request->validated();
-        $site = Site::findOrFail($validated['site_id']);
-        unset($validated['site_id']);
+        $site = Site::findOrFail($site_id);
+
         $address = $site->getAddress($address_id);
+        if ($address) {
+            try {
+                $site->updateAddress($address, $validated);
+                $message = __('Address [:id] in :city updated!', ['id' => $address_id, 'city' => $address->city]);
 
-        try {
-            $site->updateAddress($address, $validated);
-
-        } catch (\Exception $e) {
-            // TODO: ...
+            } catch (\Exception $e) {
+                $message = __('Something went wrong updating address [:id], check your data!', ['id' => $address_id]);
+            }
         }
 
-        return redirect()->route('sites.index')
-            ->with('flash_message', __('Site :name updated!', ['name' => $site->name]));
+        return redirect()->route('sites.addresses.index', ['id' => $site_id])->with('flash_message', $message);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  $site_id
-     * @param  $address_id
+     * @param  int $site_id
+     * @param  int $address_id
      * @return \Illuminate\Http\Response
      */
     public function addressesDestroy($site_id, $address_id)
     {
+        $message = __('Address [:id] has not been deleted!', ['id' => $address_id]);
         $site = Site::findOrFail($site_id);
-        $address = $site->getAddress($address_id);
-//        dd($address);
-        $site->deleteAddress($address); // delete by passing it as argument
 
-        return view('sites.addresses.index')->with(['addresses' => $site->getAddresses(), 'site' => $site]);
+        $address = $site->getAddress($address_id);
+        if ($address) {
+            $site->deleteAddress($address); // delete by passing it as argument
+            $message = __('Address [:id] deleted!', ['id' => $address_id]);
+        }
+
+        return redirect()->route('sites.addresses.index', ['id' => $site_id])->with('flash_message', $message);
     }
 
 
     /**
      * Ask confirmation about the specified resource from storage to remove.
      *
-     * @param  $site_id
-     * @param  $address_id
+     * @param  int $site_id
+     * @param  int $address_id
      * @return \Illuminate\Http\Response
      */
     public function addressesConfirmDestroy($site_id, $address_id)

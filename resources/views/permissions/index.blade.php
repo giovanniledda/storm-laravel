@@ -24,7 +24,7 @@
                         <td>
                             <a href="{{ URL::to('permissions/'.$permission->id.'/edit') }}"
                                class="btn btn-info pull-left" style="margin-right: 3px;">Edit</a>
-                            <a href="{{ @route('permissions.delete.confirm', ['id' => $permission->id]) }}" class="btn btn-danger">{{ __('Delete') }}</a>
+                            <a href="{{ @route('permissions.confirm.destroy', ['id' => $permission->id]) }}" class="btn btn-danger">{{ __('Delete') }}</a>
                         </td>
                     </tr>
                 @endforeach
