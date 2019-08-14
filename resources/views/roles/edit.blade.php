@@ -10,6 +10,8 @@
 
         {{ Form::model($role, array('route' => array('roles.update', $role->id), 'method' => 'PUT')) }}
 
+        @csrf
+
         <div class="form-group">
             {{ Form::label('name', 'Role Name') }}
             {{ Form::text('name', null, array('class' => 'form-control')) }}

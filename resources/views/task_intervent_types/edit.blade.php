@@ -10,6 +10,8 @@
 
         {{ Form::model($intervent_type, array('route' => array('task_intervent_types.update', $intervent_type), 'method' => 'PUT')) }}
 
+        @csrf
+
         <div class="form-group">
             {{ Form::label('name', __('Name')) }}
             {{ Form::text('name', null, array('class' => 'form-control')) }}

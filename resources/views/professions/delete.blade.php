@@ -9,6 +9,7 @@
         <h3>...are you sure?</h3>
         <hr>
         {!! Form::open(['method' => 'DELETE', 'route' => ['professions.destroy', $profession->id] ]) !!}
+        @csrf
         {!! Form::submit('Yes, delete!', ['class' => 'btn btn-danger']) !!}
         {!! Form::close() !!}
     </div>

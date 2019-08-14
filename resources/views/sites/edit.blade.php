@@ -10,6 +10,8 @@
 
         {{ Form::model($site, array('route' => array('sites.update', $site), 'method' => 'PUT')) }}
 
+        @csrf
+
         <div class="form-group">
             {{ Form::label('name', __('Name')) }}
             {{ Form::text('name', null, array('class' => 'form-control')) }}
