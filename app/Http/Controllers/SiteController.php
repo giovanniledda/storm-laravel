@@ -44,7 +44,7 @@ class SiteController extends Controller
         $validated = $request->validated();
         $site = Site::create($validated);
         return redirect()->route('sites.index')
-            ->with(FLASH_SUCCESS, __('Site :name updated!', ['name' => $site->name]));
+            ->with(FLASH_SUCCESS, __('Site :name created!', ['name' => $site->name]));
     }
 
     /**

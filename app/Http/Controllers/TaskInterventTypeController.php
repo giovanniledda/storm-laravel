@@ -40,7 +40,7 @@ class TaskInterventTypeController extends Controller
         $validated = $request->validated();
         $intervent_type = TaskInterventType::create($validated);
         return redirect()->route('task_intervent_types.index')
-            ->with(FLASH_SUCCESS, __('Intervent type :name updated!', ['name' => $intervent_type->name]));
+            ->with(FLASH_SUCCESS, __('Intervent type :name created!', ['name' => $intervent_type->name]));
     }
 
     /**

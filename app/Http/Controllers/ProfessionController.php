@@ -40,7 +40,7 @@ class ProfessionController extends Controller
         $validated = $request->validated();
         $profession = Profession::create($validated);
         return redirect()->route('professions.index')
-            ->with(FLASH_SUCCESS, __('Profession :name updated!', ['name' => $profession->name]));
+            ->with(FLASH_SUCCESS, __('Profession :name created!', ['name' => $profession->name]));
     }
 
     /**

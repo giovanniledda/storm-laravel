@@ -34,6 +34,7 @@ Route::group(['middleware' => ['logoutBlocked']], function () {
         Route::resource('sites', 'SiteController');
         Route::resource('professions', 'ProfessionController');
         Route::resource('task_intervent_types', 'TaskInterventTypeController');
+        Route::resource('project_user', 'ProjectUserController');
 
         /** Extra resource routes **/
 
