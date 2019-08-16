@@ -9,42 +9,53 @@ use Illuminate\Support\Facades\Auth;
 use App\User;
 use App\Boat;
 use Validator;
+use Illuminate\Validation\Rule;
 use App\Document;
 
+class BoatController extends Controller {
 
-class BoatController extends Controller
-{
-
-    public function addDocument(Request $request, $related){
+    public function addDocument(Request $request, $related) {
 
         $boat = json_decode($related, true);
         $boat = Boat::find($boat['id']);
 
-        $type = $request->data['attributes']['type'];
-        $title = $request->data['attributes']['title'];
-        $base64File = $request->data['attributes']['file'];
-        $filename = $request->data['attributes']['filename'];
+        $rules = [
+            'type' => ['required', Rule::in([
+                    Document::GENERIC_DOCUMENT_TYPE,
+                    Document::DETAILED_IMAGE_TYPE,
+                    Document::GENERIC_IMAGE_TYPE,
+                    Document::ADDITIONAL_IMAGE_TYPE
+                ])]
+        ];
 
-        $file = Document::createUploadedFileFromBase64( $base64File, $filename);
+        $validator = Validator::make($request->data['attributes'], $rules);
 
-        $doc = new Document([
-            'title' => $title,
-            'file' => $file,
-        ]);
+        if ($validator->passes()) {
+            $type = $request->data['attributes']['type'];
+            $title = $request->data['attributes']['title'];
+            $base64File = $request->data['attributes']['file'];
+            $filename = $request->data['attributes']['filename'];
 
-        $boat->addDocumentWithType($doc, $type);
+            $file = Document::createUploadedFileFromBase64($base64File, $filename);
 
-        $ret = ['data' => [
-            'id' => $doc->id,
-        ]];
-        $resp = Response($ret , 200);
+            $doc = new Document([
+                'title' => $title,
+                'file' => $file,
+            ]);
+
+            $boat->addDocumentWithType($doc, $type);
+
+            $ret = ['data' => [
+                    'id' => $doc->id,
+            ]];
+            $resp = Response($ret, 200);
+        } else {
+            $resp = Response($validator->errors()->all(), 422);
+        }
+
         $resp->header('Content-Type', 'application/vnd.api+json');
 
         return $resp;
-
     }
 
 }
-
-
-

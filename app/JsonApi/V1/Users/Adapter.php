@@ -16,7 +16,10 @@ class Adapter extends AbstractAdapter
      * @var array
      */
     protected $attributes = [];
-
+    
+    protected $fillable = [
+        'name', 'surname', 'email', 'password', 'is_storm'
+    ];
     /**
      * Adapter constructor.
      *
@@ -44,6 +47,10 @@ class Adapter extends AbstractAdapter
               $query->Join('project_user', 'users.id', '=', 'project_user.user_id')->where('project_user.project_id', '=', $project_id);
          } 
         
+         if ($is_storm = $filters->get('is_storm')) {
+             $query->where('is_storm', '=', $is_storm);
+         }
+         
         // $query->Join('project_user', 'user.id', '=', 'project_user.user_id');
         
         

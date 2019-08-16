@@ -7,6 +7,20 @@ use CloudCreativity\LaravelJsonApi\Validation\AbstractValidators;
 class Validators extends AbstractValidators
 {
 
+     /* The messages variable. 
+     * @var string[]|null
+     */
+    protected $messages = [
+        'name.required' => 'name '.VALIDATOR_REQUIRED,
+        'name.string' => 'name '.VALIDATOR_STRING,
+        'surname.required' => 'surname '.VALIDATOR_REQUIRED,
+        'surname.string' => 'surname '.VALIDATOR_STRING,
+        'password.required' => 'password '.VALIDATOR_REQUIRED,
+        'password.string' => 'password '.VALIDATOR_STRING,
+  //      'email.required' => 'email '.VALIDATOR_REQUIRED, 
+  //      'email.email' => 'email '.VALIDATOR_EMAIL, 
+        ];
+
     /**
      * The include paths a client is allowed to request.
      *
@@ -32,8 +46,12 @@ class Validators extends AbstractValidators
      */
     protected function rules($record = null): array
     {
-        return [
-            //
+          return [
+           'name' => 'required|string|min:1|max:255',
+           'surname' => 'required|string|min:1|max:255',   
+           'email' => 'required|email:rfc,dns',
+           'password' => 'required|string|min:1|max:255',   
+           'is_storm' => 'required|numeric'
         ];
     }
 
