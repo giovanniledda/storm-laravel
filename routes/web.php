@@ -20,8 +20,11 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::group( ['middleware' => ['auth', 'isAdmin']], function() {
+
     // Users
     Route::resource('users', 'UserController');
+
+    // Roles and Permissions
     Route::resource('roles', 'RoleController');
     Route::resource('permissions', 'PermissionController');
 
@@ -34,10 +37,15 @@ Route::group( ['middleware' => ['auth', 'isAdmin']], function() {
 
     // Users
     Route::get('/users/{id}/confirm-destroy', 'UserController@confirmDestroy')->name('users.confirm.destroy');
+
+    // User Phones
     Route::get('/users/{id}/phones', 'UserController@phonesIndex')->name('users.phones.index');
     Route::get('/users/{id}/phones/create', 'UserController@phonesCreate')->name('users.phones.create');
     Route::post('/users/{id}/phones/store', 'UserController@phonesStore')->name('users.phones.store');
+    Route::get('/users/{user_id}/phones/{phone_id}/confirm-destroy', 'UserController@phonesConfirmDestroy')->name('users.phones.confirm.destroy');
+    Route::delete('/users/{user_id}/phones/{phone_id}/destroy', 'UserController@phonesDestroy')->name('users.phones.destroy');
 
+    // Roles and Permissions
     Route::get('/roles/{id}/confirm-destroy', 'RoleController@confirmDestroy')->name('roles.confirm.destroy');
     Route::get('/permissions/{id}/confirm-destroy', 'PermissionController@confirmDestroy')->name('permissions.confirm.destroy');
 

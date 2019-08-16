@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\RequestPhone;
 use App\Phone;
+use App\UsersTel;
+use Auth;
+use const FLASH_ERROR;
+use const FLASH_WARNING;
 use Illuminate\Http\Request;
 use Session;
 use App\User;
@@ -61,6 +65,9 @@ class UserController extends Controller
         ]);
 
         $user = User::create($request->only('email', 'name', 'password')); //Retrieving only the email and password data
+        $user->is_storm = $request->has('is_storm');
+        $user->disable_login = $request->has('disable_login');
+        $user->save();
 
         $roles = $request['roles']; // Retrieving the roles field
         //Checking if a role was selected
@@ -72,7 +79,7 @@ class UserController extends Controller
         }
 
         return redirect()->route('users.index')
-            ->with('flash_message', 'User successfully added.');
+            ->with(FLASH_SUCCESS, __('User successfully added.'));
     }
 
     /**
@@ -108,19 +115,27 @@ class UserController extends Controller
      * @param  $id
      * @return \Illuminate\Http\Response
      */
+
+    // **: vedi ticket: https://net7.codebasehq.com/projects/storm/tickets/155
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
 
         //Validate name, email and password fields
-        $this->validate($request, [
+        $validated = $this->validate($request, [
             'name' => 'required|max:120',
             'email' => 'required|email|unique:users,email,' . $id,
-            'password' => 'required|min:6|confirmed'
+            'password' => 'nullable|min:6|confirmed' // **
         ]);
 
-        $input = $request->only(['name', 'email', 'password']); //Retreive the name, email and password fields
-        $user->fill($input)->save();
+        // **
+        $fields = !empty($validated['password']) ? ['name', 'email', 'password'] : ['name', 'email'];
+
+        $input = $request->only($fields); //Retreive the name, email and password fields
+        $user->fill($input);
+        $user->is_storm = $request->has('is_storm');
+        $user->disable_login = $request->has('disable_login');
+        $user->save();
 
         $roles = $request['roles']; //Retreive all roles
         if (isset($roles)) {
@@ -129,7 +144,7 @@ class UserController extends Controller
             $user->roles()->detach(); //If no role is selected remove exisiting role associated to a user
         }
         return redirect()->route('users.index')
-            ->with('flash_message', 'User successfully edited.');
+            ->with(FLASH_SUCCESS, __('User successfully edited.'));
     }
 
     /**
@@ -141,17 +156,17 @@ class UserController extends Controller
     public function destroy($id)
     {
         if (Auth::user()->id == $id) {
-            flash()->warning('Deletion of currently logged in user is not allowed :(')->important();
+            flash()->warning(__('Deletion of currently logged in user is not allowed :('))->important();
             return redirect()->back();
         }
 
         if (User::findOrFail($id)->delete()) {
-            flash()->success('User has been deleted');
+            flash()->success(__('User has been deleted'));
         } else {
-            flash()->success('User not deleted');
+            flash()->success(__('User not deleted'));
         }
 
-        return redirect()->back();
+        return redirect()->route('users.index');
     }
 
     private function syncPermissions(Request $request, $user)
@@ -237,11 +252,58 @@ class UserController extends Controller
         try {
             $phone = Phone::create($validated); // si porta dietro user_id
             $message = __('New phone added for user :name!', ['name' => $user->name]);
+            $message_type = FLASH_SUCCESS;
         } catch (\Exception $e) {
             $message = __('Something went wrong adding new phone, check your data! [:msg]', ['msg' => $e->getMessage()]);
+            $message_type = FLASH_ERROR;
         }
 
-        return redirect()->route('users.phones.index', ['id' => $id])->with('flash_message', $message);
+        return redirect()->route('users.phones.index', ['id' => $id])->with($message_type, $message);
     }
 
+
+    /**
+     * Remove the specified phone from storage.
+     *
+     * @param  int $user_id
+     * @param  int $phone_id
+     * @return \Illuminate\Http\Response
+     */
+    public function phonesDestroy($user_id, $phone_id)
+    {
+//        $user = User::findOrFail($user_id);
+        $phone = UsersTel::findOrFail($phone_id);
+        $phone_num = $phone->phone_number;
+        $message = __('Phone [#:id - :num] has not been deleted!', ['id' => $phone_id, 'num' => $phone_num]);
+        $message_type = FLASH_ERROR;
+
+        if ($phone) {
+            try {
+                $phone->delete();
+                $message = __('Phone [#:id - :num] deleted!', ['id' => $phone_id, 'num' => $phone_num]);
+                $message_type = FLASH_SUCCESS;
+            } catch (\Exception $e) {
+                $message = __('Phone [#:id - :num] has not been deleted!', ['id' => $phone_id, 'num' => $phone_num]);
+                $message_type = FLASH_ERROR;
+            }
+        }
+
+        return redirect()->route('users.phones.index', ['id' => $user_id])->with($message_type, $message);
+    }
+
+
+    /**
+     * Ask confirmation about the specified phone from storage to remove.
+     *
+     * @param  int $user_id
+     * @param  int $phone_id
+     * @return \Illuminate\Http\Response
+     */
+    public function phonesConfirmDestroy($user_id, $phone_id)
+    {
+        $user = User::findOrFail($user_id);
+        $phone = UsersTel::findOrFail($phone_id);
+
+        return view('users.phones.delete')->with(['phone' => $phone, 'user' => $user]);
+    }
 }

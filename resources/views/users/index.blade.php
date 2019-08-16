@@ -16,6 +16,8 @@
                 <tr>
                     <th>Name</th>
                     <th>Email</th>
+                    <th>STORM</th>
+                    <th>Can login STORM</th>
                     <th>Date/Time Added</th>
                     <th>User Roles</th>
                     <th>Operations</th>
@@ -28,6 +30,8 @@
 
                         <td>{{ $user->name }}</td>
                         <td>{{ $user->email }}</td>
+                        <td>{{ $user->is_storm_user }}</td>
+                        <td>{{ $user->can_login }}</td>
                         <td>{{ $user->created_at->format('F d, Y h:ia') }}</td>
                         <td>{{ $user->roles()->pluck('name')->implode(' ') }}</td>{{-- Retrieve array of roles associated to a user and convert to string --}}
                         <td>

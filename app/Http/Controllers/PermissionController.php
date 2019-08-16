@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use const FLASH_ERROR;
+use const FLASH_WARNING;
 use Illuminate\Http\Request;
 use Auth;
 use Session;
@@ -70,8 +72,7 @@ class PermissionController extends Controller
         }
 
         return redirect()->route('permissions.index')
-            ->with('flash_message',
-                'Permission' . $permission->name . ' added!');
+            ->with(FLASH_SUCCESS, 'Permission' . $permission->name . ' added!');
 
     }
 
@@ -116,8 +117,7 @@ class PermissionController extends Controller
         $permission->fill($input)->save();
 
         return redirect()->route('permissions.index')
-            ->with('flash_message',
-                'Permission' . $permission->name . ' updated!');
+            ->with(FLASH_SUCCESS, 'Permission' . $permission->name . ' updated!');
 
     }
 
@@ -134,15 +134,13 @@ class PermissionController extends Controller
         //Make it impossible to delete this specific permission
         if ($permission->name == "Administer roles & permissions") {
             return redirect()->route('permissions.index')
-                ->with('flash_message',
-                    'Cannot delete this Permission!');
+                ->with(FLASH_WARNING, 'Cannot delete this Permission!');
         }
 
         $permission->delete();
 
         return redirect()->route('permissions.index')
-            ->with('flash_message',
-                'Permission deleted!');
+            ->with(FLASH_SUCCESS, 'Permission deleted!');
     }
 
     /**

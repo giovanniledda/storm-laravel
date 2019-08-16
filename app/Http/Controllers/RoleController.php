@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use const FLASH_SUCCESS;
 use Illuminate\Http\Request;
 use Auth;
 use Session;
@@ -73,8 +74,7 @@ class RoleController extends Controller
         }
 
         return redirect()->route('roles.index')
-            ->with('flash_message',
-                'Role' . $role->name . ' added!');
+            ->with(FLASH_SUCCESS, 'Role' . $role->name . ' added!');
     }
 
     /**
@@ -135,7 +135,7 @@ class RoleController extends Controller
         }
 
         return redirect()->route('roles.index')
-            ->with('flash_message', 'Role' . $role->name . ' updated!');
+            ->with(FLASH_SUCCESS, 'Role' . $role->name . ' updated!');
     }
 
     /**
@@ -149,7 +149,7 @@ class RoleController extends Controller
         Role::findOrFail($id)->delete();
 
         return redirect()->route('roles.index')
-            ->with('flash_message', 'Role deleted!');
+            ->with(FLASH_SUCCESS, 'Role deleted!');
     }
 
     /**

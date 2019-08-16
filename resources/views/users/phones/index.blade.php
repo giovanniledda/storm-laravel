@@ -31,9 +31,9 @@
 
                         <td>{{ $phone->id }}</td>
                         <td>{{ $phone->phone_type }}</td>
-                        <td>{{ $phone->phone_num }}</td>
+                        <td>{{ $phone->phone_number }}</td>
                         <td>
-                            <a href="{{ @route('users.confirm.destroy', ['id' => $user->id]) }}" class="btn btn-danger">{{ __('Delete') }}</a>
+                            <a href="{{ @route('users.phones.confirm.destroy', ['user_id' => $user->id, 'phone_id' => $phone->id]) }}" class="btn btn-danger">{{ __('Delete') }}</a>
                         </td>
                     </tr>
                 @endforeach

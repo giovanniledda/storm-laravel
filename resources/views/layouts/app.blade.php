@@ -67,7 +67,7 @@
                             <ul class="dropdown-menu" role="menu">
                                 <li>
                                     @role('admin') {{-- Laravel-permission blade helper --}}
-                                        @include('includes/main-menu')
+                                        @include('menus/main-menu')
                                     @endrole
 
                                     <hr />
@@ -87,16 +87,11 @@
         </div>
     </nav>
 
-    @if(Session::has('flash_message'))
-        <div class="container">
-            <div class="alert alert-success"><em> {!! session('flash_message') !!}</em>
-            </div>
-        </div>
-    @endif
+    @include('includes.flash-messages')
 
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-            @include ('errors.list') {{-- Including error file --}}
+            @include('errors.list') {{-- Including error file --}}
         </div>
     </div>
 

@@ -7,6 +7,7 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
+use const PERMISSION_ADMIN;
 use function snake_case;
 use Spatie\Permission\Traits\HasRoles;
 use Lecturize\Addresses\Traits\HasAddresses;
@@ -33,6 +34,40 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    /**
+     * See: https://laraveldaily.com/why-use-appends-with-accessors-in-eloquent/
+     *
+     * @var array
+     */
+    protected $appends = ['is_storm_user', 'is_admin', 'can_login'];
+
+    /**
+     * The custom method for is_storm_user (not existent on DB) attribute
+     * See: https://laraveldaily.com/why-use-appends-with-accessors-in-eloquent/
+     *
+     */
+    public function getIsStormUserAttribute() {
+        return $this->is_storm ? __('Yes') : __('No');
+    }
+
+    /**
+     * The custom method for is_admin (not existent on DB) attribute
+     * See: https://laraveldaily.com/why-use-appends-with-accessors-in-eloquent/
+     *
+     */
+    public function getIsAdminAttribute() {
+        return $this->can(PERMISSION_ADMIN);
+    }
+
+    /**
+     * The custom method for can_login (not existent on DB) attribute
+     * See: https://laraveldaily.com/why-use-appends-with-accessors-in-eloquent/
+     *
+     */
+    public function getCanLoginAttribute() {
+        return $this->disable_login ? __('No') : __('Yes');
+    }
 
     /**
      * The attributes that should be cast to native types.

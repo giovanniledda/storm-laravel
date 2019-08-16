@@ -145,3 +145,13 @@ defined('VALIDATOR_IN') or define('VALIDATOR_IN', 'is not a valid value, valid v
  */
 
 defined('PASSWORD_RESET_LINK_SENT') or define('PASSWORD_RESET_LINK_SENT', 'Password reset link sent via email!');
+
+
+/*
+ * SYSTEM FLASH MESSAGES
+ */
+
+defined('FLASH_ERROR') or define('FLASH_ERROR', 'error');
+defined('FLASH_SUCCESS') or define('FLASH_SUCCESS', 'success');
+defined('FLASH_WARNING') or define('FLASH_WARNING', 'warning');
+defined('FLASH_INFO') or define('FLASH_INFO', 'info');

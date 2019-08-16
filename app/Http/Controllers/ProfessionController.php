@@ -40,7 +40,7 @@ class ProfessionController extends Controller
         $validated = $request->validated();
         $profession = Profession::create($validated);
         return redirect()->route('professions.index')
-            ->with('flash_message', __('Profession :name updated!', ['name' => $profession->name]));
+            ->with(FLASH_SUCCESS, __('Profession :name updated!', ['name' => $profession->name]));
     }
 
     /**
@@ -77,9 +77,11 @@ class ProfessionController extends Controller
 
         $validated = $request->validated();
         $profession->fill($validated)->save();
+        $profession->is_storm = $request->has('is_storm');
+        $profession->save();
 
         return redirect()->route('professions.index')
-            ->with('flash_message', __('Profession :name updated!', ['name' => $profession->name]));
+            ->with(FLASH_SUCCESS, __('Profession :name updated!', ['name' => $profession->name]));
     }
 
     /**
@@ -93,7 +95,7 @@ class ProfessionController extends Controller
         Profession::findOrFail($id)->delete();
 
         return redirect()->route('professions.index')
-            ->with('flash_message', __('Profession deleted'));
+            ->with(FLASH_SUCCESS, __('Profession deleted'));
     }
 
 

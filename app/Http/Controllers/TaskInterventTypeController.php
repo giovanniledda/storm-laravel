@@ -40,7 +40,7 @@ class TaskInterventTypeController extends Controller
         $validated = $request->validated();
         $intervent_type = TaskInterventType::create($validated);
         return redirect()->route('task_intervent_types.index')
-            ->with('flash_message', __('Intervent type :name updated!', ['name' => $intervent_type->name]));
+            ->with(FLASH_SUCCESS, __('Intervent type :name updated!', ['name' => $intervent_type->name]));
     }
 
     /**
@@ -79,7 +79,7 @@ class TaskInterventTypeController extends Controller
         $taskInterventType->fill($validated)->save();
 
         return redirect()->route('task_intervent_types.index')
-            ->with('flash_message', __('Intervent types :name updated!', ['name' => $taskInterventType->name]));
+            ->with(FLASH_SUCCESS, __('Intervent types :name updated!', ['name' => $taskInterventType->name]));
     }
 
     /**
@@ -93,7 +93,7 @@ class TaskInterventTypeController extends Controller
         TaskInterventType::findOrFail($id)->delete();
 
         return redirect()->route('task_intervent_types.index')
-            ->with('flash_message', __('Intervent type deleted'));
+            ->with(FLASH_SUCCESS, __('Intervent type deleted'));
     }
 
 

@@ -19,7 +19,7 @@
 
                 @role('admin') {{-- Laravel-permission blade helper --}}
                     <div class="card-body">
-                        @include('includes/main-menu')
+                        @include('menus/main-menu')
                     </div>
                 @endrole
             </div>

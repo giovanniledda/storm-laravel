@@ -20,7 +20,7 @@
 
         <div class="form-group">
             {{ Form::label('is_storm', __('Storm')) }}
-            {{ Form::checkbox('is_storm', null, null, array('class' => 'form-control')) }}
+            {{ Form::checkbox('is_storm', 1, null, array('class' => 'form-control')) }}
         </div>
 
         {{ Form::submit(__('Add'), array('class' => 'btn btn-primary')) }}

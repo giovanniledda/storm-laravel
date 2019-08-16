@@ -6,6 +6,7 @@ use App\Http\Requests\RequestAddress;
 use App\Http\Requests\RequestSite;
 use App\Site;
 use Countries;
+use const FLASH_ERROR;
 use Illuminate\Http\Request;
 use Lecturize\Addresses\Facades\Addresses;
 
@@ -43,7 +44,7 @@ class SiteController extends Controller
         $validated = $request->validated();
         $site = Site::create($validated);
         return redirect()->route('sites.index')
-            ->with('flash_message', __('Site :name updated!', ['name' => $site->name]));
+            ->with(FLASH_SUCCESS, __('Site :name updated!', ['name' => $site->name]));
     }
 
     /**
@@ -82,7 +83,7 @@ class SiteController extends Controller
         $site->fill($validated)->save();
 
         return redirect()->route('sites.index')
-            ->with('flash_message', __('Site :name updated!', ['name' => $site->name]));
+            ->with(FLASH_SUCCESS, __('Site :name updated!', ['name' => $site->name]));
     }
 
     /**
@@ -96,7 +97,7 @@ class SiteController extends Controller
         Site::findOrFail($id)->delete();
 
         return redirect()->route('sites.index')
-            ->with('flash_message', __('Site deleted'));
+            ->with(FLASH_SUCCESS, __('Site deleted'));
     }
 
 
@@ -167,11 +168,14 @@ class SiteController extends Controller
             // ...la country viene gestite ricercando al stringa nei campi iso_3166_2 o iso_3166_3 di countries
             $site->addAddress($validated);
             $message = __('New address added for site :name!', ['name' => $site->name]);
+            $message_type = FLASH_SUCCESS;
+
         } catch (\Exception $e) {
             $message = __('Something went wrong adding new address, check your data!');
+            $message_type = FLASH_ERROR;
         }
 
-        return redirect()->route('sites.addresses.index', ['id' => $id])->with('flash_message', $message);
+        return redirect()->route('sites.addresses.index', ['id' => $id])->with($message_type, $message);
     }
 
 
@@ -209,13 +213,15 @@ class SiteController extends Controller
             try {
                 $site->updateAddress($address, $validated);
                 $message = __('Address [:id] in :city updated!', ['id' => $address_id, 'city' => $address->city]);
+                $message_type = FLASH_SUCCESS;
 
             } catch (\Exception $e) {
                 $message = __('Something went wrong updating address [:id], check your data!', ['id' => $address_id]);
+                $message_type = FLASH_ERROR;
             }
         }
 
-        return redirect()->route('sites.addresses.index', ['id' => $site_id])->with('flash_message', $message);
+        return redirect()->route('sites.addresses.index', ['id' => $site_id])->with($message_type, $message);
     }
 
     /**
@@ -228,15 +234,17 @@ class SiteController extends Controller
     public function addressesDestroy($site_id, $address_id)
     {
         $message = __('Address [:id] has not been deleted!', ['id' => $address_id]);
+        $message_type = FLASH_ERROR;
         $site = Site::findOrFail($site_id);
 
         $address = $site->getAddress($address_id);
         if ($address) {
             $site->deleteAddress($address); // delete by passing it as argument
             $message = __('Address [:id] deleted!', ['id' => $address_id]);
+            $message_type = FLASH_SUCCESS;
         }
 
-        return redirect()->route('sites.addresses.index', ['id' => $site_id])->with('flash_message', $message);
+        return redirect()->route('sites.addresses.index', ['id' => $site_id])->with($message_type, $message);
     }
 
 

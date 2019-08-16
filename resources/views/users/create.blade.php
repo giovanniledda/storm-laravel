@@ -23,6 +23,18 @@
             {{ Form::email('email', '', array('class' => 'form-control')) }}
         </div>
 
+        <div class="form-group">
+            {{ Form::label('is_storm', __('Storm')) }}
+            {{ Form::checkbox('is_storm', 1, null, array('class' => 'form-control')) }}
+        </div>
+
+        <div class="form-group">
+            {{ Form::label('disable_login', __('Login disabled')) }}
+            {{ Form::checkbox('disable_login', 1, null, array('class' => 'form-control')) }}
+        </div>
+
+        <h5><b>Give Role</b></h5>
+
         <div class='form-group'>
             @foreach ($roles as $role)
                 {{ Form::checkbox('roles[]',  $role->id ) }}
