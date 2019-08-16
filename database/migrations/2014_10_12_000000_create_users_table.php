@@ -18,6 +18,7 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('surname')->nullable();
             $table->string('email')->unique();
+            $table->boolean('is_storm')->default(0);
             $table->timestamp('email_verified_at')->nullable();
             $table->boolean('disable_login')->default(false);
             $table->string('password');
