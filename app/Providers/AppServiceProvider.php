@@ -70,6 +70,17 @@ class AppServiceProvider extends ServiceProvider
             return "<?php echo date('m/d/Y H:i', $expression); ?>";
         });
 
+        /**
+         * Converts a bool to string: 1 -> 'Yes', 0 -> 'No'
+         *
+         * Usage: @booltostr($expression)
+         */
+        Blade::directive('booltostr', function ($expression) {
+            $yes = __('Yes');
+            $no = __('No');
+            return "<?php echo {$expression} == 1  ? '$yes' : '$no'; ?>";
+        });
+
 
     }
 }

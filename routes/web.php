@@ -17,48 +17,51 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::group(['middleware' => ['logoutBlocked']], function () {
 
-Route::group( ['middleware' => ['auth', 'isAdmin']], function() {
+    Route::get('/home', 'HomeController@index')->name('home');
 
-    // Users
-    Route::resource('users', 'UserController');
+    Route::group(['middleware' => ['auth', 'isAdmin']], function () {
 
-    // Roles and Permissions
-    Route::resource('roles', 'RoleController');
-    Route::resource('permissions', 'PermissionController');
+        // Users
+        Route::resource('users', 'UserController');
 
-    // Sites, Boats & Co.
-    Route::resource('sites', 'SiteController');
-    Route::resource('professions', 'ProfessionController');
-    Route::resource('task_intervent_types', 'TaskInterventTypeController');
+        // Roles and Permissions
+        Route::resource('roles', 'RoleController');
+        Route::resource('permissions', 'PermissionController');
 
-    /** Extra resource routes **/
+        // Sites, Boats & Co.
+        Route::resource('sites', 'SiteController');
+        Route::resource('professions', 'ProfessionController');
+        Route::resource('task_intervent_types', 'TaskInterventTypeController');
 
-    // Users
-    Route::get('/users/{id}/confirm-destroy', 'UserController@confirmDestroy')->name('users.confirm.destroy');
+        /** Extra resource routes **/
 
-    // User Phones
-    Route::get('/users/{id}/phones', 'UserController@phonesIndex')->name('users.phones.index');
-    Route::get('/users/{id}/phones/create', 'UserController@phonesCreate')->name('users.phones.create');
-    Route::post('/users/{id}/phones/store', 'UserController@phonesStore')->name('users.phones.store');
-    Route::get('/users/{user_id}/phones/{phone_id}/confirm-destroy', 'UserController@phonesConfirmDestroy')->name('users.phones.confirm.destroy');
-    Route::delete('/users/{user_id}/phones/{phone_id}/destroy', 'UserController@phonesDestroy')->name('users.phones.destroy');
+        // Users
+        Route::get('/users/{id}/confirm-destroy', 'UserController@confirmDestroy')->name('users.confirm.destroy');
 
-    // Roles and Permissions
-    Route::get('/roles/{id}/confirm-destroy', 'RoleController@confirmDestroy')->name('roles.confirm.destroy');
-    Route::get('/permissions/{id}/confirm-destroy', 'PermissionController@confirmDestroy')->name('permissions.confirm.destroy');
+        // User Phones
+        Route::get('/users/{id}/phones', 'UserController@phonesIndex')->name('users.phones.index');
+        Route::get('/users/{id}/phones/create', 'UserController@phonesCreate')->name('users.phones.create');
+        Route::post('/users/{id}/phones/store', 'UserController@phonesStore')->name('users.phones.store');
+        Route::get('/users/{user_id}/phones/{phone_id}/confirm-destroy', 'UserController@phonesConfirmDestroy')->name('users.phones.confirm.destroy');
+        Route::delete('/users/{user_id}/phones/{phone_id}/destroy', 'UserController@phonesDestroy')->name('users.phones.destroy');
 
-    // Sites, Boats & Co.
-    Route::get('/sites/{id}/confirm-destroy', 'SiteController@confirmDestroy')->name('sites.confirm.destroy');
-    Route::get('/sites/{id}/addresses', 'SiteController@addressesIndex')->name('sites.addresses.index');
-    Route::get('/sites/{id}/addresses/create', 'SiteController@addressesCreate')->name('sites.addresses.create');
-    Route::post('/sites/{id}/addresses/store', 'SiteController@addressesStore')->name('sites.addresses.store');
-    Route::get('/sites/{site_id}/addresses/{address_id}/edit', 'SiteController@addressesEdit')->name('sites.addresses.edit');
-    Route::put('/sites/{site_id}/addresses/{address_id}/update', 'SiteController@addressesUpdate')->name('sites.addresses.update');
-    Route::get('/sites/{site_id}/addresses/{address_id}/confirm-destroy', 'SiteController@addressesConfirmDestroy')->name('sites.addresses.confirm.destroy');
-    Route::delete('/sites/{site_id}/addresses/{address_id}/destroy', 'SiteController@addressesDestroy')->name('sites.addresses.destroy');
+        // Roles and Permissions
+        Route::get('/roles/{id}/confirm-destroy', 'RoleController@confirmDestroy')->name('roles.confirm.destroy');
+        Route::get('/permissions/{id}/confirm-destroy', 'PermissionController@confirmDestroy')->name('permissions.confirm.destroy');
 
-    Route::get('/professions/{id}/confirm-destroy', 'ProfessionController@confirmDestroy')->name('professions.confirm.destroy');
-    Route::get('/task_intervent_types/{id}/confirm-destroy', 'TaskInterventTypeController@confirmDestroy')->name('task_intervent_types.confirm.destroy');
+        // Sites, Boats & Co.
+        Route::get('/sites/{id}/confirm-destroy', 'SiteController@confirmDestroy')->name('sites.confirm.destroy');
+        Route::get('/sites/{id}/addresses', 'SiteController@addressesIndex')->name('sites.addresses.index');
+        Route::get('/sites/{id}/addresses/create', 'SiteController@addressesCreate')->name('sites.addresses.create');
+        Route::post('/sites/{id}/addresses/store', 'SiteController@addressesStore')->name('sites.addresses.store');
+        Route::get('/sites/{site_id}/addresses/{address_id}/edit', 'SiteController@addressesEdit')->name('sites.addresses.edit');
+        Route::put('/sites/{site_id}/addresses/{address_id}/update', 'SiteController@addressesUpdate')->name('sites.addresses.update');
+        Route::get('/sites/{site_id}/addresses/{address_id}/confirm-destroy', 'SiteController@addressesConfirmDestroy')->name('sites.addresses.confirm.destroy');
+        Route::delete('/sites/{site_id}/addresses/{address_id}/destroy', 'SiteController@addressesDestroy')->name('sites.addresses.destroy');
+
+        Route::get('/professions/{id}/confirm-destroy', 'ProfessionController@confirmDestroy')->name('professions.confirm.destroy');
+        Route::get('/task_intervent_types/{id}/confirm-destroy', 'TaskInterventTypeController@confirmDestroy')->name('task_intervent_types.confirm.destroy');
+    });
 });

@@ -48,7 +48,7 @@ class User extends Authenticatable
      *
      */
     public function getIsStormUserAttribute() {
-        return $this->is_storm ? __('Yes') : __('No');
+        return $this->is_storm;
     }
 
     /**
@@ -66,7 +66,7 @@ class User extends Authenticatable
      *
      */
     public function getCanLoginAttribute() {
-        return $this->disable_login ? __('No') : __('Yes');
+        return !$this->disable_login;
     }
 
     /**

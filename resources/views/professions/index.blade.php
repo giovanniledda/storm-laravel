@@ -24,7 +24,7 @@
                     <tr>
 
                         <td>{{ $profession->name }}</td>
-                        <td>{{ $profession->is_storm }}</td>
+                        <td>@booltostr($profession->is_storm)</td>
                         <td>
                             <a href="{{ URL::to('professions/'.$profession->id.'/edit') }}" class="btn btn-info pull-left" style="margin-right: 3px;">{{ __('Edit') }}</a>
                             <a href="{{ @route('professions.confirm.destroy', ['id' => $profession->id]) }}" class="btn btn-danger">{{ __('Delete') }}</a>

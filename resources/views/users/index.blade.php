@@ -30,8 +30,8 @@
 
                         <td>{{ $user->name }}</td>
                         <td>{{ $user->email }}</td>
-                        <td>{{ $user->is_storm_user }}</td>
-                        <td>{{ $user->can_login }}</td>
+                        <td>@booltostr($user->is_storm_user)</td>
+                        <td>@booltostr($user->can_login)</td>
                         <td>{{ $user->created_at->format('F d, Y h:ia') }}</td>
                         <td>{{ $user->roles()->pluck('name')->implode(' ') }}</td>{{-- Retrieve array of roles associated to a user and convert to string --}}
                         <td>
