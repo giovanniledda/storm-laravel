@@ -17,13 +17,8 @@ class User extends Authenticatable
 {
     use Notifiable, HasApiTokens, HasRoles, CanResetPassword, HasAddresses;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'surname', 'email', 'password', 'is_storm'
     ];
 
     /**

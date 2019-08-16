@@ -138,7 +138,7 @@ defined('VALIDATOR_REQUIRED') or define('VALIDATOR_REQUIRED', 'is required and c
 defined('VALIDATOR_STRING') or define('VALIDATOR_STRING', 'is not a string');
 defined('VALIDATOR_NUMERIC') or define('VALIDATOR_NUMERIC', 'is not a numeric value');
 defined('VALIDATOR_IN') or define('VALIDATOR_IN', 'is not a valid value, valid values are : ');
-
+defined('VALIDATOR_EMAIL') or define('VALIDATOR_EMAIL', 'is not a valid email addresss');
 
 /*
  * RESET PASSWORD MESSAGES

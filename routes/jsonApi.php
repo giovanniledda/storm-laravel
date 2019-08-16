@@ -34,6 +34,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         $api->resource('project-users')->only('create'); //->only('create'); // usato solo per associazione project  - user
         $api->resource('project-sections')->only('create'); //->only('create'); // usato solo per associazione project  - user
         $api->resource('tasks');
+        
         $api->resource('tasks')->only('statuses', 'document')->controller('TaskController') //uses the App\Http\Controllers\Api\TaskController
         ->routes(function ($tasks){
                 $tasks->get('/statuses', 'statuses')->name('statuses');
@@ -44,6 +45,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         ->routes(function ($task){
                 $task->get('{record}/history', 'history')->name('history');
             });
+            
         $api->resource('users');
         $api->resource('sections');
         $api->resource('sections')->only('addDocument')->controller('SectionController') //uses the App\Http\Controllers\Api\SectionController

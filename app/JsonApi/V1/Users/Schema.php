@@ -31,7 +31,9 @@ class Schema extends SchemaProvider
     {
         return [
             'name' => $resource->name,
+            'surname' => $resource->surname,
             'email' => $resource->email, 
+            'is_storm'  => $resource->is_storm, 
             'created-at' => $resource->created_at->toAtomString(),
             'updated-at' => $resource->updated_at->toAtomString(),
         ];
