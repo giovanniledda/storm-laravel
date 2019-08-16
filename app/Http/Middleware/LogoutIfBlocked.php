@@ -4,9 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Auth;
-use App\User;
-use function redirect;
-use const ROLE_ADMIN;
+use CloudCreativity\LaravelJsonApi\Utils\Helpers;
 
 class LogoutIfBlocked
 {
@@ -21,7 +19,9 @@ class LogoutIfBlocked
     {
         if (!Auth::user()->can_login)
         {
-            Auth::logout();
+            if (!Helpers::wantsJsonApi($request)) {
+                Auth::logout();  // via api non funziona, faccio logout solo via web per ora
+            }
             abort('401');
         }
         return $next($request);

@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
 
     // Route::post('api/v1/tasks/{task}/document',  'DocumentController@createRelatedToTask')->name('api:v1:tasks.createDocument');
 
-Route::group(['middleware' => 'auth:api'], function () {
+Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
 
     JsonApi::register('v1', ['namespace'=>'Api'])->routes(function ($api) {
 
