@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use function abort_unless;
 use App\Http\Requests\RequestPhone;
+use App\Http\Requests\RequestProjectUser;
+use App\Http\Requests\RequestSite;
 use App\Phone;
 use App\ProjectUser;
 use App\UsersTel;
@@ -42,48 +44,33 @@ class ProjectUserController extends Controller
     /**
      * Show the form for creating a new resource.
      *
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //Get all roles and pass it to the view
-        $roles = Role::get();
-        return view('users.create', ['roles' => $roles]);
+        abort_unless($request->has('user_id'), 404);
+        $user = User::findOrFail($request->user_id); //Get user with specified id
+
+        return view('project_user.create', ['user' => $user]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param  \App\Http\Requests\RequestProjectUser  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(RequestProjectUser $request)
     {
 
-        //Validate name, email and password fields
-        $this->validate($request, [
-            'name' => 'required|max:120',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6|confirmed',
-            'roles' => 'required|min:1'
-        ]);
-
-        $user = User::create($request->only('email', 'name', 'password')); //Retrieving only the email and password data
-        $user->is_storm = $request->has('is_storm');
-        $user->disable_login = $request->has('disable_login');
-        $user->save();
-
-        $roles = $request['roles']; // Retrieving the roles field
-        //Checking if a role was selected
-        if (isset($roles)) {
-            foreach ($roles as $role) {
-                $role_r = Role::where('id', '=', $role)->firstOrFail();
-                $user->assignRole($role_r); // Assigning role to user
-            }
-        }
-
-        return redirect()->route('users.index')
-            ->with(FLASH_SUCCESS, __('User successfully added.'));
+        $validated = $request->validated();
+        $project_user = ProjectUser::create($validated);
+        return redirect()->route('project_user.index', ['user_id' => $project_user->user->id])
+            ->with(FLASH_SUCCESS, __('Profession :profname associated for project :projname', [
+                'profname' => $project_user->profession->name,
+                'projname' => $project_user->project->name,
+            ]));
     }
 
     /**
@@ -105,11 +92,6 @@ class ProjectUserController extends Controller
      */
     public function edit($id)
     {
-        $user = User::findOrFail($id); //Get user with specified id
-        $roles = Role::get(); //Get all roles
-        $permissions = Permission::all('name', 'id');
-
-        return view('users.edit', compact('user', 'roles', 'permissions'));
     }
 
     /**
@@ -123,32 +105,6 @@ class ProjectUserController extends Controller
     // **: vedi ticket: https://net7.codebasehq.com/projects/storm/tickets/155
     public function update(Request $request, $id)
     {
-        $user = User::findOrFail($id);
-
-        //Validate name, email and password fields
-        $validated = $this->validate($request, [
-            'name' => 'required|max:120',
-            'email' => 'required|email|unique:users,email,' . $id,
-            'password' => 'nullable|min:6|confirmed' // **
-        ]);
-
-        // **
-        $fields = !empty($validated['password']) ? ['name', 'email', 'password'] : ['name', 'email'];
-
-        $input = $request->only($fields); //Retreive the name, email and password fields
-        $user->fill($input);
-        $user->is_storm = $request->has('is_storm');
-        $user->disable_login = $request->has('disable_login');
-        $user->save();
-
-        $roles = $request['roles']; //Retreive all roles
-        if (isset($roles)) {
-            $user->roles()->sync($roles);  //If one or more role is selected associate user to roles
-        } else {
-            $user->roles()->detach(); //If no role is selected remove exisiting role associated to a user
-        }
-        return redirect()->route('users.index')
-            ->with(FLASH_SUCCESS, __('User successfully edited.'));
     }
 
     /**
@@ -159,42 +115,18 @@ class ProjectUserController extends Controller
      */
     public function destroy($id)
     {
-        if (Auth::user()->id == $id) {
-            flash()->warning(__('Deletion of currently logged in user is not allowed :('))->important();
-            return redirect()->back();
-        }
-
-        if (User::findOrFail($id)->delete()) {
-            flash()->success(__('User has been deleted'));
+        $project_user = ProjectUser::findOrFail($id);
+        if ($project_user->delete()) {
+            $message = __('Profession association has been deleted');
+            $message_type = FLASH_SUCCESS;
         } else {
-            flash()->success(__('User not deleted'));
+            $message = __('Profession association not deleted');
+            $message_type = FLASH_ERROR;
         }
 
-        return redirect()->route('users.index');
+        return redirect()->route('project_user.index', ['user_id' => $project_user->user->id])
+            ->with($message_type, $message);;
     }
-
-    private function syncPermissions(Request $request, $user)
-    {
-        // Get the submitted roles
-        $roles = $request->get('roles', []);
-        $permissions = $request->get('permissions', []);
-
-        // Get the roles
-        $roles = Role::find($roles);
-
-        // check for current role changes
-        if (!$user->hasAllRoles($roles)) {
-            // reset all direct permissions for user
-            $user->permissions()->sync([]);
-        } else {
-            // handle permissions
-            $user->syncPermissions($permissions);
-        }
-
-        $user->syncRoles($roles);
-        return $user;
-    }
-
 
     /**
      * Ask confirmation about the specified resource from storage to remove.
@@ -204,8 +136,8 @@ class ProjectUserController extends Controller
      */
     public function confirmDestroy($id)
     {
-        $user = User::findOrFail($id);
-        return view('users.delete')->withUser($user);
+        $project_user = ProjectUser::findOrFail($id);
+        return view('project_user.delete')->withProjectUser($project_user);
     }
 
 

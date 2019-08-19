@@ -3,6 +3,6 @@
 @endphp
 
 <div class="form-group">
-    {!! Form::Label('phone_type', 'Type') !!}
+    {!! Form::Label('phone_type', __('Type')) !!}
     {!! Form::select('phone_type', StormUtils::getPhoneTypes(), $selected, ['class' => 'form-control']) !!}
 </div>

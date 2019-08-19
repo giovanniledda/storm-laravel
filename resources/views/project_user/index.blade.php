@@ -32,10 +32,7 @@
                         <td>{{ $project_user->project->name }}</td>
                         <td>{{ $project_user->profession->name }}</td>
                         <td>
-                            {{--<a href="{{ @route('users.phones.index', ['id' => $user->id]) }}" class="btn btn-outline-info pull-left" style="margin-right: 3px;"><i class="fa fa-phone"></i> {{ __('Phones (:phones)', ['phones' => $user->countPhones()]) }}</a>--}}
-                            {{--<a href="{{ @route('users.phones.index', ['id' => $user->id]) }}" class="btn btn-outline-info pull-left" style="margin-right: 3px;"><i class="fa fa-user-tie"></i> {{ __('Professions') }}</a>--}}
-                            {{--<a href="{{ @route('users.edit', $user->id) }}" class="btn btn-info pull-left" style="margin-right: 3px;">Edit</a>--}}
-                            {{--<a href="{{ @route('users.confirm.destroy', ['id' => $user->id]) }}" class="btn btn-danger">{{ __('Delete') }}</a>--}}
+                            <a href="{{ @route('project_user.confirm.destroy', ['id' => $project_user->id]) }}" class="btn btn-danger">{{ __('Delete') }}</a>
                         </td>
                     </tr>
                 @endforeach
@@ -44,7 +41,7 @@
             </table>
         </div>
 
-        <a href="{{ route('project_user.create') }}" class="btn btn-success">{{ __('Add profession') }}</a>
+        <a href="{{ route('project_user.create', ['user_id' => $user->id]) }}" class="btn btn-success">{{ __('Add profession') }}</a>
 
     </div>
 

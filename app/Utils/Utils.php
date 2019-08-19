@@ -2,12 +2,15 @@
 
 namespace App\Utils;
 
+use App\Profession;
+use App\Project;
 use App\User;
 use Faker\Factory as Faker;
 use Illuminate\Support\Facades\Validator;
 use function is_null;
 use const PERMISSION_ADMIN;
 use const PERMISSION_WORKER;
+use const PROJECT_STATUS_CLOSED;
 use const ROLE_ADMIN;
 use const ROLE_BOAT_MANAGER;
 use const ROLE_WORKER;
@@ -104,5 +107,41 @@ class Utils
     {
         return [USER_PHONE_TYPE_MOBILE => USER_PHONE_TYPE_MOBILE,
                 USER_PHONE_TYPE_FIXED => USER_PHONE_TYPE_FIXED];
+    }
+
+
+    /**
+     * Get the list of professions for @stormprofessions component
+     *
+     */
+    public static function getStormProfessionsList()
+    {
+        return Profession::orderBy('name')
+            ->where('is_storm', 1)
+            ->whereNotNull('name')
+            ->pluck('name', 'id');
+    }
+
+    /**
+     * Get the list of projects for @projects component
+     *
+     */
+    public static function getActiveProjectsList()
+    {
+        $projs = Project::where('project_status', PROJECT_STATUS_CLOSED, '!=')
+//            ->with('boat')
+//            ->with('site')
+            ->join('boats', 'projects.boat_id', '=', 'boats.id')
+            ->join('sites', 'projects.site_id', '=', 'sites.id')
+            ->orderBy('boats.name')
+//            ->select('sites.name','boats.name','projects.name', 'projects.id')
+            ->get();
+
+        $results = [];
+        foreach ($projs as $p) {
+            $results[$p->id] = __('Boat :bname, project :pname', ['bname' => $p->boat->name, 'pname' => $p->name]); ;
+        }
+//dd($results);
+        return $results;
     }
 }

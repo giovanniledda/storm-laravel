@@ -52,11 +52,25 @@ class AppServiceProvider extends ServiceProvider
         Blade::component('components.countries', 'countries');
 
         /**
-         * Generates a select with all the countries as options
+         * Generates a select with all the phone types as options
          *
          * Usage: @phonetypes(['selected_type' => $phone->phone_type]) @endphonetypes
          */
         Blade::component('components.phonetypes', 'phonetypes');
+
+        /**
+         * Generates a select with all the professions as options
+         *
+         * Usage: @stormprofessions(['selected_profession_id' => $selected_profession_id]) @endstormprofessions
+         */
+        Blade::component('components.stormprofessions', 'stormprofessions');
+
+        /**
+         * Generates a select with all the projects as options
+         *
+         * Usage: @projects(['selected_project_id' => selected_project_id]) @endprojects
+         */
+        Blade::component('components.projects', 'projects');
 
 
         /** Blade extensions [https://laravel.com/docs/5.8/blade#extending-blade] **/
