@@ -14,32 +14,35 @@
         <hr>
 
         <div class="table-responsive">
-            <table class="table table-bordered table-striped">
+            @if(!count($phones))
+                @include('includes/no-results')
+            @else
+                <table class="table table-bordered table-striped">
 
-                <thead>
-                <tr>
-                    <th>Phone #</th>
-                    <th>Type</th>
-                    <th>Number</th>
-                    <th>Operations</th>
-                </tr>
-                </thead>
-
-                <tbody>
-                @foreach ($phones as $phone)
+                    <thead>
                     <tr>
-
-                        <td>{{ $phone->id }}</td>
-                        <td>{{ $phone->phone_type }}</td>
-                        <td>{{ $phone->phone_number }}</td>
-                        <td>
-                            <a href="{{ @route('users.phones.confirm.destroy', ['user_id' => $user->id, 'phone_id' => $phone->id]) }}" class="btn btn-danger">{{ __('Delete') }}</a>
-                        </td>
+                        <th>Phone #</th>
+                        <th>Type</th>
+                        <th>Number</th>
+                        <th>Operations</th>
                     </tr>
-                @endforeach
-                </tbody>
+                    </thead>
 
-            </table>
+                    <tbody>
+                        @foreach ($phones as $phone)
+                            <tr>
+
+                                <td>{{ $phone->id }}</td>
+                                <td>{{ $phone->phone_type }}</td>
+                                <td>{{ $phone->phone_number }}</td>
+                                <td>
+                                    <a href="{{ @route('users.phones.confirm.destroy', ['user_id' => $user->id, 'phone_id' => $phone->id]) }}" class="btn btn-danger">{{ __('Delete') }}</a>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
         </div>
 
         <a href="{{ route('users.phones.create', ['id' => $user->id]) }}" class="btn btn-success">{{ __('Add phone') }}</a>

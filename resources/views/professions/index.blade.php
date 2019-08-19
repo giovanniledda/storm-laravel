@@ -10,30 +10,33 @@
         </h1>
         <hr>
         <div class="table-responsive">
-            <table class="table table-bordered table-striped">
-                <thead>
-                <tr>
-                    <th>{{ __('Name') }}</th>
-                    <th>{{ __('Storm') }}</th>
-                    <th>{{ __('Operation') }}</th>
-                </tr>
-                </thead>
-
-                <tbody>
-                @foreach ($professions as $profession)
+            @if(!count($professions))
+                @include('includes/no-results')
+            @else
+                <table class="table table-bordered table-striped">
+                    <thead>
                     <tr>
-
-                        <td>{{ $profession->name }}</td>
-                        <td>@booltostr($profession->is_storm)</td>
-                        <td>
-                            <a href="{{ URL::to('professions/'.$profession->id.'/edit') }}" class="btn btn-info pull-left" style="margin-right: 3px;">{{ __('Edit') }}</a>
-                            <a href="{{ @route('professions.confirm.destroy', ['id' => $profession->id]) }}" class="btn btn-danger">{{ __('Delete') }}</a>
-                        </td>
+                        <th>{{ __('Name') }}</th>
+                        <th>{{ __('Storm') }}</th>
+                        <th>{{ __('Operation') }}</th>
                     </tr>
-                @endforeach
-                </tbody>
+                    </thead>
 
-            </table>
+                    <tbody>
+                    @foreach ($professions as $profession)
+                        <tr>
+
+                            <td>{{ $profession->name }}</td>
+                            <td>@booltostr($profession->is_storm)</td>
+                            <td>
+                                <a href="{{ URL::to('professions/'.$profession->id.'/edit') }}" class="btn btn-info pull-left" style="margin-right: 3px;">{{ __('Edit') }}</a>
+                                <a href="{{ @route('professions.confirm.destroy', ['id' => $profession->id]) }}" class="btn btn-danger">{{ __('Delete') }}</a>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            @endif
         </div>
 
         <a href="{{ URL::to('professions/create') }}" class="btn btn-success">{{ __('Add profession') }}</a>

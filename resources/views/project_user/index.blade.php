@@ -15,30 +15,32 @@
 
         <hr>
         <div class="table-responsive">
-            <table class="table table-bordered table-striped">
-
-                <thead>
-                <tr>
-                    <th>Project</th>
-                    <th>Profession</th>
-                    <th>Operation</th>
-                </tr>
-                </thead>
-
-                <tbody>
-                @foreach ($project_users as $project_user)
+            @if(!count($project_users))
+                @include('includes/no-results')
+            @else
+                <table class="table table-bordered table-striped">
+                    <thead>
                     <tr>
-
-                        <td>{{ $project_user->project->name }}</td>
-                        <td>{{ $project_user->profession->name }}</td>
-                        <td>
-                            <a href="{{ @route('project_user.confirm.destroy', ['id' => $project_user->id]) }}" class="btn btn-danger">{{ __('Delete') }}</a>
-                        </td>
+                        <th>Project</th>
+                        <th>Profession</th>
+                        <th>Operation</th>
                     </tr>
-                @endforeach
-                </tbody>
+                    </thead>
 
-            </table>
+                    <tbody>
+                    @foreach ($project_users as $project_user)
+                        <tr>
+
+                            <td>{{ $project_user->project->name }}</td>
+                            <td>{{ $project_user->profession->name }}</td>
+                            <td>
+                                <a href="{{ @route('project_user.confirm.destroy', ['id' => $project_user->id]) }}" class="btn btn-danger">{{ __('Delete') }}</a>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            @endif
         </div>
 
         <a href="{{ route('project_user.create', ['user_id' => $user->id]) }}" class="btn btn-success">{{ __('Add relation') }}</a>
