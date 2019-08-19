@@ -6,6 +6,7 @@ use App\Profession;
 use App\Project;
 use App\User;
 use Faker\Factory as Faker;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use function is_null;
 use const PERMISSION_ADMIN;
@@ -128,20 +129,22 @@ class Utils
      */
     public static function getActiveProjectsList()
     {
-        $projs = Project::where('project_status', PROJECT_STATUS_CLOSED, '!=')
-//            ->with('boat')
-//            ->with('site')
-            ->join('boats', 'projects.boat_id', '=', 'boats.id')
-            ->join('sites', 'projects.site_id', '=', 'sites.id')
-            ->orderBy('boats.name')
-//            ->select('sites.name','boats.name','projects.name', 'projects.id')
+        $projs = DB::table('projects')
+            ->leftJoin('boats', 'projects.boat_id', '=', 'boats.id')
+            ->leftJoin('sites', 'projects.site_id', '=', 'sites.id')
+            ->where('projects.project_status', '<>', PROJECT_STATUS_CLOSED)
+            ->select('sites.name as sname', 'boats.name as bname','projects.name as pname', 'projects.id')
+            ->orderBy('bname')
             ->get();
 
         $results = [];
-        foreach ($projs as $p) {
-            $results[$p->id] = __('Boat :bname, project :pname', ['bname' => $p->boat->name, 'pname' => $p->name]); ;
+        foreach ($projs->all() as $p) {
+            $results[$p->id] = __(':pname, Boat :bname [site: :sname]', [
+                'bname' => $p->bname,
+                'sname' => $p->sname,
+                'pname' => $p->pname]
+            );
         }
-//dd($results);
         return $results;
     }
 }

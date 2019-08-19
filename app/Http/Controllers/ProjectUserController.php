@@ -67,7 +67,7 @@ class ProjectUserController extends Controller
         $validated = $request->validated();
         $project_user = ProjectUser::create($validated);
         return redirect()->route('project_user.index', ['user_id' => $project_user->user->id])
-            ->with(FLASH_SUCCESS, __('Profession :profname associated for project :projname', [
+            ->with(FLASH_SUCCESS, __('Project :projname related, with profession :profname', [
                 'profname' => $project_user->profession->name,
                 'projname' => $project_user->project->name,
             ]));
@@ -117,10 +117,10 @@ class ProjectUserController extends Controller
     {
         $project_user = ProjectUser::findOrFail($id);
         if ($project_user->delete()) {
-            $message = __('Profession association has been deleted');
+            $message = __('Project-User Relation has been deleted');
             $message_type = FLASH_SUCCESS;
         } else {
-            $message = __('Profession association not deleted');
+            $message = __('Project-User Relation not deleted');
             $message_type = FLASH_ERROR;
         }
 
@@ -137,7 +137,7 @@ class ProjectUserController extends Controller
     public function confirmDestroy($id)
     {
         $project_user = ProjectUser::findOrFail($id);
-        return view('project_user.delete')->withProjectUser($project_user);
+        return view('project_user.delete')->with('project_user', $project_user);
     }
 
 

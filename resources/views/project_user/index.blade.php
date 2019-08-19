@@ -1,16 +1,16 @@
 @extends('layouts.app')
 
-@section('title', '| Project Users Professions')
+@section('title', '| Project-User Relation')
 
 @section('content')
 
     <div class="col-lg-10 col-lg-offset-1">
 
         <h1>
-            <i class="fa fa-phone"></i> {{ __('User :name professions', ['name' => $user->name]) }}
+            <i class="fa fa-user-tie"></i> {{ __('User :name relations with projects', ['name' => $user->name]) }}
 
-            <a href="{{ route('roles.index') }}" class="btn btn-default pull-right">Roles</a>
-            <a href="{{ route('permissions.index') }}" class="btn btn-default pull-right">Permissions</a></h1>
+            <a href="{{ route('users.index') }}" class="btn btn-default pull-right">Users</a>
+        </h1>
         <hr>
 
         <hr>
@@ -41,7 +41,7 @@
             </table>
         </div>
 
-        <a href="{{ route('project_user.create', ['user_id' => $user->id]) }}" class="btn btn-success">{{ __('Add profession') }}</a>
+        <a href="{{ route('project_user.create', ['user_id' => $user->id]) }}" class="btn btn-success">{{ __('Add relation') }}</a>
 
     </div>
 
