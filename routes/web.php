@@ -40,13 +40,21 @@ Route::group(['middleware' => ['logoutBlocked']], function () {
 
         // Users
         Route::get('/users/{id}/confirm-destroy', 'UserController@confirmDestroy')->name('users.confirm.destroy');
-
         // User Phones
         Route::get('/users/{id}/phones', 'UserController@phonesIndex')->name('users.phones.index');
         Route::get('/users/{id}/phones/create', 'UserController@phonesCreate')->name('users.phones.create');
         Route::post('/users/{id}/phones/store', 'UserController@phonesStore')->name('users.phones.store');
         Route::get('/users/{user_id}/phones/{phone_id}/confirm-destroy', 'UserController@phonesConfirmDestroy')->name('users.phones.confirm.destroy');
         Route::delete('/users/{user_id}/phones/{phone_id}/destroy', 'UserController@phonesDestroy')->name('users.phones.destroy');
+        // User addresses
+        Route::get('/users/{id}/addresses', 'UserController@addressesIndex')->name('users.addresses.index');
+        Route::get('/users/{id}/addresses/create', 'UserController@addressesCreate')->name('users.addresses.create');
+        Route::post('/users/{id}/addresses/store', 'UserController@addressesStore')->name('users.addresses.store');
+        Route::get('/users/{user_id}/addresses/{address_id}/edit', 'UserController@addressesEdit')->name('users.addresses.edit');
+        Route::put('/users/{user_id}/addresses/{address_id}/update', 'UserController@addressesUpdate')->name('users.addresses.update');
+        Route::get('/users/{user_id}/addresses/{address_id}/confirm-destroy', 'UserController@addressesConfirmDestroy')->name('users.addresses.confirm.destroy');
+        Route::delete('/users/{user_id}/addresses/{address_id}/destroy', 'UserController@addressesDestroy')->name('users.addresses.destroy');
+
 
         // Roles and Permissions
         Route::get('/roles/{id}/confirm-destroy', 'RoleController@confirmDestroy')->name('roles.confirm.destroy');
@@ -54,6 +62,7 @@ Route::group(['middleware' => ['logoutBlocked']], function () {
 
         // Sites, Boats & Co.
         Route::get('/sites/{id}/confirm-destroy', 'SiteController@confirmDestroy')->name('sites.confirm.destroy');
+        // Site addresses
         Route::get('/sites/{id}/addresses', 'SiteController@addressesIndex')->name('sites.addresses.index');
         Route::get('/sites/{id}/addresses/create', 'SiteController@addressesCreate')->name('sites.addresses.create');
         Route::post('/sites/{id}/addresses/store', 'SiteController@addressesStore')->name('sites.addresses.store');

@@ -205,6 +205,7 @@ class SiteController extends Controller
     public function addressesUpdate(RequestAddress $request, $site_id, $address_id)
     {
         $message = __('Address [:id] has not been updated!', ['id' => $address_id]);
+        $message_type = FLASH_ERROR;
         $validated = $request->validated();
         $site = Site::findOrFail($site_id);
 

@@ -115,6 +115,21 @@ class User extends Authenticatable
         return $this->phones()->count();
     }
 
+    public function getAddresses()
+    {
+        return $this->hasAddress() ? $this->addresses()->get() : [];
+    }
+
+    public function getAddress($address_id)
+    {
+        return $this->addresses()->where('id', $address_id)->first();
+    }
+
+    public function countAddresses()
+    {
+        return $this->addresses()->count();
+    }
+
 
     public function setPasswordAttribute($password)
     {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\RequestAddress;
 use App\Http\Requests\RequestPhone;
 use App\Phone;
 use App\UsersTel;
@@ -305,5 +306,156 @@ class UserController extends Controller
         $phone = UsersTel::findOrFail($phone_id);
 
         return view('users.phones.delete')->with(['phone' => $phone, 'user' => $user]);
+    }
+
+
+    /*
+     * *************************************************************
+     *                      ADDRESSES
+     * *************************************************************
+     */
+
+    /**
+     * Addresses list for a User
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function addressesIndex($id)
+    {
+        $user = User::findOrFail($id);
+        $addresses = $user->getAddresses();
+        return view('users.addresses.index')->with(['addresses' => $addresses, 'user' => $user]);
+    }
+
+    /**
+     * Show the form for creating a new addresses for the User.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function addressesCreate($id)
+    {
+        return view('users.addresses.create')->with(['user' => User::findOrFail($id)]);
+    }
+
+
+    /**
+     * Store a newly created addresses for the User in storage.
+     *
+     * @param  \App\Http\Requests\RequestAddress  $request
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function addressesStore(RequestAddress $request, $id)
+    {
+        $validated = $request->validated();
+        $user = User::findOrFail($id);
+
+        try {
+            // Qua si innesca anche il Validator della HasAddresses che segue queste regole:
+//            'street'       => 'required|string|min:3|max:60',
+//            'street_extra' => 'string|min:3|max:60',
+//            'city'         => 'required|string|min:3|max:60',
+//            'state'        => 'string|min:3|max:60',
+//            'post_code'    => 'required|min:4|max:10|AlphaDash',
+//            'country_id'   => 'required|integer',
+            // ...la country viene gestite ricercando al stringa nei campi iso_3166_2 o iso_3166_3 di countries
+            $user->addAddress($validated);
+            $message = __('New address added for user :name!', ['name' => $user->name]);
+            $message_type = FLASH_SUCCESS;
+
+        } catch (\Exception $e) {
+            $message = __('Something went wrong adding new address, check your data!');
+            $message_type = FLASH_ERROR;
+        }
+
+        return redirect()->route('users.addresses.index', ['id' => $id])->with($message_type, $message);
+    }
+
+
+    /**
+     * Show the form for editing the specified addresses for the User.
+     *
+     * @param  int $user_id
+     * @param  int $address_id
+     * @return \Illuminate\Http\Response
+     */
+    public function addressesEdit($user_id, $address_id)
+    {
+        $user = User::findOrFail($user_id);
+        $address = $user->getAddress($address_id);
+
+        return view('users.addresses.edit')->with(['address' => $address, 'user' => $user]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \App\Http\Requests\RequestAddress  $request
+     * @param  int $user_id
+     * @param  int $address_id
+     * @return \Illuminate\Http\Response
+     */
+    public function addressesUpdate(RequestAddress $request, $user_id, $address_id)
+    {
+        $message = __('Address [:id] has not been updated!', ['id' => $address_id]);
+        $message_type = FLASH_ERROR;
+        $validated = $request->validated();
+        $user = User::findOrFail($user_id);
+
+        $address = $user->getAddress($address_id);
+        if ($address) {
+            try {
+                $user->updateAddress($address, $validated);
+                $message = __('Address [:id] in :city updated!', ['id' => $address_id, 'city' => $address->city]);
+                $message_type = FLASH_SUCCESS;
+
+            } catch (\Exception $e) {
+                $message = __('Something went wrong updating address [:id], check your data!', ['id' => $address_id]);
+                $message_type = FLASH_ERROR;
+            }
+        }
+
+        return redirect()->route('users.addresses.index', ['id' => $user_id])->with($message_type, $message);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int $user_id
+     * @param  int $address_id
+     * @return \Illuminate\Http\Response
+     */
+    public function addressesDestroy($user_id, $address_id)
+    {
+        $message = __('Address [:id] has not been deleted!', ['id' => $address_id]);
+        $message_type = FLASH_ERROR;
+        $user = User::findOrFail($user_id);
+
+        $address = $user->getAddress($address_id);
+        if ($address) {
+            $user->deleteAddress($address); // delete by passing it as argument
+            $message = __('Address [:id] deleted!', ['id' => $address_id]);
+            $message_type = FLASH_SUCCESS;
+        }
+
+        return redirect()->route('users.addresses.index', ['id' => $user_id])->with($message_type, $message);
+    }
+
+
+    /**
+     * Ask confirmation about the specified resource from storage to remove.
+     *
+     * @param  int $user_id
+     * @param  int $address_id
+     * @return \Illuminate\Http\Response
+     */
+    public function addressesConfirmDestroy($user_id, $address_id)
+    {
+        $user = User::findOrFail($user_id);
+        $address = $user->getAddress($address_id);
+
+        return view('users.addresses.delete')->with(['address' => $address, 'user' => $user]);
     }
 }
