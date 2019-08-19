@@ -30,7 +30,7 @@ Route::group(['middleware' => ['logoutBlocked']], function () {
         Route::resource('roles', 'RoleController');
         Route::resource('permissions', 'PermissionController');
 
-        // Sites, Boats & Co.
+        // Sites, Professions, etc.
         Route::resource('sites', 'SiteController');
         Route::resource('professions', 'ProfessionController');
         Route::resource('task_intervent_types', 'TaskInterventTypeController');
@@ -60,7 +60,7 @@ Route::group(['middleware' => ['logoutBlocked']], function () {
         Route::get('/roles/{id}/confirm-destroy', 'RoleController@confirmDestroy')->name('roles.confirm.destroy');
         Route::get('/permissions/{id}/confirm-destroy', 'PermissionController@confirmDestroy')->name('permissions.confirm.destroy');
 
-        // Sites, Boats & Co.
+        // Sites
         Route::get('/sites/{id}/confirm-destroy', 'SiteController@confirmDestroy')->name('sites.confirm.destroy');
         // Site addresses
         Route::get('/sites/{id}/addresses', 'SiteController@addressesIndex')->name('sites.addresses.index');
@@ -71,6 +71,7 @@ Route::group(['middleware' => ['logoutBlocked']], function () {
         Route::get('/sites/{site_id}/addresses/{address_id}/confirm-destroy', 'SiteController@addressesConfirmDestroy')->name('sites.addresses.confirm.destroy');
         Route::delete('/sites/{site_id}/addresses/{address_id}/destroy', 'SiteController@addressesDestroy')->name('sites.addresses.destroy');
 
+        // Professions, Task Types, etc.
         Route::get('/professions/{id}/confirm-destroy', 'ProfessionController@confirmDestroy')->name('professions.confirm.destroy');
         Route::get('/task_intervent_types/{id}/confirm-destroy', 'TaskInterventTypeController@confirmDestroy')->name('task_intervent_types.confirm.destroy');
         Route::get('/project_user/{id}/confirm-destroy', 'ProjectUserController@confirmDestroy')->name('project_user.confirm.destroy');
