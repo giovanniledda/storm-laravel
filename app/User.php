@@ -89,6 +89,11 @@ class User extends Authenticatable
             ]);
     }
 
+    public function countProjects()
+    {
+        return $this->projects()->count();
+    }
+
     public function boats()
     {
         return $this->belongsToMany('App\Boat')
@@ -107,7 +112,7 @@ class User extends Authenticatable
 
     public function countPhones()
     {
-        return $this->hasMany('App\UsersTel')->count();
+        return $this->phones()->count();
     }
 
 
