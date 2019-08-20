@@ -199,6 +199,14 @@ return [
 
         // Gestione numeri di telefono
         Propaganistas\LaravelPhone\PhoneServiceProvider::class,
+        
+        /**
+         * net7 pacjages
+         */
+        
+        // logging
+        Net7\Logging\LoggingServiceProvider::class
+        
     ],
 
     /*
