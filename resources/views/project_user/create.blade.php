@@ -2,6 +2,10 @@
 
 @section('title', '| Add Project-User Relation for User')
 
+@section('breadcrumbs')
+    {{ Breadcrumbs::render('user.projects.new', $user) }}
+@endsection
+
 @section('content')
 
     <div class='col-lg-4 col-lg-offset-4'>

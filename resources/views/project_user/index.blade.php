@@ -2,14 +2,16 @@
 
 @section('title', '| Project-User Relation')
 
+@section('breadcrumbs')
+    {{ Breadcrumbs::render('user.projects', $user) }}
+@endsection
+
 @section('content')
 
     <div class="col-lg-10 col-lg-offset-1">
 
         <h1>
             <i class="fa fa-user-tie"></i> {{ __('User :name relations with projects', ['name' => $user->name]) }}
-
-            <a href="{{ route('users.index') }}" class="btn btn-default pull-right">Users</a>
         </h1>
         <hr>
 

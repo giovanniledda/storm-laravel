@@ -2,11 +2,15 @@
 
 @section('title', '| Dockyard addresses')
 
+@section('breadcrumbs')
+    {{ Breadcrumbs::render('site.addresses', $site) }}
+@endsection
+
 @section('content')
 
     <div class="col-lg-10 col-lg-offset-1">
         <h1>
-            <i class="fa fa-map-marked-alt"></i> {{ __('Addresses for site in :city', ['city' => $site->location]) }}
+            <i class="fa fa-map-marked-alt"></i> {{ __('Addresses for site :name', ['name' => $site->name]) }}
         </h1>
         <hr>
         <div class="table-responsive">

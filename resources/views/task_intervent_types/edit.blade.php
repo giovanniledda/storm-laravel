@@ -2,10 +2,14 @@
 
 @section('title', '| Edit Intervent type')
 
+@section('breadcrumbs')
+    {{ Breadcrumbs::render('task_intervent_type', $intervent_type) }}
+@endsection
+
 @section('content')
 
     <div class='col-lg-4 col-lg-offset-4'>
-        <h1><i class='fa fa-user-tie'></i> {{ __('Edit intervent type :name', ['name' => $intervent_type->name]) }}</h1>
+        <h1><i class='fa fa-hammer'></i> {{ __('Edit intervent type :name', ['name' => $intervent_type->name]) }}</h1>
         <hr>
 
         {{ Form::model($intervent_type, array('route' => array('task_intervent_types.update', $intervent_type), 'method' => 'PUT')) }}

@@ -49,7 +49,8 @@
             <div class="collapse navbar-collapse" id="app-navbar-collapse">
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav">
-                    <li><a href="{{ url('/') }}">Home</a></li>
+                    {{--<li><a href="{{ url('/') }}">Home</a></li>--}}
+                    <li><a href="{{ url('/dashboard') }}">{{ __('Dashboard') }}</a></li>
                 </ul>
 
                 <!-- Right Side Of Navbar -->
@@ -92,6 +93,12 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             @include('errors.list') {{-- Including error file --}}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            @yield('breadcrumbs')
         </div>
     </div>
 

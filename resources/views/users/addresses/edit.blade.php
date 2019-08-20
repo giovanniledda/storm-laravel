@@ -2,10 +2,14 @@
 
 @section('title', '| Edit User address')
 
+@section('breadcrumbs')
+    {{ Breadcrumbs::render('user.address', $user, $address) }}
+@endsection
+
 @section('content')
 
     <div class='col-lg-4 col-lg-offset-4'>
-        <h1><i class='fa fa-anchor'></i> {{ __('Edit address :id (:name)', ['id' => $address->id, 'name' => $address->country->name]) }}</h1>
+        <h1><i class='fa fa-map-marked-alt'></i> {{ __('Edit address :id (:name)', ['id' => $address->id, 'name' => $address->country->name]) }}</h1>
         <hr>
 
         <form method="POST" action="{{ @route('users.addresses.update', ['user_id' => $user->id, 'address_id' => $address->id])  }}">

@@ -2,6 +2,10 @@
 
 @section('title', '| Add Intervent type')
 
+@section('breadcrumbs')
+    {{ Breadcrumbs::render('task_intervent_types.new') }}
+@endsection
+
 @section('content')
 
     <div class='col-lg-4 col-lg-offset-4'>

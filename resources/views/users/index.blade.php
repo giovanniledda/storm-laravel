@@ -2,6 +2,10 @@
 
 @section('title', '| Users')
 
+@section('breadcrumbs')
+    {{ Breadcrumbs::render('users') }}
+@endsection
+
 @section('content')
 
     <div class="col-lg-10 col-lg-offset-1">
