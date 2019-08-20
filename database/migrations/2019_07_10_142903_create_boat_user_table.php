@@ -19,14 +19,14 @@ class CreateBoatUserTable extends Migration
             
              // Relations:
             
-            $table->unsignedBigInteger('profession_id');
-            $table->foreign('profession_id')->references('id')->on('professions'); 
+            $table->unsignedBigInteger('profession_id')->nullable();
+            $table->foreign('profession_id')->references('id')->on('professions')->onDelete('set null');
 
             $table->unsignedBigInteger('boat_id');
-            $table->foreign('boat_id')->references('id')->on('boats');
+            $table->foreign('boat_id')->references('id')->on('boats')->onDelete('cascade');
 
             $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             
             
             $table->timestamps();

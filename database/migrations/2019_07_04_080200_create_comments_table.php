@@ -23,7 +23,7 @@ class CreateCommentsTable extends Migration
 
             // relations
             $table->unsignedBigInteger('author_id')->nullable();
-            $table->foreign('author_id')->references('id')->on('users');
+            $table->foreign('author_id')->references('id')->on('users')->onDelete('set null');
         });
     }
 
