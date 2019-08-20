@@ -25,9 +25,9 @@ Breadcrumbs::for('user', function ($trail, $user) {
 });
 
 // User addresses
-Breadcrumbs::for('user.addresses', function ($trail, $site) {
-    $trail->parent('user', $site);
-    $trail->push(__('Addresses'), route('users.addresses.index', ['id' => $site->id]));
+Breadcrumbs::for('user.addresses', function ($trail, $user) {
+    $trail->parent('user', $user);
+    $trail->push(__('Addresses'), route('users.addresses.index', ['id' => $user->id]));
 });
 
 Breadcrumbs::for('user.addresses.new', function ($trail, $user) {
@@ -41,9 +41,9 @@ Breadcrumbs::for('user.address', function ($trail, $user, $address) {
 });
 
 // User phones
-Breadcrumbs::for('user.phones', function ($trail, $site) {
-    $trail->parent('user', $site);
-    $trail->push(__('Phones'), route('users.phones.index', ['id' => $site->id]));
+Breadcrumbs::for('user.phones', function ($trail, $user) {
+    $trail->parent('user', $user);
+    $trail->push(__('Phones'), route('users.phones.index', ['id' => $user->id]));
 });
 
 Breadcrumbs::for('user.phones.new', function ($trail, $user) {
@@ -54,6 +54,24 @@ Breadcrumbs::for('user.phones.new', function ($trail, $user) {
 Breadcrumbs::for('user.phone', function ($trail, $user, $phone) {
     $trail->parent('user.phones', $user);
     $trail->push($phone->phone_number, route('users.phones.confirm.destroy', ['user_id' => $user->id, 'phone_id' => $phone->id,]));
+});
+
+/** Project - User **/
+
+Breadcrumbs::for('user.projects', function ($trail, $user) {
+    $trail->parent('user', $user);
+    $trail->push(__('Projects'), route('project_user.index', ['user_id' => $user->id]));
+});
+
+Breadcrumbs::for('user.projects.new', function ($trail, $user) {
+    $trail->parent('user.projects', $user);
+    $trail->push(__('New Project Relation'), route('project_user.create', ['user_id' => $user->id]));
+});
+
+Breadcrumbs::for('user.project', function ($trail, $pu) {
+    $user = $pu->user;
+    $trail->parent('user.projects', $user);
+    $trail->push(__('Project Relation #:id', ['id' => $pu->id]), route('project_user.confirm.destroy', ['user_id' => $user->id]));
 });
 
 /** Roles **/
