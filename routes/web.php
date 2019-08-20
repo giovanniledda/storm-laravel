@@ -19,7 +19,7 @@ Auth::routes();
 
 Route::group(['middleware' => ['logoutBlocked']], function () {
 
-    Route::get('/home', 'HomeController@index')->name('home');
+    Route::get('/dashboard', 'HomeController@index')->name('dashboard');
 
     Route::group(['middleware' => ['auth', 'isAdmin']], function () {
 
