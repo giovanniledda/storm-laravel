@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\RequestTaskInterventType;
 use App\TaskInterventType;
 use Illuminate\Http\Request;
+use StormUtils;
 
 class TaskInterventTypeController extends Controller
 {
@@ -15,7 +16,9 @@ class TaskInterventTypeController extends Controller
      */
     public function index()
     {
-        $intervent_types = TaskInterventType::all();
+//        $intervent_types = TaskInterventType::all();
+
+        $intervent_types = TaskInterventType::paginate(StormUtils::getItemsPerPage());
         return view('task_intervent_types.index')->with('intervent_types', $intervent_types);
     }
 

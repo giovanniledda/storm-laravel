@@ -9,6 +9,7 @@ use Auth;
 use Session;
 use App\Role;
 use App\Permission;
+use StormUtils;
 
 
 class RoleController extends Controller
@@ -26,7 +27,8 @@ class RoleController extends Controller
      */
     public function index()
     {
-        $roles = Role::all();//Get all roles
+//        $roles = Role::all(); //Get all roles
+        $roles = Role::paginate(StormUtils::getItemsPerPage());
 
         return view('roles.index')->with('roles', $roles);
     }

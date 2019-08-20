@@ -42,6 +42,9 @@
                     @endforeach
                     </tbody>
                 </table>
+
+                @include('includes/paginator', ['items' => $sites])
+
             @endif
         </div>
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\RequestProfession;
 use App\Profession;
 use Illuminate\Http\Request;
+use StormUtils;
 
 class ProfessionController extends Controller
 {
@@ -15,7 +16,9 @@ class ProfessionController extends Controller
      */
     public function index()
     {
-        $professions = Profession::all();
+//        $professions = Profession::all();
+
+        $professions = Profession::paginate(StormUtils::getItemsPerPage());
         return view('professions.index')->with('professions', $professions);
     }
 
