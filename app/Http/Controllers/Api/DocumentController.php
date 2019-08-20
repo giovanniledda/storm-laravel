@@ -14,7 +14,10 @@ class DocumentController extends Controller
     public function show(Request $request){
 
         $document = $request->record;
-
+        if ($request->size){
+            //TODO:  get the related image
+            return $document->getFirstMedia('thumb');
+        }
         return $document->getFirstMedia('documents');
 
     }
