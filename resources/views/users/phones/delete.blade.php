@@ -2,6 +2,10 @@
 
 @section('title', '| Delete User Phone')
 
+@section('breadcrumbs')
+    {{ Breadcrumbs::render('user.phone', $user, $phone) }}
+@endsection
+
 @section('content')
 
     <div class='col-lg-4 col-lg-offset-4'>

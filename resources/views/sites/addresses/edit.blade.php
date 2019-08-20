@@ -2,10 +2,14 @@
 
 @section('title', '| Edit Dockyard address')
 
+@section('breadcrumbs')
+    {{ Breadcrumbs::render('site.address', $site, $address) }}
+@endsection
+
 @section('content')
 
     <div class='col-lg-4 col-lg-offset-4'>
-        <h1><i class='fa fa-anchor'></i> {{ __('Edit address :id (:name)', ['id' => $address->id, 'name' => $address->country->name]) }}</h1>
+        <h1><i class='fa fa-anchor'></i> {{ __('Edit address :id (:name), for site :sname', ['id' => $address->id, 'name' => $address->country->name, 'sname' => $site->name]) }}</h1>
         <hr>
 
         <form method="POST" action="{{ @route('sites.addresses.update', ['site_id' => $site->id, 'address_id' => $address->id])  }}">

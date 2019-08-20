@@ -2,6 +2,10 @@
 
 @section('title', '| Delete Dockyard/Site')
 
+@section('breadcrumbs')
+    {{ Breadcrumbs::render('site', $site) }}
+@endsection
+
 @section('content')
 
     <div class='col-lg-4 col-lg-offset-4'>

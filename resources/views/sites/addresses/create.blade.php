@@ -2,6 +2,10 @@
 
 @section('title', '| Add Dockyard address')
 
+@section('breadcrumbs')
+    {{ Breadcrumbs::render('site.addresses.new', $site) }}
+@endsection
+
 @section('content')
 
     <div class='col-lg-4 col-lg-offset-4'>
