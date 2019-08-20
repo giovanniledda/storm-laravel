@@ -6,6 +6,7 @@ Breadcrumbs::for('dashboard', function ($trail) {
     $trail->push(__('Dashboard'), route('dashboard'));
 });
 
+
 /** Users **/
 
 Breadcrumbs::for('users', function ($trail) {
@@ -22,6 +23,7 @@ Breadcrumbs::for('user', function ($trail, $user) {
     $trail->parent('users');
     $trail->push($user->name, route('users.edit', $user));
 });
+
 
 /** Roles **/
 
@@ -40,6 +42,7 @@ Breadcrumbs::for('role', function ($trail, $role) {
     $trail->push($role->name, route('roles.edit', $role));
 });
 
+
 /** Permissions **/
 
 Breadcrumbs::for('permissions', function ($trail) {
@@ -55,4 +58,40 @@ Breadcrumbs::for('permissions.new', function ($trail) {
 Breadcrumbs::for('permission', function ($trail, $permission) {
     $trail->parent('permissions');
     $trail->push($permission->name, route('permissions.edit', $permission));
+});
+
+
+/** Professions **/
+
+Breadcrumbs::for('professions', function ($trail) {
+    $trail->parent('dashboard');
+    $trail->push(__('Professions'), route('professions.index'));
+});
+
+Breadcrumbs::for('professions.new', function ($trail) {
+    $trail->parent('professions');
+    $trail->push(__('New Profession'), route('professions.create'));
+});
+
+Breadcrumbs::for('profession', function ($trail, $profession) {
+    $trail->parent('professions');
+    $trail->push($profession->name, route('professions.edit', $profession));
+});
+
+
+/** Task Intervent Types **/
+
+Breadcrumbs::for('task_intervent_types', function ($trail) {
+    $trail->parent('dashboard');
+    $trail->push(__('Task Intervent Types'), route('task_intervent_types.index'));
+});
+
+Breadcrumbs::for('task_intervent_types.new', function ($trail) {
+    $trail->parent('task_intervent_types');
+    $trail->push(__('New Task Intervent Type'), route('task_intervent_types.create'));
+});
+
+Breadcrumbs::for('task_intervent_type', function ($trail, $interv_type) {
+    $trail->parent('task_intervent_types');
+    $trail->push($interv_type->name, route('task_intervent_types.edit', $interv_type));
 });

@@ -2,6 +2,10 @@
 
 @section('title', '| Edit Profession')
 
+@section('breadcrumbs')
+    {{ Breadcrumbs::render('profession', $profession) }}
+@endsection
+
 @section('content')
 
     <div class='col-lg-4 col-lg-offset-4'>
