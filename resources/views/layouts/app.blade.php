@@ -96,6 +96,12 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            @yield('breadcrumbs')
+        </div>
+    </div>
+
     @yield('content')
 
 </div>

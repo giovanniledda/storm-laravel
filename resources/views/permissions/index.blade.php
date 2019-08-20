@@ -2,6 +2,10 @@
 
 @section('title', '| Permissions')
 
+@section('breadcrumbs')
+    {{ Breadcrumbs::render('permissions') }}
+@endsection
+
 @section('content')
 
     <div class="col-lg-10 col-lg-offset-1">

@@ -2,6 +2,10 @@
 
 @section('title', '| Delete Role')
 
+@section('breadcrumbs')
+    {{ Breadcrumbs::render('role', $role) }}
+@endsection
+
 @section('content')
 
     <div class='col-lg-4 col-lg-offset-4'>
