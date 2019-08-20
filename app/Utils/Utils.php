@@ -129,7 +129,6 @@ class Utils
      */
     public static function getItemsPerPage()
     {
-        return 1;
         return \Config::get('app.page_items');
     }
 

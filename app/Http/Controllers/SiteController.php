@@ -132,7 +132,7 @@ class SiteController extends Controller
     public function addressesIndex($id)
     {
         $site = Site::findOrFail($id);
-        $addresses = $site->getAddresses();
+        $addresses = $site->getAddresses(true);
         return view('sites.addresses.index')->with(['addresses' => $addresses, 'site' => $site]);
     }
 

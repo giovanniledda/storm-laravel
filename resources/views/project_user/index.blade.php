@@ -42,6 +42,9 @@
                     @endforeach
                     </tbody>
                 </table>
+
+                @include('includes/paginator', ['items' => $project_users->appends(['user_id' => $user->id])])
+
             @endif
         </div>
 

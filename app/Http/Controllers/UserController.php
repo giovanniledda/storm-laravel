@@ -225,7 +225,10 @@ class UserController extends Controller
     public function phonesIndex($id)
     {
         $user = User::findOrFail($id);
-        $phones = $user->phones;
+
+//        $phones = $user->phones;
+        $phones = $user->phones()->paginate(StormUtils::getItemsPerPage());
+
         return view('users.phones.index')->with(['phones' => $phones, 'user' => $user]);
     }
 
@@ -327,7 +330,10 @@ class UserController extends Controller
     public function addressesIndex($id)
     {
         $user = User::findOrFail($id);
-        $addresses = $user->getAddresses();
+
+//        $addresses = $user->getAddresses();
+        $addresses = $user->getAddresses(true);
+
         return view('users.addresses.index')->with(['addresses' => $addresses, 'user' => $user]);
     }
 
