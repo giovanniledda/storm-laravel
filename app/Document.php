@@ -27,8 +27,7 @@ class Document extends Model implements HasMedia
     // protected $revisionCleanup = true; //Remove old revisions (works only when used with $historyLimit)
     // protected $historyLimit = 500; //Maintain a maximum of 500 changes at any point of time, while cleaning up old revisions.
 
-    protected $fillable = [
-
+    protected $fillable = [ 
         'title', 'type'
     ];
 
@@ -97,6 +96,10 @@ class Document extends Model implements HasMedia
     public function getShowApiUrl(){
         return $this->id; // su richiesta di Giovanni Miscali per semplificare la parte dello storage in assenza di connesione
       //  return route('api:v1:documents.show', [$this->id]);
+    }
+    
+    public function getThumbUrl() {
+        
     }
 
 }
