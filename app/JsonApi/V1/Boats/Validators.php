@@ -25,7 +25,8 @@ class Validators extends AbstractValidators
         'draft.required' => 'draft '.VALIDATOR_REQUIRED,
         'beam.number' => 'beam '.VALIDATOR_NUMERIC,
         'beam.required' => 'draft '.VALIDATOR_REQUIRED,
-        'boat_type.in' => 'type '.VALIDATOR_IN.': '.BOAT_TYPE_SAIL.','.BOAT_TYPE_MOTOR,
+        'boat_type.in' => 'boat_type '.VALIDATOR_IN.': '.BOAT_TYPE_SAIL.','.BOAT_TYPE_MOTOR,
+        'boat_type.required' => 'boat_type '.VALIDATOR_REQUIRED,
     ];
 
     /**
@@ -60,7 +61,7 @@ class Validators extends AbstractValidators
            'length' => 'required|numeric',
            'draft' => 'required|numeric',
         //   'beam' => 'required|numeric',
-           'boat_type' => 'in:'.BOAT_TYPE_MOTOR.','.BOAT_TYPE_SAIL,
+           'boat_type' => 'required|in:'.BOAT_TYPE_MOTOR.','.BOAT_TYPE_SAIL,
         ];
     }
   
