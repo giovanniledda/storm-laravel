@@ -25,10 +25,12 @@ class Logs extends Model
     
     private static function _insert($message,  $level, $context = null) {
         $user = \Auth::user();
-        if (is_array($context) || is_object($context)) {
-          $context =   json_encode($context);
-        }
-        self::create(
+        
+        if (isset($user->id)) { // todo serve a non fare esplodere i test
+            if (is_array($context) || is_object($context)) {
+                $context =   json_encode($context);
+            }
+            self::create(
                 [
                     'env'  => \App::environment(),
                     'message'=> $message,
@@ -36,7 +38,8 @@ class Logs extends Model
                     'context'=> $context,
                     'user_id' =>$user->id
                 ]
-        );
+            );
+        }
     }
     
     /**
