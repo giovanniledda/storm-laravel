@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Observers\TaskObserver;
 use Illuminate\Database\Eloquent\Model;
 use function is_object;
 use Spatie\ModelStatus\HasStatuses;
@@ -34,6 +35,12 @@ class Task extends Model
         'is_open',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        Task::observe(TaskObserver::class);
+    }
 
     public function intervent_type()
     {

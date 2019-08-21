@@ -69,9 +69,5 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         parent::boot();
-
-        Task::observe(TaskObserver::class);
-        Project::observe(ProjectObserver::class);
-        Comment::observe(CommentObserver::class);
     }
 }

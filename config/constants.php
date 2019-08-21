@@ -155,3 +155,12 @@ defined('FLASH_ERROR') or define('FLASH_ERROR', 'error');
 defined('FLASH_SUCCESS') or define('FLASH_SUCCESS', 'success');
 defined('FLASH_WARNING') or define('FLASH_WARNING', 'warning');
 defined('FLASH_INFO') or define('FLASH_INFO', 'info');
+
+
+
+
+/*
+ * HTTP STATUS ERRORS
+ */
+
+defined('HTTP_412_DONT_DELETE_ERROR_MSG') or define('HTTP_412_DONT_DELETE_ERROR_MSG', 'The resource you are trying to delete has other resources related, you cannot delete it.');

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Observers\ProjectObserver;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\ModelStatus\HasStatuses;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -20,6 +21,13 @@ class Project extends Model
     protected $fillable = [
        'name', 'project_status', 'boat_id', 'project_type', 'project_progress', 'site_id'
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        Project::observe(ProjectObserver::class);
+    }
 
     public function boat()
     {

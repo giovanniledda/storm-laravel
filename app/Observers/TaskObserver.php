@@ -23,7 +23,7 @@ class TaskObserver
     /**
      * Handle the project "updating" event.
      *
-     * @param  \App\Project  $project
+     * @param  \App\Task  $task
      * @return void
      */
     public function updating(Task $task)

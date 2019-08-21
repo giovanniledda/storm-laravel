@@ -4,8 +4,12 @@ namespace App\Exceptions;
 
 use CloudCreativity\LaravelJsonApi\Exceptions\HandlesErrors;
 use Exception;
+use function fann_get_sarprop_weight_decay_shift;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Str;
 use Neomerx\JsonApi\Exceptions\JsonApiException;
+use function str_contains;
 
 class Handler extends ExceptionHandler
 {
@@ -41,6 +45,12 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $exception)
     {
+        if ($exception instanceof QueryException) {
+            if (Str::contains($exception->getMessage(), "Integrity constraint violation")) {
+                abort(412, __(HTTP_412_DONT_DELETE_ERROR_MSG));
+            }
+        }
+
         parent::report($exception);
     }
 
@@ -53,6 +63,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+
         if ($this->isJsonApi($request, $exception)) {
             return $this->renderJsonApi($request, $exception);
         }

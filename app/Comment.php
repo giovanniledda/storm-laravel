@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Observers\CommentObserver;
 use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
@@ -14,6 +15,13 @@ class Comment extends Model
         'commentable_type',  // ex: App\Task
         'commentable_id',    // ex: 1
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        Comment::observe(CommentObserver::class);
+    }
 
     public function commentable()
     {

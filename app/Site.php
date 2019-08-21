@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Observers\SiteObserver;
 use Illuminate\Database\Eloquent\Model;
 use Lecturize\Addresses\Traits\HasAddresses;
 use StormUtils;
@@ -19,9 +20,21 @@ class Site extends Model
         'lng'
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+//        Site::observe(SiteObserver::class);
+    }
+
     public function projects()
     {
         return $this->hasMany('App\Project');
+    }
+
+    public function boats()
+    {
+        return $this->hasMany('App\Boat');
     }
 
 
