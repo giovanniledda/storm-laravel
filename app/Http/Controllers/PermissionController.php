@@ -9,6 +9,7 @@ use Auth;
 use Session;
 use App\Role;
 use App\Permission;
+use StormUtils;
 
 class PermissionController extends Controller
 {
@@ -25,7 +26,8 @@ class PermissionController extends Controller
      */
     public function index()
     {
-        $permissions = Permission::all(); //Get all permissions
+//        $permissions = Permission::all(); //Get all permissions
+        $permissions = Permission::paginate(StormUtils::getItemsPerPage());
 
         return view('permissions.index')->with('permissions', $permissions);
     }

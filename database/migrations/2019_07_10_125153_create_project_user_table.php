@@ -18,14 +18,14 @@ class CreateProjectUserTable extends Migration
            // $table->enum('role', [PROJECT_USER_ROLE_AUTHOR, PROJECT_USER_ROLE_OWNER]);  // TODO: forse un enum è limitante...possiamo pensare di agigungere un ruolo (usando il Model "Role") alla relazione
            
             // Relations:
-            $table->unsignedBigInteger('profession_id');
-            $table->foreign('profession_id')->references('id')->on('professions');
+            $table->unsignedBigInteger('profession_id')->nullable();
+            $table->foreign('profession_id')->references('id')->on('professions')->onDelete('set null');
               
             $table->unsignedBigInteger('project_id');
-            $table->foreign('project_id')->references('id')->on('projects');
+            $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
 
             $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             
             
              $table->timestamps();

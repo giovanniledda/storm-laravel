@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Lecturize\Addresses\Traits\HasAddresses;
+use StormUtils;
 
 class Site extends Model
 {
@@ -33,9 +34,12 @@ class Site extends Model
     //     return $this->morphMany('App\Document', 'documentable');
     // }
 
-    public function getAddresses()
+    public function getAddresses($pagination = false)
     {
-        return $this->hasAddress() ? $this->addresses()->get() : [];
+        if ($this->hasAddress()) {
+            return $pagination ? $this->addresses()->paginate(StormUtils::getItemsPerPage()) : $this->addresses()->get();
+        }
+        return [];
     }
 
     public function getAddress($address_id)

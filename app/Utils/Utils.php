@@ -124,6 +124,15 @@ class Utils
     }
 
     /**
+     * Get the list of professions for @stormprofessions component
+     *
+     */
+    public static function getItemsPerPage()
+    {
+        return \Config::get('app.page_items');
+    }
+
+    /**
      * Get the list of projects for @projects component
      *
      */

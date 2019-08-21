@@ -17,10 +17,10 @@ class CreateProjectSectionTable extends Migration
             $table->bigIncrements('id');   
             // boat
             $table->unsignedBigInteger('section_id');
-            $table->foreign('section_id')->references('id')->on('sections');
+            $table->foreign('section_id')->references('id')->on('sections')->onDelete('cascade');
              // project
             $table->unsignedBigInteger('project_id');
-            $table->foreign('project_id')->references('id')->on('projects');
+            $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
             
              $table->timestamps();
         });

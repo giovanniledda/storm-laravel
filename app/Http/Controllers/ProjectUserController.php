@@ -17,6 +17,7 @@ use Session;
 use App\User;
 use App\Role;
 use App\Permission;
+use StormUtils;
 
 
 class ProjectUserController extends Controller
@@ -36,7 +37,9 @@ class ProjectUserController extends Controller
     public function index(Request $request)
     {
         abort_unless($request->has('user_id'), 404);
-        $proj_users = ProjectUser::where('user_id', $request->user_id)->get();
+//        $proj_users = ProjectUser::where('user_id', $request->user_id)->get();
+        $proj_users = ProjectUser::where('user_id', $request->user_id)->paginate(StormUtils::getItemsPerPage());
+
         $user = User::findOrFail($request->user_id); //Get user with specified id
         return view('project_user.index')->with(['project_users' => $proj_users, 'user' => $user]);
     }

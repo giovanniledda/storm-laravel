@@ -38,6 +38,9 @@
                     @endforeach
                     </tbody>
                 </table>
+
+                @include('includes/paginator', ['items' => $intervent_types])
+
             @endif
         </div>
 

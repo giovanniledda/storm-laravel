@@ -37,6 +37,9 @@
                     @endforeach
                     </tbody>
                 </table>
+
+                @include('includes/paginator', ['items' => $permissions])
+
             @endif
         </div>
 

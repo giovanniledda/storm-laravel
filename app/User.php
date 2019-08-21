@@ -11,6 +11,7 @@ use const PERMISSION_ADMIN;
 use function snake_case;
 use Spatie\Permission\Traits\HasRoles;
 use Lecturize\Addresses\Traits\HasAddresses;
+use StormUtils;
 
 
 class User extends Authenticatable
@@ -115,9 +116,12 @@ class User extends Authenticatable
         return $this->phones()->count();
     }
 
-    public function getAddresses()
+    public function getAddresses($pagination = false)
     {
-        return $this->hasAddress() ? $this->addresses()->get() : [];
+        if ($this->hasAddress()) {
+            return $pagination ? $this->addresses()->paginate(StormUtils::getItemsPerPage()) : $this->addresses()->get();
+        }
+        return [];
     }
 
     public function getAddress($address_id)

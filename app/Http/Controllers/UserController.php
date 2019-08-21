@@ -14,6 +14,7 @@ use Session;
 use App\User;
 use App\Role;
 use App\Permission;
+use StormUtils;
 
 
 class UserController extends Controller
@@ -32,7 +33,9 @@ class UserController extends Controller
     public function index()
     {
         //Get all users and pass it to the view
-        $users = User::all();
+//        $users = User::all();
+        $users = User::paginate(StormUtils::getItemsPerPage());
+
         return view('users.index')->with('users', $users);
     }
 
@@ -222,7 +225,10 @@ class UserController extends Controller
     public function phonesIndex($id)
     {
         $user = User::findOrFail($id);
-        $phones = $user->phones;
+
+//        $phones = $user->phones;
+        $phones = $user->phones()->paginate(StormUtils::getItemsPerPage());
+
         return view('users.phones.index')->with(['phones' => $phones, 'user' => $user]);
     }
 
@@ -324,7 +330,10 @@ class UserController extends Controller
     public function addressesIndex($id)
     {
         $user = User::findOrFail($id);
-        $addresses = $user->getAddresses();
+
+//        $addresses = $user->getAddresses();
+        $addresses = $user->getAddresses(true);
+
         return view('users.addresses.index')->with(['addresses' => $addresses, 'user' => $user]);
     }
 

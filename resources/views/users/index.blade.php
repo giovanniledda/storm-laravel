@@ -51,6 +51,9 @@
                     @endforeach
                     </tbody>
                 </table>
+
+                @include('includes/paginator', ['items' => $users])
+
             @endif
         </div>
 

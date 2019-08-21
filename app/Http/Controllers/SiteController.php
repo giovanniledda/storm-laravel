@@ -9,6 +9,7 @@ use Countries;
 use const FLASH_ERROR;
 use Illuminate\Http\Request;
 use Lecturize\Addresses\Facades\Addresses;
+use StormUtils;
 
 class SiteController extends Controller
 {
@@ -19,7 +20,9 @@ class SiteController extends Controller
      */
     public function index()
     {
-        $sites = Site::all();
+//        $sites = Site::all();
+        $sites = Site::paginate(StormUtils::getItemsPerPage());
+
         return view('sites.index')->with('sites', $sites);
     }
 
@@ -129,7 +132,7 @@ class SiteController extends Controller
     public function addressesIndex($id)
     {
         $site = Site::findOrFail($id);
-        $addresses = $site->getAddresses();
+        $addresses = $site->getAddresses(true);
         return view('sites.addresses.index')->with(['addresses' => $addresses, 'site' => $site]);
     }
 

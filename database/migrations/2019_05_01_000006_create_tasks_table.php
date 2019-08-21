@@ -33,23 +33,23 @@ class CreateTasksTable extends Migration
 
             // project
             $table->unsignedBigInteger('project_id')->nullable();
-            $table->foreign('project_id')->references('id')->on('projects');
+            $table->foreign('project_id')->references('id')->on('projects')->onDelete('set null');
 
             // section
             $table->unsignedBigInteger('section_id')->nullable();
-            $table->foreign('section_id')->references('id')->on('sections');
+            $table->foreign('section_id')->references('id')->on('sections')->onDelete('set null');
 
             // subsection
             $table->unsignedBigInteger('subsection_id')->nullable();
-            $table->foreign('subsection_id')->references('id')->on('subsections');
+            $table->foreign('subsection_id')->references('id')->on('subsections')->onDelete('set null');
 
             // user
             $table->unsignedBigInteger('author_id')->nullable();
-            $table->foreign('author_id')->references('id')->on('users');
+            $table->foreign('author_id')->references('id')->on('users')->onDelete('set null');
 
             // intervent_type
             $table->unsignedBigInteger('intervent_type_id')->nullable();
-            $table->foreign('intervent_type_id')->references('id')->on('task_intervent_types');
+            $table->foreign('intervent_type_id')->references('id')->on('task_intervent_types')->onDelete('set null');
 
 
         });
