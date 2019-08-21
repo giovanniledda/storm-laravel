@@ -27,10 +27,13 @@ class CreateLoggingTable extends Migration
                 'ALERT',
                 'EMERGENCY'
             ])->default('INFO');
-            $table->text('context');
-            $table->text('extra');
-            $table->timestamps();
-            $table->softDeletes(); 
+            $table->text('context')->nullable();
+            
+             // user
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
+            
+            $table->timestamps(); 
         });
     }
 

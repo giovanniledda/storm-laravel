@@ -11,6 +11,8 @@ use App\Boat;
 use Validator;
 use Illuminate\Validation\Rule;
 use App\Document;
+use App\Utils\Utils;
+
 
 class BoatController extends Controller {
 
@@ -35,7 +37,7 @@ class BoatController extends Controller {
             $title = $request->data['attributes']['title'];
             $base64File = $request->data['attributes']['file'];
             $filename = $request->data['attributes']['filename'];
-
+            
             $file = Document::createUploadedFileFromBase64($base64File, $filename);
 
             $doc = new Document([
@@ -50,7 +52,10 @@ class BoatController extends Controller {
             ]];
             $resp = Response($ret, 200);
         } else {
-            $resp = Response($validator->errors()->all(), 422);
+            
+            $contents_errors = Utils::renderDocumentErrors($validator->errors()->all());
+            $resp = Response(['errors' =>$contents_errors], 422);
+            
         }
 
         $resp->header('Content-Type', 'application/vnd.api+json');

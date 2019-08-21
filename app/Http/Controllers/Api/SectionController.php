@@ -50,10 +50,12 @@ class SectionController extends Controller {
         $validator = Validator::make($request->data['attributes'], $rules);
 
         if ($validator->passes()) {
+            
             $type = $request->data['attributes']['type'];
             $title = $request->data['attributes']['title'];
             $base64File = $request->data['attributes']['file'];
             $filename = $request->data['attributes']['filename']; 
+            
             $file = Document::createUploadedFileFromBase64($base64File, $filename); 
             $doc = new Document([
                 'title' => $title,

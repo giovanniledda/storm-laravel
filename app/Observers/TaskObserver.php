@@ -10,7 +10,7 @@ use App\Project;
 use function is_object;
 use Notification;
 use StormUtils;
-use Log;
+use Net7\Logging\models\Logs as Log;
 
 
 use const TASKS_STATUS_DRAFT;
@@ -39,7 +39,7 @@ class TaskObserver
                                      'event_body'=>'Task number #'.$task->number.' marked to closed']);
          }
 
-
+       
       /*
         $revisions      = new Revisions();
 
@@ -131,6 +131,7 @@ class TaskObserver
                 $task->update(['added_by_storm'=>1, 'author_id'=>$user->id]);
             } 
         } 
+        Log::info('foo');
     }
 
     /**

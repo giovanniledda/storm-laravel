@@ -14,6 +14,7 @@ use App\Document;
 
 class ProjectController extends Controller {
 
+    
     /**
      * Ritorna i possibili stati usati nei progetti.
      * @param Request $request

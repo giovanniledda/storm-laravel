@@ -14,8 +14,7 @@ class LoggingServiceProvider extends ServiceProvider
     public function register()
     { 
         $this->loadRoutesFrom(__DIR__.'/routes/routes.php');
-        $this->loadMigrationsFrom(__DIR__.'/migrations');
-        
+        $this->loadMigrationsFrom(__DIR__.'/migrations'); 
     }
 
     /**
@@ -25,6 +24,6 @@ class LoggingServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-      //   $this->app->make('wisdmLabs\todolist\TodolistController');
+      $this->app->make('Net7\Logging\LoggingController');
     }
 }

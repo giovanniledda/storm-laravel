@@ -16,7 +16,7 @@ class DocumentController extends Controller
         $document = $request->record;
         if ($request->size){
             //TODO:  get the related image
-            return $document->getFirstMedia('thumb');
+         return response()->download( $document->getFirstMediaPath('documents', $request->size), $document->title);
         }
         return $document->getFirstMedia('documents');
 
