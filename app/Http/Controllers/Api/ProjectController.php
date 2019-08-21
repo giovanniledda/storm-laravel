@@ -83,12 +83,11 @@ class ProjectController extends Controller {
             ]];
             $resp = Response($ret, 200);
         } else {
-           $contents_errors = Utils::renderDocumentErrors($validator->errors()->all());
+           $contents_errors = \App\Utils\Utils::renderDocumentErrors($validator->errors()->all());
            $resp = Response(['errors' =>$contents_errors], 422);
         }
         $resp->header('Content-Type', 'application/vnd.api+json');
 
         return $resp;
-    }
-
+    } 
 }
