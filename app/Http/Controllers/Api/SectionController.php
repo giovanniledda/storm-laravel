@@ -11,6 +11,7 @@ use App\Section;
 use Validator;
 use Illuminate\Validation\Rule;
 use App\Document;
+use App\Utils\Utils;
 
 class SectionController extends Controller {
     /**

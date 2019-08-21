@@ -80,7 +80,7 @@ class AuthController extends Controller
             return response()->json(['error' => $validator->errors()], 401);
         }
 
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'disable_login'=>false])) {
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'disable_login'=>1])) {
             $user = Auth::user();
             $token = $user->createAndGetToken();
             $data = [
