@@ -17,6 +17,6 @@ class LoggingController extends Controller
      * @return type
      */
     public function index(Request $request) {
-      return [];
+      return ['foo'];
     }
 }

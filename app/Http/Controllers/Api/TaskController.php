@@ -12,7 +12,7 @@ use App\Document;
 use Illuminate\Validation\Rule;
  use Validator; 
 use Illuminate\Http\UploadedFile;
-
+use App\Utils\Utils;
 
 class TaskController extends Controller
 {
@@ -50,7 +50,7 @@ class TaskController extends Controller
         $task = json_decode($related, true); 
         
         $rules = [
-            'type'=>['required',Rule::in([
+            'type'=>['required', Rule::in([
                 Document::GENERIC_DOCUMENT_TYPE,
                 Document::DETAILED_IMAGE_TYPE,
                 Document::GENERIC_IMAGE_TYPE,
@@ -79,7 +79,10 @@ class TaskController extends Controller
             $resp = Response($ret , 200);
             
         } else { 
-             $resp = Response($validator->errors()->all() , 422);
+             
+            $contents_errors = Utils::renderDocumentErrors($validator->errors()->all());
+            $resp = Response(['errors' =>$contents_errors], 422);
+            
         }
         
             $resp->header('Content-Type', 'application/vnd.api+json');

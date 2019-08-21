@@ -11,6 +11,7 @@ use App\Project;
 use Validator;
 use Illuminate\Validation\Rule;
 use App\Document;
+use App\Utils\Utils;
 
 class ProjectController extends Controller {
 
@@ -82,11 +83,11 @@ class ProjectController extends Controller {
             ]];
             $resp = Response($ret, 200);
         } else {
-            $resp = Response($validator->errors()->all(), 422);
+           $contents_errors = \App\Utils\Utils::renderDocumentErrors($validator->errors()->all());
+           $resp = Response(['errors' =>$contents_errors], 422);
         }
         $resp->header('Content-Type', 'application/vnd.api+json');
 
         return $resp;
-    }
-
+    } 
 }

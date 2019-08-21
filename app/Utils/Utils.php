@@ -157,5 +157,16 @@ class Utils
         return $results;
     }
     
-    
+    public static function renderDocumentErrors($errors) {
+        $e = [];
+        foreach ($errors as $error) {
+            array_push($e, [
+                'status' => 422,
+                'title' => "Unprocessable Entity",
+                'detail'=>$error,
+                'source'=>['source'=>['pointer'=> '/data']]
+            ]);
+        }
+        return $e;
+    }
 }
