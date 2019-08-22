@@ -22,7 +22,14 @@ class NotifyTaskUpdates implements ShouldQueue
      *
      * @var int
      */
-    public $tries = 5;
+    public $tries = 1;
+
+    /**
+     * The number of seconds to wait before retrying the job.
+     *
+     * @var int
+     */
+    public $retryAfter = 1;
 
     /**
      * The number of seconds the job can run before timing out.
@@ -56,12 +63,18 @@ class NotifyTaskUpdates implements ShouldQueue
 //        $users = StormUtils::getAllBoatManagers();
         $users = $this->task->getUsersToNotify();
         if (!empty($users)) {
-            Notification::send($users, new TaskNotifications($this->task_notification));
+            Notification::send($users, $this->task_notification);
         }
+    }
 
-//        $users = $this->task->getUsersToNotify();
-//        if (!empty($users)) {
-//            Notification::send($users, new TaskCreated($this->task));
-//        }
+    /**
+     * The job failed to process.
+     *
+     * @param  \Exception  $exception
+     * @return void
+     */
+    public function failed(\Exception $exception)
+    {
+        // Send user notification of failure, etc...
     }
 }
