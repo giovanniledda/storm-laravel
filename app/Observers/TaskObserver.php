@@ -128,7 +128,6 @@ class TaskObserver
                 $task->update(['added_by_storm'=>1, 'author_id'=>$user->id]);
             }
         }
-
 //        Log::info('foo');
     }
 

@@ -3,9 +3,6 @@
 namespace App\Jobs;
 
 use App\Notifications\TaskNotifications;
-use App\Notifications\TaskCreated;
-use App\Notifications\TaskUpdated;
-use App\Task;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -51,7 +48,7 @@ class NotifyTaskUpdates implements ShouldQueue
     public function __construct(TaskNotifications $task_notification)
     {
         $this->task = $task_notification->task;
-        $this->task_notification = $task_notification;
+        $this->task_notification = $task_notification;  // Uso la classe base TaskNotifications, ma alla fine passerò un TaskCreated o un TaskUpdated
     }
 
     /**

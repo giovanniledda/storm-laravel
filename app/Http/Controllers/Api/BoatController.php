@@ -46,7 +46,7 @@ class BoatController extends Controller {
             ]);
 
             $boat->addDocumentWithType($doc, $type); 
-            $ret = \App\Utils\Utils::renderDocumentResponce('boats', $doc);
+            $ret = \App\Utils\Utils::renderDocumentResponse('boats', $doc);
             
             $resp = Response($ret, 200);
         } else {

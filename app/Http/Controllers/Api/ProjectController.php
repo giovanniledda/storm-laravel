@@ -77,7 +77,7 @@ class ProjectController extends Controller {
 
             // $doc->save();
             $project->addDocumentWithType($doc, $type);
-            $ret = \App\Utils\Utils::renderDocumentResponce('projects', $doc); 
+            $ret = \App\Utils\Utils::renderDocumentResponse('projects', $doc); 
             $resp = Response($ret, 200);
         } else {
            $contents_errors = \App\Utils\Utils::renderDocumentErrors($validator->errors()->all());

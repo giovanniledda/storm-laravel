@@ -72,7 +72,7 @@ class TaskController extends Controller
             ]); 
             // $doc->save();
             $task->addDocumentWithType($doc, $type); 
-            $ret = \App\Utils\Utils::renderDocumentResponce('tasks', $doc); 
+            $ret = \App\Utils\Utils::renderDocumentResponse('tasks', $doc); 
            
             $resp = Response($ret , 200);
             
