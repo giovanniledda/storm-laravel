@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Jobs\NotifyTaskUpdates;
 use App\Notifications\TaskCreated;
 use App\Notifications\TaskUpdated;
 use App\Task;
@@ -113,11 +114,11 @@ class TaskObserver
     {
         $task->setStatus(TASKS_STATUS_DRAFT);
 
-//        $users = StormUtils::getAllBoatManagers();
         $users = $task->getUsersToNotify();
         if (!empty($users)) {
             Notification::send($users, new TaskCreated($task));
         }
+//        NotifyTaskUpdates::dispatch(new TaskCreated($task));
 
         /** setto la variabile added_by_storm **/
         $user = \Auth::user(); 
@@ -131,7 +132,7 @@ class TaskObserver
                 $task->update(['added_by_storm'=>1, 'author_id'=>$user->id]);
             } 
         } 
-        Log::info('foo');
+//        Log::info('foo');
     }
 
     /**
@@ -147,10 +148,12 @@ class TaskObserver
         if ($task->task_status) {
             $task->setStatus($task->task_status);
         }
+
         $users = $task->getUsersToNotify();
         if (!empty($users)) {
             Notification::send($users, new TaskUpdated($task));
         }
+//        NotifyTaskUpdates::dispatch(new TaskUpdated($task));
     }
 
     /**

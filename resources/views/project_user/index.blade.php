@@ -23,7 +23,8 @@
                 <table class="table table-bordered table-striped">
                     <thead>
                     <tr>
-                        <th>Project</th>
+                        <th>Project ID</th>
+                        <th>Project name</th>
                         <th>Profession</th>
                         <th>Operation</th>
                     </tr>
@@ -32,7 +33,7 @@
                     <tbody>
                     @foreach ($project_users as $project_user)
                         <tr>
-
+                            <td>{{ $project_user->project->id }}</td>
                             <td>{{ $project_user->project->name }}</td>
                             <td>{{ $project_user->profession->name }}</td>
                             <td>
