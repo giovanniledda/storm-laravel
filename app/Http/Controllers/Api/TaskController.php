@@ -72,10 +72,8 @@ class TaskController extends Controller
             ]); 
             // $doc->save();
             $task->addDocumentWithType($doc, $type); 
-            $ret = [
-                    'data' => [
-                    'id' => $doc->id,
-                    ]]; 
+            $ret = \App\Utils\Utils::renderDocumentResponce('tasks', $doc); 
+           
             $resp = Response($ret , 200);
             
         } else { 

@@ -63,9 +63,7 @@ class SectionController extends Controller {
                 'file' => $file,
             ]); 
             $section->addDocumentWithType($doc, $type); 
-            $ret = ['data' => [
-                    'id' => $doc->id,
-            ]];
+            $ret = \App\Utils\Utils::renderDocumentResponce('sections', $doc); 
             $resp = Response($ret, 200);
         } else {
             $resp = Response($validator->errors()->all() , 422);
