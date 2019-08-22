@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Jobs\NotifyTaskUpdates;
 use App\Notifications\TaskCreated;
 use App\Notifications\TaskUpdated;
 use App\Task;
@@ -113,15 +114,12 @@ class TaskObserver
     {
         $task->setStatus(TASKS_STATUS_DRAFT);
 
-//        $users = StormUtils::getAllBoatManagers();
-        $users = $task->getUsersToNotify();
-        if (!empty($users)) {
-            Notification::send($users, new TaskCreated($task));
-        }
+        // mette in coda il job
+        NotifyTaskUpdates::dispatch(new TaskCreated($task));
 
         /** setto la variabile added_by_storm **/
-        $user = \Auth::user(); 
-        
+        $user = \Auth::user();
+
         if (is_object($user)) {
             // se sei in boat_user
             if ($user->can(PERMISSION_BOAT_MANAGER)) {
@@ -129,9 +127,9 @@ class TaskObserver
             }
             if ($user->can(PERMISSION_ADMIN) || $user->can(PERMISSION_WORKER) || $user->can(PERMISSION_BACKEND_MANAGER)) {
                 $task->update(['added_by_storm'=>1, 'author_id'=>$user->id]);
-            } 
-        } 
-        Log::info('foo');
+            }
+        }
+//        Log::info('foo');
     }
 
     /**
@@ -147,10 +145,9 @@ class TaskObserver
         if ($task->task_status) {
             $task->setStatus($task->task_status);
         }
-        $users = $task->getUsersToNotify();
-        if (!empty($users)) {
-            Notification::send($users, new TaskUpdated($task));
-        }
+
+        // mette in coda il job
+        NotifyTaskUpdates::dispatch(new TaskUpdated($task));
     }
 
     /**

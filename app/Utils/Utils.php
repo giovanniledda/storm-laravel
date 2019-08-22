@@ -148,7 +148,8 @@ class Utils
 
         $results = [];
         foreach ($projs->all() as $p) {
-            $results[$p->id] = __(':pname, Boat :bname [site: :sname]', [
+            $results[$p->id] = __(':pname #:id), Boat :bname [site: :sname]', [
+                'id' => $p->id,
                 'bname' => $p->bname,
                 'sname' => $p->sname,
                 'pname' => $p->pname]
