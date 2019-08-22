@@ -115,7 +115,7 @@ class TaskObserver
         $task->setStatus(TASKS_STATUS_DRAFT);
 
         // mette in coda il job
-//        NotifyTaskUpdates::dispatch(new TaskCreated($task))->onQueue(QUEUE_TASK_CREATED);
+//        NotifyTaskUpdates::dispatch(new TaskCreated($task))->onConnection('redis')->onQueue(QUEUE_TASK_CREATED);   // default queue
         NotifyTaskUpdates::dispatch(new TaskCreated($task));   // default queue
 
         /** setto la variabile added_by_storm **/
@@ -148,7 +148,7 @@ class TaskObserver
         }
 
         // mette in coda il job
-//        NotifyTaskUpdates::dispatch(new TaskUpdated($task))->onQueue(QUEUE_TASK_UPDATED);
+//        NotifyTaskUpdates::dispatch(new TaskUpdated($task))->onConnection('redis')->onQueue(QUEUE_TASK_UPDATED);  // default queue
         NotifyTaskUpdates::dispatch(new TaskUpdated($task));  // default queue
     }
 
