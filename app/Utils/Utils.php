@@ -179,7 +179,7 @@ class Utils
      * @param type $resource
      * @param type $doc
      */
-    public static function renderDocumentResponce($resource, $doc) {
+    public static function renderDocumentResponse($resource, $doc) {
           $ret = ['data' => [
                     'type' => $resource,
                     'id' => $doc->id,
