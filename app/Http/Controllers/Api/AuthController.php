@@ -38,6 +38,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    // TODO: per abilitare, decommentare la rotta in routes/api.php
     public function signup(Request $request)
     {
         $validator = Validator::make($request->all(), $this->signup_rules);
@@ -73,6 +74,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    // TODO: per abilitare, decommentare la rotta in routes/api.php
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), $this->login_rules);
