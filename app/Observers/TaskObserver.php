@@ -10,6 +10,7 @@ use App\History;
 use App\Project;
 use function is_object;
 use Notification;
+use const QUEUE_TASK_UPDATED;
 use StormUtils;
 use Net7\Logging\models\Logs as Log;
 
@@ -114,7 +115,8 @@ class TaskObserver
         $task->setStatus(TASKS_STATUS_DRAFT);
 
         // mette in coda il job
-        NotifyTaskUpdates::dispatch(new TaskCreated($task));
+//        NotifyTaskUpdates::dispatch(new TaskCreated($task))->onQueue(QUEUE_TASK_CREATED);
+        NotifyTaskUpdates::dispatch(new TaskCreated($task));   // default queue
 
         /** setto la variabile added_by_storm **/
         $user = \Auth::user();
@@ -146,7 +148,8 @@ class TaskObserver
         }
 
         // mette in coda il job
-        NotifyTaskUpdates::dispatch(new TaskUpdated($task));
+//        NotifyTaskUpdates::dispatch(new TaskUpdated($task))->onQueue(QUEUE_TASK_UPDATED);
+        NotifyTaskUpdates::dispatch(new TaskUpdated($task));  // default queue
     }
 
     /**

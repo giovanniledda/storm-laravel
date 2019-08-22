@@ -36,6 +36,13 @@ class NotifyTaskUpdates implements ShouldQueue
      */
     public $timeout = 120;
 
+    /**
+     * Delete the job if its models no longer exist.
+     *
+     * @var bool
+     */
+    public $deleteWhenMissingModels = true;
+
     protected $task;
     protected $task_notification;
 
@@ -74,6 +81,6 @@ class NotifyTaskUpdates implements ShouldQueue
     public function failed(\Exception $exception)
     {
         // Send user notification of failure, etc...
-        Log::error($exception->getMessage());
+        Log::error(__(QUEUE_JOB_TASK_UPDATES_FAILED, ['exc_msg' => $exception->getMessage()]));
     }
 }
