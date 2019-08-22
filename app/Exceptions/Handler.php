@@ -5,6 +5,8 @@ namespace App\Exceptions;
 use CloudCreativity\LaravelJsonApi\Exceptions\HandlesErrors;
 use Exception;
 use function fann_get_sarprop_weight_decay_shift;
+use const HTTP_412_DEL_UPD_ERROR_MSG;
+use const HTTP_412_EXCEPTION_ERROR_MSG;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Support\Str;
@@ -47,8 +49,14 @@ class Handler extends ExceptionHandler
     {
         if ($exception instanceof QueryException) {
             if (Str::contains($exception->getMessage(), "Integrity constraint violation")) {
-                abort(412, __(HTTP_412_DONT_DELETE_ERROR_MSG));
+                if (Str::contains($exception->getMessage(), "1451")) {
+                    abort(412, __(HTTP_412_DEL_UPD_ERROR_MSG));
+                }
+                if (Str::contains($exception->getMessage(), "1452")) {
+                    abort(412, __(HTTP_412_ADD_UPD_ERROR_MSG));
+                }
             }
+            abort(412, __(HTTP_412_EXCEPTION_ERROR_MSG, ['exc_msg' => $exception->getMessage()]));
         }
 
         parent::report($exception);
