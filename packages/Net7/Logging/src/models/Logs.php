@@ -18,33 +18,32 @@ class Logs extends Model
 
     /**
      * generic insert of log
-     * @param type $message
+     * @param string $message
      * @param type $level
      * @param type $context
      */
-    
-    private static function _insert($message,  $level, $context = null) {
+
+    private static function _insert($message, $level, $context = null)
+    {
         $user = \Auth::user();
-        
-        if (isset($user->id)) { // todo serve a non fare esplodere i test
-            if (is_array($context) || is_object($context)) {
-                $context =   json_encode($context);
-            }
-            self::create(
-                [
-                    'env'  => \App::environment(),
-                    'message'=> $message,
-                    'level'=> $level,
-                    'context'=> $context,
-                    'user_id' =>$user->id
-                ]
-            );
+
+        if (is_array($context) || is_object($context)) {
+            $context = json_encode($context);
         }
+        self::create(
+            [
+                'env' => \App::environment(),
+                'message' => $message,
+                'level' => $level,
+                'context' => $context,
+                'user_id' => isset($user->id) ? $user->id : null
+            ]
+        );
     }
-    
+
     /**
      * Info logging
-     * @param type $message
+     * @param string $message
      * @param type $context
      */
     public static function info($message, $context = null) {
@@ -53,7 +52,7 @@ class Logs extends Model
     
     /**
      * notice logging
-     * @param type $message
+     * @param string $message
      * @param type $context
      */
     public static function notice($message, $context = null) { 
@@ -62,7 +61,7 @@ class Logs extends Model
     
     /**
      * warning logging
-     * @param type $message
+     * @param string $message
      * @param type $context
      */
     public static function warning($message, $context = null) {
@@ -71,7 +70,7 @@ class Logs extends Model
     
     /**
      * error logging
-     * @param type $message
+     * @param string $message
      * @param type $context
      */
     public static function error($message, $context = null) {
@@ -79,7 +78,7 @@ class Logs extends Model
     }
     /**
      * critical logging
-     * @param type $message
+     * @param string $message
      * @param type $context
      */
     public static function critical($message, $context = null) {
@@ -87,7 +86,7 @@ class Logs extends Model
     }
     /**
      * alert logging
-     * @param type $message
+     * @param string $message
      * @param type $context
      */
     public static function alert($message, $context = null) {
@@ -96,7 +95,7 @@ class Logs extends Model
     
     /**
      * emergency logging
-     * @param type $message
+     * @param string $message
      * @param type $context
      */
     public static function emergency($message, $context = null) {
