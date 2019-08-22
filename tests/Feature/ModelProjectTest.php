@@ -44,7 +44,10 @@ class ModelProjectTest extends TestCase
         $boat_name = $this->faker->sentence;
         $boat = new Boat([
                 'name' => $boat_name,
-                'registration_number' => $this->faker->sentence($nbWords = 1)
+                'registration_number' => $this->faker->sentence($nbWords = 1),
+                'length'  => $this->faker->randomFloat(2, 12, 110),
+                'draft'  => $this->faker->randomFloat(2, 2, 15),
+                "boat_type"=>"M/Y"
             ]
         );
         $boat->save();

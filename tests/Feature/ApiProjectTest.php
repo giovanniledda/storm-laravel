@@ -9,7 +9,7 @@ use App\Project;
 use App\Boat;
 use App\Role;
 use App\Permission;
-
+use App\Site;
 
 use const ROLE_ADMIN;
 use const PERMISSION_ADMIN;
@@ -26,36 +26,44 @@ class ApiProjectTest extends TestApiCase
 
         $this->disableExceptionHandling();
         $boat = factory(Boat::class)->create();
-
+        $site_name = $this->faker->sentence;
+        $site = new Site([
+                'name' => $site_name,
+                'lat' => $this->faker->randomFloat(2, -60, 60),
+                'lng' => $this->faker->randomFloat(2, -60, 60)
+            ]
+        );
+        $site->save();
         $fake_name = $this->faker->sentence;
         $data = [
             'data' => [
                 'attributes' => [
                     'name' => $fake_name,
                     'boat_id' => $boat->id,
+                    "project_type"=>  "newbuild", 
+                     "site_id"=> $site->id
                 ],
                 'type' => 'projects',
             ]
         ];
-
-        $headers = [
-            'Content-type' => 'application/vnd.api+json',
-            'Accept' => 'application/vnd.api+json',
-        ];
+ 
    // creo ruoli e permessi BOAT (in futuro potremmo dover limitare le notifiche in base a questi)
        
 
         /*** connessione con l'utente Admin */
         $admin1 = $this->_addUser(ROLE_ADMIN);
         $token_admin = $this->_grantTokenPassword($admin1);
-        $this->assertIsString($token_admin);
-        Passport::actingAs($admin1);
-
-        $response = $this->json('POST', route('api:v1:projects.create'), $data, $this->headers)
-            ->assertJsonStructure(['data' => ['id']]);
+      //  $this->assertStringContainsString($token_admin); 
+        Passport::actingAs($admin1); 
+        $response = $this->json('POST', route('api:v1:projects.create'), $data, [
+            'Authorization' => 'Bearer '.$token_admin, 
+             'Content-type' => 'application/vnd.api+json',
+            'Accept' => 'application/vnd.api+json',
+            ]);
+          //  ->assertJsonStructure(['data' => ['id']]);
 
         $content = json_decode($response->getContent(), true);
-
+        
         $project_id = $content['data']['id'];
         $project = Project::find($project_id);
         $this->assertEquals($project->id, $project_id);
@@ -66,11 +74,9 @@ class ApiProjectTest extends TestApiCase
     function test_get_project_and_his_boat()
     {
         Role::firstOrCreate(['name' => ROLE_ADMIN]);
-         Permission::firstOrCreate(['name' => PERMISSION_ADMIN]); 
-        $boat = factory(Boat::class)->create();
-
-        $project = factory(Project::class)->create();
-
+        Permission::firstOrCreate(['name' => PERMISSION_ADMIN]); 
+        $boat = factory(Boat::class)->create(); 
+        $project = factory(Project::class)->create(); 
         $this->assertDatabaseHas('projects', ['name' => $project->name]);
 
         $project->boat()->associate($boat)->save();

@@ -266,8 +266,8 @@ class AuthTest extends TestCase
 
         $this->assertCount(1, $emails);
         $this->assertEquals([$this->_user_data['email']], array_keys($emails[0]->getTo()));
-        $this->assertContains(config('app.name'), $emails[0]->getSubject());
-        $this->assertContains('password/reset/', $emails[0]->getBody());
+        $this->assertStringContainsString(config('app.name'), $emails[0]->getSubject());
+        $this->assertStringContainsString('password/reset/', $emails[0]->getBody());
 
         // Delete data
         $this->_deleteTestUser();

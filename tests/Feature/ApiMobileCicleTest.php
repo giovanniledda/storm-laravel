@@ -44,8 +44,9 @@ class ApiMobileCicleTest extends TestApiCase
                                         "registration_number"=> "9105889",
                                          "manufacture_year"=>"1996",
                                          "length"=>"115.5",
-                                          "draft"=>"19",
-                                         "beam"=>"9"
+                                         "draft"=>"19",
+                                         "beam"=>"9",
+                                         "boat_type"=>"M/Y"
                             ]
                 ]
          ] ; 
