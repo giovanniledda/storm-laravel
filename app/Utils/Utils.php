@@ -157,7 +157,11 @@ class Utils
         }
         return $results;
     }
-    
+    /**
+     * renderizza una risposta standard api dati gli errori di validazione. 
+     * @param type $errors
+     * @return array
+     */
     public static function renderDocumentErrors($errors) {
         $e = [];
         foreach ($errors as $error) {
@@ -170,4 +174,24 @@ class Utils
         }
         return $e;
     }
+    
+    /**
+     * ritorna una risposta jsonApi standard per la creazione dei documenti
+     * @param type $resource
+     * @param type $doc
+     */
+    public static function renderDocumentResponce($resource, $doc) {
+          $ret = ['data' => [
+                    'type' => $resource,
+                    'id' => $doc->id,
+                    'attributes' => [
+                        'name' => $doc->title, 
+                        'created-at' => $doc->created_at,
+                        'updated-at' => $doc->updated_at
+                    ]
+            ]];
+          return $ret;
+    }
+    
+    
 }

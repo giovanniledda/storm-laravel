@@ -45,11 +45,9 @@ class BoatController extends Controller {
                 'file' => $file,
             ]);
 
-            $boat->addDocumentWithType($doc, $type);
-
-            $ret = ['data' => [
-                    'id' => $doc->id,
-            ]];
+            $boat->addDocumentWithType($doc, $type); 
+            $ret = \App\Utils\Utils::renderDocumentResponce('boats', $doc);
+            
             $resp = Response($ret, 200);
         } else {
             
