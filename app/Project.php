@@ -161,7 +161,6 @@ class Project extends Model {
      */
     private function _closeProject() {
         $this->update(['project_status'=>PROJECT_STATUS_CLOSED]);
-        $this->setStatus(PROJECT_STATUS_CLOSED);
     }
 
     /**
