@@ -36,7 +36,7 @@ class DatabaseSeeder extends Seeder
         $this->command->info("Site {$site->name} created");
 
         // crea N boat...
-        $this->command->warn(" ------ BOATS --------");
+        $this->command->warn(" ------ BOATS & SECTIONS --------");
 
         $boats = [];
         for ($i = 0; $i < 5; $i++) {
@@ -45,7 +45,6 @@ class DatabaseSeeder extends Seeder
             $this->command->info("Boat {$boats[$i]->name} created");
 
             // ... e 5 sezioni per ciascuna
-            $this->command->warn(" ------ BOAT SECTIONS --------");
 
             $sections[$boats[$i]->id] = [];
             for ($s = 0; $s < 5; $s++) {
@@ -114,7 +113,7 @@ class DatabaseSeeder extends Seeder
             $this->command->warn(" ------ PROJECTS FOR BOAT {$boat->name} --------");
 
             $open = $closed = 0;
-            for ($s = 0; $s < 3; $s++) {
+            for ($p = 0; $p < 6; $p++) {
                 $project = $this->utils->createProject($site, $boat);
 
                 $this->command->info("Project {$project->name} for Boat {$boat->name}, created");
@@ -124,7 +123,7 @@ class DatabaseSeeder extends Seeder
                 $this->command->warn(" ------ TASKS FOR PROJECT {$project->name} --------");
 
                 $tasks = [];
-                for ($s = 0; $s < 4; $s++) {
+                for ($t = 0; $t < 9; $t++) {
                     $section = $this->faker->randomElement($boat->sections);
                     $task = $this->utils->createTask($project, $section, null, null, $this->utils->createTaskInterventType());
 
@@ -160,18 +159,15 @@ class DatabaseSeeder extends Seeder
                 // Uno solo deve essere open, due closed, gli altri operational
                 if ($open == 0) {
                     $open++;
-                    $project->project_status = PROJECT_STATUS_IN_SITE;
-                    $project->save();
+                    $project->update(['project_status' => PROJECT_STATUS_IN_SITE]);
                     continue;
                 }
                 if ($closed < 2) {
                     $closed++;
-                    $project->project_status = PROJECT_STATUS_CLOSED;
-                    $project->save();
+                    $project->update(['project_status' => PROJECT_STATUS_CLOSED]);
                     continue;
                 }
-                $project->project_status = PROJECT_STATUS_OPERATIONAL;
-                $project->save();
+                $project->update(['project_status' => PROJECT_STATUS_OPERATIONAL]);
             }
         }
     }
