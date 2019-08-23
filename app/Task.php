@@ -10,7 +10,7 @@ use StormUtils;
 use Venturecraft\Revisionable\RevisionableTrait;
 use function GuzzleHttp\json_decode;
 use App\Document;
-use Faker\Factory as Faker;
+use Faker\Generator as Faker;
 
 
 class Task extends Model

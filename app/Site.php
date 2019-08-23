@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Lecturize\Addresses\Traits\HasAddresses;
 use StormUtils;
-use Faker\Factory as Faker;
+use Faker\Generator as Faker;
 
 class Site extends Model
 {
