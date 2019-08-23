@@ -1,6 +1,7 @@
 <?php
 
 use App\Profession;
+use App\Section;
 use App\Task;
 use Illuminate\Database\Seeder;
 use App\Permission;
@@ -10,10 +11,12 @@ use App\Boat;
 use App\Site;
 use App\Project;
 use Faker\Factory as Faker;
+use Seeds\SeederUtils as Utils;
 
 class DatabaseSeeder extends Seeder
 {
     protected $faker;
+    protected $utils;
 
     /**
      * Seed the application's database.
@@ -23,171 +26,96 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->faker = Faker::create();
+        $this->utils = new Utils($this->faker);
+
         // creo un sito
+        $site = $this->utils->createSite();
+        $this->command->info("Site {$site->name} created");
 
-        $site_name = $this->faker->sentence;
-        $site = new Site([
-            'name' => $site_name,
-            'location' => $this->faker->address,
-            'lat' => $this->faker->randomDigitNotNull,
-            'lng' => $this->faker->randomDigitNotNull,
-        ]);
-        $site->save();
-
-        /** cerca tutti gli utenti inseriti nel precedente seeder*/
+        // crea 10 boat...
         $boats = [];
-        /* creo 10 barche e le assegno agli utenti */
         for ($i = 0; $i < 10; $i++) {
-            $boats[$i] = $this->createBoat($site);
+            $boats[$i] = $this->utils->createBoat($site);
             $this->command->info("Boat {$boats[$i]->name} created");
+
+            // ... e 5 sezioni per ciascuna
+            $sections[$boats[$i]->id] = [];
+            for ($s = 0; $s < 5; $s++) {
+                $sections[$boats[$i]->id] = $this->utils->createSection($boats[$i]);
+                $this->command->info("Section {$sections[$boats[$i]->id]->name} for Boat {$boats[$i]->name} created");
+            }
         }
 
-        /**** creo i progetti ********/
-
-
-        $users = User::all();
-
-        foreach ($users as $user) {
-            // WORKER
-            if ($user->hasRole(ROLE_WORKER)) {
-
-                $this->boatAssociate($user, $boats[0], $role = 'commander');
-                $this->boatAssociate($user, $boats[1], $role = 'commander');
-                $this->boatAssociate($user, $boats[2], $role = 'commander');
-                $this->boatAssociate($user, $boats[3], $role = 'commander');
-                $this->boatAssociate($user, $boats[4], $role = 'commander');
-            }
-            // BACKEND_MANAGER
-            if ($user->hasRole(ROLE_BACKEND_MANAGER)) {
-                $this->boatAssociate($user, $boats[0], $role = 'commander');
-            }
-            // BOAT_MANAGER
-            if ($user->hasRole(ROLE_BOAT_MANAGER)) {
-                $this->boatAssociate($user, $boats[4], $role = 'commander');
-                $this->boatAssociate($user, $boats[5], $role = 'commander');
-            }
-            // ADMIN
-            if ($user->hasRole(ROLE_ADMIN)) {
-                // assegno gli altri permessi
-                $user->givePermissionTo(PERMISSION_BACKEND_MANAGER);
-                $user->givePermissionTo(PERMISSION_BOAT_MANAGER);
-                $user->givePermissionTo(PERMISSION_WORKER);
-                /* all'utente ADMIN non assegno barche, le dovrebbe vedere tutte.*/
-            }
-
-
+        // creo N professioni a caso
+        $professions = [];
+        for ($s = 0; $s < $this->faker->randomDigitNotNull(); $s++) {
+            $professions[$s] = $this->utils->createProfession();
+            $this->command->info("Profession {$professions[$s] ->name} created");
         }
-//        $project = $this->createProject($site, $boats[0]);
-//        $this->createTasksAndAssociateWithProject($project);
 
-        $projects = $this->createManyProjectsAndAssociateWithSiteAndBoats($site, $boats);
-        foreach ($projects as $project) {
-            $this->createTasksAndAssociateWithProject($project);
-        }
-    }
+        // Creo ed associo degli utenti alle barche
+        // Per ogni barca N workers, N boat manager, N backend manager
+        foreach ($boats as $boat) {
 
+            // Workers
+            $workers = [];
+            for ($s = 0; $s < 15; $s++) {
+                $worker = $this->utils->createUser(ROLE_WORKER);
+                $profession = $this->faker->randomElement($professions);
+                $this->utils->boatAssociate($worker, $boat, $profession);
 
-    private function createTasksAndAssociateWithProject($project = null)
-    {
-        do {
-            try {
-                $tasks = factory(Task::class, $this->faker->randomDigitNotNull)->create();
-        //        $project->tasks()->saveMany($tasks);  // Vedi mail di Ledda del 24 luglio: se uso questa poi $t->project è null :-(
-                $created = true;
-
-            } catch (Exception $e) {
-                $created = false;
+                $this->command->info("Worker {$worker->name} for Boat {$boat->name}, with Profession {$profession->name} created");
+                $workers[] = $worker;
             }
-        } while (!$created);
 
-        if (isset($tasks)) {
-            foreach ($tasks as $t) {
-                if ($project) {
-                    $t->project()->associate($project)->save();
+            // Boat Managers
+            $boat_managers = [];
+            for ($s = 0; $s < 8; $s++) {
+                $bo_man = $this->utils->createUser(ROLE_BOAT_MANAGER);
+                $profession = $this->faker->randomElement($professions);
+                $this->utils->boatAssociate($bo_man, $boat, $profession);
+
+                $this->command->info("Boat Manager {$bo_man->name} for Boat {$boat->name}, with Profession {$profession->name} created");
+                $boat_managers[] = $bo_man;
+            }
+
+            // Backend Managers
+            $backend_managers = [];
+            for ($s = 0; $s < 4; $s++) {
+                $be_man = $this->utils->createUser(ROLE_BACKEND_MANAGER);
+                $profession = $this->faker->randomElement($professions);
+                $this->utils->boatAssociate($be_man, $boat, $profession);
+
+                $this->command->info("Backend Manager {$be_man->name} for Boat {$boat->name}, with Profession {$profession->name} created");
+                $backend_managers[] = $be_man;
+            }
+
+
+            // per ogni boat creo N progetti...
+            $projects = [];
+            for ($s = 0; $s < 8; $s++) {
+                $project = $this->utils->createProject($site, $boat);
+                $this->command->info("Project {$project->name} for Boat {$boat->name}, created");
+                $projects[] = $project;
+
+                // ...con N task associati
+                $tasks = [];
+                for ($s = 0; $s < 4; $s++) {
+                    $section = $this->faker->randomElement($boat->sections);
+                    $task = $this->utils->createTask($project, $section, null, null, $this->utils->createTaskInterventType());
+                    $this->command->info("Task {$task->name} for Project {$project->name}, created");
                 }
+
+                // al progetto assegno a caso alcuni utenti della Boat
+                // TODO...
+
+
+                // al progetto assegno tutti gli utenti della Boat
+                // TODO...
             }
-            return $tasks;
+
         }
 
-        return [];
     }
-
-
-    private function createProject($site, $boat)
-    {
-        $project_name = $this->faker->sentence;
-        $project = new Project([
-                'name' => $project_name,
-                'site_id' => $site->id
-            ]
-        );
-        $project->save();
-        $project->boat()->associate($boat)->save();
-        //$project->site()->associate($site)->save();
-
-        return $project;
-    }
-
-
-    private function createManyProjectsAndAssociateWithSiteAndBoats($site, $boats)
-    {
-        $all_projects = [];
-        if (!empty($boats)) {
-            foreach ($boats as $boat) {
-                do {
-                    try {
-                        $projects = factory(Project::class, $this->faker->randomDigitNotNull)->create();
-                        $projs_created = true;
-
-                    } catch (Exception $e) {
-                        $projs_created = false;
-                    }
-                } while (!$projs_created);
-
-                if (isset($projects)) {
-                    foreach ($projects as $project) {
-                        $project->boat()->associate($boat)->save();
-                        $project->site()->associate($site)->save();
-                        $all_projects[] = $project;
-                    }
-                }
-            }
-        }
-
-        return $all_projects;
-    }
-
-    private function boatAssociate(User $user, Boat $boat, $role = 'commander')
-    {
-//        $profession = factory(Profession::class)->create();
-        $profession = Profession::create([
-            'name' => $this->faker->sentence(),
-        ]);
-
-        $boat->associatedUsers()
-            ->create(['profession_id' => $profession->id,'boat_id' => $boat->id, 'user_id' => $user->id])
-            ->save();
-    }
-
-    private function createBoat($site): Boat
-    {
-
-//        return factory(Boat::class)->create();
-
-        $boat_name = $this->faker->name;
-        $boat = new Boat([
-                'name' => $boat_name,
-                'registration_number' => $this->faker->randomDigitNotNull,
-                'site_id' => $site->id,
-                'length' => $this->faker->randomFloat(4, 1, 200),
-                'draft' => $this->faker->randomFloat(4, 1, 40),
-                'beam' => $this->faker->randomFloat(4, 1, 3),
-            ]
-        );
-        $boat->save(); 
-         
-        return $boat;
-    }
-
 
 }

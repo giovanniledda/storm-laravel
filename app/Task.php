@@ -10,6 +10,8 @@ use StormUtils;
 use Venturecraft\Revisionable\RevisionableTrait;
 use function GuzzleHttp\json_decode;
 use App\Document;
+use Faker\Factory as Faker;
+
 
 class Task extends Model
 {  
@@ -104,8 +106,6 @@ class Task extends Model
         return $this->documents()->where('type', \App\Document::GENERIC_DOCUMENT_TYPE);
     }
 
-    
-
 
     public function history()
     {
@@ -142,4 +142,46 @@ class Task extends Model
         return $this->getProjectUsers();
     }
 
+
+
+    /**
+     * Creates a Task using some fake data and some others that have sense
+     *
+     * @param Faker $faker
+     * @param Project $proj
+     * @param Section $sect
+     * @param Subsection $ssect
+     * @param User $author
+     * @param TaskInterventType $type
+     *
+     * @return Task $t
+     */
+    public static function createSemiFake(Faker $faker,
+                                          Project $proj = null,
+                                          Section $sect = null,
+                                          Subsection $ssect = null,
+                                          User $author = null,
+                                          TaskInterventType $type = null)
+    {
+
+        $t = new Task([
+                'number' => $faker->randomDigitNotNull(),
+                'title' => $faker->sentence(),
+                'description' => $faker->text(),
+                'estimated_hours' => $faker->randomFloat(1, $min = 0, $max = 100),
+                'worked_hours' => $faker->randomFloat(1, $min = 0, $max = 100),
+                'x_coord' => $faker->randomFloat(2, $min = 0, $max = 100),
+                'y_coord' => $faker->randomFloat(2, $min = 0, $max = 100),
+                'task_status' => $faker->randomElement(TASKS_STATUSES),
+                'project_id' => $proj ? $proj->id : null,
+                'section_id' => $sect ? $sect->id : null,
+                'subsection_id' => $ssect ? $ssect->id : null,
+                'author_id' => $author ? $author->id : null,
+                'intervent_type_id' => $type ? $type->id : null,
+            ]
+        );
+        $t->save();
+
+        return $t;
+    }
 }

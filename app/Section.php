@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Faker\Factory as Faker;
 
 class Section extends Model
 {
@@ -58,4 +59,25 @@ class Section extends Model
     }
 
 
+    /**
+     * Creates a Section using some fake data and some others that have sense
+     *
+     * @param Faker $faker
+     * @param Boat $boat
+     *
+     * @return Section $section
+     */
+    public static function createSemiFake(Faker $faker, Boat $boat = null)
+    {
+        $section = new Section([
+                'name' => $faker->numerify('Deck #'),
+                'section_type' => $faker->randomElement([SECTION_TYPE_LEFT_SIDE, SECTION_TYPE_RIGHT_SIDE, SECTION_TYPE_DECK]),
+                'position' => $faker->randomDigitNotNull(),
+                'code' => $faker->lexify('???-???'),
+                'boat_id' => $boat ? $boat->id : null
+            ]
+        );
+        $section->save();
+        return $section;
+    }
 }

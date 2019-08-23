@@ -108,6 +108,7 @@ class RolesAndPermissionsSeeder extends Seeder
      *
      * @param $role
      */
+    // TODO: non la sposto nelle Utils, la copio e basta: questa deve restare qua perché poi il Seeder andrà nel progetto base Net7Nautic
     private function createUser($role_name)
     {
 

@@ -5,11 +5,7 @@ namespace App;
 use App\Observers\ProjectObserver;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\ModelStatus\HasStatuses;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-//use Venturecraft\Revisionable\RevisionableTrait;
-use Log;
+use Faker\Factory as Faker;
 
 class Project extends Model
 {
@@ -99,4 +95,30 @@ class Project extends Model
 
     }
 
+
+    /**
+     * Creates a Project using some fake data and some others that have sense
+     *
+     * @param Faker $faker
+     * @param Site $site
+     * @param Boat $boat
+     *
+     * @return Project $proj
+     */
+    public static function createSemiFake(Faker $faker, Site $site = null, Boat $boat = null)
+    {
+        $proj = new Project([
+                'name' => $faker->sentence(4),
+                'start_date' => $faker->date(),
+                'end_date' => $faker->date(),
+                'project_type' => $faker->randomElement([PROJECT_TYPE_NEWBUILD, PROJECT_TYPE_REFIT]),
+                'acronym' => $faker->word,
+                'project_status' => $faker->randomElement(PROJECT_STATUSES),
+                'site_id' => $site ? $site->id : null,
+                'boat_id' => $boat ? $boat->id : null,
+            ]
+        );
+        $proj->save();
+        return $proj;
+    }
 }

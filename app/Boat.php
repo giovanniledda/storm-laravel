@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Faker\Factory as Faker;
 
 class Boat extends Model
 {
@@ -94,5 +95,31 @@ class Boat extends Model
                 'created_by',
                 'updated_by'
             ]);
+    }
+
+    /**
+     * Creates a Boat using some fake data and some others that have sense
+     *
+     * @param Faker $faker
+     * @param Site $site
+     *
+     * @return Boat $boat
+     */
+    public static function createSemiFake(Faker $faker, Site $site = null)
+    {
+        $boat = new Boat([
+                'name' => $faker->name,
+                'registration_number' => $faker->randomDigitNotNull,
+                'site_id' => $site ? $site->id : null,
+                'length' => $faker->randomFloat(4, 30, 150),
+                'beam' => $faker->randomFloat(4, 1, 10),
+                'draft' => $faker->randomFloat(4, 1, 2),
+                'boat_type' => $faker->randomElement([BOAT_TYPE_MOTOR, BOAT_TYPE_SAIL]),
+                'flag' => $faker->country(),
+                'manufacture_year' => $faker->year(),
+            ]
+        );
+        $boat->save();
+        return $boat;
     }
 }

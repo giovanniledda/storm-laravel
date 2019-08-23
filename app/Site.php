@@ -2,10 +2,10 @@
 
 namespace App;
 
-use App\Observers\SiteObserver;
 use Illuminate\Database\Eloquent\Model;
 use Lecturize\Addresses\Traits\HasAddresses;
 use StormUtils;
+use Faker\Factory as Faker;
 
 class Site extends Model
 {
@@ -63,5 +63,37 @@ class Site extends Model
     public function countAddresses()
     {
         return $this->addresses()->count();
+    }
+
+
+    /**
+     * Creates a Site using some fake data and some others that have sense
+     *
+     * @param Faker $faker
+     * @param int $how_many_addresses
+     *
+     * @return Site $site
+     */
+    public static function createSemiFake(Faker $faker, $how_many_addresses = 0)
+    {
+        $site = new Site([
+            'name' => $faker->company,
+            'location' => $faker->address,
+            'lat' => $faker->latitude,
+            'lng' => $faker->longitude,
+        ]);
+        $site->save();
+
+        if ($how_many_addresses > 0) {
+            for ($i = 0; $i < $how_many_addresses; $i++) {
+                $site->addAddress([
+                    'street'     => $faker->streetAddress,
+                    'city'       => $faker->city,
+                    'post_code'  => $faker->postcode,
+                    'country'    => $faker->countryCode, // ISO-3166-2 or ISO-3166-3 country code
+                ]);
+            }
+        }
+        return $site;
     }
 }

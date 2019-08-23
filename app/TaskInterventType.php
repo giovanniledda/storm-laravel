@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Faker\Factory as Faker;
 
 class TaskInterventType extends Model
 {
@@ -15,4 +16,22 @@ class TaskInterventType extends Model
         return $this->hasMany('App\Task');
     }
 
+
+
+    /**
+     * Creates a Task Intervent Type using some fake data and some others that have sense
+     *
+     * @param Faker $faker
+     *
+     * @return TaskInterventType $tit
+     */
+    public static function createSemiFake(Faker $faker)
+    {
+        $tit = new TaskInterventType([
+                'name' => $faker->bs,  // https://github.com/fzaninotto/Faker#fakerprovideren_uscompany
+            ]
+        );
+        $tit->save();
+        return $tit;
+    }
 }

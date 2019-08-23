@@ -30,7 +30,7 @@ class CreateBoatsTable extends Migration
             // user (N to M)
             // boat_user
 
-            // site
+            // site: TODO: probabilmente andrà eliminata (https://net7.codebasehq.com/projects/storm/tickets/172).
             $table->unsignedBigInteger('site_id')->nullable();
             $table->foreign('site_id')->references('id')->on('sites');
 
