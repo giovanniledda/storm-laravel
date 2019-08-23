@@ -29,11 +29,15 @@ class DatabaseSeeder extends Seeder
         $this->utils = new Utils();
 
         // creo un sito
+        $this->command->warn(" ------ SITES --------");
+
         $site = $this->utils->createSite();
 
         $this->command->info("Site {$site->name} created");
 
         // crea N boat...
+        $this->command->warn(" ------ BOATS --------");
+
         $boats = [];
         for ($i = 0; $i < 5; $i++) {
             $boats[$i] = $this->utils->createBoat($site);
@@ -41,6 +45,8 @@ class DatabaseSeeder extends Seeder
             $this->command->info("Boat {$boats[$i]->name} created");
 
             // ... e 5 sezioni per ciascuna
+            $this->command->warn(" ------ BOAT SECTIONS --------");
+
             $sections[$boats[$i]->id] = [];
             for ($s = 0; $s < 5; $s++) {
                 $sections[$boats[$i]->id] = $this->utils->createSection($boats[$i]);
@@ -50,6 +56,8 @@ class DatabaseSeeder extends Seeder
         }
 
         // creo N professioni a caso
+        $this->command->warn(" ------ PROFESSIONS --------");
+
         $professions = [];
         for ($s = 0; $s < 20; $s++) {
             $professions[$s] = $this->utils->createProfession();
@@ -62,6 +70,8 @@ class DatabaseSeeder extends Seeder
         foreach ($boats as $boat) {
 
             // Workers
+            $this->command->warn(" ------ WORKERS FOR BOAT {$boat->name} --------");
+
             $workers = [];
             for ($s = 0; $s < 15; $s++) {
                 $worker = $this->utils->createUser(ROLE_WORKER);
@@ -73,6 +83,8 @@ class DatabaseSeeder extends Seeder
             }
 
             // Boat Managers
+            $this->command->warn(" ------ BOAT MANAGERS FOR BOAT {$boat->name} --------");
+
             $boat_managers = [];
             for ($s = 0; $s < 8; $s++) {
                 $bo_man = $this->utils->createUser(ROLE_BOAT_MANAGER);
@@ -84,6 +96,8 @@ class DatabaseSeeder extends Seeder
             }
 
             // Backend Managers
+            $this->command->warn(" ------ BACKEND MANAGERS FOR BOAT {$boat->name} --------");
+
             $backend_managers = [];
             for ($s = 0; $s < 4; $s++) {
                 $be_man = $this->utils->createUser(ROLE_BACKEND_MANAGER);
@@ -97,6 +111,8 @@ class DatabaseSeeder extends Seeder
 
             // per ogni boat creo N progetti...
             $projects = [];
+            $this->command->warn(" ------ PROJECTS FOR BOAT {$boat->name} --------");
+
             $open = $closed = 0;
             for ($s = 0; $s < 3; $s++) {
                 $project = $this->utils->createProject($site, $boat);
@@ -105,6 +121,8 @@ class DatabaseSeeder extends Seeder
                 $projects[] = $project;
 
                 // ...con N task associati
+                $this->command->warn(" ------ TASKS FOR PROJECT {$project->name} --------");
+
                 $tasks = [];
                 for ($s = 0; $s < 4; $s++) {
                     $section = $this->faker->randomElement($boat->sections);
@@ -112,6 +130,8 @@ class DatabaseSeeder extends Seeder
 
                     $this->command->info("Task {$task->name} for Project {$project->name}, created");
                 }
+
+                $this->command->warn(" ------ USERS FOR PROJECT {$project->name} --------");
 
                 // al progetto assegno tutti i BE manager
                 foreach ($backend_managers as $backend_manager) {
