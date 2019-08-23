@@ -12,6 +12,7 @@ use Validator;
 use Illuminate\Validation\Rule;
 use App\Document;
 use App\Utils\Utils;
+use Net7\Logging\models\Logs as Log;
 
 class ProjectController extends Controller {
 
@@ -32,6 +33,12 @@ class ProjectController extends Controller {
         return $resp;
     }
 
+    /**
+     * Presenta lo storico dei progetti.
+     * @param Request $request
+     * @param type $related
+     * @return type
+     */
     public function history(Request $request, $related) {
         $project = json_decode($related, true);
         $histories = Project::find($project['id'])->history()->get()->toArray();
@@ -48,7 +55,12 @@ class ProjectController extends Controller {
 
         //  exit();
     }
-
+    /**
+     * Aggiunge un documento al progetto
+     * @param Request $request
+     * @param type $related
+     * @return type
+     */
     public function addDocument(Request $request, $related) {
 
         $project = json_decode($related, true);
@@ -87,4 +99,40 @@ class ProjectController extends Controller {
 
         return $resp;
     } 
+    
+    
+    public function close(Request $request, $related) {
+        $data = json_decode($related, true);
+        // indica se chiudere il progetto mettendo i task o no.
+        $force   =  isset($request->data['attributes']['force']) ? $request->data['attributes']['force'] : 0;
+        $closeResponse = Project::findOrFail($data['id'])->close($force);
+        
+        Log::info("i'm here", $request);
+       
+       
+        if ($closeResponse['success']) {
+            $ret = ['data' => [
+                    'type' => 'projects',
+                    'id' => $data['id'],
+                    'attributes' => [
+                        'status' => PROJECT_STATUS_CLOSED,
+                        'force'  => $force,
+                        'tasks'  => $closeResponse['tasks']
+                    ]
+            ]];
+           return Response($ret, 202);
+        } else {
+            $ret = ['data' => [
+                    'type' => 'projects',
+                    'id' => $data['id'],
+                    'attributes' => [
+                        'status' => $data['project_status'],
+                        'force'  => $force,
+                        'tasks'  => $closeResponse['tasks']
+                    ]
+            ]];
+            return Response($ret, 200);
+        }
+        
+    }
 }
