@@ -3,9 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Faker\Factory as Faker;
+use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use phpDocumentor\Reflection\Types\Boolean;
 
 class Boat extends Model
 {
@@ -104,7 +103,7 @@ class Boat extends Model
      */
     public function getUserByIdBaseQuery($uid)
     {
-        return $this->users()->where('id', '=', $uid);
+        return $this->users()->where('users.id', '=', $uid);
     }
 
     /**
@@ -120,7 +119,7 @@ class Boat extends Model
     /**
      * @param int $uid
      *
-     * @return Boolean
+     * @return boolean
      */
     public function hasUserById($uid)
     {
@@ -139,7 +138,7 @@ class Boat extends Model
     public static function createSemiFake(Faker $faker, Site $site = null)
     {
         $boat = new Boat([
-                'name' => $faker->name,
+                'name' => $faker->suffix.' '.$faker->name,
                 'registration_number' => $faker->randomDigitNotNull,
                 'site_id' => $site ? $site->id : null,
                 'length' => $faker->randomFloat(4, 30, 150),

@@ -6,7 +6,7 @@ use App\Observers\ProjectObserver;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\ModelStatus\HasStatuses;
-use Faker\Factory as Faker;
+use Faker\Generator as Faker;
 
 class Project extends Model {
 
@@ -76,7 +76,7 @@ class Project extends Model {
      */
     public function getUserByIdBaseQuery($uid)
     {
-        return $this->users()->where('id', '=', $uid);
+        return $this->users()->where('users.id', '=', $uid);
     }
 
     /**
@@ -163,42 +163,6 @@ class Project extends Model {
         $this->update(['project_status'=>PROJECT_STATUS_CLOSED]);
         $this->setStatus(PROJECT_STATUS_CLOSED);
     }
-    
-    
-    /**
-     * Chiusura progetto:
-
-      se provo a chiudere un progetto con task in stati differenti da "monitored", "completed" e "denied" la API mi devono impedire di farlo. La webapp puo' chiedere "vuoi chiudere tutti i task ancora aperti?" in questo caso:
-
-      i task in uno degli stati:
-      - draft
-      - sent to storm
-
-      vengono messi a declined e chiusi
-
-      i task in uno degli stati:
-      - added by storm
-      - accepted
-      - in progress
-      - remark
-
-      vengono messi a completed e chiusi
-
-      i task in stato
-      - completed
-
-      vengono chiusi
-
-      i task in stato
-      - declined
-
-      vengono chiusi
-
-      i task in stato
-      - monitored
-    vengono lasciati tali (aperti)
-     */
-
 
     /**
      * Creates a Project using some fake data and some others that have sense
@@ -217,7 +181,7 @@ class Project extends Model {
                 'end_date' => $faker->date(),
                 'project_type' => $faker->randomElement([PROJECT_TYPE_NEWBUILD, PROJECT_TYPE_REFIT]),
                 'acronym' => $faker->word,
-                'project_status' => $faker->randomElement(PROJECT_STATUSES),
+                'project_status' => $faker->randomElement([PROJECT_STATUS_IN_SITE, PROJECT_STATUS_OPERATIONAL, PROJECT_STATUS_CLOSED]),
                 'site_id' => $site ? $site->id : null,
                 'boat_id' => $boat ? $boat->id : null,
             ]

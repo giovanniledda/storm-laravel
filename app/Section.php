@@ -3,7 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Faker\Factory as Faker;
+use Faker\Generator as Faker;
 
 class Section extends Model
 {

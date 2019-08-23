@@ -26,31 +26,35 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->faker = Faker::create();
-        $this->utils = new Utils($this->faker);
+        $this->utils = new Utils();
 
         // creo un sito
         $site = $this->utils->createSite();
+
         $this->command->info("Site {$site->name} created");
 
-        // crea 10 boat...
+        // crea N boat...
         $boats = [];
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 5; $i++) {
             $boats[$i] = $this->utils->createBoat($site);
+
             $this->command->info("Boat {$boats[$i]->name} created");
 
             // ... e 5 sezioni per ciascuna
             $sections[$boats[$i]->id] = [];
             for ($s = 0; $s < 5; $s++) {
                 $sections[$boats[$i]->id] = $this->utils->createSection($boats[$i]);
+
                 $this->command->info("Section {$sections[$boats[$i]->id]->name} for Boat {$boats[$i]->name} created");
             }
         }
 
         // creo N professioni a caso
         $professions = [];
-        for ($s = 0; $s < $this->faker->randomDigitNotNull(); $s++) {
+        for ($s = 0; $s < 20; $s++) {
             $professions[$s] = $this->utils->createProfession();
-            $this->command->info("Profession {$professions[$s] ->name} created");
+
+            $this->command->info("Profession {$professions[$s]->name} created");
         }
 
         // Creo ed associo degli utenti alle barche
@@ -93,9 +97,10 @@ class DatabaseSeeder extends Seeder
 
             // per ogni boat creo N progetti...
             $projects = [];
+            $open = $closed = 0;
             for ($s = 0; $s < 3; $s++) {
-                // todo: uno solo deve essere open
                 $project = $this->utils->createProject($site, $boat);
+
                 $this->command->info("Project {$project->name} for Boat {$boat->name}, created");
                 $projects[] = $project;
 
@@ -104,6 +109,7 @@ class DatabaseSeeder extends Seeder
                 for ($s = 0; $s < 4; $s++) {
                     $section = $this->faker->randomElement($boat->sections);
                     $task = $this->utils->createTask($project, $section, null, null, $this->utils->createTaskInterventType());
+
                     $this->command->info("Task {$task->name} for Project {$project->name}, created");
                 }
 
@@ -131,10 +137,22 @@ class DatabaseSeeder extends Seeder
                     $this->command->info("Worker {$worker->name} associated to Project {$project->name}, with Profession {$profession->name} created");
                 }
 
+                // Uno solo deve essere open, due closed, gli altri operational
+                if ($open == 0) {
+                    $open++;
+                    $project->project_status = PROJECT_STATUS_IN_SITE;
+                    $project->save();
+                    continue;
+                }
+                if ($closed < 2) {
+                    $closed++;
+                    $project->project_status = PROJECT_STATUS_CLOSED;
+                    $project->save();
+                    continue;
+                }
+                $project->project_status = PROJECT_STATUS_OPERATIONAL;
+                $project->save();
             }
-
         }
-
     }
-
 }
