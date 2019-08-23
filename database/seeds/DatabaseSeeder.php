@@ -62,7 +62,7 @@ class DatabaseSeeder extends Seeder
             for ($s = 0; $s < 15; $s++) {
                 $worker = $this->utils->createUser(ROLE_WORKER);
                 $profession = $this->faker->randomElement($professions);
-                $this->utils->boatAssociate($worker, $boat, $profession);
+                $this->utils->associateUserToBoat($worker, $boat, $profession);
 
                 $this->command->info("Worker {$worker->name} for Boat {$boat->name}, with Profession {$profession->name} created");
                 $workers[] = $worker;
@@ -73,7 +73,7 @@ class DatabaseSeeder extends Seeder
             for ($s = 0; $s < 8; $s++) {
                 $bo_man = $this->utils->createUser(ROLE_BOAT_MANAGER);
                 $profession = $this->faker->randomElement($professions);
-                $this->utils->boatAssociate($bo_man, $boat, $profession);
+                $this->utils->associateUserToBoat($bo_man, $boat, $profession);
 
                 $this->command->info("Boat Manager {$bo_man->name} for Boat {$boat->name}, with Profession {$profession->name} created");
                 $boat_managers[] = $bo_man;
@@ -84,16 +84,17 @@ class DatabaseSeeder extends Seeder
             for ($s = 0; $s < 4; $s++) {
                 $be_man = $this->utils->createUser(ROLE_BACKEND_MANAGER);
                 $profession = $this->faker->randomElement($professions);
-                $this->utils->boatAssociate($be_man, $boat, $profession);
+                $this->utils->associateUserToBoat($be_man, $boat, $profession);
 
-                $this->command->info("Backend Manager {$be_man->name} for Boat {$boat->name}, with Profession {$profession->name} created");
+                $this->command->info("Backend Manager {$be_man->name} associated to Boat {$boat->name}, with Profession {$profession->name} created");
                 $backend_managers[] = $be_man;
             }
 
 
             // per ogni boat creo N progetti...
             $projects = [];
-            for ($s = 0; $s < 8; $s++) {
+            for ($s = 0; $s < 3; $s++) {
+                // todo: uno solo deve essere open
                 $project = $this->utils->createProject($site, $boat);
                 $this->command->info("Project {$project->name} for Boat {$boat->name}, created");
                 $projects[] = $project;
@@ -106,12 +107,30 @@ class DatabaseSeeder extends Seeder
                     $this->command->info("Task {$task->name} for Project {$project->name}, created");
                 }
 
-                // al progetto assegno a caso alcuni utenti della Boat
-                // TODO...
+                // al progetto assegno tutti i BE manager
+                foreach ($backend_managers as $backend_manager) {
+                    $profession = $this->faker->randomElement($professions);
+                    $this->utils->associateUserToProject($backend_manager, $project, $profession);
 
+                    $this->command->info("Backend Manager {$backend_manager->name} associated to Project {$project->name}, with Profession {$profession->name} created");
+                }
 
-                // al progetto assegno tutti gli utenti della Boat
-                // TODO...
+                // al progetto assegno tutti i BO manager
+                foreach ($boat_managers as $boat_manager) {
+                    $profession = $this->faker->randomElement($professions);
+                    $this->utils->associateUserToProject($boat_manager, $project, $profession);
+
+                    $this->command->info("Boat Manager {$boat_manager->name} associated to Project {$project->name}, with Profession {$profession->name} created");
+                }
+
+                // al progetto assegno alcuni dei Workers
+                foreach ($this->faker->randomElements($workers, 8) as $worker) {
+                    $profession = $this->faker->randomElement($professions);
+                    $this->utils->associateUserToProject($worker, $project, $profession);
+
+                    $this->command->info("Worker {$worker->name} associated to Project {$project->name}, with Profession {$profession->name} created");
+                }
+
             }
 
         }

@@ -4,6 +4,7 @@ namespace App;
 
 use App\Observers\ProjectObserver;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\ModelStatus\HasStatuses;
 use Faker\Factory as Faker;
 
@@ -68,6 +69,36 @@ class Project extends Model {
         ]);
     }
 
+    /**
+     * @param int $uid
+     *
+     * @return BelongsToMany
+     */
+    public function getUserByIdBaseQuery($uid)
+    {
+        return $this->users()->where('id', '=', $uid);
+    }
+
+    /**
+     * @param int $uid
+     *
+     * @return User
+     */
+    public function getUserById($uid)
+    {
+        return $this->getUserByIdBaseQuery($uid)->first();
+    }
+
+    /**
+     * @param int $uid
+     *
+     * @return Boolean
+     */
+    public function hasUserById($uid)
+    {
+        return $this->getUserByIdBaseQuery($uid)->count() > 0;
+    }
+
     public function generic_documents() {
         return $this->documents()->where('type', Document::GENERIC_DOCUMENT_TYPE);
     }
@@ -124,7 +155,7 @@ class Project extends Model {
             return ['success'=>true, 'tasks'=>$foundTasks->count()];
         }
     }
-    
+
     /**
      * Setta lo stato del progetto a PROJECT_STATUS_CLOSED
      */

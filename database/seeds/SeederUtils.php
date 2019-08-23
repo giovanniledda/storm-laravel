@@ -3,8 +3,10 @@
 namespace Seeds;
 
 use App\Boat;
+use App\BoatUser;
 use App\Profession;
 use App\Project;
+use App\ProjectUser;
 use App\Section;
 use App\Site;
 use App\Subsection;
@@ -90,6 +92,20 @@ class SeederUtils
     {
 //        return factory(TaskInterventType::class)->create();
         return TaskInterventType::createSemiFake($this->faker);
+    }
+
+    public function associateUserToBoat(User $user, Boat $boat, Profession $profession)
+    {
+        if (!$boat->hasUserById($user->id)) {
+            BoatUser::create(['user_id' => $user->id, 'boat_id' => $boat->id, 'profession_id' => $profession->id]);
+        }
+    }
+
+    public function associateUserToProject(User $user, Project $project, Profession $profession)
+    {
+        if (!$project->hasUserById($user->id)) {
+            ProjectUser::create(['user_id' => $user->id, 'project_id' => $project->id, 'profession_id' => $profession->id]);
+        }
     }
 
 

@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Faker\Factory as Faker;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use phpDocumentor\Reflection\Types\Boolean;
 
 class Boat extends Model
 {
@@ -83,11 +85,9 @@ class Boat extends Model
 
     }
 
-
     // owner ed equipaggio
     public function users()
     {
-
         return $this->belongsToMany('App\User')
             ->using('App\BoatUser')
             ->withPivot([
@@ -96,6 +96,37 @@ class Boat extends Model
                 'updated_by'
             ]);
     }
+
+    /**
+     * @param int $uid
+     *
+     * @return BelongsToMany
+     */
+    public function getUserByIdBaseQuery($uid)
+    {
+        return $this->users()->where('id', '=', $uid);
+    }
+
+    /**
+     * @param int $uid
+     *
+     * @return User
+     */
+    public function getUserById($uid)
+    {
+        return $this->getUserByIdBaseQuery($uid)->first();
+    }
+
+    /**
+     * @param int $uid
+     *
+     * @return Boolean
+     */
+    public function hasUserById($uid)
+    {
+        return $this->getUserByIdBaseQuery($uid)->count() > 0;
+    }
+
 
     /**
      * Creates a Boat using some fake data and some others that have sense
