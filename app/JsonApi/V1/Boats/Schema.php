@@ -71,6 +71,7 @@ class Schema extends SchemaProvider
         $project_active = $resource->projects()
                 ->where('project_status', PROJECT_STATUS_OPERATIONAL)
                 ->orWhere('project_status', PROJECT_STATUS_IN_SITE)
+                ->orderBy('created_at', 'DESC')
                 ->first();
         return [
             'name' => $resource->name,
