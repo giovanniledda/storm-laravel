@@ -47,6 +47,7 @@ class Adapter extends AbstractAdapter
      */
     protected function filter($query, Collection $filters)
     { 
+        /*
         if ($status = $filters->get('status')) {
             $query->where('project_status', '=', "{$status}");
         }
@@ -65,7 +66,7 @@ class Adapter extends AbstractAdapter
                 
              }    
         } 
-        
+        */
         
         
         /** implementa la ricerca per name non cancellare ma commentare */

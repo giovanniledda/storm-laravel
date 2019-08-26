@@ -78,6 +78,7 @@ class Schema extends SchemaProvider
         return [
             'name' => $resource->name,
             'boat_id' => $resource->boat_id,
+            'project_id' => $resource->id,
             //'boat' =>$boat,
             'status' => $resource->project_status,
             'project_progress'=> $resource->project_progress,
