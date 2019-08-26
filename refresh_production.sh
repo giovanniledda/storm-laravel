@@ -9,8 +9,8 @@ php artisan passport:install
 #seeder ruoli e permessi
 php artisan db:seed --class="RolesAndPermissionsSeeder"
 
-#seeder ambiente stage
-php artisan db:seed --class="ProductionSeeder"
-
 #seeder tabella countries
 php artisan db:seed --class="CountriesSeeder"
+
+#seeder ambiente stage
+php artisan db:seed --class="ProductionSeeder"
