@@ -126,8 +126,11 @@ class DatabaseSeeder extends Seeder
                 for ($t = 0; $t < 9; $t++) {
                     $section = $this->faker->randomElement($boat->sections);
                     $task = $this->utils->createTask($project, $section, null, null, $this->utils->createTaskInterventType());
-
                     $this->command->info("Task {$task->name} for Project {$project->name}, created");
+
+                    // accoppio la sezione al progetto
+                    $this->command->warn(" ------ SECTIONS FOR PROJECT {$project->name} --------");
+                    $this->utils->associateSectionToProject($section, $project);
                 }
 
                 $this->command->warn(" ------ USERS FOR PROJECT {$project->name} --------");

@@ -23,6 +23,10 @@ abstract class TestCase extends BaseTestCase
 
         // To test Oauth Grants
         \Artisan::call('passport:install',['-vvv' => true]);
+
+        // to create QUEUES DB tables
+//        \Artisan::call('queue:table',['-vvv' => true]);
+//        \Artisan::call('queue:failed-table',['-vvv' => true]);
     }
 
     protected function disableExceptionHandling()

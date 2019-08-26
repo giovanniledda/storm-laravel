@@ -12,5 +12,16 @@ class ProjectSection extends Pivot
     protected $fillable = [
         'section_id',
         'project_id'
-    ]; 
+    ];
+
+
+    public function project()
+    {
+        return $this->belongsTo('App\Project');
+    }
+
+    public function section()
+    {
+        return $this->belongsTo('App\Section');
+    }
 } 

@@ -13,7 +13,7 @@ $factory->define(Profession::class, function (Faker $faker) use ($autoIncrement)
 
     return [
         'id' => $autoIncrement->current(),
-        'name' => $faker->sentence(),
+        'name' => $faker->jobTitle,
     ];
 });
 

@@ -118,16 +118,28 @@ defined('TASKS_STATUS_DENIED') or define('TASKS_STATUS_DENIED', 'denied');
 defined('TASKS_STATUS_REMARKED') or define('TASKS_STATUS_REMARKED', 'remarked');
 defined('TASKS_STATUS_MONITORED') or define('TASKS_STATUS_MONITORED', 'monitored');
 
-defined('TASKS_STATUSES') or define('TASKS_STATUSES', 
+defined('TASKS_STATUSES') or define('TASKS_STATUSES',
         [
          TASKS_STATUS_DRAFT,
-         TASKS_STATUS_SUBMITTED, 
-         TASKS_STATUS_ACCEPTED, 
-         TASKS_STATUS_IN_PROGRESS, 
-         TASKS_STATUS_DENIED, 
+         TASKS_STATUS_SUBMITTED,
+         TASKS_STATUS_ACCEPTED,
+         TASKS_STATUS_IN_PROGRESS,
+         TASKS_STATUS_DENIED,
          TASKS_STATUS_REMARKED,
          TASKS_STATUS_MONITORED
          ]);
+
+
+/*
+ * TASK INTERVENT TYPES
+ */
+
+$intervent_types = ['damaged', 'corrosion', 'other' ];
+
+
+defined('TASK_INTERVENT_TYPE_DAMAGED') or define('TASK_INTERVENT_TYPE_DAMAGED', 'damaged');
+defined('TASK_INTERVENT_TYPE_CORROSION') or define('TASK_INTERVENT_TYPE_CORROSION', 'corrosion');
+defined('TASK_INTERVENT_TYPE_OTHER') or define('TASK_INTERVENT_TYPE_OTHER', 'other');
 
 
 /*

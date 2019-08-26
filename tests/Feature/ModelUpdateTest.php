@@ -20,7 +20,9 @@ class ModelUpdateTest extends TestCase
 {
     function test_can_create_notifications_related_to_task_creation()
     {
-        $this->_populateProfessions();
+        // Creo professioni
+        $professions = factory(Profession::class, 5)->create();
+
         // Creo barca
         $boat = factory(Boat::class)->create();
 
@@ -35,7 +37,7 @@ class ModelUpdateTest extends TestCase
         $permission = Permission::firstOrCreate(['name' => PERMISSION_BOAT_MANAGER]);
 
         // Creo utenti da assegnare al progetto
-        $users = factory(User::class, $this->faker->randomDigitNotNull)->create();
+        $users = factory(User::class, 10)->create();
         $this->assertNotCount(0, $users);
 
         foreach ($users as $user) {
@@ -45,12 +47,13 @@ class ModelUpdateTest extends TestCase
             $this->assertTrue($user->can(PERMISSION_BOAT_MANAGER));
 
             // associo utente al progetto
-            $user->projects()->attach($project->id, [ 'profession_id' => 1]);
-            $this->assertDatabaseHas('project_user', ['project_id' => $project->id, 'user_id' => $user->id, 'profession_id' => 1]);
+            $prof = $this->faker->randomElement($professions);
+            $user->projects()->attach($project->id, ['profession_id' => $prof->id]);
+            $this->assertDatabaseHas('project_user', ['project_id' => $project->id, 'user_id' => $user->id, 'profession_id' => $prof->id]);
         }
 
         // Creo i task e li assegno al progetto
-        $tasks = factory(Task::class, $this->faker->randomDigitNotNull)->create();
+        $tasks = factory(Task::class, 10)->create();
 //        $project->tasks()->saveMany($tasks);  // Vedi mail di Ledda del 24 luglio: se uso questa poi $t->project è null :-(
 
         foreach ($tasks as $t) {
@@ -65,10 +68,13 @@ class ModelUpdateTest extends TestCase
         }
 
         // verifico che gli utenti abbiano le notifiche
+        // ATTENZIONE: ora le notifiche vengono lanciate da dei job messi in coda
         foreach ($users as $user) {
             $this->assertNotCount(0, $user->notifications);
             $this->assertCount($user->unreadNotifications->count(), $user->notifications);
             foreach ($user->notifications as $notification) {
+
+//                $this->assertDatabaseHas('jobs', ['queue' => 'default']);
 
                 $this->assertThat($notification->type,
                     $this->logicalOr(
@@ -79,12 +85,4 @@ class ModelUpdateTest extends TestCase
         }
     }
     
-     private function _populateProfessions() {
-        $professions = ['owner','chief engineer', 'captain', 'ship\'s boy'];
-        foreach ($professions as $profession) {
-            $prof = Profession::create(['name'=>$profession]);
-            $prof->save();
-        } 
-        
-    }
 }
