@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Boat;
+use App\Jobs\NotifyTaskUpdates;
 use App\Notifications\TaskCreated;
 use App\Notifications\TaskUpdated;
 use App\Permission;
@@ -10,6 +11,9 @@ use App\Project;
 use App\Profession;
 use App\Role;
 use App\Task;
+use function count;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 use App\User;
 
@@ -53,7 +57,9 @@ class ModelUpdateTest extends TestCase
         }
 
         // Creo i task e li assegno al progetto
-        $tasks = factory(Task::class, 10)->create();
+
+        $tasks = factory(Task::class, $this->faker->randomDigitNotNull)->create();
+
 //        $project->tasks()->saveMany($tasks);  // Vedi mail di Ledda del 24 luglio: se uso questa poi $t->project è null :-(
 
         foreach ($tasks as $t) {
@@ -67,22 +73,32 @@ class ModelUpdateTest extends TestCase
             $this->assertCount(count($users), $task_users);
         }
 
-        // verifico che gli utenti abbiano le notifiche
-        // ATTENZIONE: ora le notifiche vengono lanciate da dei job messi in coda
-        foreach ($users as $user) {
-            $this->assertNotCount(0, $user->notifications);
-            $this->assertCount($user->unreadNotifications->count(), $user->notifications);
-            foreach ($user->notifications as $notification) {
+        if (\Config::get('queue.default') == 'database') {
 
-//                $this->assertDatabaseHas('jobs', ['queue' => 'default']);
+            $this->assertDatabaseHas('jobs', ['queue' => 'default']);
 
-                $this->assertThat($notification->type,
-                    $this->logicalOr(
-                        'App\Notifications\TaskCreated',  // Se uso TaskCreated::class ottengo il paradosso: Failed asserting that 'App\Notifications\TaskUpdated' is instance of class "App\Notifications\TaskCreated" or is instance of class "App\Notifications\TaskUpdated".
-                        'App\Notifications\TaskUpdated'
-                    ));
+            // i job di notifica devono essere il doppio dei task (uno parte per la creazione e l'altro per l'update)
+            $counts = DB::table('jobs')->count();
+            $this->assertEquals($counts, count($tasks)*2);
+
+        } else {
+
+            // verifico che gli utenti abbiano le notifiche
+            foreach ($users as $user) {
+                $this->assertNotCount(0, $user->notifications);
+                $this->assertCount($user->unreadNotifications->count(), $user->notifications);
+                foreach ($user->notifications as $notification) {
+
+                    $this->assertThat($notification->type,
+                        $this->logicalOr(
+                            'App\Notifications\TaskCreated',  // Se uso TaskCreated::class ottengo il paradosso: Failed asserting that 'App\Notifications\TaskUpdated' is instance of class "App\Notifications\TaskCreated" or is instance of class "App\Notifications\TaskUpdated".
+                            'App\Notifications\TaskUpdated'
+                        ));
+                }
             }
         }
+
+
     }
     
 }
