@@ -131,6 +131,18 @@ defined('TASKS_STATUSES') or define('TASKS_STATUSES',
 
 
 /*
+ * TASK INTERVENT TYPES
+ */
+
+$intervent_types = ['damaged', 'corrosion', 'other' ];
+
+
+defined('TASK_INTERVENT_TYPE_DAMAGED') or define('TASK_INTERVENT_TYPE_DAMAGED', 'damaged');
+defined('TASK_INTERVENT_TYPE_CORROSION') or define('TASK_INTERVENT_TYPE_CORROSION', 'corrosion');
+defined('TASK_INTERVENT_TYPE_OTHER') or define('TASK_INTERVENT_TYPE_OTHER', 'other');
+
+
+/*
  * VALIDATORS MESSAGES
  */
 

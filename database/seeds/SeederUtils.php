@@ -6,6 +6,7 @@ use App\Boat;
 use App\BoatUser;
 use App\Profession;
 use App\Project;
+use App\ProjectSection;
 use App\ProjectUser;
 use App\Section;
 use App\Site;
@@ -105,6 +106,13 @@ class SeederUtils
     {
         if (!$project->hasUserById($user->id)) {
             ProjectUser::create(['user_id' => $user->id, 'project_id' => $project->id, 'profession_id' => $profession->id]);
+        }
+    }
+
+    public function associateSectionToProject(Section $section, Project $project)
+    {
+        if (!$project->hasSectionById($section->id)) {
+            ProjectSection::create(['section_id' => $section->id, 'project_id' => $project->id]);
         }
     }
 

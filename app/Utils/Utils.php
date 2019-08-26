@@ -193,5 +193,16 @@ class Utils
           return $ret;
     }
     
+    /**
+     * Ritorna la query SQL generata da eloquent.
+     * @param type $queryBuilder
+     * @return type
+     */
+    public static function getSql($queryBuilder) {
+        $query = str_replace(array('?'), array('\'%s\''), $queryBuilder->toSql());
+        $query = vsprintf($query, $queryBuilder->getBindings());
+        return  $query;
+    } 
+    
     
 }

@@ -50,6 +50,37 @@ class Project extends Model {
         ]);
     }
 
+    /**
+     * @param int $sid
+     *
+     * @return BelongsToMany
+     */
+    public function getSectionByIdBaseQuery($sid)
+    {
+        return $this->sections()->where('sections.id', '=', $sid);
+    }
+
+    /**
+     * @param int $sid
+     *
+     * @return User
+     */
+    public function getSectionById($sid)
+    {
+        return $this->getSectionByIdBaseQuery($sid)->first();
+    }
+
+    /**
+     * @param int $sid
+     *
+     * @return Boolean
+     */
+    public function hasSectionById($sid)
+    {
+        return $this->getSectionByIdBaseQuery($sid)->count() > 0;
+    }
+
+
     public function comments() {
         return $this->morphMany('App\Comment', 'commentable');
     }

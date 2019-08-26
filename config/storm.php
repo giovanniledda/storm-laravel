@@ -69,16 +69,14 @@ return [
 
         'task_intervent_types' => [
             'type1' => [
-                'name' => 'TypeA',
+                'name' => TASK_INTERVENT_TYPE_DAMAGED,
             ],
             'type2' => [
-                'name' => 'TypeB',
+                'name' => TASK_INTERVENT_TYPE_CORROSION,
             ],
             'type3' => [
-                'name' => 'TypeC',
+                'name' => TASK_INTERVENT_TYPE_OTHER,
             ],
         ]
-
-
     ]
 ];

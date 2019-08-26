@@ -88,8 +88,7 @@ class Task extends Model
         $this->documents()->save($doc);
 
     }
-    
-    
+
     public function detailed_images(){ 
         return $this->documents()->where('type', \App\Document::DETAILED_IMAGE_TYPE);
     }
@@ -105,7 +104,6 @@ class Task extends Model
     public function generic_documents(){ 
         return $this->documents()->where('type', \App\Document::GENERIC_DOCUMENT_TYPE);
     }
-
 
     public function history()
     {
