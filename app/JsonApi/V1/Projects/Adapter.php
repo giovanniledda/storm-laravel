@@ -47,26 +47,29 @@ class Adapter extends AbstractAdapter
      */
     protected function filter($query, Collection $filters)
     { 
-        /*
+        
         if ($status = $filters->get('status')) {
             $query->where('project_status', '=', "{$status}");
         }
         if ($boat_id = $filters->get('boat_id')) {
             $query->where('boat_id', '=', "{$boat_id}");
         }
-        
+      
         $user = \Auth::user();
         if (!$user->can(PERMISSION_ADMIN) || !$user->can(PERMISSION_BACKEND_MANAGER)) { 
             if ($user->hasRole(ROLE_WORKER)) {
-                 $query->Join('project_user', 'projects.id', '=', 'project_user.project_id')->where('project_user.user_id', '=', $user->id) ;
+                 $query->Join('project_user', 'projects.id', '=', 'project_user.project_id')
+                         ->where('project_user.user_id', '=', $user->id)->groupBy('projects.id');
              } 
               if ($user->can(PERMISSION_BOAT_MANAGER)) { 
-                $query->Join('boat_user', 'projects.boat_id', '=', 'boat_user.boat_id')  
-                        ->where('boat_user.user_id', '=', $user->id) ;
-                
+               $e =  $query->select('projects.*')->Join('boat_user', 'projects.boat_id', '=', 'boat_user.boat_id')  
+                        ->where('boat_user.user_id', '=', $user->id)->groupBy('projects.id') ;
+             /*   $query = str_replace(array('?'), array('\'%s\''), $e->toSql());
+                $query = vsprintf($query, $e->getBindings());
+                echo $query;*/
              }    
         } 
-        */
+       
         
         
         /** implementa la ricerca per name non cancellare ma commentare */

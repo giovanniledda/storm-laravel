@@ -78,7 +78,5 @@ return [
                 'name' => TASK_INTERVENT_TYPE_OTHER,
             ],
         ]
-
-
     ]
 ];
