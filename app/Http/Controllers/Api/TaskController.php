@@ -7,10 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use App\Task;
-use App\User; 
+use App\User;
 use App\Document;
 use Illuminate\Validation\Rule;
- use Validator; 
+ use Validator;
 use Illuminate\Http\UploadedFile;
 use App\Utils\Utils;
 
@@ -44,50 +44,6 @@ class TaskController extends Controller
 
       //  exit();
     }
-
-    public function addDocument(Request $request, $related){
-        // $task = Task::find($request->record);
-        $task = json_decode($related, true); 
-        
-        $rules = [
-            'type'=>['required', Rule::in([
-                Document::GENERIC_DOCUMENT_TYPE,
-                Document::DETAILED_IMAGE_TYPE,
-                Document::GENERIC_IMAGE_TYPE,
-                Document::ADDITIONAL_IMAGE_TYPE
-                ])] 
-        ];
-
-        $validator = Validator::make($request->data['attributes'], $rules);
-        if ($validator->passes()) {
-            $task = Task::find($task['id']); 
-            $type = $request->data['attributes']['type'];
-            $title = $request->data['attributes']['title'];
-            $base64File = $request->data['attributes']['file'];
-            $filename = $request->data['attributes']['filename']; 
-            $file = Document::createUploadedFileFromBase64( $base64File, $filename); 
-            $doc = new Document([
-                'title' => $title,
-                'file' => $file,
-            ]); 
-            // $doc->save();
-            $task->addDocumentWithType($doc, $type); 
-            $ret = \App\Utils\Utils::renderDocumentResponse('tasks', $doc); 
-           
-            $resp = Response($ret , 200);
-            
-        } else { 
-             
-            $contents_errors = Utils::renderDocumentErrors($validator->errors()->all());
-            $resp = Response(['errors' =>$contents_errors], 422);
-            
-        }
-        
-            $resp->header('Content-Type', 'application/vnd.api+json');
-            return $resp;
-         
-    }
-
 
 }
 

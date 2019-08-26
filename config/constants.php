@@ -54,11 +54,11 @@ defined('TASK_UPDATED_MOBILE_APP_TEXT') or define('TASK_UPDATED_MOBILE_APP_TEXT'
 
 /*
  * PROJECT STATUSES
- *  
- * OPERATIONAL / ISPECTION 
- * 
+ *
+ * OPERATIONAL / ISPECTION
+ *
  * refit e new build sono gestiti da project_type.
- * 
+ *
  */
 
 defined('PROJECT_STATUS_OPERATIONAL') or define('PROJECT_STATUS_OPERATIONAL', 'operational'); // a mare
@@ -77,7 +77,7 @@ defined('PROJECT_USER_ROLE_OWNER') or define('PROJECT_USER_ROLE_OWNER', 'owner')
 
 
 /*
- * PROJECT EVENTS STRINGS 
+ * PROJECT EVENTS STRINGS
  */
 
 defined('PROJECT_EVENT_MARK_COMPLETED') or define('PROJECT_EVENT_MARK_COMPLETED', ' marked as completed');
@@ -100,14 +100,14 @@ defined('BOAT_TYPE_SAIL') or define('BOAT_TYPE_SAIL', 'S/Y');
 defined('BOAT_TYPE_MOTOR') or define('BOAT_TYPE_MOTOR', 'M/Y');
 
 /*
- * TASKS  STATUS  
+ * TASKS  STATUS
 accepted (l'utente l'ha inviato e il backend l'ha accettato)
 in_progress (questo stato non e' presente nell'inVision capire se serve - il task e' in lavorazione)
 denied (l'utente l'ha inviato e il backend l'ha rifiutato)
 remarked (il backend l'ha chiuso, ma l'utente l'ha segnalato come non concluso. E' lo stesso stato di "in lavorazione" se lo mettiamo, oppure di accepted altrimenti)
 monitored (e' ancora aperto, ma il progetto e' chiuso, e sono i task da tenere d'occhio)
- * 
- * 
+ *
+ *
  */
 
 defined('TASKS_STATUS_DRAFT') or define('TASKS_STATUS_DRAFT', 'draft');
@@ -187,4 +187,23 @@ defined('QUEUE_TASK_CREATED') or define('QUEUE_TASK_CREATED', 'task_created');
 defined('QUEUE_TASK_UPDATED') or define('QUEUE_TASK_UPDATED', 'task_updated');
 defined('QUEUE_JOB_TASK_UPDATES_FAILED') or define('QUEUE_JOB_TASK_UPDATES_FAILED', '[QUEUE - JOB FAILED] Job failure when trying to notify task creation/updating. [msg: :exc_msg]');
 
- 
+
+/*
+ * ENTITY TYPES TO WHICH WE CAN ADD A DOCUMENT
+ */
+
+defined('DOCUMENT_RELATED_ENTITY_PROJECT') or define('DOCUMENT_RELATED_ENTITY_PROJECT', 'project');
+defined('DOCUMENT_RELATED_ENTITY_BOAT') or define('DOCUMENT_RELATED_ENTITY_BOAT', 'boat');
+defined('DOCUMENT_RELATED_ENTITY_SECTION') or define('DOCUMENT_RELATED_ENTITY_SECTION', 'section');
+defined('DOCUMENT_RELATED_ENTITY_TASK') or define('DOCUMENT_RELATED_ENTITY_TASK', 'task');
+
+
+defined('DOCUMENT_RELATED_ENTITIES') or define('DOCUMENT_RELATED_ENTITIES',
+        [
+          DOCUMENT_RELATED_ENTITY_PROJECT,
+          DOCUMENT_RELATED_ENTITY_BOAT,
+          DOCUMENT_RELATED_ENTITY_SECTION,
+          DOCUMENT_RELATED_ENTITY_TASK
+         ]);
+
+

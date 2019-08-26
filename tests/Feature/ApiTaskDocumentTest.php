@@ -21,6 +21,7 @@ use App\Permission;
 
 use const ROLE_ADMIN;
 use const PERMISSION_ADMIN;
+use const DOCUMENT_RELATED_ENTITY_TASK;
 
 
 class ApiTaskDocumenttTest extends TestApiCase
@@ -66,14 +67,16 @@ class ApiTaskDocumenttTest extends TestApiCase
                     'title' => $filename,
                     'file' => $base64FileContent,
                     'filename' =>  'testDocument.txt',
-                    'type' => \App\Document::DETAILED_IMAGE_TYPE
+                    'type' => \App\Document::DETAILED_IMAGE_TYPE,
+                    'entity_type' => DOCUMENT_RELATED_ENTITY_TASK,
+                    'entity_id' => $task->id
                 ],
                 'type' => 'tasks',
             ]
         ];
 
 
-        $response = $this->json('POST', route('api:v1:tasks.document', ['task'=>$task->id]), $data, $this->headers );
+        $response = $this->json('POST', route('api:v1:documents.create'), $data, $this->headers );
 
         // ->assertJsonStructure(['data' => ['id']]);
 
@@ -84,7 +87,6 @@ class ApiTaskDocumenttTest extends TestApiCase
 
         $this->assertEquals($document->id, $document_id);
 
-        // $this->logResponce($response);
 
     }
 }

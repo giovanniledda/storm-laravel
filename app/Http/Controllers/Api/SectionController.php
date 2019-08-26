@@ -28,50 +28,5 @@ class SectionController extends Controller {
       if ($validator->passes()) {
      */
 
-    /**
-     * Inserisce un documento per la sezione
-     * @param Request $request
-     * @param type $related
-     * @return type
-     */
-    public function addDocument(Request $request, $related) {
-
-        $section = json_decode($related, true);
-        $section = Section::find($section['id']);
-
-        $rules = [
-            'type' => ['required', Rule::in([
-                    Document::GENERIC_DOCUMENT_TYPE,
-                    Document::DETAILED_IMAGE_TYPE,
-                    Document::GENERIC_IMAGE_TYPE,
-                    Document::ADDITIONAL_IMAGE_TYPE
-                ])]
-        ];
-
-        $validator = Validator::make($request->data['attributes'], $rules);
-
-        if ($validator->passes()) {
-            
-            $type = $request->data['attributes']['type'];
-            $title = $request->data['attributes']['title'];
-            $base64File = $request->data['attributes']['file'];
-            $filename = $request->data['attributes']['filename']; 
-            
-            $file = Document::createUploadedFileFromBase64($base64File, $filename); 
-            $doc = new Document([
-                'title' => $title,
-                'file' => $file,
-            ]); 
-            $section->addDocumentWithType($doc, $type); 
-            $ret = \App\Utils\Utils::renderDocumentResponse('sections', $doc); 
-            $resp = Response($ret, 200);
-        } else {
-            $resp = Response($validator->errors()->all() , 422);
-        }
- 
-        $resp->header('Content-Type', 'application/vnd.api+json');
-
-        return $resp;
-    }
 
 }

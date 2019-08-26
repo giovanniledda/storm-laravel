@@ -36,7 +36,8 @@ class Schema extends SchemaProvider
             $tmp =[
                 'uri' => $i->getShowApiUrl(),
                 'title' => $i->title,
-                'mime_type' => $i->media->first()->mime_type // TODO: get MIME TYPE
+                'mime_type' => $i->media->first()->mime_type,
+                'date' => $i->updated_at->toAtomString(),// TODO: get MIME TYPE
             ];
             $gdu []= $tmp;
         }

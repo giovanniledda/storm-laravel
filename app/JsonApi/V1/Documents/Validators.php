@@ -6,6 +6,21 @@ use CloudCreativity\LaravelJsonApi\Validation\AbstractValidators;
 
 class Validators extends AbstractValidators
 {
+    protected $messages = [
+        'type.required' => 'type '.VALIDATOR_REQUIRED,
+        'type.string' => 'type '.VALIDATOR_STRING,
+        'title.required' => 'title '.VALIDATOR_REQUIRED,
+        'title.string' => 'title '.VALIDATOR_STRING,
+        'file.required' => 'file '.VALIDATOR_REQUIRED,
+        'file.string' => 'file '.VALIDATOR_STRING,
+        'filename.required' => 'filename '.VALIDATOR_REQUIRED,
+        'filename.string' => 'filename '.VALIDATOR_STRING,
+        'entity_type.required' => 'entity_type '.VALIDATOR_REQUIRED,
+        'entity_type.string' => 'entity_type '.VALIDATOR_STRING,
+        'entity_id.required' => 'entity_id '.VALIDATOR_REQUIRED,
+        'entity_id.numeric' => 'entity_id '.VALIDATOR_NUMERIC,
+    ];
+
 
     /**
      * The include paths a client is allowed to request.
@@ -33,8 +48,13 @@ class Validators extends AbstractValidators
     protected function rules($record = null): array
     {
         return [
-            //
-        ];
+            'type' => 'required|string|min:1|max:255',
+            'title' => 'required|string|min:1|max:255',
+            'file' => 'required|string|min:1',
+            'filename' => 'required|string|min:1|max:255',
+            'entity_type' => 'required|in:' . implode(',', DOCUMENT_RELATED_ENTITIES),
+            'entity_id'  => 'required|numeric',
+         ];
     }
 
     /**
