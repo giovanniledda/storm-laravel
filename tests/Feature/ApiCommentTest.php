@@ -23,7 +23,7 @@ class ApiCommentTest extends TestApiCase
     function test_can_create_comment_related_to_task()
     {
         Role::firstOrCreate(['name' => ROLE_ADMIN]);
-        Permission::firstOrCreate(['name' => PERMISSION_ADMIN]);      
+        Permission::firstOrCreate(['name' => PERMISSION_ADMIN]);
         $this->disableExceptionHandling();
 
         $proj_boat = $this->createBoatAndHisProject();
@@ -62,7 +62,7 @@ class ApiCommentTest extends TestApiCase
     {
 
          Role::firstOrCreate(['name' => ROLE_ADMIN]);
-        Permission::firstOrCreate(['name' => PERMISSION_ADMIN]);      
+        Permission::firstOrCreate(['name' => PERMISSION_ADMIN]);
         $this->disableExceptionHandling();
 
         $proj_boat = $this->createBoatAndHisProject();

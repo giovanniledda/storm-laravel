@@ -22,11 +22,11 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
 
         $api->resource('documents')->except('create');
 
-        // $api->resource('documents')->only('show')->controller('DocumentController') //uses the App\Http\Controllers\Api\DocumentController
         $api->resource('documents')->only('show')->controller('DocumentController') //uses the App\Http\Controllers\Api\DocumentController
         ->routes(function ($docs){
                 $docs->get('{record}/show/{size}', 'show')->name('show_with_size');
                 $docs->get('{record}/show', 'show')->name('show');
+                $docs->post('create', 'create')->name('create');
             })  ;
 
         $api->resource('sites');
@@ -34,39 +34,31 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
         $api->resource('project-users')->only('create'); //->only('create'); // usato solo per associazione project  - user
         $api->resource('project-sections')->only('create'); //->only('create'); // usato solo per associazione project  - user
         $api->resource('tasks');
-        
-        $api->resource('tasks')->only('statuses', 'document')->controller('TaskController') //uses the App\Http\Controllers\Api\TaskController
+
+        $api->resource('tasks')->only('statuses')->controller('TaskController') //uses the App\Http\Controllers\Api\TaskController
         ->routes(function ($tasks){
                 $tasks->get('/statuses', 'statuses')->name('statuses');
-                $tasks->post('/{record}/document', 'addDocument')->name('document'); 
             });
 
         $api->resource('tasks')->only('history')->controller('TaskController') //uses the App\Http\Controllers\Api\TaskController
         ->routes(function ($task){
                 $task->get('{record}/history', 'history')->name('history');
             });
-            
+
         $api->resource('users');
         $api->resource('sections');
-        $api->resource('sections')->only('addDocument')->controller('SectionController') //uses the App\Http\Controllers\Api\SectionController
-        ->routes(function ($boats){
-                $boats->post('/{record}/document', 'addDocument')->name('document');
-            });
+
         $api->resource('task-intervent-types');
 
         $api->resource('boats')->relationships(function ($relations) {
             $relations->hasMany('sections'); // punta al methodo dell'adapter /app/jsonApi/boats/Adapter non al modello
 
         });
-        $api->resource('boats')->only('addDocument')->controller('BoatController') //uses the App\Http\Controllers\Api\BoatController
-        ->routes(function ($boats){
-                $boats->post('/{record}/document', 'addDocument')->name('document');
-            });
 
-        $api->resource('projects')->only('statuses', 'document', 'close')->controller('ProjectController') //uses the App\Http\Controllers\Api\ProjectsController
+
+        $api->resource('projects')->only('statuses', 'close')->controller('ProjectController') //uses the App\Http\Controllers\Api\ProjectsController
         ->routes(function ($projects){
                 $projects->get('/statuses', 'statuses')->name('statuses');
-                $projects->post('/{record}/document', 'addDocument')->name('document');
                 $projects->post('/{record}/close', 'close')->name('close');
             });
         $api->resource('projects')->only('history')->controller('ProjectController') //uses the App\Http\Controllers\Api\ProjectsController
@@ -84,7 +76,6 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
         $api->resource('updates');
         $api->resource('comments');
 
-        // $api->resource('documents')->controller('DocumentController')->only('create');
     });
  });
 
