@@ -1,67 +1,68 @@
 <?php
 
-use App\Task;
 use Illuminate\Database\Seeder;
-use App\User;
-use App\Boat;
-use App\Section;
-use App\ProjectSections;
 use App\Site;
-use App\Project;
 use App\Profession;
 use App\TaskInterventType;
-use App\Utils\Utils;
-use Faker\Factory as Faker;
+//use Faker\Factory as Faker;
 
 class ProductionSeeder extends Seeder
 {
-     protected $faker;
-    /* 
-     */
+//    protected $faker;
+
     public function run()
     {
-       // TODO: creare uno o più siti di base con relativi indirizzi
-       // TODO: creare una o più professioni di base (da associare nei boat_user e project_user)
-       // TODO: creare tipi di task (TaskInterventType)
+        $this->populateSites();
+
+        $this->populateProfessions();
+
+        $this->populateTaskTypes();
     }
-    
-    private function populateTaskTypes() {
-        
-        $this->command->info("Creating intervent types ");
-        $intervent_types = ['damaged', 'corrosion', 'other' ];
-        foreach ($intervent_types as $intervent) {
-            $t = TaskInterventType::create(
-                    [
-                        'name' => $intervent
-                    ]);
-            $t->save();
-         $this->command->info("$intervent [OK]");
-        } 
-    }
-    
-    private function createDeck($deck) {
-        $d = Section::create( $deck );
-        $d->save();
-        return $d;
-    }
-    
-    
-    
-    private function populateProfessions() {
-        $this->command->info("Creating Professions :");
-        $professions = ['owner','chief engineer', 'captain', 'ship\'s boy'];
-        foreach ($professions as $profession) {
-            $prof = Profession::create(['name'=>$profession, 'is_storm'=>0]);
-            $prof->save();
-            $this->command->info("$profession");
+
+
+    private function populateSites()
+    {
+
+        $this->command->warn("\n\n ________________ Creating Sites ________________\n\n");
+
+        $sites = \Config::get('storm.startup.sites');
+        foreach ($sites as $site => $fields) {
+
+            $s = Site::create(Arr::except($fields, ['addresses']));
+            $this->command->info("Site {$s->name} [OK]");
+
+            $addresses = $fields['addresses'];
+            foreach ($addresses as $addr => $addr_fields) {
+
+                $s->addAddress($addr_fields);
+                $this->command->info("Address $addr for Site {$s->name} [OK]");
+            }
         }
-        $this->command->info("Storm Professions :");
-        $professions_storm = ['Manager','3d Designer', 'captain', 'ship\'s boy'];
-        foreach ($professions_storm as $profession_storm) {
-            $prof = Profession::create(['name'=>$profession_storm, 'is_storm'=>1]);
-            $this->command->info("$profession_storm");
-            $prof->save();
+    }
+
+    private function populateProfessions()
+    {
+
+        $this->command->warn("\n\n ________________ Creating Professions ________________\n\n");
+
+        $professions = \Config::get('storm.startup.professions');
+        foreach ($professions as $profession => $fields) {
+            $p = Profession::create($fields);
+            $this->command->info("Profession {$p->name} [OK]");
         }
+    }
+
+    private function populateTaskTypes()
+    {
+
+        $this->command->warn("\n\n ________________ Creating Task Intervent Types ________________\n\n");
+
+        $intervent_types = \Config::get('storm.startup.task_intervent_types');
+        foreach ($intervent_types as $task_type => $fields) {
+            $tit = TaskInterventType::create($fields);
+            $this->command->info("Task Intervent Type {$tit->name} [OK]");
+        }
+
     }
 
 }
