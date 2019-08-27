@@ -202,7 +202,17 @@ class Utils
         $query = str_replace(array('?'), array('\'%s\''), $queryBuilder->toSql());
         $query = vsprintf($query, $queryBuilder->getBindings());
         return  $query;
-    } 
-    
+    }
+
+    /**
+     * Chiama la abort inserendo un codice di errore specifico a seconda dei casi
+     *
+     * @param int $http_status_code
+     * @param null $internal_error
+     */
+    public static function abortWithInternalError($http_status_code = 500, $internal_error = null)
+    {
+        
+    }
     
 }
