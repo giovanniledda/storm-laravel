@@ -117,7 +117,7 @@ defined('TASKS_STATUS_IN_PROGRESS') or define('TASKS_STATUS_IN_PROGRESS', 'in pr
 defined('TASKS_STATUS_DENIED') or define('TASKS_STATUS_DENIED', 'denied');
 defined('TASKS_STATUS_REMARKED') or define('TASKS_STATUS_REMARKED', 'remarked');
 defined('TASKS_STATUS_MONITORED') or define('TASKS_STATUS_MONITORED', 'monitored');
-defined('TASKS_STATUS_COMPLITED') or define('TASKS_STATUS_COMPLITED', 'complited');
+defined('TASKS_STATUS_COMPLITED') or define('TASKS_STATUS_COMPLITED', 'completed');  // antonio ti inculo
 defined('TASKS_STATUSES') or define('TASKS_STATUSES',
         [
          TASKS_STATUS_DRAFT,
