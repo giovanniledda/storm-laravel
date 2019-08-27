@@ -161,6 +161,7 @@ class Utils
         }
         return $results;
     }
+
     /**
      * renderizza una risposta standard api dati gli errori di validazione. 
      * @param type $errors
@@ -183,6 +184,8 @@ class Utils
      * ritorna una risposta jsonApi standard per la creazione dei documenti
      * @param type $resource
      * @param type $doc
+     *
+     * @return array
      */
     public static function renderDocumentResponse($resource, $doc) {
           $ret = ['data' => [
