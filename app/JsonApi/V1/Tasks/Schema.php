@@ -27,9 +27,9 @@ class Schema extends SchemaProvider
 
 
      public function getPrimaryMeta($resource)
-    { 
-         
-        
+    {
+
+
         $detailed_images = $resource->detailed_images;
         $generic_images = $resource->generic_images;
         $additional_images = $resource->additional_images;
@@ -97,7 +97,7 @@ class Schema extends SchemaProvider
             'number'=> $resource->number,
             'worked_hours'=> $resource->worked_hours,
             'estimated_hours'=> $resource->estimated_hours,
-            'status'=> $resource->task_status, 
+            'status'=> $resource->task_status,
             'author_id'=> $resource->author ? $author->id : '',
             'author'=> $resource->author ? $author->name : '',
             'is_open' => $resource->is_open,

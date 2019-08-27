@@ -36,7 +36,7 @@ return [
     |   - e.g. App\JsonApi\Validators\{PostValidator, CommentValidator}
     |
     */
-    'namespace' => 'App\JsonApi\V1',
+    'namespace' => 'Net7\Documents\JsonApi\V1',
     'by-resource' => true,
 
     /*
@@ -54,18 +54,6 @@ return [
     */
     'resources' => [
         'documents' => \Net7\Documents\Document::class,
-        'projects' => \App\Project::class,
-        'tasks' => \App\Task::class,
-        'task-intervent-types' => \App\TaskInterventType::class,
-        'boats' => \App\Boat::class,
-        'boat-users' => \App\BoatUser::class,
-        'project-users' => \App\ProjectUser::class,
-        'users' => \App\User::class,
-        'sections'=> \App\Section::class,
-        'updates' => \App\Update::class,
-        'comments' => \App\Comment::class,
-        'project-sections' => \App\ProjectSection::class,
-        'sites' => \App\Site::class,
     ],
 
     /*

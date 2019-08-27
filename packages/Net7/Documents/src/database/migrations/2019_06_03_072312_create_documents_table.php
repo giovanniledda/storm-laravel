@@ -19,7 +19,7 @@ class CreateDocumentsTable extends Migration
             $table->string('title');
             $table->softDeletes();
 
-            $table->string('type')->default(\App\Document::GENERIC_DOCUMENT_TYPE);
+            $table->string('type')->default(\Net7\Documents\Document::GENERIC_DOCUMENT_TYPE);
 
 
             // $table->longText('file');

@@ -4,8 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Faker\Generator as Faker;
+use Net7\Documents\DocumentableModel;
 
-class Section extends Model
+class Section extends DocumentableModel
 {
 
     protected $table = 'sections';
@@ -13,6 +14,22 @@ class Section extends Model
     protected $fillable = [
       'name', 'section_type', 'position', 'code', 'boat_id'
     ];
+
+    public function getMediaPath($media){
+
+        $document = $media->model;
+        $media_id = $media->id;
+        $boat_id = $this->id;
+
+        $section_id = $this->id;
+        $boat = $this->boat;
+        $boat_id = $boat->id;
+        $path = 'boats' . DIRECTORY_SEPARATOR . $boat_id . DIRECTORY_SEPARATOR . 'sections' . DIRECTORY_SEPARATOR . $section_id .
+                    DIRECTORY_SEPARATOR . $document->type . DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
+
+        return $path;
+
+    }
 
     public function boat()
     {
@@ -31,33 +48,18 @@ class Section extends Model
 
     public function map_image()
     {
-        return $this->morphOne('App\Document', 'documentable');
+        return $this->morphOne('Net7\Documents\Document', 'documentable');
     }
 
-    public function documents()
-    {
-        return $this->morphMany('App\Document', 'documentable');
-    }
 
 
     public function generic_documents(){
-        return $this->documents()->where('type', \App\Document::GENERIC_DOCUMENT_TYPE);
+        return $this->documents()->where('type', \Net7\Documents\Document::GENERIC_DOCUMENT_TYPE);
     }
 
     public function generic_images(){
-        return $this->documents()->where('type', \App\Document::GENERIC_IMAGE_TYPE);
+        return $this->documents()->where('type', \Net7\Documents\Document::GENERIC_IMAGE_TYPE);
     }
-
-    public function addDocumentWithType(\App\Document $doc, $type){
-        if ($type){
-            $doc->type = $type;
-        } else {
-            $doc->type = \App\Document::GENERIC_DOCUMENT_TYPE;
-        }
-        $this->documents()->save($doc);
-
-    }
-
 
     /**
      * Creates a Section using some fake data and some others that have sense

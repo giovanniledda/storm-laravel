@@ -10,7 +10,7 @@ use App\User;
 use App\Project;
 use Validator;
 use Illuminate\Validation\Rule;
-use App\Document;
+use Net7\Documents\Document;
 use App\Utils\Utils;
 use Net7\Logging\models\Logs as Log;
 

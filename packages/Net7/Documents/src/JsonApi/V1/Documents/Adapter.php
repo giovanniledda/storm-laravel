@@ -1,6 +1,6 @@
 <?php
 
-namespace App\JsonApi\V1\Documents;
+namespace Net7\Documents\JsonApi\V1\Documents;
 
 use CloudCreativity\LaravelJsonApi\Eloquent\AbstractAdapter;
 use CloudCreativity\LaravelJsonApi\Pagination\StandardStrategy;
@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 class Adapter extends AbstractAdapter
-{ 
-    
+{
+
     protected $fillable = ['title', 'file'];
 
     /**
@@ -25,8 +25,8 @@ class Adapter extends AbstractAdapter
      * @param StandardStrategy $paging
      */
     public function __construct(StandardStrategy $paging)
-    { 
-        $document = new \App\Document(); 
+    {
+        $document = new \Net7\Documents\Document();
         parent::__construct($document, $paging);
     }
 
