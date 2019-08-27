@@ -38,13 +38,13 @@ class Site extends Model
     }
 
 
-    // public function addDocument(\App\Document $document, $type=false){
+    // public function addDocument(\Net7\Documents\Document $document, $type=false){
     //     $this->documents()->save($document);
     // }
 
     // public function documents()
     // {
-    //     return $this->morphMany('App\Document', 'documentable');
+    //     return $this->morphMany('Net7\Documents\Document', 'documentable');
     // }
 
     public function getAddresses($pagination = false)

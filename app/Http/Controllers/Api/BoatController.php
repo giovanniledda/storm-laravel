@@ -10,7 +10,7 @@ use App\User;
 use App\Boat;
 use Validator;
 use Illuminate\Validation\Rule;
-use App\Document;
+use Net7\Documents\Document;
 use App\Utils\Utils;
 
 

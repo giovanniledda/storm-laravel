@@ -67,7 +67,7 @@ class ApiTaskDocumenttTest extends TestApiCase
                     'title' => $filename,
                     'file' => $base64FileContent,
                     'filename' =>  'testDocument.txt',
-                    'type' => \App\Document::DETAILED_IMAGE_TYPE,
+                    'type' => \Net7\Documents\Document::DETAILED_IMAGE_TYPE,
                     'entity_type' => DOCUMENT_RELATED_ENTITY_TASK,
                     'entity_id' => $task->id
                 ],
@@ -83,7 +83,7 @@ class ApiTaskDocumenttTest extends TestApiCase
         $content = json_decode($response->getContent(), true);
 
         $document_id = $content['data']['id'];
-        $document = \App\Document::find($document_id);
+        $document = \Net7\Documents\Document::find($document_id);
 
         $this->assertEquals($document->id, $document_id);
 

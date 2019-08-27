@@ -157,42 +157,8 @@ class Utils
         }
         return $results;
     }
-    /**
-     * renderizza una risposta standard api dati gli errori di validazione. 
-     * @param type $errors
-     * @return array
-     */
-    public static function renderDocumentErrors($errors) {
-        $e = [];
-        foreach ($errors as $error) {
-            array_push($e, [
-                'status' => 422,
-                'title' => "Unprocessable Entity",
-                'detail'=>$error,
-                'source'=>['source'=>['pointer'=> '/data']]
-            ]);
-        }
-        return $e;
-    }
-    
-    /**
-     * ritorna una risposta jsonApi standard per la creazione dei documenti
-     * @param type $resource
-     * @param type $doc
-     */
-    public static function renderDocumentResponse($resource, $doc) {
-          $ret = ['data' => [
-                    'type' => $resource,
-                    'id' => $doc->id,
-                    'attributes' => [
-                        'name' => $doc->title, 
-                        'created-at' => $doc->created_at,
-                        'updated-at' => $doc->updated_at
-                    ]
-            ]];
-          return $ret;
-    }
-    
+
+
     /**
      * Ritorna la query SQL generata da eloquent.
      * @param type $queryBuilder
@@ -202,7 +168,7 @@ class Utils
         $query = str_replace(array('?'), array('\'%s\''), $queryBuilder->toSql());
         $query = vsprintf($query, $queryBuilder->getBindings());
         return  $query;
-    } 
-    
-    
+    }
+
+
 }

@@ -9,12 +9,12 @@ use Spatie\ModelStatus\HasStatuses;
 use StormUtils;
 use Venturecraft\Revisionable\RevisionableTrait;
 use function GuzzleHttp\json_decode;
-use App\Document;
+use Net7\Documents\Document;
 use Faker\Generator as Faker;
+use Net7\Documents\DocumentableModel;
 
-
-class Task extends Model
-{  
+class Task extends DocumentableModel
+{
     use RevisionableTrait, HasStatuses;
 
     protected $table = 'tasks';
@@ -36,6 +36,35 @@ class Task extends Model
         'y_coord',
         'is_open',
     ];
+
+
+    public function getMediaPath($media){
+
+        $document = $media->model;
+        $media_id = $media->id;
+
+        $project = $this->project;
+        $project_id = $project->id;
+        $task_id = $this->id;
+        $path = 'projects' . DIRECTORY_SEPARATOR . $project_id . DIRECTORY_SEPARATOR . 'tasks' . DIRECTORY_SEPARATOR .
+                $task_id . DIRECTORY_SEPARATOR . $document->type . DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
+
+        return $path;
+
+    }
+
+/*
+
+  $task = $model;
+                $project = $task->project;
+                $project_id = $project->id;
+                $task_id = $task->id;
+                $path .= 'projects' . DIRECTORY_SEPARATOR . $project_id . DIRECTORY_SEPARATOR . 'tasks' . DIRECTORY_SEPARATOR .
+                        $task_id . DIRECTORY_SEPARATOR . $document->type . DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
+
+*/
+
+
 
     protected static function boot()
     {
@@ -75,34 +104,34 @@ class Task extends Model
         return $this->morphMany('App\Comment', 'commentable');
     }
 
-    public function documents(){
-            return $this->morphMany('App\Document', 'documentable');
-    }
-    
-    public function addDocumentWithType(Document $doc, $type){
-        if ($type){
-            $doc->type = $type;
-        } else {
-            $doc->type = \App\Document::GENERIC_DOCUMENT_TYPE;
-        }
-        $this->documents()->save($doc);
+    // public function documents(){
+    //         return $this->morphMany('Net7\Documents\Document', 'documentable');
+    // }
 
-    }
+    // public function addDocumentWithType(Document $doc, $type){
+    //     if ($type){
+    //         $doc->type = $type;
+    //     } else {
+    //         $doc->type = \Net7\Documents\Document::GENERIC_DOCUMENT_TYPE;
+    //     }
+    //     $this->documents()->save($doc);
 
-    public function detailed_images(){ 
-        return $this->documents()->where('type', \App\Document::DETAILED_IMAGE_TYPE);
-    }
+    // }
 
-    public function additional_images(){ 
-        return $this->documents()->where('type', \App\Document::ADDITIONAL_IMAGE_TYPE);
+    public function detailed_images(){
+        return $this->documents()->where('type', \Net7\Documents\Document::DETAILED_IMAGE_TYPE);
     }
 
-    public function generic_images(){ 
-        return $this->documents()->where('type', \App\Document::GENERIC_IMAGE_TYPE);
+    public function additional_images(){
+        return $this->documents()->where('type', \Net7\Documents\Document::ADDITIONAL_IMAGE_TYPE);
     }
 
-    public function generic_documents(){ 
-        return $this->documents()->where('type', \App\Document::GENERIC_DOCUMENT_TYPE);
+    public function generic_images(){
+        return $this->documents()->where('type', \Net7\Documents\Document::GENERIC_IMAGE_TYPE);
+    }
+
+    public function generic_documents(){
+        return $this->documents()->where('type', \Net7\Documents\Document::GENERIC_DOCUMENT_TYPE);
     }
 
     public function history()
@@ -139,7 +168,7 @@ class Task extends Model
 //        return StormUtils::getAllBoatManagers();
         return $this->getProjectUsers();
     }
-     
+
 
 
 
