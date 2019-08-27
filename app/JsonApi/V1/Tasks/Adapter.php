@@ -14,6 +14,7 @@ class Adapter extends AbstractAdapter
         'number',
         'title',
         'status',
+        'is_open',
         'description',
         'estimated_hours',
         'worked_hours',
@@ -24,7 +25,7 @@ class Adapter extends AbstractAdapter
         'subsection_id',
         'x_coord',
         'y_coord',
-        'is_open',
+      
         ];
 
     /**
@@ -88,6 +89,11 @@ class Adapter extends AbstractAdapter
         // ricerca per created-at from
         if ($createdAtTo = $filters->get('created-at-to')) {
             $query->where('created_at', '<=', "{$createdAtTo}");
+        }
+        
+        // ricerca is_open 
+        if ($isOpen = $filters->get('is_open')) {
+            $query->where('is_open', '<=', "{$isOpen}");
         }
          $user = \Auth::user();
         /** restringe il recordset in caso di mancanza di permessi */
