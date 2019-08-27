@@ -4,6 +4,8 @@ namespace App\JsonApi\V1\Tasks;
 
 use Neomerx\JsonApi\Schema\SchemaProvider;
 use App\User;
+use App\Section;
+
 
 class Schema extends SchemaProvider
 {
@@ -87,8 +89,11 @@ class Schema extends SchemaProvider
 //        $author = User::where('id', $resource->author_id)->first();
         $author = $resource->author;
         $comments = $resource->comments()->get();
+        
+          $section =Section::where('id', $resource->section_id)->first();
+        
         return [
-
+            
             'description' => $resource->description,
             'number'=> $resource->number,
             'worked_hours'=> $resource->worked_hours,
@@ -100,11 +105,13 @@ class Schema extends SchemaProvider
             'added_by_storm' => $resource->added_by_storm,
             'project_id' => $resource->project_id,
             'section_id' => $resource->section_id,
+            'section_name' =>$section->name,
             'intervent_type_id' => $resource->intervent_type_id,
             'subsection_id' => $resource->subsection_id,
             'x_coord' => $resource->x_coord,
             'y_coord' => $resource->y_coord,
             'comments'=> $comments,
+            
             'created-at' => $resource->created_at->toAtomString(),
             'updated-at' => $resource->updated_at->toAtomString(),
         ];

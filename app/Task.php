@@ -59,6 +59,7 @@ class Task extends Model
 //        $this->hasOneThrough('App\Boat','App\Project'); // così non funziona perché va a cercare 'projects.task_id' in 'field list' (SQL: select `boats`.*, `projects`.`task_id` as `laravel_through_key` from `boats` inner join `projects` on `projects`.`id` = `boats`.`project_id` where `projects`.`task_id` = 13 limit 1)'
         return $this->project ? $this->project->boat : null;
     }
+   
 
     public function subsection()
     {
