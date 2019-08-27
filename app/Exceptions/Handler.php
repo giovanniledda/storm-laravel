@@ -4,14 +4,14 @@ namespace App\Exceptions;
 
 use CloudCreativity\LaravelJsonApi\Exceptions\HandlesErrors;
 use Exception;
-use function fann_get_sarprop_weight_decay_shift;
 use const HTTP_412_DEL_UPD_ERROR_MSG;
 use const HTTP_412_EXCEPTION_ERROR_MSG;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Support\Str;
 use Neomerx\JsonApi\Exceptions\JsonApiException;
-use function str_contains;
+use App\Utils\Utils as StormUtils;
+
 
 class Handler extends ExceptionHandler
 {
@@ -73,7 +73,11 @@ class Handler extends ExceptionHandler
     {
 
         if ($this->isJsonApi($request, $exception)) {
-            return $this->renderJsonApi($request, $exception);
+
+            $internal_error = StormUtils::convertMessageToInternalErrorCode($exception->getMessage());
+            return StormUtils::jsonAbortWithInternalError($exception->getStatusCode(), $internal_error, null, $exception->getMessage());
+
+//            return $this->renderJsonApi($request, $exception); // return json_api()->response()->exception($e);
         }
         return parent::render($request, $exception);
     }

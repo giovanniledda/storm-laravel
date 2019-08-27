@@ -176,6 +176,7 @@ defined('FLASH_INFO') or define('FLASH_INFO', 'info');
 defined('HTTP_412_EXCEPTION_ERROR_MSG') or define('HTTP_412_EXCEPTION_ERROR_MSG', 'Some external key update has failed. [Exception msg: :exc_msg]');
 defined('HTTP_412_DEL_UPD_ERROR_MSG') or define('HTTP_412_DEL_UPD_ERROR_MSG', 'The resource you are trying to delete or update has other resources related, you cannot delete it.');
 defined('HTTP_412_ADD_UPD_ERROR_MSG') or define('HTTP_412_ADD_UPD_ERROR_MSG', 'The resource you are trying to add or update has other resources related, please check your data and look for missing external keys.');
+defined('CUSTOM_CODE_ERROR_BODY') or define('CUSTOM_CODE_ERROR_BODY', 'Code: :code');
 
 
 
