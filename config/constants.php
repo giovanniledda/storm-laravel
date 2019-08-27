@@ -117,7 +117,7 @@ defined('TASKS_STATUS_IN_PROGRESS') or define('TASKS_STATUS_IN_PROGRESS', 'in pr
 defined('TASKS_STATUS_DENIED') or define('TASKS_STATUS_DENIED', 'denied');
 defined('TASKS_STATUS_REMARKED') or define('TASKS_STATUS_REMARKED', 'remarked');
 defined('TASKS_STATUS_MONITORED') or define('TASKS_STATUS_MONITORED', 'monitored');
-
+defined('TASKS_STATUS_COMPLITED') or define('TASKS_STATUS_COMPLITED', 'complited');
 defined('TASKS_STATUSES') or define('TASKS_STATUSES',
         [
          TASKS_STATUS_DRAFT,
@@ -126,7 +126,8 @@ defined('TASKS_STATUSES') or define('TASKS_STATUSES',
          TASKS_STATUS_IN_PROGRESS,
          TASKS_STATUS_DENIED,
          TASKS_STATUS_REMARKED,
-         TASKS_STATUS_MONITORED
+         TASKS_STATUS_MONITORED,
+         TASKS_STATUS_COMPLITED
          ]);
 
 
@@ -176,6 +177,7 @@ defined('FLASH_INFO') or define('FLASH_INFO', 'info');
 defined('HTTP_412_EXCEPTION_ERROR_MSG') or define('HTTP_412_EXCEPTION_ERROR_MSG', 'Some external key update has failed. [Exception msg: :exc_msg]');
 defined('HTTP_412_DEL_UPD_ERROR_MSG') or define('HTTP_412_DEL_UPD_ERROR_MSG', 'The resource you are trying to delete or update has other resources related, you cannot delete it.');
 defined('HTTP_412_ADD_UPD_ERROR_MSG') or define('HTTP_412_ADD_UPD_ERROR_MSG', 'The resource you are trying to add or update has other resources related, please check your data and look for missing external keys.');
+defined('CUSTOM_CODE_ERROR_BODY') or define('CUSTOM_CODE_ERROR_BODY', 'Code: :code');
 
 
 

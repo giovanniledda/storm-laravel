@@ -6,6 +6,10 @@ use App\Profession;
 use App\Project;
 use App\User;
 use Faker\Factory as Faker;
+use const HTTP_412_ADD_UPD_ERROR_MSG;
+use const HTTP_412_DEL_UPD_ERROR_MSG;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use function is_null;
@@ -170,5 +174,56 @@ class Utils
         return  $query;
     }
 
+    /**
+     * Restituisce una response di errore JSONAPI compliant
+     *
+     * @param int $http_status_code
+     * @param int $internal_error
+     * @param string $title
+     * @param string $message
+     *
+     * @return Response
+     */
+    public static function jsonAbortWithInternalError($http_status_code = 500, $internal_error = 500, $title = null, $message = null)
+    {
+        $h = ['Content-Type' => 'application/vnd.api+json'];
+        $error = [
+            'status' => $http_status_code,
+            'code' => $internal_error];
+
+        if ($title) {
+            $error['title'] = $title;
+        }
+
+        if ($message) {
+            $error['detail'] = $message;
+        }
+        return response()->json(['errors' => $error], (string)$http_status_code, $h);
+
+//        $headers = []; //['Content-Type' => 'application/vnd.api+json'];
+//        return abort($http_status_code, __(CUSTOM_CODE_ERROR_BODY, ['code' => $internal_error]), $headers);
+    }
+
+    /**
+     * Dato un messaggio di errore, restituisce il codice interno specifico
+     * ref: https://net7.codebasehq.com/projects/storm/notebook/HTTP%20STATUSES.md
+     *
+     * @param string $internal_error_message
+     *
+     * @return int
+     */
+    public static function convertMessageToInternalErrorCode($internal_error_message = null)
+    {
+        switch ($internal_error_message) {
+            case HTTP_412_DEL_UPD_ERROR_MSG:
+                return 100;
+            case HTTP_412_ADD_UPD_ERROR_MSG:
+                return 110;
+            case HTTP_412_EXCEPTION_ERROR_MSG:
+                return 120;
+            default:
+                return 500;
+        }
+    }
 
 }
