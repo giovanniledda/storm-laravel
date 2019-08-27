@@ -89,8 +89,7 @@ class Schema extends SchemaProvider
 //        $author = User::where('id', $resource->author_id)->first();
         $author = $resource->author;
         $comments = $resource->comments()->get();
-        
-          $section =Section::where('id', $resource->section_id)->first();
+        $section =Section::where('id', $resource->section_id)->first();
         
         return [
             
@@ -110,8 +109,7 @@ class Schema extends SchemaProvider
             'subsection_id' => $resource->subsection_id,
             'x_coord' => $resource->x_coord,
             'y_coord' => $resource->y_coord,
-            'comments'=> $comments,
-            
+            'comments'=> $comments, 
             'created-at' => $resource->created_at->toAtomString(),
             'updated-at' => $resource->updated_at->toAtomString(),
         ];
