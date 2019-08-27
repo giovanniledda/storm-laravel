@@ -1,5 +1,6 @@
 <?php
 
+use App\Comment;
 use App\Profession;
 use App\Section;
 use App\Task;
@@ -146,7 +147,16 @@ class DatabaseSeeder extends Seeder
                     $task = $this->utils->createTask($project, $section, null, null, $intervent_type);
                     $this->command->info("Task {$task->name} for Project {$project->name}, created");
 
-                    // TODO: aggiungere commenti al task
+                    $this->command->warn(" ------ COMMENTS FOR TASK {$task->name} --------");
+                    foreach ($workers as $user) {
+                        for ($c = 0; $c < $this->faker->numberBetween(10, 30); $c++) {
+                            $comment = Comment::firstOrCreate(['body' => $this->faker->sentence(10)]);
+                            // associo i commenti agli autori
+                            $comment->author()->associate($user)->save();
+                            // ...e al task
+                            $task->comments()->save($comment);
+                        }
+                    }
 
                     // accoppio la sezione al progetto
                     $this->command->warn(" ------ SECTIONS FOR PROJECT {$project->name} --------");
