@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Document;
+use Net7\Documents\Document;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
@@ -21,7 +21,7 @@ class DocumentController extends Controller
      */
     public function createRelatedToTask(Request $request, $related){
 
- 
+
         $task = \App\Task::find($request->task);
         // TODO check task exists
         $title = $request->title;

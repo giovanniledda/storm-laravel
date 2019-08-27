@@ -1,6 +1,6 @@
 <?php
 
-namespace App\JsonApi\V1\Documents;
+namespace Net7\Documents\JsonApi\V1\Documents;
 
 use CloudCreativity\LaravelJsonApi\Validation\AbstractValidators;
 

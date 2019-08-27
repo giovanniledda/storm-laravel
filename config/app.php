@@ -210,14 +210,15 @@ return [
 
         // Gestione numeri di telefono
         Propaganistas\LaravelPhone\PhoneServiceProvider::class,
-        
+
         /**
-         * net7 pacjages
+         * net7 packages
          */
-        
+
         // logging
-        Net7\Logging\LoggingServiceProvider::class
-        
+        Net7\Logging\LoggingServiceProvider::class,
+        // Documents
+        Net7\Documents\DocumentsServiceProvider::class
     ],
 
     /*

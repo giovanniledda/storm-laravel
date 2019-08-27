@@ -20,14 +20,6 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
 
     JsonApi::register('v1', ['namespace'=>'Api'])->routes(function ($api) {
 
-        $api->resource('documents')->except('create');
-
-        $api->resource('documents')->only('show')->controller('DocumentController') //uses the App\Http\Controllers\Api\DocumentController
-        ->routes(function ($docs){
-                $docs->get('{record}/show/{size}', 'show')->name('show_with_size');
-                $docs->get('{record}/show', 'show')->name('show');
-                $docs->post('create', 'create')->name('create');
-            })  ;
 
         $api->resource('sites');
         $api->resource('boat-users')->only('create'); // usato solo per associazione boat - user

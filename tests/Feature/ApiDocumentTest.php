@@ -8,6 +8,8 @@ use App\Project;
 use App\Boat;
 use App\Task;
 
+use \Net7\Documents\Document;
+
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -67,7 +69,7 @@ class ApiDocumentTest extends TestApiCase
                     'title' => $filename,
                     'file' => $base64FileContent,
                     'filename' =>  'testDocument.txt',
-                    'type' => \App\Document::DETAILED_IMAGE_TYPE,
+                    'type' => Document::DETAILED_IMAGE_TYPE,
                     'entity_type' => DOCUMENT_RELATED_ENTITY_TASK,
                     'entity_id' => $task->id
                 ],
@@ -82,8 +84,12 @@ class ApiDocumentTest extends TestApiCase
 
         $content = json_decode($response->getContent(), true);
 
+
+        // TODO: creare tabelle in testing
+
+
         $document_id = $content['data']['id'];
-        $document = \App\Document::find($document_id);
+        $document = Document::find($document_id);
 
         $this->assertEquals($document->id, $document_id);
 
@@ -125,7 +131,7 @@ class ApiDocumentTest extends TestApiCase
                     'title' => $filename,
                     'file' => $base64FileContent,
                     'filename' =>  'testDocument.txt',
-                    'type' => \App\Document::DETAILED_IMAGE_TYPE,
+                    'type' => Document::DETAILED_IMAGE_TYPE,
                     'entity_type' => DOCUMENT_RELATED_ENTITY_PROJECT,
                     'entity_id' => $project->id
                 ],
@@ -140,8 +146,10 @@ class ApiDocumentTest extends TestApiCase
 
         $content = json_decode($response->getContent(), true);
 
+print_r ($content);
+
         $document_id = $content['data']['id'];
-        $document = \App\Document::find($document_id);
+        $document = Document::find($document_id);
 
         $this->assertEquals($document->id, $document_id);
 
@@ -173,7 +181,7 @@ class ApiDocumentTest extends TestApiCase
                      'title' => $filename,
                      'file' => $base64FileContent,
                      'filename' =>  'testDocument.txt',
-                     'type' => \App\Document::DETAILED_IMAGE_TYPE,
+                     'type' => Document::DETAILED_IMAGE_TYPE,
                      'entity_type' => DOCUMENT_RELATED_ENTITY_TASK,
                      'entity_id' => 8989123
                  ],
@@ -214,7 +222,7 @@ class ApiDocumentTest extends TestApiCase
                         'title' => $filename,
                         'file' => $base64FileContent,
                         'filename' =>  'testDocument.txt',
-                        'type' => \App\Document::DETAILED_IMAGE_TYPE,
+                        'type' => Document::DETAILED_IMAGE_TYPE,
                         'entity_type' => 'non_existent_one',
                         'entity_id' => 1
                     ],
@@ -224,13 +232,11 @@ class ApiDocumentTest extends TestApiCase
 
 
             $response = $this->json('POST', route('api:v1:documents.create'), $data, $this->headers )
-
-            ->assertJsonStructure(['errors' => 'Unknown entity_type value']);
+            ->assertJsonStructure(['errors']);
 
         $content = json_decode($response->getContent(), true);
 
 
-            print_r ($content);
 
         }
 }

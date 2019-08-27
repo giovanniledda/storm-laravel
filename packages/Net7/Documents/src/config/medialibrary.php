@@ -27,7 +27,7 @@ return [
      * The fully qualified class name of the media model.
      */
     'media_model' => Spatie\MediaLibrary\Models\Media::class,
-    // 'media_model' => App\Document::class,
+    // 'media_model' => Net7\Documents\Document::class,
 
     's3' => [
         /*
@@ -88,7 +88,7 @@ return [
     /*
      * The class that contains the strategy for determining a media file's path.
      */
-    'path_generator' => \App\PathGenerators\StormMediaPathGenerator::class,
+    'path_generator' => Net7\Documents\PathGenerators\Net7DocumentsMediaPathGenerator::class,
 
     /*
      * Medialibrary will try to optimize all converted images by removing

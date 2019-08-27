@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Document;
+use Net7\Documents\Document;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;

@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Document;
+use Net7\Documents\Document;
 use Tests\TestApiCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -25,7 +25,7 @@ class ApiDocumentTest extends TestApiCase
 
         $this->disableExceptionHandling();
 
- 
+
 
 
         // $this->withoutExceptionHandling();
@@ -84,7 +84,7 @@ $headers = [
 
         $document_id = $content['data']['id'];
 
-        $doc = \App\Document::find($document_id);
+        $doc = \Net7\Documents\Document::find($document_id);
 
         $this->assertEquals($doc->id, $document_id);
         // print_r ($response->getContent());

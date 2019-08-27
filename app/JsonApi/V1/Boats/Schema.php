@@ -25,11 +25,11 @@ class Schema extends SchemaProvider
     public function getPrimaryMeta($resource)
     {
         //App\Boat resource
-        
-        
+
+
         $generic_documents = $resource->generic_documents;
 
-         
+
         // $giu = [];
         // foreach ($generic_images as $i){
         //     $giu []= $i->getShowApiUrl();
@@ -51,7 +51,7 @@ class Schema extends SchemaProvider
         }
         return [
             'generic_documents' => $gdu,
-            'image' => $image ? $image->getShowApiUrl() : null, 
+            'image' => $image ? $image->getShowApiUrl() : null,
         ];
         // TODO : mettere sia il link documentale all'immagine della barca che il project_id
     }

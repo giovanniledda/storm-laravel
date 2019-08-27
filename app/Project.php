@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\ModelStatus\HasStatuses;
 use Faker\Generator as Faker;
 
-class Project extends Model {
+use \Net7\Documents\DocumentableModel;
+
+class Project extends DocumentableModel {
 
     use HasStatuses;
 
@@ -21,6 +23,20 @@ class Project extends Model {
         parent::boot();
 
         Project::observe(ProjectObserver::class);
+    }
+
+
+    public function getMediaPath($media){
+
+        $document = $media->model;
+        $media_id = $media->id;
+
+        $project_id = $this->id;
+        $path = 'projects' . DIRECTORY_SEPARATOR . $project_id . DIRECTORY_SEPARATOR . $document->type .
+                 DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
+
+        return $path;
+
     }
 
     public function boat() {
@@ -85,9 +101,6 @@ class Project extends Model {
         return $this->morphMany('App\Comment', 'commentable');
     }
 
-    public function documents() {
-        return $this->morphMany('App\Document', 'documentable');
-    }
 
     public function users() {
         return $this->belongsToMany('App\User')
@@ -134,42 +147,34 @@ class Project extends Model {
         return $this->documents()->where('type', Document::GENERIC_DOCUMENT_TYPE);
     }
 
-    public function addDocumentWithType(\App\Document $doc, $type) {
-        if ($type) {
-            $doc->type = $type;
-        } else {
-            $doc->type = \App\Document::GENERIC_DOCUMENT_TYPE;
-        }
-        $this->documents()->save($doc);
-    }
 
     /**
      * Chiude un progetto o tenta di chiuderlo se trova i task tutti chiusi
      * @param type $force
      */
     public function close($force = 0) {
-        
-        /** controllo se il progetto ha task che si trovano in 
+
+        /** controllo se il progetto ha task che si trovano in
          *  TASKS_STATUS_DRAFT, TASKS_STATUS_IN_PROGRESS,
-         *  TASKS_STATUS_REMARKED, TASKS_STATUS_ACCEPTED  
+         *  TASKS_STATUS_REMARKED, TASKS_STATUS_ACCEPTED
          * * */
         $foundTasks = $this->tasks()
                         ->where('is_open', '=', 1)
                         ->whereIn('task_status',
                           [
-                            TASKS_STATUS_DRAFT, 
+                            TASKS_STATUS_DRAFT,
                             TASKS_STATUS_SUBMITTED,
                             TASKS_STATUS_ACCEPTED,
                             TASKS_STATUS_IN_PROGRESS,
-                            TASKS_STATUS_REMARKED  
+                            TASKS_STATUS_REMARKED
                            ]);
-                    
-        
+
+
         if ($foundTasks->count() && !$force) {
             // non posso chiudere il progetto ritorno false
             return ['success'=>false, 'tasks'=>$foundTasks->count()];
         }
-        
+
         if ($foundTasks->count() && $force) {
             // chiudo tutti i ticket che trovo e metto il progetto in stato closed
             $n =  $foundTasks->count();
@@ -179,7 +184,7 @@ class Project extends Model {
             $this->_closeProject();
            return ['success'=>true, 'tasks'=>$n];
         }
-            
+
         if ($foundTasks->count() == 0) {
             // chiudo il progetto e ritorno true
             $this->_closeProject();

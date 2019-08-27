@@ -8,7 +8,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use App\Task;
 use App\User;
-use App\Document;
+use Net7\Documents\Document;
 use Illuminate\Validation\Rule;
  use Validator;
 use Illuminate\Http\UploadedFile;

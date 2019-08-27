@@ -30,8 +30,6 @@ class ConvertFileFromBase64
         if (isset($request->content['file'])){
             unset($request->content['file']);
         }
-        $a = 'df';
-
 
         return $next($request);
     }

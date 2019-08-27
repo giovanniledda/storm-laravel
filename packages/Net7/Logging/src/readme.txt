@@ -8,6 +8,17 @@ dopo aver scaricato il package, aprire un terminale e digitare i seguenti comand
 #composer update
 #php artisan migrate:fresh
 
+
+Aggiungere nel file config/app.php
+
+
+
+    'providers' => [
+        //...
+          Net7\Logging\LoggingServiceProvider::class
+
+    ]
+
 il package è pronto per essere usato.
 
 USAGE
@@ -22,14 +33,14 @@ class yourClass {
 }
 
 sarà creato un record nella tabella logs di tipo INFO, altre opzioni possono essere :
- 
-   notice($message, $context = null) 
+
+   notice($message, $context = null)
    warning($message, $context = null)
    error($message, $context = null)
    critical($message, $context = null)
    alert($message, $context = null)
    emergency($message, $context = null)
- 
+
 context può essere un oggetto un'array o una string o null.
 
 

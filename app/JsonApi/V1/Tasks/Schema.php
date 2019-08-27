@@ -27,9 +27,9 @@ class Schema extends SchemaProvider
 
 
      public function getPrimaryMeta($resource)
-    { 
-         
-        
+    {
+
+
         $detailed_images = $resource->detailed_images;
         $generic_images = $resource->generic_images;
         $additional_images = $resource->additional_images;
@@ -89,8 +89,7 @@ class Schema extends SchemaProvider
 //        $author = User::where('id', $resource->author_id)->first();
         $author = $resource->author;
         $comments = $resource->comments()->get();
-        
-          $section =Section::where('id', $resource->section_id)->first();
+        $section =Section::where('id', $resource->section_id)->first();
         
         return [
             
@@ -98,7 +97,7 @@ class Schema extends SchemaProvider
             'number'=> $resource->number,
             'worked_hours'=> $resource->worked_hours,
             'estimated_hours'=> $resource->estimated_hours,
-            'status'=> $resource->task_status, 
+            'status'=> $resource->task_status,
             'author_id'=> $resource->author ? $author->id : '',
             'author'=> $resource->author ? $author->name : '',
             'is_open' => $resource->is_open,
@@ -110,8 +109,7 @@ class Schema extends SchemaProvider
             'subsection_id' => $resource->subsection_id,
             'x_coord' => $resource->x_coord,
             'y_coord' => $resource->y_coord,
-            'comments'=> $comments,
-            
+            'comments'=> $comments, 
             'created-at' => $resource->created_at->toAtomString(),
             'updated-at' => $resource->updated_at->toAtomString(),
         ];
