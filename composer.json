@@ -16,11 +16,8 @@
             }
         },
         {
-            "type": "path",
-            "url": "packages/Net7/Logging/src",
-            "options": {
-                "symlink": true
-            }
+            "type": "git",
+            "url": "https://net7.codebasehq.com/storm/net7logging.git"
         }
     ],
     "require": {
@@ -37,14 +34,15 @@
         "laravel/tinker": "^1.0",
         "laravelcollective/html": "^5.8",
         "lecturize/laravel-addresses": "^0.1.1",
+        "net7/documents": "dev-develop",
+        "net7/logging": "dev-master",
         "norse-blue/parentity": "dev-master",
         "predis/predis": "^1.1",
         "propaganistas/laravel-phone": "^4.2",
         "spatie/flysystem-dropbox": "^1.1",
         "spatie/laravel-model-status": "^1.7",
         "spatie/laravel-permission": "^2.37",
-        "venturecraft/revisionable": "1.*",
-        "net7/documents": "dev-develop"
+        "venturecraft/revisionable": "1.*"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",
@@ -70,7 +68,6 @@
     "autoload": {
         "psr-4": {
             "App\\": "app/",
-            "Net7\\Logging\\": "packages/Net7/Logging/src/",
             "Net7\\Documents\\": "packages/Net7/Documents/src/"
         },
         "classmap": [

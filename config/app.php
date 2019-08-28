@@ -217,6 +217,7 @@ return [
 
         // logging
         Net7\Logging\LoggingServiceProvider::class,
+
         // Documents
         Net7\Documents\DocumentsServiceProvider::class
     ],

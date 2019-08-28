@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "8d4eb9b4f4e87216e77cc92f7ceaf766",
+    "content-hash": "154cfd7245887c0c590fdb845f53e1c5",
     "packages": [
         {
             "name": "barryvdh/laravel-ide-helper",
@@ -2991,6 +2991,44 @@
             "transport-options": {
                 "symlink": true
             }
+        },
+        {
+            "name": "net7/logging",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://net7.codebasehq.com/storm/net7logging.git",
+                "reference": "434050880843ca37c140aef1ae1ff10a488a12ca"
+            },
+            "require": {
+                "php": "^7.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Net7\\Logging\\LoggingServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Net7\\Logging\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Net7\\Logging\\": "src/"
+                }
+            },
+            "authors": [
+                {
+                    "name": "Antonio Reina",
+                    "email": "reina@netseven.it"
+                }
+            ],
+            "description": "Performs logging into database related to objects of your application",
+            "time": "2019-08-28T10:54:44+00:00"
         },
         {
             "name": "nikic/php-parser",
@@ -8205,8 +8243,9 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "norse-blue/parentity": 20,
-        "net7/documents": 20
+        "net7/documents": 20,
+        "net7/logging": 20,
+        "norse-blue/parentity": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
