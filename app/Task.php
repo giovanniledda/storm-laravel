@@ -4,9 +4,13 @@ namespace App;
 
 use App\Observers\TaskObserver;
 use Illuminate\Database\Eloquent\Model;
+use function in_array;
 use function is_object;
+use const PROJECT_STATUS_CLOSED;
 use Spatie\ModelStatus\HasStatuses;
 use StormUtils;
+use const TASKS_STATUS_COMPLITED;
+use const TASKS_STATUS_DENIED;
 use Venturecraft\Revisionable\RevisionableTrait;
 use function GuzzleHttp\json_decode;
 use Net7\Documents\Document;
@@ -193,15 +197,18 @@ class Task extends DocumentableModel
                                           TaskInterventType $type = null)
     {
 
+        $status = $faker->randomElement(TASKS_STATUSES);
+        $is_open = is_object($proj) ? ($proj->project_status != PROJECT_STATUS_CLOSED) : !in_array($status, [TASKS_STATUS_COMPLITED, TASKS_STATUS_DENIED]);
         $t = new Task([
                 'number' => $faker->randomDigitNotNull(),
                 'title' => $faker->sentence(),
                 'description' => $faker->text(),
                 'estimated_hours' => $faker->randomFloat(1, $min = 0, $max = 100),
                 'worked_hours' => $faker->randomFloat(1, $min = 0, $max = 100),
-                'x_coord' => $faker->randomFloat(2, $min = 0, $max = 100),
-                'y_coord' => $faker->randomFloat(2, $min = 0, $max = 100),
-                'task_status' => $faker->randomElement(TASKS_STATUSES),
+                'x_coord' => $faker->randomFloat(2, $min = 0, $max = 3000),
+                'y_coord' => $faker->randomFloat(2, $min = 0, $max = 1000),
+                'task_status' => $status, //$faker->randomElement(TASKS_STATUSES),
+                'is_open' => $is_open, //$faker->randomElement([1, 0]),
                 'project_id' => $proj ? $proj->id : null,
                 'section_id' => $sect ? $sect->id : null,
                 'subsection_id' => $ssect ? $ssect->id : null,

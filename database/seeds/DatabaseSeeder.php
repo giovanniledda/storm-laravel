@@ -1,8 +1,10 @@
 <?php
 
+use App\Comment;
 use App\Profession;
 use App\Section;
 use App\Task;
+use App\TaskInterventType;
 use Illuminate\Database\Seeder;
 use App\Permission;
 use App\Role;
@@ -47,10 +49,25 @@ class DatabaseSeeder extends Seeder
             // ... e 5 sezioni per ciascuna
 
             $sections[$boats[$i]->id] = [];
+            $left_done = $right_done = false;
             for ($s = 0; $s < 5; $s++) {
+
                 $sections[$boats[$i]->id] = $this->utils->createSection($boats[$i]);
 
                 $this->command->info("Section {$sections[$boats[$i]->id]->name} for Boat {$boats[$i]->name} created");
+
+                // Creare un left, un right e gli altri deck
+                if (!$left_done) {
+                    $sections[$boats[$i]->id]->update(['section_type' => SECTION_TYPE_LEFT_SIDE]);
+                    $left_done = true;
+                    continue;
+                }
+                if (!$right_done) {
+                    $sections[$boats[$i]->id]->update(['section_type' => SECTION_TYPE_RIGHT_SIDE]);
+                    $right_done = true;
+                    continue;
+                }
+                $sections[$boats[$i]->id]->update(['section_type' => SECTION_TYPE_DECK]);
             }
         }
 
@@ -113,7 +130,7 @@ class DatabaseSeeder extends Seeder
             $this->command->warn(" ------ PROJECTS FOR BOAT {$boat->name} --------");
 
             $open = $closed = 0;
-            for ($p = 0; $p < 6; $p++) {
+            for ($p = 0; $p < 3; $p++) {
                 $project = $this->utils->createProject($site, $boat);
 
                 $this->command->info("Project {$project->name} for Boat {$boat->name}, created");
@@ -122,11 +139,24 @@ class DatabaseSeeder extends Seeder
                 // ...con N task associati
                 $this->command->warn(" ------ TASKS FOR PROJECT {$project->name} --------");
 
-                $tasks = [];
-                for ($t = 0; $t < 9; $t++) {
+                $intervent_types = \Config::get('storm.startup.task_intervent_types');
+
+                for ($t = 0; $t < $this->faker->numberBetween(20, 50); $t++) {
                     $section = $this->faker->randomElement($boat->sections);
-                    $task = $this->utils->createTask($project, $section, null, null, $this->utils->createTaskInterventType());
+                    $intervent_type = TaskInterventType::firstOrCreate($this->faker->randomElement($intervent_types));
+                    $task = $this->utils->createTask($project, $section, null, null, $intervent_type);
                     $this->command->info("Task {$task->name} for Project {$project->name}, created");
+
+                    $this->command->warn(" ------ COMMENTS FOR TASK {$task->name} --------");
+                    foreach ($workers as $user) {
+                        for ($c = 0; $c < $this->faker->numberBetween(10, 30); $c++) {
+                            $comment = Comment::firstOrCreate(['body' => $this->faker->sentence(10)]);
+                            // associo i commenti agli autori
+                            $comment->author()->associate($user)->save();
+                            // ...e al task
+                            $task->comments()->save($comment);
+                        }
+                    }
 
                     // accoppio la sezione al progetto
                     $this->command->warn(" ------ SECTIONS FOR PROJECT {$project->name} --------");
@@ -159,18 +189,27 @@ class DatabaseSeeder extends Seeder
                     $this->command->info("Worker {$worker->name} associated to Project {$project->name}, with Profession {$profession->name} created");
                 }
 
-                // Uno solo deve essere open, due closed, gli altri operational
+                if (0) {
+                    // Uno solo deve essere open, due closed, gli altri operational
+                    if ($open == 0) {
+                        $open++;
+                        $project->update(['project_status' => PROJECT_STATUS_IN_SITE]);
+                        continue;
+                    }
+                    if ($closed < 2) {
+                        $closed++;
+                        $project->update(['project_status' => PROJECT_STATUS_CLOSED]);
+                        continue;
+                    }
+                    $project->update(['project_status' => PROJECT_STATUS_OPERATIONAL]);
+                }
+
                 if ($open == 0) {
                     $open++;
-                    $project->update(['project_status' => PROJECT_STATUS_IN_SITE]);
+                    $project->update(['project_status' => $this->faker->randomElement([PROJECT_STATUS_IN_SITE, PROJECT_STATUS_OPERATIONAL])]);
                     continue;
                 }
-                if ($closed < 2) {
-                    $closed++;
-                    $project->update(['project_status' => PROJECT_STATUS_CLOSED]);
-                    continue;
-                }
-                $project->update(['project_status' => PROJECT_STATUS_OPERATIONAL]);
+                $project->update(['project_status' => PROJECT_STATUS_CLOSED]);
             }
         }
     }
