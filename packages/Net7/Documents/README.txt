@@ -44,12 +44,18 @@ e nel file composer.json
 
 Aprire un terminale e digitare i seguenti comandi :
 
-# cd CARTELLA_PROGETTO
-# composer update
-# php artisan migrate
+    $ cd CARTELLA_PROGETTO
+    $ composer update
+    $ php artisan migrate
 
 
-il package è pronto per essere usato.Il package fornisce delle rotte json-api dichiarate nel file src/routes/routes.php, se necessario si possono sovrascrivere nel file routes/api.php o simili della propria app
+Pubblicare gli assets:
+
+    $ php artisan vendor:publish
+
+
+
+Il package è pronto per essere usato.Il package fornisce delle rotte json-api dichiarate nel file src/routes/routes.php, se necessario si possono sovrascrivere nel file routes/api.php o simili della propria app
 
 Aggiungerle al proprio file di configurazione di json-api (es: config/json-api-v1.php)
 

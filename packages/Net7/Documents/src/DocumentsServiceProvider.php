@@ -16,10 +16,15 @@ class DocumentsServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__.'/routes/routes.php');
         $this->loadMigrationsFrom(__DIR__.'/database/migrations');
 
+
         $this->publishes([
-            __DIR__ . '/config' => config_path(),
-            __DIR__ . '/jsonApi/V1' => config('net7documents.json_api_namespace')
+            __DIR__ . '/baseJsonApiClasses/Documents' => config('net7documents.json_api_namespace')
         ]);
+
+        // $this->publishes([
+        //     __DIR__ . '/config' => config_path(),
+        //     __DIR__ . '/JsonApi/V1/Documents' => config('net7documents.json_api_namespace')
+        // ]);
     }
 
     /**
