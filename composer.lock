@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "154cfd7245887c0c590fdb845f53e1c5",
+    "content-hash": "f6af83621d9bf3c9a28566f243c06da2",
     "packages": [
         {
             "name": "barryvdh/laravel-ide-helper",
@@ -2951,12 +2951,11 @@
         },
         {
             "name": "net7/documents",
-            "version": "dev-develop",
-            "dist": {
-                "type": "path",
-                "url": "packages/Net7/Documents/src",
-                "reference": "b846eba9c481a130cdd1fc843d77f7292400e6a7",
-                "shasum": null
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://net7.codebasehq.com/storm/net7documents.git",
+                "reference": "ee00c84374b136b8147a50a23a489b5c65d17a5c"
             },
             "require": {
                 "cloudcreativity/laravel-json-api": "^1.1",
@@ -2977,6 +2976,11 @@
                     "Net7\\Documents\\": "src/"
                 }
             },
+            "autoload-dev": {
+                "psr-4": {
+                    "Net7\\Documents\\": "src/"
+                }
+            },
             "authors": [
                 {
                     "name": "Antonio Reina",
@@ -2988,9 +2992,7 @@
                 }
             ],
             "description": "Add documents to an object of your application",
-            "transport-options": {
-                "symlink": true
-            }
+            "time": "2019-08-28T15:01:25+00:00"
         },
         {
             "name": "net7/logging",

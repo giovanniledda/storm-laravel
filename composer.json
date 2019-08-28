@@ -9,15 +9,12 @@
     "license": "MIT",
     "repositories": [
         {
-            "type": "path",
-            "url": "packages/Net7/Documents/src",
-            "options": {
-                "symlink": true
-            }
+            "type": "git",
+            "url": "https://net7.codebasehq.com/storm/net7logging.git"
         },
         {
             "type": "git",
-            "url": "https://net7.codebasehq.com/storm/net7logging.git"
+            "url": "https://net7.codebasehq.com/storm/net7documents.git"
         }
     ],
     "require": {
@@ -34,7 +31,7 @@
         "laravel/tinker": "^1.0",
         "laravelcollective/html": "^5.8",
         "lecturize/laravel-addresses": "^0.1.1",
-        "net7/documents": "dev-develop",
+        "net7/documents": "dev-master",
         "net7/logging": "dev-master",
         "norse-blue/parentity": "dev-master",
         "predis/predis": "^1.1",
@@ -67,8 +64,7 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "app/",
-            "Net7\\Documents\\": "packages/Net7/Documents/src/"
+            "App\\": "app/"
         },
         "classmap": [
             "database/seeds",
