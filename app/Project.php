@@ -9,6 +9,7 @@ use Spatie\ModelStatus\HasStatuses;
 use Faker\Generator as Faker;
 
 use \Net7\Documents\DocumentableModel;
+use \Net7\Documents\Document; 
 
 class Project extends DocumentableModel {
 

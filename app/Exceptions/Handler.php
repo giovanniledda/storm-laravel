@@ -69,16 +69,18 @@ class Handler extends ExceptionHandler
      * @param  \Exception $exception
      * @return \Illuminate\Http\Response
      */
-    public function render($request, Exception $exception)
+    public function render($request, \Exception $exception)
     {
-
+        $message = method_exists (  $exception , 'getMessage' ) ? $exception->getMessage() : 'generic error';
+        $code    = method_exists (  $exception , 'getStatusCode' ) ? $exception->getStatusCode() : 100;
+        /*
         if ($this->isJsonApi($request, $exception)) {
-
-            $internal_error = StormUtils::convertMessageToInternalErrorCode($exception->getMessage());
-            return StormUtils::jsonAbortWithInternalError($exception->getStatusCode(), $internal_error, null, $exception->getMessage());
+            
+            $internal_error = StormUtils::convertMessageToInternalErrorCode($message);
+            return StormUtils::jsonAbortWithInternalError($code, $internal_error, null, $message);
 
 //            return $this->renderJsonApi($request, $exception); // return json_api()->response()->exception($e);
-        }
+        } */
         return parent::render($request, $exception);
     }
 

@@ -28,8 +28,7 @@ class Schema extends SchemaProvider
 
      public function getPrimaryMeta($resource)
     {
-
-
+ 
         $detailed_images = $resource->detailed_images;
         $generic_images = $resource->generic_images;
         $additional_images = $resource->additional_images;

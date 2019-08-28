@@ -9,7 +9,7 @@ use function is_object;
 use const PROJECT_STATUS_CLOSED;
 use Spatie\ModelStatus\HasStatuses;
 use StormUtils;
-use const TASKS_STATUS_COMPLITED;
+use const TASKS_STATUS_COMPLETED;
 use const TASKS_STATUS_DENIED;
 use Venturecraft\Revisionable\RevisionableTrait;
 use function GuzzleHttp\json_decode;
@@ -74,7 +74,7 @@ class Task extends DocumentableModel
     {
         parent::boot();
 
-        Task::observe(TaskObserver::class);
+    //    Task::observe(TaskObserver::class);
     }
 
     public function intervent_type()
@@ -198,7 +198,7 @@ class Task extends DocumentableModel
     {
 
         $status = $faker->randomElement(TASKS_STATUSES);
-        $is_open = is_object($proj) ? ($proj->project_status != PROJECT_STATUS_CLOSED) : !in_array($status, [TASKS_STATUS_COMPLITED, TASKS_STATUS_DENIED]);
+        $is_open = is_object($proj) ? ($proj->project_status != PROJECT_STATUS_CLOSED) : !in_array($status, [TASKS_STATUS_COMPLETED, TASKS_STATUS_DENIED]);
         $t = new Task([
                 'number' => $faker->randomDigitNotNull(),
                 'title' => $faker->sentence(),
