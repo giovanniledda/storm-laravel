@@ -4,13 +4,13 @@ namespace App\Exceptions;
 
 use CloudCreativity\LaravelJsonApi\Exceptions\HandlesErrors;
 use Exception;
-use const HTTP_412_DEL_UPD_ERROR_MSG;
-use const HTTP_412_EXCEPTION_ERROR_MSG;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Support\Str;
 use Neomerx\JsonApi\Exceptions\JsonApiException;
 use App\Utils\Utils as StormUtils;
+use const HTTP_412_DEL_UPD_ERROR_MSG;
+use const HTTP_412_EXCEPTION_ERROR_MSG;
 
 
 class Handler extends ExceptionHandler
@@ -48,15 +48,7 @@ class Handler extends ExceptionHandler
     public function report(Exception $exception)
     {
         if ($exception instanceof QueryException) {
-            if (Str::contains($exception->getMessage(), "Integrity constraint violation")) {
-                if (Str::contains($exception->getMessage(), "1451")) {
-                    abort(412, __(HTTP_412_DEL_UPD_ERROR_MSG));
-                }
-                if (Str::contains($exception->getMessage(), "1452")) {
-                    abort(412, __(HTTP_412_ADD_UPD_ERROR_MSG));
-                }
-            }
-            abort(412, __(HTTP_412_EXCEPTION_ERROR_MSG, ['exc_msg' => $exception->getMessage()]));
+            StormUtils::catchIntegrityContraintViolationException($exception);
         }
 
         parent::report($exception);
@@ -71,13 +63,10 @@ class Handler extends ExceptionHandler
      */
     public function render($request, \Exception $exception)
     {
-        $message = method_exists (  $exception , 'getMessage' ) ? $exception->getMessage() : 'generic error';
-        $code    = method_exists (  $exception , 'getStatusCode' ) ? $exception->getStatusCode() : 100;
-        
         if ($this->isJsonApi($request, $exception)) {
             
-         //   $internal_error = StormUtils::convertMessageToInternalErrorCode($message);
-          //  return StormUtils::jsonAbortWithInternalError($code, $internal_error, null, $message);
+            //   $internal_error = StormUtils::convertMessageToInternalErrorCode($message);
+            //  return StormUtils::jsonAbortWithInternalError($code, $internal_error, null, $message);
 
             return $this->renderJsonApi($request, $exception); // return json_api()->response()->exception($e);
         }  

@@ -41,9 +41,14 @@ class Section extends DocumentableModel
         return $this->hasMany('App\Subsection');
     }
 
+//    public function tasks()
+//    {
+//        return $this->hasManyThrough('App\Task', 'App\Subsection');
+//    }
+
     public function tasks()
     {
-        return $this->hasManyThrough('App\Task', 'App\Subsection');
+        return $this->hasMany('App\Task');
     }
 
     public function map_image()

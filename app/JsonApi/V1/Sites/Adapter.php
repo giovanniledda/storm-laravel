@@ -2,11 +2,14 @@
 
 namespace App\JsonApi\V1\Sites;
 
+use function abort_if;
+use App\Site;
 use CloudCreativity\LaravelJsonApi\Eloquent\AbstractAdapter;
 
 use CloudCreativity\LaravelJsonApi\Pagination\StandardStrategy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use StormUtils;
 
 class Adapter extends AbstractAdapter
 {
@@ -37,23 +40,31 @@ class Adapter extends AbstractAdapter
     {
         // TODO
     }
-     
-    
-        /**
-     * todo da sistemare la formattazione
+
+
+//    /**
+//     * @var Model $record
+//     */
+//    protected function destroy($record)
+//    {
+//        try {
+//            $ret = (bool)$record->delete();
+//            return $ret;
+//        } catch (\Exception $exc) {
+////            return StormUtils::catchIntegrityContraintViolationException($exc);
+//            return StormUtils::jsonAbortWithInternalError(412, 100, 'Precondition failed', HTTP_412_DEL_UPD_ERROR_MSG);
+//        }
+//    }
+
+    /**
+     * Pre-delete hook
+     *
+     * @param Site $site
      */
-    protected function destroy($record)
+    protected function deleting(Site $site)
     {
-        try {
-            return (bool) $record->delete();
-        } catch (\Exception $exc) {
-            
-           echo $exc->getCode();
-           echo $exc->getMessage();
-           exit();
-        }
-        /** @var Model $record */
-        
+        abort_if($site->boats()->count(), 412, __(HTTP_412_ADD_DEL_ENTITIES_ERROR_MSG, ['resource' => 'Site', 'entities' => 'Boats']));
+        abort_if($site->projects()->count(), 412, __(HTTP_412_ADD_DEL_ENTITIES_ERROR_MSG, ['resource' => 'Site', 'entities' => 'Projects']));
     }
-    
+
 }

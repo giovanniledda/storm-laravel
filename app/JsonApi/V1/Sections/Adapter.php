@@ -2,6 +2,7 @@
 
 namespace App\JsonApi\V1\Sections;
 
+use App\Section;
 use CloudCreativity\LaravelJsonApi\Eloquent\AbstractAdapter;
 use CloudCreativity\LaravelJsonApi\Pagination\StandardStrategy;
 use Illuminate\Database\Eloquent\Builder;
@@ -38,4 +39,14 @@ class Adapter extends AbstractAdapter
         // TODO
     }
 
+    /**
+     * Pre-delete hook
+     *
+     * @param Section $section
+     */
+    protected function deleting(Section $section)
+    {
+        abort_if($section->subsections()->count(), 412, __(HTTP_412_ADD_DEL_ENTITIES_ERROR_MSG, ['resource' => 'Section', 'entities' => 'Subsections']));
+        abort_if($section->tasks()->count(), 412, __(HTTP_412_ADD_DEL_ENTITIES_ERROR_MSG, ['resource' => 'Section', 'entities' => 'Tasks']));
+    }
 }

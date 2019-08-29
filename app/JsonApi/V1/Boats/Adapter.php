@@ -2,6 +2,7 @@
 
 namespace App\JsonApi\V1\Boats;
 
+use App\Boat;
 use CloudCreativity\LaravelJsonApi\Eloquent\AbstractAdapter;
 use CloudCreativity\LaravelJsonApi\Pagination\StandardStrategy;
 use Illuminate\Database\Eloquent\Builder;
@@ -79,6 +80,15 @@ class Adapter extends AbstractAdapter
     {
         return $this->hasMany();
     }
-    
-    
+
+    /**
+     * Pre-delete hook
+     *
+     * @param Boat $boat
+     */
+    protected function deleting(Boat $boat)
+    {
+        abort_if($boat->sections()->count(), 412, __(HTTP_412_ADD_DEL_ENTITIES_ERROR_MSG, ['resource' => 'Boat', 'entities' => 'Sections']));
+        abort_if($boat->projects()->count(), 412, __(HTTP_412_ADD_DEL_ENTITIES_ERROR_MSG, ['resource' => 'Boat', 'entities' => 'Projects']));
+    }
 }

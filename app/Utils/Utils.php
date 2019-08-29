@@ -2,26 +2,23 @@
 
 namespace App\Utils;
 
+use Exception;
 use App\Profession;
-use App\Project;
 use App\User;
 use Faker\Factory as Faker;
-use const HTTP_412_ADD_UPD_ERROR_MSG;
-use const HTTP_412_DEL_UPD_ERROR_MSG;
-use Illuminate\Http\JsonResponse;
+use Webpatser\Countries\Countries;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use function is_null;
 use const PERMISSION_ADMIN;
 use const PERMISSION_WORKER;
 use const PROJECT_STATUS_CLOSED;
-use const ROLE_ADMIN;
-use const ROLE_BOAT_MANAGER;
-use const ROLE_WORKER;
 use const USER_PHONE_TYPE_FIXED;
 use const USER_PHONE_TYPE_MOBILE;
-use Webpatser\Countries\Countries;
+use const HTTP_412_ADD_UPD_ERROR_MSG;
+use const HTTP_412_DEL_UPD_ERROR_MSG;
 
 class Utils
 {
@@ -175,6 +172,23 @@ class Utils
     }
 
     /**
+     * Esamina l'eccezione e a seconda del motivo che l'ha scatenata determina un abort differente
+     *
+     * @param Exception $exception
+     */
+    public static function catchIntegrityContraintViolationException(Exception $exception){
+        if (Str::contains($exception->getMessage(), "Integrity constraint violation")) {
+            if (Str::contains($exception->getMessage(), "1451")) {
+                abort(412, __(HTTP_412_DEL_UPD_ERROR_MSG));
+            }
+            if (Str::contains($exception->getMessage(), "1452")) {
+                abort(412, __(HTTP_412_ADD_UPD_ERROR_MSG));
+            }
+        }
+        abort(412, __(HTTP_412_EXCEPTION_ERROR_MSG, ['exc_msg' => $exception->getMessage()]));
+    }
+
+    /**
      * Restituisce una response di errore JSONAPI compliant
      *
      * @param int $http_status_code
@@ -199,9 +213,6 @@ class Utils
             $error['detail'] = $message;
         }
         return response()->json(['errors' => $error], (string)$http_status_code, $h);
-
-//        $headers = []; //['Content-Type' => 'application/vnd.api+json'];
-//        return abort($http_status_code, __(CUSTOM_CODE_ERROR_BODY, ['code' => $internal_error]), $headers);
     }
 
     /**
