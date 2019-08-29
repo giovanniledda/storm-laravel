@@ -53,6 +53,7 @@ return [
     | `'posts' => App\Post::class`
     */
     'resources' => [
+        
         'documents' => \Net7\Documents\Document::class,
         'projects' => \App\Project::class,
         'tasks' => \App\Task::class,

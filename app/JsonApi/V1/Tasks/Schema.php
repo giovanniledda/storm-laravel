@@ -86,9 +86,9 @@ class Schema extends SchemaProvider
     public function getAttributes($resource)
     {
 //        $author = User::where('id', $resource->author_id)->first();
-        $author = $resource->author;
+        $author   = $resource->author;
         $comments = $resource->comments()->get();
-        $section =Section::where('id', $resource->section_id)->first();
+        $section  = Section::select("name")->where('id', $resource->section_id)->first();
         
         return [
             

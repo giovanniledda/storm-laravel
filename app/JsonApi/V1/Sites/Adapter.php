@@ -3,6 +3,7 @@
 namespace App\JsonApi\V1\Sites;
 
 use CloudCreativity\LaravelJsonApi\Eloquent\AbstractAdapter;
+
 use CloudCreativity\LaravelJsonApi\Pagination\StandardStrategy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -36,5 +37,23 @@ class Adapter extends AbstractAdapter
     {
         // TODO
     }
-
+     
+    
+        /**
+     * todo da sistemare la formattazione
+     */
+    protected function destroy($record)
+    {
+        try {
+            return (bool) $record->delete();
+        } catch (\Exception $exc) {
+            
+           echo $exc->getCode();
+           echo $exc->getMessage();
+           exit();
+        }
+        /** @var Model $record */
+        
+    }
+    
 }
