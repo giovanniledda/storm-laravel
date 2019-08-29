@@ -74,7 +74,7 @@ class Task extends DocumentableModel
     {
         parent::boot();
 
-    //    Task::observe(TaskObserver::class);
+        Task::observe(TaskObserver::class);
     }
 
     public function intervent_type()
