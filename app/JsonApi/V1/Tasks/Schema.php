@@ -5,7 +5,7 @@ namespace App\JsonApi\V1\Tasks;
 use Neomerx\JsonApi\Schema\SchemaProvider;
 use App\User;
 use App\Section;
-
+use App\TaskInterventType;
 
 class Schema extends SchemaProvider
 {
@@ -86,10 +86,10 @@ class Schema extends SchemaProvider
     public function getAttributes($resource)
     {
 //        $author = User::where('id', $resource->author_id)->first();
-        $author   = $resource->author;
-        $comments = $resource->comments()->get();
-        $section  = Section::select("name")->where('id', $resource->section_id)->first();
-        
+       $author   = $resource->author;
+       $comments = $resource->comments()->get();
+       $section  = Section::select("name")->where('id', $resource->section_id)->first();
+       $intervent_types = TaskInterventType::select("name")->where('id', '=', $resource->intervent_type_id)->first();
         return [
             
             'description' => $resource->description,
@@ -105,6 +105,7 @@ class Schema extends SchemaProvider
             'section_id' => $resource->section_id,
             'section_name' =>$section->name,
             'intervent_type_id' => $resource->intervent_type_id,
+            'intervent_type_name'=> $intervent_types->name,
             'subsection_id' => $resource->subsection_id,
             'x_coord' => $resource->x_coord,
             'y_coord' => $resource->y_coord,

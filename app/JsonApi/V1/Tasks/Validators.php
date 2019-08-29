@@ -26,7 +26,7 @@ class Validators extends AbstractValidators
     protected $messages = [
       //  'title.required' => 'title '.VALIDATOR_REQUIRED,
         'title.string' => 'title '.VALIDATOR_STRING,
-      //  'number.required' => 'number '.VALIDATOR_REQUIRED,
+      // 'number.required' => 'number '.VALIDATOR_REQUIRED,
         'number.numeric' => 'number '.VALIDATOR_NUMERIC,
         'worked_hours.numeric' => 'worked_hours '.VALIDATOR_NUMERIC,
         'description.string' => 'description '.VALIDATOR_STRING,
@@ -35,11 +35,15 @@ class Validators extends AbstractValidators
         'project_id.exists'=> 'project_id '.VALIDATOR_EXIST,
         'section_id.numeric'=> 'section_id '.VALIDATOR_NUMERIC,
         'section_id.required'=> 'section_id '.VALIDATOR_REQUIRED,
+        'section_id.exists'=> 'section_id '.VALIDATOR_EXIST,
         'status.in' => 'status '.VALIDATOR_IN.' '.TASKS_STATUS_DRAFT.', '.TASKS_STATUS_SUBMITTED.', '.TASKS_STATUS_ACCEPTED.', '.TASKS_STATUS_IN_PROGRESS.', '.TASKS_STATUS_DENIED.', '.TASKS_STATUS_REMARKED.', '.TASKS_STATUS_MONITORED.', '.TASKS_STATUS_COMPLETED,
         'x_coord.required'=> 'x_coord '.VALIDATOR_REQUIRED,
         'x_coord.numeric'=> 'x_coord '.VALIDATOR_NUMERIC,
         'y_coord.required'=> 'y_coord '.VALIDATOR_REQUIRED,
         'y_coord.numeric'=> 'y_coord '.VALIDATOR_NUMERIC,
+        'intervent_type_id.required' => 'intervent_type_id '.VALIDATOR_REQUIRED,
+        'intervent_type_id.numeric' => 'intervent_type_id '.VALIDATOR_NUMERIC,
+        'intervent_type_id.exists' => 'intervent_type_id '.VALIDATOR_EXIST,
         ];
      
     
@@ -60,8 +64,8 @@ class Validators extends AbstractValidators
         'estimated_hours' => 'numeric',
         'status' => 'in:'.TASKS_STATUS_DRAFT.','.TASKS_STATUS_SUBMITTED.','.TASKS_STATUS_ACCEPTED.','.TASKS_STATUS_IN_PROGRESS.','.TASKS_STATUS_DENIED.','.TASKS_STATUS_REMARKED.','.TASKS_STATUS_MONITORED.','.TASKS_STATUS_COMPLETED,
         'project_id'=> 'required|numeric|exists:projects,id',
-        'section_id'=> 'required|numeric',
-        'intervent_type_id'=>'required|numeric', 
+        'section_id'=> 'required|numeric|exists:sections,id',
+        'intervent_type_id'=>'required|numeric|exists:task_intervent_types,id', 
         'x_coord'=>'required|numeric',
         'y_coord'=>'required|numeric',
         ];

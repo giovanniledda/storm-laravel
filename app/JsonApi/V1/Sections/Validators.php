@@ -32,8 +32,12 @@ class Validators extends AbstractValidators
      */
     protected function rules($record = null): array
     {
-        return [
-            //
+    return [ 
+        'project_id'=> 'required|numeric|exists:projects,id',
+        'section_id'=> 'required|numeric|exists:sections,id',
+        'intervent_type_id'=>'required|numeric|exists:task_intervent_types,id', 
+        'x_coord'=>'required|numeric',
+        'y_coord'=>'required|numeric',
         ];
     }
 
