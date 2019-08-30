@@ -15,6 +15,7 @@ class Validators extends AbstractValidators
        // 'author_id.numeric' => 'author_id ' . VALIDATOR_NUMERIC,
         'task_id.required' => 'task_id ' . VALIDATOR_REQUIRED,
         'task_id.numeric' => 'task_id ' . VALIDATOR_NUMERIC,
+        'task_id.exists' => 'task_id ' . VALIDATOR_EXIST,
         'body.required' => 'body ' . VALIDATOR_REQUIRED,
     ];
 
@@ -46,7 +47,7 @@ class Validators extends AbstractValidators
     {
         return [
             'body' => 'required|string|min:1|max:255',
-            'task_id' => 'required|numeric',
+            'task_id' => 'required|numeric|exists:tasks,id',
           //  'author_id' => 'required|numeric',
         ];
     }
