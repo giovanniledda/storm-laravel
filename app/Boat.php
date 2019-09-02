@@ -134,16 +134,14 @@ class Boat extends DocumentableModel
      * Creates a Boat using some fake data and some others that have sense
      *
      * @param Faker $faker
-     * @param Site $site
      *
      * @return Boat $boat
      */
-    public static function createSemiFake(Faker $faker, Site $site = null)
+    public static function createSemiFake(Faker $faker)
     {
         $boat = new Boat([
                 'name' => $faker->suffix.' '.$faker->name,
                 'registration_number' => $faker->randomDigitNotNull,
-              //  'site_id' => $site ? $site->id : null,
                 'length' => $faker->randomFloat(4, 30, 150),
                 'beam' => $faker->randomFloat(4, 5, 22),
                 'draft' => $faker->randomFloat(4, 1, 2),

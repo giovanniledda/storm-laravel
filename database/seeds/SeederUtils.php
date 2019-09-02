@@ -55,10 +55,10 @@ class SeederUtils
         return Site::createSemiFake($this->faker);
     }
 
-    public function createBoat(Site $site = null): Boat
+    public function createBoat(): Boat
     {
 //        return factory(Boat::class)->create();
-        return Boat::createSemiFake($this->faker, $site);
+        return Boat::createSemiFake($this->faker);
     }
 
     public function createSection(Boat $boat = null): Section
