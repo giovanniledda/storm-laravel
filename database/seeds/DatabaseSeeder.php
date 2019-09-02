@@ -33,7 +33,7 @@ class DatabaseSeeder extends Seeder
 
         $boats = [];
         for ($i = 0; $i < 5; $i++) {
-            $boats[$i] = $this->utils->createBoat($site);
+            $boats[$i] = $this->utils->createBoat();
 
             $this->command->info("Boat {$boats[$i]->name} created");
 
