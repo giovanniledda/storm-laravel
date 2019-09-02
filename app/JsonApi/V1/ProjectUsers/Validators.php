@@ -7,6 +7,23 @@ use CloudCreativity\LaravelJsonApi\Validation\AbstractValidators;
 class Validators extends AbstractValidators
 {
 
+      /* The messages variable.
+     *
+     * @var string[]|null
+     */
+    protected $messages = [
+        'user_id.required' => 'user_id '.VALIDATOR_REQUIRED,
+        'user_id.numeric' => 'user_id '.VALIDATOR_NUMERIC,
+        'user_id.exists' => 'user_id '.VALIDATOR_EXIST,
+      
+        'profession_id.required' => 'profession_id '.VALIDATOR_REQUIRED,
+        'profession_id.numeric' => 'profession_id '.VALIDATOR_NUMERIC,
+        'profession_id.exists' => 'profession_id '.VALIDATOR_EXIST,
+        
+        'project_id.required' => 'project_id '.VALIDATOR_REQUIRED,
+        'project_id.numeric' => 'project_id '.VALIDATOR_NUMERIC,
+        'project_id.exists' => 'project_id '.VALIDATOR_EXIST,
+    ];
     /**
      * The include paths a client is allowed to request.
      *
@@ -32,9 +49,13 @@ class Validators extends AbstractValidators
      */
     protected function rules($record = null): array
     {
-        return [
-            //
+        
+        return [ 
+        'project_id'=> 'required|numeric|exists:projects,id',
+        'profession_id'=> 'required|numeric|exists:professions,id',
+        'user_id'=> 'required|numeric|exists:users,id'
         ];
+         
     }
 
     /**
