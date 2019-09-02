@@ -14,7 +14,7 @@ class Boat extends DocumentableModel
     protected $fillable = [
         'name',
         'registration_number',
-        'site_id',
+       // 'site_id',
         'flag',
         'manufacture_year',
         'length',
@@ -143,7 +143,7 @@ class Boat extends DocumentableModel
         $boat = new Boat([
                 'name' => $faker->suffix.' '.$faker->name,
                 'registration_number' => $faker->randomDigitNotNull,
-                'site_id' => $site ? $site->id : null,
+              //  'site_id' => $site ? $site->id : null,
                 'length' => $faker->randomFloat(4, 30, 150),
                 'beam' => $faker->randomFloat(4, 5, 22),
                 'draft' => $faker->randomFloat(4, 1, 2),
