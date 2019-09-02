@@ -203,10 +203,10 @@ class Task extends DocumentableModel
                 'number' => $faker->randomDigitNotNull(),
                 'title' => $faker->sentence(),
                 'description' => $faker->text(),
-                'estimated_hours' => $faker->randomFloat(1, $min = 0, $max = 100),
-                'worked_hours' => $faker->randomFloat(1, $min = 0, $max = 100),
-                'x_coord' => $faker->randomFloat(2, $min = 0, $max = 3000),
-                'y_coord' => $faker->randomFloat(2, $min = 0, $max = 1000),
+                'estimated_hours' => $faker->randomFloat(1, 0, 100),
+                'worked_hours' => $faker->randomFloat(1, 0, 100),
+                'x_coord' => $faker->randomFloat(2, 1000, 2000),
+                'y_coord' => $faker->randomFloat(2, 300, 600),
                 'task_status' => $status, //$faker->randomElement(TASKS_STATUSES),
                 'is_open' => $is_open, //$faker->randomElement([1, 0]),
                 'project_id' => $proj ? $proj->id : null,
@@ -217,6 +217,7 @@ class Task extends DocumentableModel
             ]
         );
         $t->save();
+        $t->setStatus($status);
 
         return $t;
     }

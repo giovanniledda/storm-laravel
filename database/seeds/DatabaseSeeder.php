@@ -1,17 +1,8 @@
 <?php
 
 use App\Comment;
-use App\Profession;
-use App\Section;
-use App\Task;
 use App\TaskInterventType;
 use Illuminate\Database\Seeder;
-use App\Permission;
-use App\Role;
-use App\User;
-use App\Boat;
-use App\Site;
-use App\Project;
 use Faker\Factory as Faker;
 use Seeds\SeederUtils as Utils;
 
@@ -141,17 +132,19 @@ class DatabaseSeeder extends Seeder
 
                 $intervent_types = \Config::get('storm.startup.task_intervent_types');
 
-                for ($t = 0; $t < $this->faker->numberBetween(20, 50); $t++) {
+                for ($t = 0; $t < $this->faker->numberBetween(1, 20); $t++) {
                     $section = $this->faker->randomElement($boat->sections);
                     $intervent_type = TaskInterventType::firstOrCreate($this->faker->randomElement($intervent_types));
                     $task = $this->utils->createTask($project, $section, null, null, $intervent_type);
                     $this->command->info("Task {$task->name} for Project {$project->name}, created");
 
-                    $this->command->warn(" ------ COMMENTS FOR TASK {$task->name} --------");
-                    foreach ($workers as $user) {
-                        for ($c = 0; $c < $this->faker->numberBetween(10, 30); $c++) {
+                    if ($task->status != TASKS_STATUS_DRAFT) {
+
+                        $this->command->warn(" ------ COMMENTS FOR TASK {$task->name} --------");
+                        for ($c = 0; $c < $this->faker->numberBetween(1, 5); $c++) {
                             $comment = Comment::firstOrCreate(['body' => $this->faker->sentence(10)]);
                             // associo i commenti agli autori
+                            $user = $this->faker->randomElement($workers);
                             $comment->author()->associate($user)->save();
                             // ...e al task
                             $task->comments()->save($comment);

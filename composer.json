@@ -10,11 +10,11 @@
     "repositories": [
         {
             "type": "git",
-            "url": "https://net7.codebasehq.com/storm/net7logging.git"
+            "url": "https://net7.codebasehq.com/nautica/net7logging.git"
         },
         {
             "type": "git",
-            "url": "https://net7.codebasehq.com/storm/net7documents.git"
+            "url": "https://net7.codebasehq.com/nautica/net7documents.git"
         }
     ],
     "require": {
