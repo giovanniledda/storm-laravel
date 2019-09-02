@@ -57,7 +57,6 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
         ->routes(function ($projects){
                 $projects->get('{record}/history', 'history')->name('history');
             });
-
         $api->resource('projects')->relationships(function ($relations) {
             $relations->hasOne('boat'); // punta al methodo dell'adapter /app/jsonApi/Projects/Adapter non al modello
             $relations->hasMany('tasks');

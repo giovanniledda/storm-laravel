@@ -6,12 +6,8 @@ use CloudCreativity\LaravelJsonApi\Exceptions\HandlesErrors;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Illuminate\Support\Str;
 use Neomerx\JsonApi\Exceptions\JsonApiException;
 use App\Utils\Utils as StormUtils;
-use const HTTP_412_DEL_UPD_ERROR_MSG;
-use const HTTP_412_EXCEPTION_ERROR_MSG;
-
 
 class Handler extends ExceptionHandler
 {

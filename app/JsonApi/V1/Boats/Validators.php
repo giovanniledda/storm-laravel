@@ -9,7 +9,8 @@ use CloudCreativity\LaravelJsonApi\Validation\AbstractValidators;
 class Validators extends AbstractValidators
 {
 
-    /* The messages variable. 
+    /**
+     * The messages variable.
      * @var string[]|null
      */
     protected $messages = [
