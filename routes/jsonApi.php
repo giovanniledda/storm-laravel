@@ -44,10 +44,14 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
 
         $api->resource('boats')->relationships(function ($relations) {
             $relations->hasMany('sections'); // punta al methodo dell'adapter /app/jsonApi/boats/Adapter non al modello
-
         });
+       
 
-
+        $api->resource('boats')->only('owner')->controller('BoatController') //uses the App\Http\Controllers\Api\ProjectsController
+        ->routes(function ($boats){
+                $boats->post('{record}/owner', 'owner')->name('owner');
+        });
+        
         $api->resource('projects')->only('statuses', 'close')->controller('ProjectController') //uses the App\Http\Controllers\Api\ProjectsController
         ->routes(function ($projects){
                 $projects->get('/statuses', 'statuses')->name('statuses');

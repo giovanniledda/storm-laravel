@@ -11,7 +11,7 @@ class Profession extends Model
 
     protected $fillable = [
        'name',
-       'is_storm',
+       'is_storm'
     ];
 
 
@@ -22,10 +22,13 @@ class Profession extends Model
      *
      * @return Profession $profession
      */
-    public static function createSemiFake(Faker $faker)
-    {
+    public static function createSemiFake(Faker $faker, $slug='worker')
+    {   
+        $is_storm = ($slug==='worker') ? $faker->randomFloat(0,0,1) : 0;
         $profession = new Profession([
-                'name' => $faker->jobTitle,
+                'name' => ( $slug==='worker' ) ? $faker->jobTitle : 'Owner',
+                'is_storm' => $is_storm,
+                'slug'=>$slug
             ]
         );
         $profession->save();

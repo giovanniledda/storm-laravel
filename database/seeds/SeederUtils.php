@@ -67,10 +67,10 @@ class SeederUtils
         return Section::createSemiFake($this->faker, $boat);
     }
 
-    public function createProfession(): Profession
+    public function createProfession($slug): Profession
     {
 //        return factory(Profession::class)->create();
-        return Profession::createSemiFake($this->faker);
+        return Profession::createSemiFake($this->faker, $slug);
     }
 
     public function createProject(Site $site = null, Boat $boat = null): Project

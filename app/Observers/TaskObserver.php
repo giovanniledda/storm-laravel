@@ -40,6 +40,14 @@ class TaskObserver
                         'event_body' => 'Task number #' . $task->number . ' marked to closed']);
         }
 
+        /** scrivere la payload per la history di task 
+
+         * 
+         * user_name , user_id, stato attuale del ticket.
+         * comment_id : comment_body : anche se vuoti.
+         * 
+         * 
+         * */
 
         /*
           $revisions      = new Revisions();

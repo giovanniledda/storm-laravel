@@ -62,8 +62,11 @@ class ProjectController extends Controller {
         $force   =  isset($request->data['attributes']['force']) ? $request->data['attributes']['force'] : 0;
         $closeResponse = Project::findOrFail($data['id'])->close($force);
 
-        Log::info("i'm here", $request);
-
+     //   Log::info("i'm here", $request);
+        
+        /**
+         * @todo segnare nella history del progetto l'evento se serve.
+         */
 
         if ($closeResponse['success']) {
             $ret = ['data' => [

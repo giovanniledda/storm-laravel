@@ -66,8 +66,9 @@ class DatabaseSeeder extends Seeder
         $this->command->warn(" ------ PROFESSIONS --------");
 
         $professions = [];
-        for ($s = 0; $s < 20; $s++) {
-            $professions[$s] = $this->utils->createProfession();
+        $professions[0] = $this->utils->createProfession('owner');
+        for ($s = 1; $s < 20; $s++) {
+            $professions[$s] = $this->utils->createProfession('worker');
 
             $this->command->info("Profession {$professions[$s]->name} created");
         }

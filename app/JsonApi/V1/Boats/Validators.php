@@ -60,8 +60,8 @@ class Validators extends AbstractValidators
         //   'registration_number' => 'required|numeric',
         //   'manufacture_year' => 'required|numeric',
            'length' => 'required|numeric',
-           'draft' => 'required|numeric',
-        //   'beam' => 'required|numeric',
+         //  'draft' => 'required|numeric',
+           'beam' => 'required|numeric',
            'boat_type' => 'required|in:'.BOAT_TYPE_MOTOR.','.BOAT_TYPE_SAIL,
         ];
     }
