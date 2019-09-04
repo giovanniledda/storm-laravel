@@ -17,4 +17,14 @@ class BoatUser extends Pivot
         'user_id'
     ];
 
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
+
+    public function boat()
+    {
+        return $this->belongsTo('App\Boat');
+    }
+
 } 
