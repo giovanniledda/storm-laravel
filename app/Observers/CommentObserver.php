@@ -48,16 +48,27 @@ class CommentObserver
      */
     public function created(Comment $comment)
     { 
+        $user = \Auth::user();
         /*quando si crea un commento su un task, viene inserito nello storico del task*/
         if ($comment->commentable_type == 'App\Task') {
             $task = Task::find($comment->commentable_id); 
             $task->history()->create(
                                     ['event_date'=> date("Y-m-d H:i:s", time()),
-                                     'event_body'=>'Comment as been added to task #'.$task->number]); 
+                                     'event_body'=>
+                                        json_encode([
+                                            'user_id'=>$user->id,
+                                            'user_name'=>$user->name.' '.$user->surname,
+                                            'original_task_status'=>$task->task_status,
+                                            'task_status'=>$task->task_status,
+                                            'comment_id'=>$comment->id,
+                                            'comment_body'=>$comment->body,])
+                                    ]); 
+            
+          
         } 
         
         /*definisco l'autore del commento*/
-        $user = \Auth::user();
+        
         if ($user) {
             $comment->update(['author_id'=>$user->id]);
         }

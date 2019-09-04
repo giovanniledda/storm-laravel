@@ -34,8 +34,8 @@ class TaskController extends Controller
         $data = [];
         foreach ($histories as $history) {
             array_push($data, [
-                "type"=>"tasks" ,
-                "attributes"=>['event'=>$history['event_body']]]);
+                "type"=>"history" ,
+                "attributes"=>json_decode($history['event_body'])]);
         }
         $resp = Response(["data"=>$data], 200);
         $resp->header('Content-Type', 'application/vnd.api+json');

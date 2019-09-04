@@ -38,17 +38,39 @@ class TaskObserver
                 ->create(
                     ['event_date' => date("Y-m-d H:i:s", time()),
                         'event_body' => 'Task number #' . $task->number . ' marked to closed']);
+           
         }
-
-        /** scrivere la payload per la history di task 
-
+        
+        /**
+         * per la history del task occorre scrivere nella history del task 
+         * nel campo event_body bisogna scrivere una payload così formata :
+         *  {
+         *      user_id : 1,
+         *      user_name : 'pippo',
+         *      comment_id: 2,
+         *      comment_body: 'this is a comment' ,
+         *      task_status : 'open',
+         *      original_task_status : '',
+         *      
+         *  }
          * 
-         * user_name , user_id, stato attuale del ticket.
-         * comment_id : comment_body : anche se vuoti.
-         * 
-         * 
-         * */
-
+         */
+        if ($original['task_status']!=$task->task_status) {
+            $user = \Auth::user();
+            Task::find($task->id)->history()->create([
+                'event_date' => date("Y-m-d H:i:s", time()),
+                'event_body' => json_encode([
+                    'user_id'=>$user->id,
+                    'user_name'=>$user->name.' '.$user->surname,
+                    'original_task_status'=>$original['task_status'],
+                    'task_status'=>$task->task_status,
+                    'comment_id'=>null,
+                    'comment_body'=>null,
+                ])
+            ]);
+        }
+        
+        
         /*
           $revisions      = new Revisions();
 
@@ -129,6 +151,8 @@ class TaskObserver
         /** setto la variabile added_by_storm **/
         $user = \Auth::user();
 
+        
+        
         if (is_object($user)) {
             // se sei in boat_user
             if ($user->can(PERMISSION_BOAT_MANAGER)) {
