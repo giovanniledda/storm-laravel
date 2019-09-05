@@ -55,7 +55,7 @@ class TaskObserver
          *  }
          * 
          */
-        if ($original['task_status']!=$task->task_status) {
+        if (isset($original['task_status']) && $original['task_status']!=$task->task_status) {
             $user = \Auth::user();
             Task::find($task->id)->history()->create([
                 'event_date' => date("Y-m-d H:i:s", time()),
