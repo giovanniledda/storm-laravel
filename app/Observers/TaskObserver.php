@@ -148,6 +148,7 @@ class TaskObserver
          */
          
         $user = \Auth::user();
+        if (isset($user->id)) { 
             Task::find($task->id)->history()->create([
                 'event_date' => date("Y-m-d H:i:s", time()),
                 'event_body' => json_encode([
@@ -159,7 +160,7 @@ class TaskObserver
                     'comment_body'=>null,
                 ])
             ]);
-       
+        }
          
         // mette in coda il job
 //        NotifyTaskUpdates::dispatch(new TaskCreated($task))->onConnection('redis')->onQueue(QUEUE_TASK_CREATED);   // default queue
