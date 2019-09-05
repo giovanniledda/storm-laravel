@@ -112,7 +112,6 @@ class Adapter extends AbstractAdapter
         return $this->hasMany();
     }
     
-    
     protected function tasks() {
         return $this->hasMany();
     }
@@ -120,9 +119,7 @@ class Adapter extends AbstractAdapter
     protected function sections() {
         return $this->hasMany();
     }
-    /**
-     * @return BelongsTo
-     */
+
     protected function boat()
     {
         return $this->belongsTo();
