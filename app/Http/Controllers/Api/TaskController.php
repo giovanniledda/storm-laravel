@@ -30,12 +30,19 @@ class TaskController extends Controller
 
     public function history(Request $request, $related) {
         $task = json_decode($related, true);
-        $histories = Task::find($task['id'])->history()->get()->toArray();
+        $histories = Task::find($task['id'])->history()->orderBy('event_date', 'DESC')->get()->toArray();
         $data = [];
+         
+        
         foreach ($histories as $history) {
+             $history_data =array_merge( json_decode($history['event_body'], true) , 
+                     ['event_date'=>$history['event_date']]
+                     );
+            
+            
             array_push($data, [
                 "type"=>"history" ,
-                "attributes"=>json_decode($history['event_body'])]);
+                "attributes"=>$history_data]);
         }
         $resp = Response(["data"=>$data], 200);
         $resp->header('Content-Type', 'application/vnd.api+json');

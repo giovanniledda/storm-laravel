@@ -143,15 +143,30 @@ class TaskObserver
     public function created(Task $task)
     {
         $task->setStatus(TASKS_STATUS_DRAFT);
-
+        /**
+         * @todo quando inserisci un task da storm lo stato deve essere accepted
+         */
+         
+        $user = \Auth::user();
+            Task::find($task->id)->history()->create([
+                'event_date' => date("Y-m-d H:i:s", time()),
+                'event_body' => json_encode([
+                    'user_id'=>$user->id,
+                    'user_name'=>$user->name.' '.$user->surname,
+                    'original_task_status'=>null,
+                    'task_status'=>TASKS_STATUS_DRAFT,
+                    'comment_id'=>null,
+                    'comment_body'=>null,
+                ])
+            ]);
+       
+         
         // mette in coda il job
 //        NotifyTaskUpdates::dispatch(new TaskCreated($task))->onConnection('redis')->onQueue(QUEUE_TASK_CREATED);   // default queue
         NotifyTaskUpdates::dispatch(new TaskCreated($task));   // default queue
 
         /** setto la variabile added_by_storm **/
-        $user = \Auth::user();
-
-        
+     
         
         if (is_object($user)) {
             // se sei in boat_user
