@@ -3,6 +3,7 @@
 namespace App\JsonApi\V1\Boats;
 
 use Neomerx\JsonApi\Schema\SchemaProvider;
+use App\Project;
 
 class Schema extends SchemaProvider
 {
@@ -67,12 +68,13 @@ class Schema extends SchemaProvider
      * @return array
      */
     public function getAttributes($resource)
-    {
-        $project_active = $resource->projects()
-                ->where('project_status', PROJECT_STATUS_OPERATIONAL)
-                ->orWhere('project_status', PROJECT_STATUS_IN_SITE)
+    { 
+         $project_active = $resource->projects() 
+                ->whereIn('project_status', [PROJECT_STATUS_OPERATIONAL,PROJECT_STATUS_IN_SITE ]) 
                 ->orderBy('created_at', 'DESC')
-                ->first();
+                ->first(); 
+         
+                 
         return [
             'name' => $resource->name,
             'registration_number' => $resource->registration_number,

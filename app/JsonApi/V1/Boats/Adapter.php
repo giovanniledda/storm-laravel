@@ -81,6 +81,11 @@ class Adapter extends AbstractAdapter
         return $this->hasMany();
     }
 
+    public function projects()
+    {
+        return $this->hasMany('App\Project');
+    }
+
     /**
      * Pre-delete hook
      *
