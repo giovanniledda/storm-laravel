@@ -3,17 +3,13 @@
 namespace App;
 
 use App\Observers\TaskObserver;
-use Illuminate\Database\Eloquent\Model;
 use function in_array;
 use function is_object;
 use const PROJECT_STATUS_CLOSED;
 use Spatie\ModelStatus\HasStatuses;
-use StormUtils;
 use const TASKS_STATUS_COMPLETED;
 use const TASKS_STATUS_DENIED;
 use Venturecraft\Revisionable\RevisionableTrait;
-use function GuzzleHttp\json_decode;
-use Net7\Documents\Document;
 use Faker\Generator as Faker;
 use Net7\Documents\DocumentableModel;
 
