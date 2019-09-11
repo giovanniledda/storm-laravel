@@ -32,7 +32,7 @@ class Validators extends AbstractValidators
      */
     protected function rules($record = null): array
     {
-         
+            return [];
     }
 
     /**

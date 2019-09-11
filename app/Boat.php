@@ -93,11 +93,10 @@ class Boat extends DocumentableModel
         return $this->belongsToMany('App\User')
             ->using('App\BoatUser')
             ->withPivot([
-                'profession_id',
-                'created_by',
-                'updated_by'
+                'profession_id' 
             ]);
     }
+    
 
     /**
      * @param int $uid

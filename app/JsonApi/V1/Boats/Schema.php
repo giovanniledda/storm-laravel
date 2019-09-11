@@ -29,7 +29,7 @@ class Schema extends SchemaProvider
 
 
         $generic_documents = $resource->generic_documents;
-
+        
 
         // $giu = [];
         // foreach ($generic_images as $i){
@@ -74,9 +74,26 @@ class Schema extends SchemaProvider
                 ->orderBy('created_at', 'DESC')
                 ->first(); 
          
+         if ($project_active) {
+            $location =  $resource->projects() 
+                     ->select('sites.name', 'sites.location')
+                     ->Join('sites', 'projects.site_id', '=', 'sites.id')->first();
+            $project_active->location= $location;
+         }
+         
+        $owner = $resource
+                ->select('users.name', 'users.surname')
+                ->Join('boat_user', 'boat_user.boat_id', '=', 'boats.id')
+                ->Join('professions', 'boat_user.profession_id', '=', 'professions.id')
+                ->Join('users', 'users.id', '=', 'boat_user.user_id')
+                ->where('professions.slug', '=', 'owner')
+                ->first();
+   
+        
                  
         return [
             'name' => $resource->name,
+            
             'registration_number' => $resource->registration_number,
             'flag' => $resource->flag,
             'manufacture_year' => $resource->manufacture_year,
@@ -86,6 +103,8 @@ class Schema extends SchemaProvider
             'boat_type' => $resource->boat_type,
             'site_id' => $resource->site_id,
             'project'  => $project_active,
+            
+            'owner'=> $owner,
             'created-at' => $resource->created_at->toAtomString(),
             'updated-at' => $resource->updated_at->toAtomString(),
         ];

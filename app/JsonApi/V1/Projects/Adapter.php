@@ -12,7 +12,7 @@ use Illuminate\Support\Collection;
 class Adapter extends AbstractAdapter
 {
 
-    protected $fillable = ['name', 'status', 'boat_id', 'project_type', 'project_progress','site_id'];
+    protected $fillable = ['name', 'status', 'boat_id', 'project_type', 'project_progress','site_id', 'start_date', 'end_date'];
 
     /**
      * Mapping of JSON API attribute field names to model keys.

@@ -19,11 +19,10 @@ use Illuminate\Http\Request;
 Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
 
     JsonApi::register('v1', ['namespace'=>'Api'])->routes(function ($api) {
-
-
+ 
         $api->resource('sites');
         $api->resource('boat-users')->only('create'); // usato solo per associazione boat - user
-        $api->resource('project-users')->only('create'); //->only('create'); // usato solo per associazione project  - user
+        $api->resource('project-users')->only('create', 'update'); //->only('create')   ->only('create'); // usato solo per associazione project  - user
         $api->resource('project-sections')->only('create'); //->only('create'); // usato solo per associazione project  - user
         $api->resource('tasks');
 
