@@ -75,9 +75,12 @@ class Schema extends SchemaProvider
                 ->first(); 
          
          if ($project_active) {
-            $location =  $resource->projects() 
+            $location =  $resource->projects()
                      ->select('sites.name', 'sites.location')
-                     ->Join('sites', 'projects.site_id', '=', 'sites.id')->first();
+                     ->Join('sites', 'projects.site_id', '=', 'sites.id')
+                     ->where('projects.id', '=', $project_active->id)
+                      ->first();
+                     
             $project_active->location= $location;
          }
          
@@ -87,9 +90,8 @@ class Schema extends SchemaProvider
                 ->Join('professions', 'boat_user.profession_id', '=', 'professions.id')
                 ->Join('users', 'users.id', '=', 'boat_user.user_id')
                 ->where('professions.slug', '=', 'owner')
+                ->where('boats.id', '=', $resource->id)
                 ->first();
-   
-        
                  
         return [
             'name' => $resource->name,
@@ -102,8 +104,7 @@ class Schema extends SchemaProvider
             'beam' => $resource->beam,
             'boat_type' => $resource->boat_type,
             'site_id' => $resource->site_id,
-            'project'  => $project_active,
-            
+            'project'  => $project_active, 
             'owner'=> $owner,
             'created-at' => $resource->created_at->toAtomString(),
             'updated-at' => $resource->updated_at->toAtomString(),
