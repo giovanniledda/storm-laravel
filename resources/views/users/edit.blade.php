@@ -13,7 +13,7 @@
         <h1><i class='fa fa-user-plus'></i> {{ __('Edit :name', ['name' => $user->name]) }}</h1>
         <hr>
 
-        {{ Form::model($user, array('route' => array('users.update', $user->id), 'method' => 'PUT')) }}{{-- Form model binding to automatically populate our fields with user data --}}
+        {{ Form::model($user, array('route' => array('users.update', $user->id), 'method' => 'PUT', 'files' => true)) }} {{-- Form model binding to automatically populate our fields with user data --}}
 
         @csrf
 
@@ -27,6 +27,11 @@
             {{ Form::email('email', null, array('class' => 'form-control')) }}
         </div>
 
+
+        <div class="form-group">
+            {{ Form::label('photo', __('Profile photo')) }}
+            <input name="photo" type="file">
+        </div>
 
         <div class="form-group">
             {{ Form::label('is_storm', __('Storm')) }}

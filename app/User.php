@@ -7,6 +7,7 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
+use Net7\Documents\DocumentableTrait;
 use const PERMISSION_ADMIN;
 use function snake_case;
 use Spatie\Permission\Traits\HasRoles;
@@ -16,7 +17,7 @@ use StormUtils;
 
 class User extends Authenticatable
 {
-    use Notifiable, HasApiTokens, HasRoles, CanResetPassword, HasAddresses;
+    use Notifiable, HasApiTokens, HasRoles, CanResetPassword, HasAddresses, DocumentableTrait;
 
     protected $fillable = [
         'name', 'surname', 'email', 'password', 'is_storm'
@@ -165,4 +166,9 @@ class User extends Authenticatable
         $this->notify(new StormResetPasswordNotification($token));
     }
 
+
+    public function getProfilePhotoDocument()
+    {
+        return $this->generic_images->last() ? $this->generic_images->last() : '';
+    }
 }

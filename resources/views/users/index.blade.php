@@ -22,6 +22,7 @@
                     <tr>
                         <th>Name</th>
                         <th>Email</th>
+                        <th>Photo</th>
                         <th>STORM</th>
                         <th>Can login STORM</th>
                         <th>Date/Time Added</th>
@@ -36,6 +37,7 @@
 
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
+                            <td><img src="{{ @route('user-photo', ['id' => $user->id]) }}" /></td>
                             <td>@booltostr($user->is_storm_user)</td>
                             <td>@booltostr($user->can_login)</td>
                             <td>{{ $user->created_at->format('F d, Y h:ia') }}</td>
