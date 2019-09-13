@@ -37,7 +37,7 @@
 
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
-                            <td><img src="{{ @route('user-photo', ['id' => $user->id]) }}" /></td>
+                            <td><img style="width:100px" src="{{ @route('user-photo', ['id' => $user->id]) }}" /></td>
                             <td>@booltostr($user->is_storm_user)</td>
                             <td>@booltostr($user->can_login)</td>
                             <td>{{ $user->created_at->format('F d, Y h:ia') }}</td>
