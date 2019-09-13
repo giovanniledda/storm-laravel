@@ -8,11 +8,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\ModelStatus\HasStatuses;
 use Faker\Generator as Faker;
 
-use \Net7\Documents\DocumentableModel;
-use \Net7\Documents\Document; 
+use \Net7\Documents\DocumentableTrait;
+use \Net7\Documents\Document;
 
-class Project extends DocumentableModel {
+class Project extends Model {
 
+    use DocumentableTrait {
+         addDocumentWithType as traitAddDocumentWithType;
+    }
     use HasStatuses;
 
     protected $table = 'projects';
@@ -27,13 +30,98 @@ class Project extends DocumentableModel {
     }
 
 
+
+    /**
+     *
+     * @Override the base method to send files to dropbox
+     */
+
+    public function traitAddDocumentWithType(\Net7\Documents\Document $doc, $type) {
+
+        parent::addDocumentWithType($doc, $type);
+
+        // TODO: spostarlo in un job per le code
+
+        $this->save();
+        $doc->refresh();
+
+        $doc = Document::find($doc->id);
+        $media = $doc->getFirstMedia('documents');
+
+        // $folder = $this->getMediaPath($media);
+        $filepath = $media->getPath();
+
+
+
+
+        // $client->listFolder($folder);
+
+        // $filename = 'Zippo Case.pdf';
+
+        // $filepath = '../Zippo Case.pdf';
+
+
+        //$base_path =
+
+        // $filepath = $folder . $filename;
+
+        $fh = fopen($filepath, 'r');
+
+        $content = fread($fh, filesize($filepath));
+
+        fclose ($fh);
+        // $fullPath = $folder . DIRECTORY_SEPARATOR . $filename;
+
+        $filename = $media->file_name;
+        $dropboxFolder =  $this->getDropboxMediaPath($media);
+        $dropboxFilepath = $dropboxFolder . $filename;
+
+
+        $doc->external_path = $dropboxFilepath;
+        $doc->save();
+
+        $client = new \Spatie\Dropbox\Client(env('DROPBOX_TOKEN'));
+        $client->createFolder($dropboxFolder);
+        $client->upload($dropboxFilepath, $content, 'add');
+
+        // $client->getMetadata($fullPath);
+
+        // TODO: remove local file
+
+        // TODO: check for errors
+
+        // TODO: finish it up
+
+    }
+
+    public function getRelatedMedia(){
+        // return $this->media;
+    }
+    public function getDropboxMediaPath($media){
+
+        $media_id = $media->id;
+
+        $boat = $this->boat;
+
+        $project_id = $this->id;
+        // $boat_name = Str::slug($boat->name, '-');
+        $boat_name = $boat->name;
+
+        $path = DIRECTORY_SEPARATOR .'boats' . DIRECTORY_SEPARATOR .$boat_name . '_'. $project_id   . '_' .
+            $this->start_date. DIRECTORY_SEPARATOR. $media_id . DIRECTORY_SEPARATOR;
+
+        return $path;
+
+    }
+
+
     public function getMediaPath($media){
 
         $document = $media->model;
         $media_id = $media->id;
 
         $project_id = $this->id;
-        $path = 'projects' . DIRECTORY_SEPARATOR . $project_id . DIRECTORY_SEPARATOR . $document->type .
+        $path = DIRECTORY_SEPARATOR .'projects' . DIRECTORY_SEPARATOR . $project_id . DIRECTORY_SEPARATOR . $document->type .
                  DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
 
         return $path;

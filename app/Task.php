@@ -11,11 +11,11 @@ use const TASKS_STATUS_COMPLETED;
 use const TASKS_STATUS_DENIED;
 use Venturecraft\Revisionable\RevisionableTrait;
 use Faker\Generator as Faker;
-use Net7\Documents\DocumentableModel;
+use Net7\Documents\DocumentableTrait;
 
-class Task extends DocumentableModel
+class Task extends Model
 {
-    use RevisionableTrait, HasStatuses;
+    use RevisionableTrait, HasStatuses, DocumentableTrait;
 
     protected $table = 'tasks';
 
@@ -88,7 +88,7 @@ class Task extends DocumentableModel
 //        $this->hasOneThrough('App\Boat','App\Project'); // così non funziona perché va a cercare 'projects.task_id' in 'field list' (SQL: select `boats`.*, `projects`.`task_id` as `laravel_through_key` from `boats` inner join `projects` on `projects`.`id` = `boats`.`project_id` where `projects`.`task_id` = 13 limit 1)'
         return $this->project ? $this->project->boat : null;
     }
-   
+
 
     public function subsection()
     {
