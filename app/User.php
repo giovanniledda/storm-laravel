@@ -6,6 +6,7 @@ use App\Notifications\StormResetPasswordNotification;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use function is_object;
 use Laravel\Passport\HasApiTokens;
 use Net7\Documents\DocumentableTrait;
 use const PERMISSION_ADMIN;
@@ -166,9 +167,21 @@ class User extends Authenticatable
         $this->notify(new StormResetPasswordNotification($token));
     }
 
-
+    /**
+     * @return string
+     */
     public function getProfilePhotoDocument()
     {
         return $this->generic_images->last() ? $this->generic_images->last() : '';
     }
+
+    /**
+     * @return string
+     */
+    public function hasProfilePhoto()
+    {
+        return is_object($this->getProfilePhotoDocument());
+    }
+
+
 }
