@@ -11,15 +11,14 @@ class DocumentController extends Controller
 {
 
 
-
-
     /**
      * Create a document and associate it to task {task} in request
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function createRelatedToTask(Request $request, $related){
+    public function createRelatedToTask(Request $request, $related)
+    {
 
 
         $task = \App\Task::find($request->task);
@@ -28,16 +27,17 @@ class DocumentController extends Controller
         $base64File = $request->file;
         $filename = $request->filename;
 
+        $tmpFileFullPath = '';
         if ($base64File) {
-            $tmpFilename = uniqid('phpfile_') ;
-            $tmpFileFullPath = '/tmp/'. $tmpFilename;
-            $h = fopen ($tmpFileFullPath, 'w');
+            $tmpFilename = uniqid('phpfile_');
+            $tmpFileFullPath = '/tmp/' . $tmpFilename;
+            $h = fopen($tmpFileFullPath, 'w');
             $decoded = base64_decode($base64File);
             fwrite($h, $decoded, strlen($decoded));
             fclose($h);
         }
 
-        $file =  new UploadedFile( $tmpFileFullPath, $filename, null ,null, true);
+        $file = new UploadedFile($tmpFileFullPath, $filename, null, null, true);
 
         $doc = new Document([
             'title' => $filename,
@@ -46,7 +46,6 @@ class DocumentController extends Controller
 
         $doc->save();
         $task->documents()->save($doc);
-
 
 
         $ret = ['data' => [
