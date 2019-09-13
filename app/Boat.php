@@ -5,10 +5,12 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Net7\Documents\DocumentableModel;
+use Net7\Documents\DocumentableTrait;
 
-class Boat extends DocumentableModel
+class Boat extends Model
 {
+
+    use DocumentableTrait;
 
     protected $table = 'boats';
     protected $fillable = [
@@ -93,10 +95,10 @@ class Boat extends DocumentableModel
         return $this->belongsToMany('App\User')
             ->using('App\BoatUser')
             ->withPivot([
-                'profession_id' 
+                'profession_id'
             ]);
     }
-    
+
 
     /**
      * @param int $uid

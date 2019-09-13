@@ -4,10 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Faker\Generator as Faker;
-use Net7\Documents\DocumentableModel;
+use Net7\Documents\DocumentableTrait;
 
-class Section extends DocumentableModel
+class Section extends Model
 {
+
+
+    use DocumentableTrait;
 
     protected $table = 'sections';
 
