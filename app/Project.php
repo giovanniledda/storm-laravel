@@ -36,9 +36,9 @@ class Project extends Model {
      * @Override the base method to send files to dropbox
      */
 
-    public function traitAddDocumentWithType(\Net7\Documents\Document $doc, $type) {
+    public function addDocumentWithType(\Net7\Documents\Document $doc, $type) {
 
-        parent::addDocumentWithType($doc, $type);
+        $this->traitAddDocumentWithType($doc, $type);
 
         // TODO: spostarlo in un job per le code
 
@@ -73,15 +73,20 @@ class Project extends Model {
         // $fullPath = $folder . DIRECTORY_SEPARATOR . $filename;
 
         $filename = $media->file_name;
-        $dropboxFolder =  $this->getDropboxMediaPath($media);
-        $dropboxFilepath = $dropboxFolder . $filename;
+        $dropboxFolder =  $this->getDropboxFolderPath();
+        $dropboxFilepath =  $this->getDropboxFilePath($media, $filename);
 
 
         $doc->external_path = $dropboxFilepath;
         $doc->save();
 
         $client = new \Spatie\Dropbox\Client(env('DROPBOX_TOKEN'));
-        $client->createFolder($dropboxFolder);
+        try {
+            $client->listFolder($dropboxFolder);
+        } catch ( \Spatie\Dropbox\Exceptions\BadRequest  $e) {
+            $client->createFolder($dropboxFolder);
+        }
+
         $client->upload($dropboxFilepath, $content, 'add');
 
         // $client->getMetadata($fullPath);
@@ -94,21 +99,39 @@ class Project extends Model {
 
     }
 
+    public function getDocumentFromDropbox(\Net7\Documents\Document $document){
+
+
+        $media = $document->getRelatedMedia();
+        $filename = $media->file_name;
+        $dropboxFolder =  $this->getDropboxFolderPath();
+        $dropboxFilepath =  $this->getDropboxFilePath($media, $filename);
+
+
+        $client = new \Spatie\Dropbox\Client(env('DROPBOX_TOKEN'));
+
+
+        $link = $client->getTemporaryLink($dropboxFilepath );
+
+        return $link;
+    }
+
     public function getRelatedMedia(){
         // return $this->media;
     }
-    public function getDropboxMediaPath($media){
 
-        $media_id = $media->id;
+    public function getDropboxFilePath ($media, $filename){
+        return $this->getDropboxFolderPath($media) .  $media->id . '_' . $filename;
+    }
+
+    public function getDropboxFolderPath(){
 
         $boat = $this->boat;
-
         $project_id = $this->id;
-        // $boat_name = Str::slug($boat->name, '-');
         $boat_name = $boat->name;
 
         $path = DIRECTORY_SEPARATOR .'boats' . DIRECTORY_SEPARATOR .$boat_name . '_'. $project_id   . '_' .
-            $this->start_date. DIRECTORY_SEPARATOR. $media_id . DIRECTORY_SEPARATOR;
+            $this->start_date. DIRECTORY_SEPARATOR;
 
         return $path;
 
@@ -230,10 +253,6 @@ class Project extends Model {
     public function hasUserById($uid)
     {
         return $this->getUserByIdBaseQuery($uid)->count() > 0;
-    }
-
-    public function generic_documents() {
-        return $this->documents()->where('type', Document::GENERIC_DOCUMENT_TYPE);
     }
 
 

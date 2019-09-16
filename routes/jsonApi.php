@@ -14,12 +14,11 @@ use Illuminate\Http\Request;
 |
 */
 
-    // Route::post('api/v1/tasks/{task}/document',  'DocumentController@createRelatedToTask')->name('api:v1:tasks.createDocument');
 
 Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
 
     JsonApi::register('v1', ['namespace'=>'Api'])->routes(function ($api) {
- 
+
         $api->resource('sites');
         $api->resource('boat-users')->only('create'); // usato solo per associazione boat - user
         $api->resource('project-users')->only('create', 'update'); //->only('create')   ->only('create'); // usato solo per associazione project  - user
@@ -44,13 +43,13 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
         $api->resource('boats')->relationships(function ($relations) {
             $relations->hasMany('sections'); // punta al methodo dell'adapter /app/jsonApi/boats/Adapter non al modello
         });
-       
+
 
         $api->resource('boats')->only('owner')->controller('BoatController') //uses the App\Http\Controllers\Api\ProjectsController
         ->routes(function ($boats){
                 $boats->post('{record}/owner', 'owner')->name('owner');
         });
-        
+
         $api->resource('projects')->only('statuses', 'close')->controller('ProjectController') //uses the App\Http\Controllers\Api\ProjectsController
         ->routes(function ($projects){
                 $projects->get('/statuses', 'statuses')->name('statuses');
@@ -70,28 +69,14 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
         $api->resource('updates');
         $api->resource('comments');
 
+
+        $api->resource('documents')->only('show')->controller('DocumentsController') //uses the App\Http\Controllers\Api\DocumentController
+        ->routes(function ($docs){
+                $docs->get('{record}/show/{size}', 'show')->name('show_with_size');
+                $docs->get('{record}/show', 'show')->name('show');
+                $docs->post('create', 'create')->name('create');
+            });
+
+
     });
  });
-
- /*
-
-JsonApi::register('v1', ['namespace' => 'Api'], function (Api $api) {
-    $api->resource('comments', [
-        'middleware' => 'json-api.auth:default',
-        'has-one' => ['post', 'created-by'],
-    ]);
-    $api->resource('posts', [
-        'middleware' => 'json-api.auth:default',
-        'controller' => true,
-        'has-one' => 'author',
-        'has-many' => ['comments', 'tags']
-    ]);
-    $api->resource('sites');
-});
-
- */
-
-// Route::group(['prefix' => 'documents'], function() {
-//     Route::get('/{document}', 'DocumentController@show') -> name('documents.show');
-//     Route::post('/', 'DocumentController@store')->name('documents.store');
-// });

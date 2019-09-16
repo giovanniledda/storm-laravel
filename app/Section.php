@@ -61,14 +61,6 @@ class Section extends Model
 
 
 
-    public function generic_documents(){
-        return $this->documents()->where('type', \Net7\Documents\Document::GENERIC_DOCUMENT_TYPE);
-    }
-
-    public function generic_images(){
-        return $this->documents()->where('type', \Net7\Documents\Document::GENERIC_IMAGE_TYPE);
-    }
-
     /**
      * Creates a Section using some fake data and some others that have sense
      *

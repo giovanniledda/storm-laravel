@@ -105,36 +105,6 @@ class Task extends Model
         return $this->morphMany('App\Comment', 'commentable');
     }
 
-    // public function documents(){
-    //         return $this->morphMany('Net7\Documents\Document', 'documentable');
-    // }
-
-    // public function addDocumentWithType(Document $doc, $type){
-    //     if ($type){
-    //         $doc->type = $type;
-    //     } else {
-    //         $doc->type = \Net7\Documents\Document::GENERIC_DOCUMENT_TYPE;
-    //     }
-    //     $this->documents()->save($doc);
-
-    // }
-
-    public function detailed_images(){
-        return $this->documents()->where('type', \Net7\Documents\Document::DETAILED_IMAGE_TYPE);
-    }
-
-    public function additional_images(){
-        return $this->documents()->where('type', \Net7\Documents\Document::ADDITIONAL_IMAGE_TYPE);
-    }
-
-    public function generic_images(){
-        return $this->documents()->where('type', \Net7\Documents\Document::GENERIC_IMAGE_TYPE);
-    }
-
-    public function generic_documents(){
-        return $this->documents()->where('type', \Net7\Documents\Document::GENERIC_DOCUMENT_TYPE);
-    }
-
     public function history()
     {
         return $this->morphMany('App\History', 'historyable');

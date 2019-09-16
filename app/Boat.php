@@ -72,22 +72,6 @@ class Boat extends Model
     }
 
 
-    public function detailed_images(){
-        return $this->documents()->where('type', \Net7\Documents\Document::DETAILED_IMAGE_TYPE);
-    }
-
-    public function additional_images(){
-        return $this->documents()->where('type', \Net7\Documents\Document::ADDITIONAL_IMAGE_TYPE);
-    }
-
-    public function generic_images(){
-        return $this->documents()->where('type', \Net7\Documents\Document::GENERIC_IMAGE_TYPE);
-    }
-
-    public function generic_documents(){
-        return $this->documents()->where('type', \Net7\Documents\Document::GENERIC_DOCUMENT_TYPE);
-    }
-
 
     // owner ed equipaggio
     public function users()
