@@ -37,7 +37,13 @@
 
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
-                            <td><img src="{{ @route('user-photo', ['id' => $user->id]) }}" /></td>
+                            <td>
+                            @if($user->hasProfilePhoto())
+                                <img alt="Profile photo" style="width:100px; border: 1px gray solid;" src="{{ @route('user-photo', ['id' => $user->id]) }}" />
+                            @else
+                                {{ __('No photo uploaded!') }}
+                            @endif
+                            </td>
                             <td>@booltostr($user->is_storm_user)</td>
                             <td>@booltostr($user->can_login)</td>
                             <td>{{ $user->created_at->format('F d, Y h:ia') }}</td>
