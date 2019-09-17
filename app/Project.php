@@ -15,6 +15,7 @@ class Project extends Model {
 
     use DocumentableTrait {
          addDocumentWithType as traitAddDocumentWithType;
+         updateDocument as traitUpdateDocument;
     }
     use HasStatuses;
 
@@ -30,19 +31,7 @@ class Project extends Model {
     }
 
 
-    /**
-     *
-     * @Override the base method to send files to dropbox
-     */
-
-    public function addDocumentWithType(\Net7\Documents\Document $document, $type) {
-
-        $this->traitAddDocumentWithType($document, $type);
-
-        // TODO: spostarlo in un job per le code
-
-        $this->save();
-        $document->refresh();
+    public function sendDocumentToDropbox(\Net7\Documents\Document $document){
 
         $document = Document::find($document->id);
         $media = $document->getRelatedMedia();
@@ -57,9 +46,6 @@ class Project extends Model {
         $dropboxFolder =  $this->getDropboxFolderPath($document);
         $dropboxFilepath =  $this->getDropboxFilePath($document, $filename);
 
-
-        $document->external_path = $dropboxFilepath;
-        $document->save();
 
         $client = new \Spatie\Dropbox\Client(env('DROPBOX_TOKEN'));
         try {
@@ -81,6 +67,36 @@ class Project extends Model {
         // TODO: check for errors
 
         // TODO: finish it up
+    }
+
+    /**
+     *
+     * @Override the base method to send the updated files to dropbox
+     */
+    public function updateDocument(\Net7\Documents\Document $document, $file){
+
+        $this->traitUpdateDocument( $document, $file);
+        $this->sendDocumentToDropbox($document);
+
+    }
+
+    /**
+     *
+     * @Override the base method to send files to dropbox
+     */
+
+
+    public function addDocumentWithType(\Net7\Documents\Document $document, $type) {
+
+        $this->traitAddDocumentWithType($document, $type);
+
+        // TODO: spostarlo in un job per le code
+
+        $this->save();
+        $document->refresh();
+
+        $this->sendDocumentToDropbox($document);
+
 
     }
 
