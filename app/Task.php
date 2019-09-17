@@ -11,11 +11,11 @@ use const TASKS_STATUS_COMPLETED;
 use const TASKS_STATUS_DENIED;
 use Venturecraft\Revisionable\RevisionableTrait;
 use Faker\Generator as Faker;
-use Net7\Documents\DocumentableModel;
+use Net7\Documents\DocumentableTrait;
 
-class Task extends DocumentableModel
+class Task extends Model
 {
-    use RevisionableTrait, HasStatuses;
+    use RevisionableTrait, HasStatuses, DocumentableTrait;
 
     protected $table = 'tasks';
 
@@ -88,7 +88,7 @@ class Task extends DocumentableModel
 //        $this->hasOneThrough('App\Boat','App\Project'); // così non funziona perché va a cercare 'projects.task_id' in 'field list' (SQL: select `boats`.*, `projects`.`task_id` as `laravel_through_key` from `boats` inner join `projects` on `projects`.`id` = `boats`.`project_id` where `projects`.`task_id` = 13 limit 1)'
         return $this->project ? $this->project->boat : null;
     }
-   
+
 
     public function subsection()
     {
@@ -103,36 +103,6 @@ class Task extends DocumentableModel
     public function comments()
     {
         return $this->morphMany('App\Comment', 'commentable');
-    }
-
-    // public function documents(){
-    //         return $this->morphMany('Net7\Documents\Document', 'documentable');
-    // }
-
-    // public function addDocumentWithType(Document $doc, $type){
-    //     if ($type){
-    //         $doc->type = $type;
-    //     } else {
-    //         $doc->type = \Net7\Documents\Document::GENERIC_DOCUMENT_TYPE;
-    //     }
-    //     $this->documents()->save($doc);
-
-    // }
-
-    public function detailed_images(){
-        return $this->documents()->where('type', \Net7\Documents\Document::DETAILED_IMAGE_TYPE);
-    }
-
-    public function additional_images(){
-        return $this->documents()->where('type', \Net7\Documents\Document::ADDITIONAL_IMAGE_TYPE);
-    }
-
-    public function generic_images(){
-        return $this->documents()->where('type', \Net7\Documents\Document::GENERIC_IMAGE_TYPE);
-    }
-
-    public function generic_documents(){
-        return $this->documents()->where('type', \Net7\Documents\Document::GENERIC_DOCUMENT_TYPE);
     }
 
     public function history()

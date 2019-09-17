@@ -20,6 +20,7 @@ Auth::routes();
 Route::group(['middleware' => ['logoutBlocked']], function () {
 
     Route::get('/dashboard', 'HomeController@index')->name('dashboard');
+    Route::get('/user-photo/{id}', 'UserController@getProfilePhoto')->name('user-photo');
 
     Route::group(['middleware' => ['auth', 'isAdmin']], function () {
 

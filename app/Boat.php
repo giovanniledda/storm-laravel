@@ -5,10 +5,12 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Net7\Documents\DocumentableModel;
+use Net7\Documents\DocumentableTrait;
 
-class Boat extends DocumentableModel
+class Boat extends Model
 {
+
+    use DocumentableTrait;
 
     protected $table = 'boats';
     protected $fillable = [
@@ -70,22 +72,6 @@ class Boat extends DocumentableModel
     }
 
 
-    public function detailed_images(){
-        return $this->documents()->where('type', \Net7\Documents\Document::DETAILED_IMAGE_TYPE);
-    }
-
-    public function additional_images(){
-        return $this->documents()->where('type', \Net7\Documents\Document::ADDITIONAL_IMAGE_TYPE);
-    }
-
-    public function generic_images(){
-        return $this->documents()->where('type', \Net7\Documents\Document::GENERIC_IMAGE_TYPE);
-    }
-
-    public function generic_documents(){
-        return $this->documents()->where('type', \Net7\Documents\Document::GENERIC_DOCUMENT_TYPE);
-    }
-
 
     // owner ed equipaggio
     public function users()
@@ -93,10 +79,10 @@ class Boat extends DocumentableModel
         return $this->belongsToMany('App\User')
             ->using('App\BoatUser')
             ->withPivot([
-                'profession_id' 
+                'profession_id'
             ]);
     }
-    
+
 
     /**
      * @param int $uid

@@ -10,6 +10,7 @@ use Auth;
 use const FLASH_ERROR;
 use const FLASH_WARNING;
 use Illuminate\Http\Request;
+use Net7\Documents\Document;
 use Session;
 use App\User;
 use App\Role;
@@ -129,7 +130,8 @@ class UserController extends Controller
         $validated = $this->validate($request, [
             'name' => 'required|max:120',
             'email' => 'required|email|unique:users,email,' . $id,
-            'password' => 'nullable|min:6|confirmed' // **
+            'password' => 'nullable|min:6|confirmed', // **
+            'photo' => 'image|mimes:jpeg,bmp,png'
         ]);
 
         // **
@@ -147,6 +149,17 @@ class UserController extends Controller
         } else {
             $user->roles()->detach(); //If no role is selected remove exisiting role associated to a user
         }
+
+        $file = $request->file('photo');
+//        $file = Document::createUploadedFileFromBase64( $base64File, $filename);
+        $doc = new Document([
+            'title' => "Profile photo for user $id",
+            'file' => $file,
+        ]);
+        $user->addDocumentWithType($doc, Document::GENERIC_IMAGE_TYPE);
+
+//        dd($file);
+
         return redirect()->route('users.index')
             ->with(FLASH_SUCCESS, __('User successfully edited.'));
     }
@@ -466,5 +479,16 @@ class UserController extends Controller
         $address = $user->getAddress($address_id);
 
         return view('users.addresses.delete')->with(['address' => $address, 'user' => $user]);
+    }
+
+    /**
+     * @param int $id
+     */
+    public function getProfilePhoto(int $id)
+    {
+        $user = User::findOrFail($id);
+        if ($user->getProfilePhotoDocument()) {
+            return response()->download($user->getProfilePhotoDocument()->getFirstMediaPath('documents', 'thumb'), '');
+        }
     }
 }

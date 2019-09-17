@@ -8,11 +8,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\ModelStatus\HasStatuses;
 use Faker\Generator as Faker;
 
-use \Net7\Documents\DocumentableModel;
-use \Net7\Documents\Document; 
+use \Net7\Documents\DocumentableTrait;
+use \Net7\Documents\Document;
 
-class Project extends DocumentableModel {
+class Project extends Model {
 
+    use DocumentableTrait {
+         addDocumentWithType as traitAddDocumentWithType;
+    }
     use HasStatuses;
 
     protected $table = 'projects';
@@ -27,13 +30,121 @@ class Project extends DocumentableModel {
     }
 
 
+
+    /**
+     *
+     * @Override the base method to send files to dropbox
+     */
+
+    public function addDocumentWithType(\Net7\Documents\Document $doc, $type) {
+
+        $this->traitAddDocumentWithType($doc, $type);
+
+        // TODO: spostarlo in un job per le code
+
+        $this->save();
+        $doc->refresh();
+
+        $doc = Document::find($doc->id);
+        $media = $doc->getFirstMedia('documents');
+
+        // $folder = $this->getMediaPath($media);
+        $filepath = $media->getPath();
+
+
+
+
+        // $client->listFolder($folder);
+
+        // $filename = 'Zippo Case.pdf';
+
+        // $filepath = '../Zippo Case.pdf';
+
+
+        //$base_path =
+
+        // $filepath = $folder . $filename;
+
+        $fh = fopen($filepath, 'r');
+
+        $content = fread($fh, filesize($filepath));
+
+        fclose ($fh);
+        // $fullPath = $folder . DIRECTORY_SEPARATOR . $filename;
+
+        $filename = $media->file_name;
+        $dropboxFolder =  $this->getDropboxFolderPath();
+        $dropboxFilepath =  $this->getDropboxFilePath($media, $filename);
+
+
+        $doc->external_path = $dropboxFilepath;
+        $doc->save();
+
+        $client = new \Spatie\Dropbox\Client(env('DROPBOX_TOKEN'));
+        try {
+            $client->listFolder($dropboxFolder);
+        } catch ( \Spatie\Dropbox\Exceptions\BadRequest  $e) {
+            $client->createFolder($dropboxFolder);
+        }
+
+        $client->upload($dropboxFilepath, $content, 'add');
+
+        // $client->getMetadata($fullPath);
+
+        // TODO: remove local file
+
+        // TODO: check for errors
+
+        // TODO: finish it up
+
+    }
+
+    public function getDocumentFromDropbox(\Net7\Documents\Document $document){
+
+
+        $media = $document->getRelatedMedia();
+        $filename = $media->file_name;
+        $dropboxFolder =  $this->getDropboxFolderPath();
+        $dropboxFilepath =  $this->getDropboxFilePath($media, $filename);
+
+
+        $client = new \Spatie\Dropbox\Client(env('DROPBOX_TOKEN'));
+
+
+        $link = $client->getTemporaryLink($dropboxFilepath );
+
+        return $link;
+    }
+
+    public function getRelatedMedia(){
+        // return $this->media;
+    }
+
+    public function getDropboxFilePath ($media, $filename){
+        return $this->getDropboxFolderPath($media) .  $media->id . '_' . $filename;
+    }
+
+    public function getDropboxFolderPath(){
+
+        $boat = $this->boat;
+        $project_id = $this->id;
+        $boat_name = $boat->name;
+
+        $path = DIRECTORY_SEPARATOR .'boats' . DIRECTORY_SEPARATOR .$boat_name . '_'. $project_id   . '_' .
+            $this->start_date. DIRECTORY_SEPARATOR;
+
+        return $path;
+
+    }
+
+
     public function getMediaPath($media){
 
         $document = $media->model;
         $media_id = $media->id;
 
         $project_id = $this->id;
-        $path = 'projects' . DIRECTORY_SEPARATOR . $project_id . DIRECTORY_SEPARATOR . $document->type .
+        $path = DIRECTORY_SEPARATOR .'projects' . DIRECTORY_SEPARATOR . $project_id . DIRECTORY_SEPARATOR . $document->type .
                  DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
 
         return $path;
@@ -142,10 +253,6 @@ class Project extends DocumentableModel {
     public function hasUserById($uid)
     {
         return $this->getUserByIdBaseQuery($uid)->count() > 0;
-    }
-
-    public function generic_documents() {
-        return $this->documents()->where('type', Document::GENERIC_DOCUMENT_TYPE);
     }
 
 

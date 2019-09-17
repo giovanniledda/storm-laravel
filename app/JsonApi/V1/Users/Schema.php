@@ -19,7 +19,22 @@ class Schema extends SchemaProvider
      */
     public function getId($resource)
     {
-        return (string) $resource->getRouteKey();
+        return (string)$resource->getRouteKey();
+    }
+
+
+    public function getPrimaryMeta($resource)
+    {
+        $image = $resource->generic_images->last();
+        return [
+            'image' => $image ? $image->getShowApiUrl() : null
+        ];
+    }
+
+
+    public function getInclusionMeta($resource)
+    {
+        return $this->getPrimaryMeta($resource);
     }
 
     /**
@@ -32,8 +47,8 @@ class Schema extends SchemaProvider
         return [
             'name' => $resource->name,
             'surname' => $resource->surname,
-            'email' => $resource->email, 
-            'is_storm'  => $resource->is_storm, 
+            'email' => $resource->email,
+            'is_storm' => $resource->is_storm,
             'created-at' => $resource->created_at->toAtomString(),
             'updated-at' => $resource->updated_at->toAtomString(),
         ];
