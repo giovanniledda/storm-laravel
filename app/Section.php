@@ -55,9 +55,8 @@ class Section extends DocumentableModel
     {
         return $this->morphOne('Net7\Documents\Document', 'documentable');
     }
-
-
-
+     
+ 
     public function generic_documents(){
         return $this->documents()->where('type', \Net7\Documents\Document::GENERIC_DOCUMENT_TYPE);
     }

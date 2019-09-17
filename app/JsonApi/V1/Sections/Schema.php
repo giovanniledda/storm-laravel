@@ -23,12 +23,24 @@ class Schema extends SchemaProvider
     {
         return (string) $resource->getRouteKey();
     }
+    
+    
+    /**
+     * ritorna il nome del file associato all'immagine della sezione.
+     * @param type $resource
+     */
+    public function getImageName($resource) {
+         $image = $resource->generic_images->last();
+         if ($image) {
+              $media = $image->getFirstMedia('documents');
+              return ($media['file_name']);
+         } 
+         return null;
+    }
 
      public function getPrimaryMeta($resource)
-    {
-
-        $generic_documents = $resource->generic_documents;
-
+    { 
+        $generic_documents = $resource->generic_documents; 
 
         $gdu = [];
         foreach ($generic_documents as $i){
@@ -50,8 +62,7 @@ class Schema extends SchemaProvider
     }
 
     public function getInclusionMeta($resource)
-    {
-
+    { 
         return $this->getPrimaryMeta($resource);
     }
 
@@ -73,10 +84,10 @@ class Schema extends SchemaProvider
             'position' => $resource->position,
             'code' => $resource->code,
             'boat_id' => $resource->boat_id,
+            'image'=>$this->getImageName($resource),
             'dimension_factor'=>$dimension_fraction,
             'created-at' => $resource->created_at->toAtomString(),
-            'updated-at' => $resource->updated_at->toAtomString(),
-
+            'updated-at' => $resource->updated_at->toAtomString(), 
         ];
     }
 }

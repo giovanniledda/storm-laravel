@@ -79,7 +79,7 @@ class Schema extends SchemaProvider
                      ->select('sites.name', 'sites.location')
                      ->Join('sites', 'projects.site_id', '=', 'sites.id')
                      ->where('projects.id', '=', $project_active->id)
-                      ->first();
+                     ->first();
                      
             $project_active->location= $location;
          }
