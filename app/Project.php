@@ -30,55 +30,36 @@ class Project extends Model {
     }
 
 
-
     /**
      *
      * @Override the base method to send files to dropbox
      */
 
-    public function addDocumentWithType(\Net7\Documents\Document $doc, $type) {
+    public function addDocumentWithType(\Net7\Documents\Document $document, $type) {
 
-        $this->traitAddDocumentWithType($doc, $type);
+        $this->traitAddDocumentWithType($document, $type);
 
         // TODO: spostarlo in un job per le code
 
         $this->save();
-        $doc->refresh();
+        $document->refresh();
 
-        $doc = Document::find($doc->id);
-        $media = $doc->getFirstMedia('documents');
+        $document = Document::find($document->id);
+        $media = $document->getRelatedMedia();
 
-        // $folder = $this->getMediaPath($media);
         $filepath = $media->getPath();
 
-
-
-
-        // $client->listFolder($folder);
-
-        // $filename = 'Zippo Case.pdf';
-
-        // $filepath = '../Zippo Case.pdf';
-
-
-        //$base_path =
-
-        // $filepath = $folder . $filename;
-
         $fh = fopen($filepath, 'r');
-
         $content = fread($fh, filesize($filepath));
-
         fclose ($fh);
-        // $fullPath = $folder . DIRECTORY_SEPARATOR . $filename;
 
         $filename = $media->file_name;
-        $dropboxFolder =  $this->getDropboxFolderPath();
-        $dropboxFilepath =  $this->getDropboxFilePath($media, $filename);
+        $dropboxFolder =  $this->getDropboxFolderPath($document);
+        $dropboxFilepath =  $this->getDropboxFilePath($document, $filename);
 
 
-        $doc->external_path = $dropboxFilepath;
-        $doc->save();
+        $document->external_path = $dropboxFilepath;
+        $document->save();
 
         $client = new \Spatie\Dropbox\Client(env('DROPBOX_TOKEN'));
         try {
@@ -87,7 +68,11 @@ class Project extends Model {
             $client->createFolder($dropboxFolder);
         }
 
-        $client->upload($dropboxFilepath, $content, 'add');
+        // try {
+            $client->upload($dropboxFilepath, $content, 'add');
+        // } catch (Exception $e){
+
+        // }
 
         // $client->getMetadata($fullPath);
 
@@ -104,8 +89,8 @@ class Project extends Model {
 
         $media = $document->getRelatedMedia();
         $filename = $media->file_name;
-        $dropboxFolder =  $this->getDropboxFolderPath();
-        $dropboxFilepath =  $this->getDropboxFilePath($media, $filename);
+        $dropboxFolder =  $this->getDropboxFolderPath($document);
+        $dropboxFilepath =  $this->getDropboxFilePath($document, $filename);
 
 
         $client = new \Spatie\Dropbox\Client(env('DROPBOX_TOKEN'));
@@ -120,18 +105,29 @@ class Project extends Model {
         // return $this->media;
     }
 
-    public function getDropboxFilePath ($media, $filename){
-        return $this->getDropboxFolderPath($media) .  $media->id . '_' . $filename;
+    public function getDropboxFilePath ($document, $filename){
+
+        $media = $document->getRelatedMedia();
+
+        $path_parts = pathinfo($this->getMediaPath($media) . $filename);
+
+        $basename = $path_parts['filename'];
+        $extension = $path_parts['extension'];
+        return $this->getDropboxFolderPath($document) .  $basename . '_' . $media->id . '.' . $extension;
     }
 
-    public function getDropboxFolderPath(){
+    public function getDropboxFolderPath($document){
 
         $boat = $this->boat;
         $project_id = $this->id;
         $boat_name = $boat->name;
 
-        $path = DIRECTORY_SEPARATOR .'boats' . DIRECTORY_SEPARATOR .$boat_name . '_'. $project_id   . '_' .
-            $this->start_date. DIRECTORY_SEPARATOR;
+        $path = DIRECTORY_SEPARATOR .'boats' . DIRECTORY_SEPARATOR .$boat_name . '_'. sprintf("%07d", $project_id)   . '_' .
+        $this->project_type. '_' . date ('Y-m-d', strtotime($this->created_at)). DIRECTORY_SEPARATOR;
+
+        if ($document->document_number) {
+            $path .= $document->document_number . DIRECTORY_SEPARATOR;
+        }
 
         return $path;
 

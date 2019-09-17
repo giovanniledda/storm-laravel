@@ -152,13 +152,13 @@ class UserController extends Controller
 
         $file = $request->file('photo');
 //        $file = Document::createUploadedFileFromBase64( $base64File, $filename);
-        $doc = new Document([
-            'title' => "Profile photo for user $id",
-            'file' => $file,
-        ]);
-        $user->addDocumentWithType($doc, Document::GENERIC_IMAGE_TYPE);
-
-//        dd($file);
+        if ($file) {
+            $doc = new Document([
+                'title' => "Profile photo for user $id",
+                'file' => $file,
+            ]);
+            $user->addDocumentWithType($doc, Document::GENERIC_IMAGE_TYPE);
+        }
 
         return redirect()->route('users.index')
             ->with(FLASH_SUCCESS, __('User successfully edited.'));
@@ -488,7 +488,7 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         if ($user->getProfilePhotoDocument()) {
-            return response()->download($user->getProfilePhotoDocument()->getFirstMediaPath('documents', 'thumb'), '');
+            return response()->download($user->getProfilePhotoDocument()->getThumb(), '');
         }
     }
 }

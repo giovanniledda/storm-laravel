@@ -13,6 +13,8 @@ use Venturecraft\Revisionable\RevisionableTrait;
 use Faker\Generator as Faker;
 use Net7\Documents\DocumentableTrait;
 
+use Illuminate\Database\Eloquent\Model;
+
 class Task extends Model
 {
     use RevisionableTrait, HasStatuses, DocumentableTrait;
