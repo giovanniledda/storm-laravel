@@ -185,8 +185,9 @@ class AuthController extends Controller
     {
         $user = Auth::user(); // $request->user() is the same
 
-        $user->getRoleNames();
-        $user->getPermissionNames();
+      $user->getRoleNames();
+      $user->getPermissionNames();
+      $user->hasPhoto = $user->hasProfilePhoto();
         $data = [
             'id' => $user->id,
             'type' => 'users',
