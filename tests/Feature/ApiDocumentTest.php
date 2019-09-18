@@ -113,6 +113,8 @@ class ApiDocumentTest extends TestApiCase
 
         $project = factory(Project::class)->create();
 
+        $project->boat()->associate($boat)->save();
+
         $project->save();
 
 
@@ -146,7 +148,6 @@ class ApiDocumentTest extends TestApiCase
 
         $content = json_decode($response->getContent(), true);
 
-print_r ($content);
 
         $document_id = $content['data']['id'];
         $document = Document::find($document_id);

@@ -32,7 +32,7 @@ class AddDocumentNumberToDocumentsTable extends Migration
     public function up()
     {
         Schema::table($this->table, function(Blueprint $table){
-            $table->string('document_number', 1024)->nullable()->after('external_path');
+            $table->string('document_number', 1024)->nullable()->after('title');
         });
     }
 

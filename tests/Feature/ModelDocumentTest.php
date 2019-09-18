@@ -157,4 +157,68 @@ class ModelDocumentTest extends TestCase
      }
 
 
+    public function test_revisionable_document_on_task(){
+
+        $this->disableExceptionHandling();
+
+
+        $filename = 'testDocument.txt';
+        $filepath = __DIR__ . '/'.  $filename;
+        $tempFilepath = '/tmp/'.$filename;
+        copy ($filepath, $tempFilepath);
+        $file = new \Symfony\Component\HttpFoundation\File\UploadedFile( $tempFilepath, $filename, null ,null, true);
+        $doc = new Document([
+            'title' => 'a document',
+            'file' => $file,
+            'document_number' => 'ISO_9921'
+
+        ]);
+        // $fake_name = $this->faker->sentence;
+        // $task = new \App\Task([
+        //         'title' => $fake_name,
+        //         'description' => $this->faker->text,
+        //     ]
+        // );
+        // $task->save();
+
+        $task = factory( \App\Task::class)->create();
+        $project = factory(\App\Project::class)->create();
+
+//        $project->tasks()->save($task)->save(); NOTA: se faccio questo, poi non posso fare $task->project ..mi dice che è nullo
+        $task->project()->associate($project)->save();
+
+
+
+        $task->addDocumentWithType($doc, 'generic_document');
+
+        $task->refresh();
+
+        $doc = $task->generic_documents->last();
+        $firstMedia = $doc->getRelatedMedia();
+        $expected_media_id = 1;
+        $this->assertEquals($expected_media_id, $firstMedia->id);
+        $this->assertEquals($expected_media_id, $doc->current_media_id);
+
+
+
+        $filename = 'testDocument2.txt';
+        $filepath = __DIR__ . '/'.  $filename;
+        $tempFilepath = '/tmp/'.$filename;
+        copy ($filepath, $tempFilepath);
+        $file = new \Symfony\Component\HttpFoundation\File\UploadedFile( $tempFilepath, $filename, null ,null, true);
+
+        $document = $task->generic_documents->last();
+
+        $task->updateDocument($document, $file);
+        $task->refresh();
+
+        $doc = $task->generic_documents->last();
+        $secondMedia = $doc->getRelatedMedia();
+        $expected_media_id = 2;
+        $this->assertEquals($expected_media_id, $secondMedia->id);
+        $this->assertEquals($expected_media_id, $doc->current_media_id);
+
+
+
+    }
 }
