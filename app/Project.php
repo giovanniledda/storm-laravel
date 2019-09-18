@@ -76,8 +76,10 @@ class Project extends Model {
     public function updateDocument(\Net7\Documents\Document $document, $file){
 
         $this->traitUpdateDocument( $document, $file);
-        $this->sendDocumentToDropbox($document);
 
+        if (env('DROPBOX_TOKEN')) {
+            $this->sendDocumentToDropbox($document);
+        }
     }
 
     /**
@@ -94,9 +96,9 @@ class Project extends Model {
 
         $this->save();
         $document->refresh();
-
-        $this->sendDocumentToDropbox($document);
-
+        if (env('DROPBOX_TOKEN')) {
+            $this->sendDocumentToDropbox($document);
+        }
 
     }
 
