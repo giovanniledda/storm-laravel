@@ -25,7 +25,7 @@ class ProjectController extends Controller {
     public function statuses(Request $request) {
         $resp = Response(["data" => [
                 "type" => "projects",
-                "attributes" => ["project-statuses" => PROJECT_STATUSES]
+                "attributes" => ["statuses" => PROJECT_STATUSES]
             ]], 200);
 
         $resp->header('Content-Type', 'application/vnd.api+json');

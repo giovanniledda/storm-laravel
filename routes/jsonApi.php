@@ -14,9 +14,12 @@ use Illuminate\Http\Request;
 |
 */
 
+/**
+ * spostare la rotta di soppra sotto un middlewere protetto e verificare successivamente.
+ */
 
 Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
-
+    
     JsonApi::register('v1', ['namespace'=>'Api'])->routes(function ($api) {
 
         $api->resource('sites');
