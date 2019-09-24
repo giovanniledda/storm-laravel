@@ -50,9 +50,10 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
         });
 
 
-        $api->resource('boats')->only('owner')->controller('BoatController') //uses the App\Http\Controllers\Api\ProjectsController
+        $api->resource('boats')->only('owner', 'closedprojects')->controller('BoatController') //uses the App\Http\Controllers\Api\ProjectsController
         ->routes(function ($boats){
                 $boats->post('{record}/owner', 'owner')->name('owner');
+                $boats->get('{record}/closedprojects', 'closedProjects')->name('closedprojects');
         });
 
         $api->resource('projects')->only('statuses', 'close')->controller('ProjectController') //uses the App\Http\Controllers\Api\ProjectsController
