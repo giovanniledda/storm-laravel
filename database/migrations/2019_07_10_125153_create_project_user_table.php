@@ -27,6 +27,8 @@ class CreateProjectUserTable extends Migration
             $table->unsignedBigInteger('profession_id')->nullable();
             $table->foreign('profession_id')->references('id')->on('professions')->onDelete('set null');
 
+            $table->unique(['project_id', 'user_id', 'profession_id']);
+
             $table->timestamps();
         });
     }

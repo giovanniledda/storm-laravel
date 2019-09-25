@@ -91,6 +91,10 @@ defined('PROJECT_EVENT_PROGRESS') or define('PROJECT_EVENT_PROGRESS', '% percent
 
 defined('PROJECT_TYPE_NEWBUILD') or define('PROJECT_TYPE_NEWBUILD', 'newbuild');
 defined('PROJECT_TYPE_REFIT') or define('PROJECT_TYPE_REFIT', 'refit');
+defined('PROJECT_TYPE_API_VALIDATION_TITLE') or define('PROJECT_TYPE_API_VALIDATION_TITLE', 'Missing or wrong parameter');
+defined('PROJECT_TYPE_API_VALIDATION_MSG') or define('PROJECT_TYPE_API_VALIDATION_MSG', 'The TYPE parameter is missing, non standard or the POST data structure is not correct. Please check your data.');
+defined('PROJECT_TYPE_API_NO_ACTION_MSG') or define('PROJECT_TYPE_API_NO_ACTION_MSG', 'The TYPE of the project is already setted to the value you are trying to save. Please check your data.');
+defined('PROJECT_TYPE_API_PROJECT_CLOSED_MSG') or define('PROJECT_TYPE_API_PROJECT_CLOSED_MSG', 'The main project is already closed. Please check your data.');
 
 /*
  * BOAT TYPES
