@@ -1,0 +1,60 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\RequestProjectChangeType;
+use App\Http\Requests\RequestUserUpdatePhoto;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
+use App\User;
+use App\Project;
+use const PROJECT_STATUS_CLOSED;
+use const USER_PHOTO_API_NO_DOC_MSG;
+use Validator;
+use Illuminate\Validation\Rule;
+use Net7\Documents\Document;
+use App\Utils\Utils;
+use Net7\Logging\models\Logs as Log;
+
+class UserController extends Controller
+{
+
+    /**
+     * Upload and update the user profile's photo
+     *
+     * @param RequestUserUpdatePhoto $request
+     * @param $record
+     *
+     * @return mixed
+     */
+    public function updatePhoto(RequestUserUpdatePhoto $request, $record)
+    {
+        $base64File = $request->data['attributes']['file'];
+        $filename = $request->data['attributes']['filename'];
+
+        $file = Document::createUploadedFileFromBase64($base64File, $filename);
+
+        if ($file) {
+            $doc = new Document([
+                'title' => "Profile photo for user {$record->id}",
+                'file' => $file,
+            ]);
+            $record->addDocumentWithType($doc, Document::GENERIC_IMAGE_TYPE);
+
+            $ret = ['data' => [
+                'type' => 'documents',
+                'id' => $doc->id,
+                'attributes' => [
+                    'name' => $doc->title,
+                    'created-at' => $doc->created_at,
+                    'updated-at' => $doc->updated_at
+                ]
+            ]];
+            return Utils::renderStandardJsonapiResponse($ret, 200);
+        }
+        return Utils::jsonAbortWithInternalError(500, 500, USER_PHOTO_API_NO_DOC_TITLE, USER_PHOTO_API_NO_DOC_MSG);
+    }
+
+}
