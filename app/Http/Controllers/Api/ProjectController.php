@@ -132,7 +132,7 @@ class ProjectController extends Controller
                     'id' => $newProject->id,
                     'attributes' => $newProject
                 ]];
-                return Utils::renderStandardJsonapiResponse($ret, 500);
+                return Utils::renderStandardJsonapiResponse($ret, 200);
 
             } else {
                 return Utils::jsonAbortWithInternalError(422, 130, PROJECT_TYPE_API_VALIDATION_TITLE, PROJECT_TYPE_API_NO_ACTION_MSG);
