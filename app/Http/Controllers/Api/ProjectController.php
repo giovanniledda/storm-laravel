@@ -111,7 +111,7 @@ class ProjectController extends Controller
     public function changeType(RequestProjectChangeType $request, $record)
     {
         $project = Project::findOrFail($record->id);
-        if ($project->status == PROJECT_STATUS_CLOSED) {
+        if ($project->project_status == PROJECT_STATUS_CLOSED) {
             return Utils::jsonAbortWithInternalError(422, 130, PROJECT_TYPE_API_VALIDATION_TITLE, PROJECT_TYPE_API_PROJECT_CLOSED_MSG);
         }
         if ($type = $request->input('data.attributes.type')) {
@@ -127,7 +127,13 @@ class ProjectController extends Controller
                 // archivio il vecchio
                 $project->close(1);
 
-                return $newProject;
+                $ret = ['data' => [
+                    'type' => 'projects',
+                    'id' => $newProject->id,
+                    'attributes' => $newProject
+                ]];
+                return Utils::renderStandardJsonapiResponse($ret, 500);
+
             } else {
                 return Utils::jsonAbortWithInternalError(422, 130, PROJECT_TYPE_API_VALIDATION_TITLE, PROJECT_TYPE_API_NO_ACTION_MSG);
             }

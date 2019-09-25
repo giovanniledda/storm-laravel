@@ -56,16 +56,16 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
                 $boats->get('{record}/closed-projects', 'closedProjects')->name('closed-projects');
         });
 
-        $api->resource('projects')->only('statuses', 'close', 'change-type')->controller('ProjectController') //uses the App\Http\Controllers\Api\ProjectsController
+        $api->resource('projects')->only(
+            'statuses',
+            'close',
+            'history',
+            'change-type')->controller('ProjectController') //uses the App\Http\Controllers\Api\ProjectsController
         ->routes(function ($projects){
                 $projects->get('/statuses', 'statuses')->name('statuses');
                 $projects->post('/{record}/close', 'close')->name('close');
-                $projects->post('/{record}/change-type', 'changeType')->name('change-type');
-            });
-
-        $api->resource('projects')->only('history')->controller('ProjectController') //uses the App\Http\Controllers\Api\ProjectsController
-        ->routes(function ($projects){
                 $projects->get('{record}/history', 'history')->name('history');
+                $projects->post('/{record}/change-type', 'changeType')->name('change-type');
             });
 
         $api->resource('projects')->relationships(function ($relations) {
