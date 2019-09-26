@@ -82,7 +82,7 @@ class AuthController extends Controller
             return response()->json(['error' => $validator->errors()], 401);
         }
 
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'disable_login'=>1])) {
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'disable_login' => 1])) {
             $user = Auth::user();
             $token = $user->createAndGetToken();
             $data = [
@@ -185,9 +185,12 @@ class AuthController extends Controller
     {
         $user = Auth::user(); // $request->user() is the same
 
-      $user->getRoleNames();
-      $user->getPermissionNames();
-      $user->hasPhoto = $user->hasProfilePhoto();
+        $user->getRoleNames();
+        $user->getPermissionNames();
+        $user->hasPhoto = $user->hasProfilePhoto();
+        $user->profilePhoto = $user->hasPhoto ? $user->getProfilePhotoDocument()->id : null;
+        unset($user['generic_images']);
+
         $data = [
             'id' => $user->id,
             'type' => 'users',

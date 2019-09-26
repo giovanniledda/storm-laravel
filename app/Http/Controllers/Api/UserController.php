@@ -37,11 +37,17 @@ class UserController extends Controller
         $file = Document::createUploadedFileFromBase64($base64File, $filename);
 
         if ($file) {
-            $doc = new Document([
-                'title' => "Profile photo for user {$record->id}",
-                'file' => $file,
-            ]);
-            $record->addDocumentWithType($doc, Document::GENERIC_IMAGE_TYPE);
+
+            if ($record->hasProfilePhoto()) {
+                $doc = $record->getProfilePhotoDocument();
+                $record->updateDocument($doc, $file);
+            } else {
+                $doc = new Document([
+                    'title' => "Profile photo for user {$record->id}",
+                    'file' => $file,
+                ]);
+                $record->addDocumentWithType($doc, Document::GENERIC_IMAGE_TYPE);
+            }
 
             $ret = ['data' => [
                 'type' => 'documents',
