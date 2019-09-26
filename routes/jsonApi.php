@@ -38,6 +38,8 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
             $task->get('{record}/history', 'history')->name('history');
         });
 
+        $api->resource('users');
+        
         $api->resource('users')->only('closed-projects')->controller('UserController') //uses the App\Http\Controllers\Api\UserController
         ->routes(function ($boats) {
             $boats->post('{record}/update-photo', 'updatePhoto')->name('update-photo');
