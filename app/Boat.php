@@ -64,7 +64,10 @@ class Boat extends Model
 
     public function closedProjects()
     {
-        return $this->projects()->where('project_status', '=', PROJECT_STATUS_CLOSED)->get();
+        return $this->projects()
+            ->where('project_status', '=', PROJECT_STATUS_CLOSED)
+            ->orderBy('end_date', 'DESC')
+            ->get();
     }
 
     /**
