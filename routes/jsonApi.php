@@ -82,10 +82,15 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
         });
 
         $api->resource('updates');
+        $api->resource('updates')->only('mark-read')->controller('UpdateController') //uses the App\Http\Controllers\Api\UpdateController
+        ->routes(function ($boats) {
+            $boats->get('{record}/mark-read', 'markAsRead')->name('mark-read');
+        });
+
         $api->resource('comments');
 
 
-        $api->resource('documents')->only('show')->controller('DocumentsController')//uses the App\Http\Controllers\Api\DocumentController
+        $api->resource('documents')->only('show')->controller('DocumentsController') //uses the App\Http\Controllers\Api\DocumentController
         ->routes(function ($docs) {
             $docs->get('{record}/show/{size}', 'show')->name('show_with_size');
             $docs->get('{record}/show', 'show')->name('show');

@@ -79,17 +79,16 @@ class TaskNotifications extends Notification
     {
         return [
             'task_id' => $this->task->id,
-            'project_id' => $this->task->project_id,
-            'boat_id'=> (string) $this->getBoatId(), // casto a string perchè nel json mi serve formattarlo tipo boat_id : "2"
             'author_id' => $this->task->author_id,
             'section_id' =>  $this->task->section_id,
+            'project_id' => $this->getProjectId(),
             'project_name' => $this->getProjectName(),
+            'boat_id'=> (string) $this->getBoatId(), // casto a string perchè nel json mi serve formattarlo tipo boat_id : "2"
             'boat_name' => $this->getBoatName(),
             'title' => $this->task->title,
             'description' => $this->task->description,
         ];
     }
-
 
     protected function getProjectId()
     {
@@ -110,5 +109,6 @@ class TaskNotifications extends Notification
     {
         return is_object($this->task->getProjectBoat()) ? $this->task->getProjectBoat()->name : null;
     }
+
 
 }
