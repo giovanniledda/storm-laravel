@@ -21,8 +21,21 @@ class UpdateController extends Controller
      */
     public function markAsRead(Request $request, $record)
     {
-        $record->markAsRead();
-        return Utils::renderStandardJsonapiResponse([], 204);
+
+        // TODO: se volessimo restituire senza body
+//        $record->markAsRead();
+//        return Utils::renderStandardJsonapiResponse([], 204);
+
+        $updated = $record->markAsRead();
+        if (is_object($updated)) {
+            $ret = ['data' => [
+                'type' => 'updates',
+                'id' => $record->id,
+                'attributes' => $updated
+            ]];
+            return Utils::renderStandardJsonapiResponse($ret, 200);
+        }
+        return Utils::jsonAbortWithInternalError(404, 404, 'Resource not found', "No notification with ID {$record->id}");
     }
 
 }

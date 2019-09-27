@@ -63,7 +63,8 @@ class Update extends Model
     {
         $notification = DatabaseNotification::where('id', $this->id)->get();
         if ($notification) {
-            return $notification->markAsRead();
+            $notification->markAsRead();
+            return $notification;
         }
         return null;
     }
