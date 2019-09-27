@@ -52,15 +52,15 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
         $api->resource('boats')->relationships(function ($relations) {
             $relations->hasMany('sections'); // punta al methodo dell'adapter /app/jsonApi/boats/Adapter non al modello
             $relations->hasMany('users');
-
         });
-
 
         $api->resource('boats')->only('owner', 'closed-projects')->controller('BoatController')//uses the App\Http\Controllers\Api\ProjectController
         ->routes(function ($boats) {
             $boats->post('{record}/owner', 'owner')->name('owner');
-            $boats->get('{record}/closed-projects', 'closedProjects')->name('closed-projects');
+            $boats->get('{record}/closed-projects', 'closedProjects')->name('closed-projects');  // tutti i progetti chiusi di una certa boat
         });
+
+        $api->get('/boats-dashboard', 'BoatController@dashboard')->name('boats-dashboard');  // tutte le boat di progetti chiusi
 
         $api->resource('projects')->only(
             'statuses',

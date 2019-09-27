@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use Auth;
 use Illuminate\Http\Request;
 use App\User;
 use App\Boat;
@@ -64,6 +65,40 @@ class BoatController extends Controller
     public function closedProjects(Request $request, $record)
     {
         $boat = Boat::findOrFail($record->id);
-        return Utils::renderStandardJsonapiResponse($boat->closedProjectsJsonApi(), 500);
+        return Utils::renderStandardJsonapiResponse($boat->closedProjectsJsonApi(), 200);
+    }
+
+    /**
+     *
+     * @param Request $request
+     *
+     * @return mixed
+     */
+    public function archivedProjects(Request $request)
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+            if ($user) {
+                $boats = $user->boatsOfMyClosedProjects();
+                return Utils::renderStandardJsonapiResponse($boats, 200);
+            }
+        }
+    }
+
+    /**
+     *
+     * @param Request $request
+     *
+     * @return mixed
+     */
+    public function dashboard(Request $request)
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+            if ($user) {
+                $boats = $user->boatsOfMyProjects();
+                return Utils::renderStandardJsonapiResponse($boats, 200);
+            }
+        }
     }
 }

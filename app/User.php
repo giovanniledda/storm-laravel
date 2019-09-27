@@ -10,6 +10,7 @@ use function is_object;
 use Laravel\Passport\HasApiTokens;
 use Net7\Documents\DocumentableTrait;
 use const PERMISSION_ADMIN;
+use const PROJECT_STATUS_CLOSED;
 use function snake_case;
 use Spatie\Permission\Traits\HasRoles;
 use Lecturize\Addresses\Traits\HasAddresses;
@@ -90,8 +91,8 @@ class User extends Authenticatable
 
     public function projects()
     {
-        return $this->belongsToMany('App\Project')
-            ->using('App\ProjectUser')
+        return $this->belongsToMany('App\Project', 'project_user')
+//            ->using('App\ProjectUser')
             ->withPivot([
                 'profession_id',
                 'created_by',
@@ -99,9 +100,34 @@ class User extends Authenticatable
             ]);
     }
 
+    /*
+     *                  $query->Join('projects', 'boats.id', '=', 'projects.boat_id')->where('projects.project_status', '=', PROJECT_STATUS_IN_SITE)
+                    ->whereExists(function ($q) {
+                        $user = \Auth::user();
+                        $q->from('project_user')->whereRaw("project_user.user_id = {$user->id}");
+                  });
+     */
+
     public function countProjects()
     {
         return $this->projects()->count();
+    }
+
+    public function closedProjects()
+    {
+        return $this->projects()->where('project_status', '=', PROJECT_STATUS_CLOSED)->get();
+    }
+
+    public function boatsOfMyClosedProjects()
+    {
+        $boat_ids = $this->closedProjects()->pluck('boat_id');
+        return Boat::whereIn('id', $boat_ids)->get();
+    }
+
+    public function boatsOfMyProjects()
+    {
+        $boat_ids = $this->projects()->pluck('boat_id');
+        return Boat::whereIn('id', $boat_ids)->get();
     }
 
     public function boats()
