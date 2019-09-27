@@ -1437,16 +1437,16 @@
         },
         {
             "name": "giggsey/libphonenumber-for-php",
-            "version": "8.10.18",
+            "version": "8.10.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/giggsey/libphonenumber-for-php.git",
-                "reference": "348bac99347a005263f9ec2ed9daf1a511fc5a5f"
+                "reference": "b8f2341692df067028445fee35ca7144d009e251"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/giggsey/libphonenumber-for-php/zipball/348bac99347a005263f9ec2ed9daf1a511fc5a5f",
-                "reference": "348bac99347a005263f9ec2ed9daf1a511fc5a5f",
+                "url": "https://api.github.com/repos/giggsey/libphonenumber-for-php/zipball/b8f2341692df067028445fee35ca7144d009e251",
+                "reference": "b8f2341692df067028445fee35ca7144d009e251",
                 "shasum": ""
             },
             "require": {
@@ -1501,7 +1501,7 @@
                 "phonenumber",
                 "validation"
             ],
-            "time": "2019-09-06T10:36:55+00:00"
+            "time": "2019-09-18T15:37:43+00:00"
         },
         {
             "name": "giggsey/locale",
@@ -3283,7 +3283,7 @@
             "source": {
                 "type": "git",
                 "url": "https://net7.codebasehq.com/nautica/net7documents.git",
-                "reference": "013cf74b57b5cc51a269da0a0d5b3d5f3a2d5f56"
+                "reference": "2556a89d8af33677b8301a6ae49da612691522c5"
             },
             "require": {
                 "cloudcreativity/laravel-json-api": "^1.1",
@@ -3321,7 +3321,7 @@
                 }
             ],
             "description": "Add documents to an object of your application",
-            "time": "2019-09-13T14:09:02+00:00"
+            "time": "2019-09-18T07:36:58+00:00"
         },
         {
             "name": "net7/logging",
@@ -3612,16 +3612,16 @@
         },
         {
             "name": "phpseclib/phpseclib",
-            "version": "2.0.21",
+            "version": "2.0.23",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "9f1287e68b3f283339a9f98f67515dd619e5bf9d"
+                "reference": "c78eb5058d5bb1a183133c36d4ba5b6675dfa099"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/9f1287e68b3f283339a9f98f67515dd619e5bf9d",
-                "reference": "9f1287e68b3f283339a9f98f67515dd619e5bf9d",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/c78eb5058d5bb1a183133c36d4ba5b6675dfa099",
+                "reference": "c78eb5058d5bb1a183133c36d4ba5b6675dfa099",
                 "shasum": ""
             },
             "require": {
@@ -3655,28 +3655,28 @@
             "authors": [
                 {
                     "name": "Jim Wigginton",
-                    "role": "Lead Developer",
-                    "email": "terrafrost@php.net"
+                    "email": "terrafrost@php.net",
+                    "role": "Lead Developer"
                 },
                 {
                     "name": "Patrick Monnerat",
-                    "role": "Developer",
-                    "email": "pm@datasphere.ch"
+                    "email": "pm@datasphere.ch",
+                    "role": "Developer"
                 },
                 {
                     "name": "Andreas Fischer",
-                    "role": "Developer",
-                    "email": "bantu@phpbb.com"
+                    "email": "bantu@phpbb.com",
+                    "role": "Developer"
                 },
                 {
                     "name": "Hans-Jürgen Petrich",
-                    "role": "Developer",
-                    "email": "petrich@tronic-media.com"
+                    "email": "petrich@tronic-media.com",
+                    "role": "Developer"
                 },
                 {
                     "name": "Graham Campbell",
-                    "role": "Developer",
-                    "email": "graham@alt-three.com"
+                    "email": "graham@alt-three.com",
+                    "role": "Developer"
                 }
             ],
             "description": "PHP Secure Communications Library - Pure-PHP implementations of RSA, AES, SSH2, SFTP, X.509 etc.",
@@ -3700,7 +3700,7 @@
                 "x.509",
                 "x509"
             ],
-            "time": "2019-07-12T12:53:49+00:00"
+            "time": "2019-09-17T03:41:22+00:00"
         },
         {
             "name": "predis/predis",
@@ -4407,20 +4407,20 @@
         },
         {
             "name": "spatie/flysystem-dropbox",
-            "version": "1.1.0",
+            "version": "1.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/flysystem-dropbox.git",
-                "reference": "b0e983356dffe38b7d35994a0f48b1cca3c28007"
+                "reference": "8aa19e6f63d36f66d716f13a4d4dec23012d16e2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/flysystem-dropbox/zipball/b0e983356dffe38b7d35994a0f48b1cca3c28007",
-                "reference": "b0e983356dffe38b7d35994a0f48b1cca3c28007",
+                "url": "https://api.github.com/repos/spatie/flysystem-dropbox/zipball/8aa19e6f63d36f66d716f13a4d4dec23012d16e2",
+                "reference": "8aa19e6f63d36f66d716f13a4d4dec23012d16e2",
                 "shasum": ""
             },
             "require": {
-                "league/flysystem": "^1.0",
+                "league/flysystem": "^1.0.20",
                 "php": "^7.0",
                 "spatie/dropbox-api": "^1.1.0"
             },
@@ -4455,7 +4455,7 @@
                 "spatie",
                 "v2"
             ],
-            "time": "2019-05-30T10:34:25+00:00"
+            "time": "2019-09-14T17:00:10+00:00"
         },
         {
             "name": "spatie/image",
@@ -4562,16 +4562,16 @@
         },
         {
             "name": "spatie/laravel-medialibrary",
-            "version": "7.12.1",
+            "version": "7.12.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-medialibrary.git",
-                "reference": "8c4adaeb16985a108da4e0dab186bc7561bbbf8f"
+                "reference": "43fbf653dbb2abee55529ecc494fe0f9549252d9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-medialibrary/zipball/8c4adaeb16985a108da4e0dab186bc7561bbbf8f",
-                "reference": "8c4adaeb16985a108da4e0dab186bc7561bbbf8f",
+                "url": "https://api.github.com/repos/spatie/laravel-medialibrary/zipball/43fbf653dbb2abee55529ecc494fe0f9549252d9",
+                "reference": "43fbf653dbb2abee55529ecc494fe0f9549252d9",
                 "shasum": ""
             },
             "require": {
@@ -4642,7 +4642,7 @@
                 "media",
                 "spatie"
             ],
-            "time": "2019-09-12T22:01:47+00:00"
+            "time": "2019-09-24T07:11:53+00:00"
         },
         {
             "name": "spatie/laravel-model-status",
@@ -6866,16 +6866,16 @@
         },
         {
             "name": "fruitcake/laravel-telescope-toolbar",
-            "version": "v1.1.0",
+            "version": "v1.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fruitcake/laravel-telescope-toolbar.git",
-                "reference": "a418d4ca473e06a9e98126f147622eb4773eb791"
+                "reference": "88bdca4f99bd167cdb94240fd88bd3c9c2624632"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fruitcake/laravel-telescope-toolbar/zipball/a418d4ca473e06a9e98126f147622eb4773eb791",
-                "reference": "a418d4ca473e06a9e98126f147622eb4773eb791",
+                "url": "https://api.github.com/repos/fruitcake/laravel-telescope-toolbar/zipball/88bdca4f99bd167cdb94240fd88bd3c9c2624632",
+                "reference": "88bdca4f99bd167cdb94240fd88bd3c9c2624632",
                 "shasum": ""
             },
             "require": {
@@ -6930,7 +6930,7 @@
                 "toolbar",
                 "webprofiler"
             ],
-            "time": "2019-09-12T10:07:44+00:00"
+            "time": "2019-09-19T08:26:08+00:00"
         },
         {
             "name": "fzaninotto/faker",
@@ -7727,16 +7727,16 @@
         },
         {
             "name": "phpunit/php-token-stream",
-            "version": "3.1.0",
+            "version": "3.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-token-stream.git",
-                "reference": "e899757bb3df5ff6e95089132f32cd59aac2220a"
+                "reference": "995192df77f63a59e47f025390d2d1fdf8f425ff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-token-stream/zipball/e899757bb3df5ff6e95089132f32cd59aac2220a",
-                "reference": "e899757bb3df5ff6e95089132f32cd59aac2220a",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-token-stream/zipball/995192df77f63a59e47f025390d2d1fdf8f425ff",
+                "reference": "995192df77f63a59e47f025390d2d1fdf8f425ff",
                 "shasum": ""
             },
             "require": {
@@ -7772,20 +7772,20 @@
             "keywords": [
                 "tokenizer"
             ],
-            "time": "2019-07-25T05:29:42+00:00"
+            "time": "2019-09-17T06:23:10+00:00"
         },
         {
             "name": "phpunit/phpunit",
-            "version": "7.5.15",
+            "version": "7.5.16",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "d79c053d972856b8b941bb233e39dc521a5093f0"
+                "reference": "316afa6888d2562e04aeb67ea7f2017a0eb41661"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/d79c053d972856b8b941bb233e39dc521a5093f0",
-                "reference": "d79c053d972856b8b941bb233e39dc521a5093f0",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/316afa6888d2562e04aeb67ea7f2017a0eb41661",
+                "reference": "316afa6888d2562e04aeb67ea7f2017a0eb41661",
                 "shasum": ""
             },
             "require": {
@@ -7845,8 +7845,8 @@
             "authors": [
                 {
                     "name": "Sebastian Bergmann",
-                    "role": "lead",
-                    "email": "sebastian@phpunit.de"
+                    "email": "sebastian@phpunit.de",
+                    "role": "lead"
                 }
             ],
             "description": "The PHP Unit Testing framework.",
@@ -7856,7 +7856,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2019-08-21T07:05:16+00:00"
+            "time": "2019-09-14T09:08:39+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -8078,16 +8078,16 @@
         },
         {
             "name": "sebastian/exporter",
-            "version": "3.1.1",
+            "version": "3.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/exporter.git",
-                "reference": "06a9a5947f47b3029d76118eb5c22802e5869687"
+                "reference": "68609e1261d215ea5b21b7987539cbfbe156ec3e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/exporter/zipball/06a9a5947f47b3029d76118eb5c22802e5869687",
-                "reference": "06a9a5947f47b3029d76118eb5c22802e5869687",
+                "url": "https://api.github.com/repos/sebastianbergmann/exporter/zipball/68609e1261d215ea5b21b7987539cbfbe156ec3e",
+                "reference": "68609e1261d215ea5b21b7987539cbfbe156ec3e",
                 "shasum": ""
             },
             "require": {
@@ -8141,7 +8141,7 @@
                 "export",
                 "exporter"
             ],
-            "time": "2019-08-11T12:43:14+00:00"
+            "time": "2019-09-14T09:02:43+00:00"
         },
         {
             "name": "sebastian/global-state",

@@ -39,6 +39,9 @@ class ModelTaskTest extends TestCase
     }
 
 
+    // Per ora il test per com'è fallisce sempre perché cerca tra i task direttamente associati alla section
+    // anche quelli delle subsection...ma non c'è nessun modo di prenderli in automatico...ndrebbe messo un metodo
+    // dammiITaskDelleSubsectionEMiei  (cioe' della section) in section
     function test_can_create_tasks_related_to_subsections_and_sections()
     {
         $boat = factory(Boat::class)->create();
@@ -67,9 +70,9 @@ class ModelTaskTest extends TestCase
             $section_tasks_num = $section->tasks()->count();
             $subsection_tasks_num = 0;
             foreach ($section->subsections as $subsection) {
-                $subsection_tasks_num +=  $subsection->tasks()->count();
+                $subsection_tasks_num += $subsection->tasks()->count();
             }
-            $this->assertEquals($section_tasks_num, $subsection_tasks_num);
+            $this->assertEquals($section_tasks_num, $subsection_tasks_num, "TEST FALLITO? NO PROBLEM! Vedere commento a riga 42 del file.\n");
             $this->assertNotEquals($subsection_tasks_num, 0);
         }
 

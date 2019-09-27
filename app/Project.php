@@ -229,8 +229,8 @@ class Project extends Model {
 
 
     public function users() {
-        return $this->belongsToMany('App\User')
-                        ->using('App\ProjectUser')
+        return $this->belongsToMany('App\User', 'project_user')
+//                        ->using('App\ProjectUser')
                         ->withPivot([
                             // 'role',
                             'profession_id',
@@ -345,5 +345,19 @@ class Project extends Model {
         );
         $proj->save();
         return $proj;
+    }
+
+    /**
+     * Copies ProjectUser from project A to project B
+     *
+     * @param Project $project
+     */
+    public function transferMyUsersToProject(Project $project)
+    {
+        if ($this->users()->count()) {
+            foreach ($this->users as $user) {
+                ProjectUser::createOneIfNotExists($user->id, $project->id, $user->pivot->profession_id);
+            }
+        }
     }
 }

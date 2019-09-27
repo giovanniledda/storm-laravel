@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Net7\Documents\DocumentableTrait;
+use const PROJECT_STATUS_CLOSED;
 
 class Boat extends Model
 {
@@ -59,6 +60,35 @@ class Boat extends Model
     public function projects()
     {
         return $this->hasMany('App\Project');
+    }
+
+    public function closedProjects()
+    {
+        return $this->projects()
+            ->where('project_status', '=', PROJECT_STATUS_CLOSED)
+            ->orderBy('end_date', 'DESC')
+            ->get();
+    }
+
+    /**
+     * Data array JSONAPI version for closedProjects function
+     *
+     * @return array
+     */
+    public function closedProjectsJsonApi()
+    {
+        $data = ['data' => []];
+        $c_projs = $this->closedProjects();
+        if (!empty($c_projs)) {
+            foreach ($c_projs as $proj) {
+                $data['data'][] = [
+                    "type" => "projects",
+                    "id" => $proj->id,
+                    "attributes" => $proj
+                ];
+            }
+        }
+        return $data;
     }
 
 
