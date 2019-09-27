@@ -83,6 +83,7 @@ class ModelDocumentTest extends TestCase
 
         $this->assertEquals($expected_media_id, $firstMedia->id);
         $this->assertEquals($expected_media_id, $doc->current_media_id);
+        $this->assertEquals(1, $doc->media()->count() );
 
 
         // we create another UploadedFile, and use it to update the file related to the document, to check if revisions work
@@ -103,7 +104,7 @@ class ModelDocumentTest extends TestCase
 
         $this->assertEquals($expected_media_id, $secondMedia->id);
         $this->assertEquals($expected_media_id, $doc->current_media_id);
-
+        $this->assertEquals(2, $doc->media()->count() );
 
         // we create another UploadedFile, and use it to update the file related to the document, to check if revisions work
         $filename = 'testDocument.txt';
@@ -123,7 +124,7 @@ class ModelDocumentTest extends TestCase
 
         $this->assertEquals($expected_media_id, $thirdMedia->id);
         $this->assertEquals($expected_media_id, $doc->current_media_id);
-
+        $this->assertEquals(3, $doc->media()->count() );
 
         $revisions = reset($doc->revisionHistory);
 
@@ -221,4 +222,62 @@ class ModelDocumentTest extends TestCase
 
 
     }
+
+    public function test_update_document(){
+
+        $this->disableExceptionHandling();
+
+
+
+
+        $filename = 'testDocument.txt';
+        $filepath = __DIR__ . '/'.  $filename;
+        $tempFilepath = '/tmp/'.$filename;
+        copy ($filepath, $tempFilepath);
+
+        // we create an UploadedFile and use it to create the document
+
+        $file = new \Symfony\Component\HttpFoundation\File\UploadedFile( $tempFilepath, $filename, null ,null, true);
+        $doc = new Document([
+            'title' => 'a document',
+            'file' => $file,
+            'document_number' => 'ISO_9921'
+
+        ]);
+
+        $doc->save();
+
+        $firstMedia = $doc->getRelatedMedia();
+
+
+        $expected_media_id = 1;
+
+        $this->assertEquals($expected_media_id, $firstMedia->id);
+        $this->assertEquals($expected_media_id, $doc->current_media_id);
+
+
+        $this->assertEquals(1, $doc->media()->count() );
+
+        $filename = 'testDocument2.txt';
+        $filepath = __DIR__ . '/'.  $filename;
+        $tempFilepath = '/tmp/'.$filename;
+        copy ($filepath, $tempFilepath);
+
+        $file = new \Symfony\Component\HttpFoundation\File\UploadedFile( $tempFilepath, $filename, null ,null, true);
+
+        $doc->replaceUploadedFile($file);
+        $doc->refresh(); // much important!
+
+        $expected_media_id = 2;
+        $doc->save();
+
+        $secondMedia = $doc->getRelatedMedia();
+
+        $this->assertEquals($expected_media_id, $secondMedia->id);
+        $this->assertEquals($expected_media_id, $doc->current_media_id);
+        $this->assertEquals(1, $doc->media()->count() );
+
+
+    }
+
 }

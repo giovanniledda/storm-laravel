@@ -25,6 +25,13 @@ class User extends Authenticatable
     ];
 
     /**
+     * Wether or not to use revisions for files.
+     *
+     * @var bool
+     */
+    protected $useRevisionsForFiles = false;
+
+    /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
