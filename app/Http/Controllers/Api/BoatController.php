@@ -98,9 +98,11 @@ class BoatController extends Controller
             $user = Auth::user();
             if ($user) {
                 if ($request->input('active-projects') == 'on') {
-                    $boats = $user->boatsOfMyActiveProjects();
+                    $boats = $user->can(PERMISSION_ADMIN) ? Boat::boatsWithActiveProjects() : $user->boatsOfMyActiveProjects();
+                } else if ($request->input('active-projects') == 'off') {
+                    $boats = $user->can(PERMISSION_ADMIN) ? Boat::boatsWithClosedProjects() : $user->boatsOfMyClosedProjects();
                 } else {
-                    $boats = $user->boatsOfMyProjects();
+                    $boats = $user->can(PERMISSION_ADMIN) ? Boat::all() : $user->boatsOfMyProjects();
                 }
                 if ($boats->count()) {
                     foreach ($boats as $boat) {

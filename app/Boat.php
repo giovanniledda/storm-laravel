@@ -192,4 +192,17 @@ class Boat extends Model
             ->where('boats.id', '=', $this->id)
             ->first();
     }
+
+
+    public static function boatsWithClosedProjects()
+    {
+        $boat_ids = Project::closedProjects()->pluck('boat_id');
+        return Boat::whereIn('id', $boat_ids)->get();
+    }
+
+    public static function boatsWithActiveProjects()
+    {
+        $boat_ids = Project::activeProjects()->pluck('boat_id');
+        return Boat::whereIn('id', $boat_ids)->get();
+    }
 }

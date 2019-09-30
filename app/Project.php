@@ -364,4 +364,20 @@ class Project extends Model {
             }
         }
     }
+
+    /**
+     * Get all closed projects
+     */
+    public static function closedProjects()
+    {
+        return Project::where('project_status', '=', PROJECT_STATUS_CLOSED)->get();
+    }
+
+    /**
+     * Get all NOT closed projects
+     */
+    public static function activeProjects()
+    {
+        return Project::where('project_status', '!=', PROJECT_STATUS_CLOSED)->get();
+    }
 }
