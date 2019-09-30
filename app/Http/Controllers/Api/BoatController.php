@@ -93,12 +93,30 @@ class BoatController extends Controller
      */
     public function dashboard(Request $request)
     {
+        $data = ['data' => []];
         if (Auth::check()) {
             $user = Auth::user();
             if ($user) {
-                $boats = $user->boatsOfMyProjects();
-                return Utils::renderStandardJsonapiResponse($boats, 200);
+                if ($request->input('active-projects') == 'on') {
+                    $boats = $user->boatsOfMyActiveProjects();
+                } else {
+                    $boats = $user->boatsOfMyProjects();
+                }
+                if ($boats->count()) {
+                    foreach ($boats as $boat) {
+                        $owner = $boat->getOwner();
+                        $attributes = $boat;
+                        $attributes->owner = $owner;
+                        $attributes->projects = $boat->projectsRelatedToUser($user->id);
+                        $data['data'][] = [
+                            'id' => $boat->id,
+                            'type' => 'boats',
+                            'attributes' => $attributes
+                        ];
+                    }
+                }
             }
         }
+        return Utils::renderStandardJsonapiResponse($data, 200);
     }
 }

@@ -95,8 +95,8 @@ class User extends Authenticatable
 //            ->using('App\ProjectUser')
             ->withPivot([
                 'profession_id',
-                'created_by',
-                'updated_by'
+//                'created_by',
+//                'updated_by'
             ]);
     }
 
@@ -118,9 +118,20 @@ class User extends Authenticatable
         return $this->projects()->where('project_status', '=', PROJECT_STATUS_CLOSED)->get();
     }
 
+    public function activeProjects()
+    {
+        return $this->projects()->where('project_status', '!=', PROJECT_STATUS_CLOSED)->get();
+    }
+
     public function boatsOfMyClosedProjects()
     {
         $boat_ids = $this->closedProjects()->pluck('boat_id');
+        return Boat::whereIn('id', $boat_ids)->get();
+    }
+
+    public function boatsOfMyActiveProjects()
+    {
+        $boat_ids = $this->activeProjects()->pluck('boat_id');
         return Boat::whereIn('id', $boat_ids)->get();
     }
 

@@ -95,7 +95,6 @@ class Schema extends SchemaProvider
                  
         return [
             'name' => $resource->name,
-            
             'registration_number' => $resource->registration_number,
             'flag' => $resource->flag,
             'manufacture_year' => $resource->manufacture_year,

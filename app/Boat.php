@@ -62,6 +62,14 @@ class Boat extends Model
         return $this->hasMany('App\Project');
     }
 
+    public function projectsRelatedToUser($user_id)
+    {
+        return $this->projects()
+            ->join('project_user', 'project_user.project_id', '=', 'projects.id')
+            ->where('project_user.user_id', '=', $user_id)
+            ->get();
+    }
+
     public function closedProjects()
     {
         return $this->projects()
@@ -167,5 +175,21 @@ class Boat extends Model
         );
         $boat->save();
         return $boat;
+    }
+
+    /**
+     * Return the user that has "owner" slug on his profession
+     *
+     * @return mixed
+     */
+    public function getOwner()
+    {
+        return Boat::select('users.name', 'users.surname')
+            ->Join('boat_user', 'boat_user.boat_id', '=', 'boats.id')
+            ->Join('professions', 'boat_user.profession_id', '=', 'professions.id')
+            ->Join('users', 'users.id', '=', 'boat_user.user_id')
+            ->where('professions.slug', '=', PROJECT_USER_ROLE_OWNER)
+            ->where('boats.id', '=', $this->id)
+            ->first();
     }
 }
