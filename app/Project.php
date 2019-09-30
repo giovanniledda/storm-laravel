@@ -173,6 +173,10 @@ class Project extends Model {
         return $this->belongsTo('App\Site');
     }
 
+    public function siteLocation() {
+        return $this->site()->select('sites.name', 'sites.location')->first();
+    }
+
     public function tasks() {
         return $this->hasMany(Task::class);
     }

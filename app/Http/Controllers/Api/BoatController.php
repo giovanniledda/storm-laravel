@@ -107,7 +107,16 @@ class BoatController extends Controller
                         $owner = $boat->getOwner();
                         $attributes = $boat;
                         $attributes->owner = $owner;
-                        $attributes->projects = $boat->projectsRelatedToUser($user->id);
+                        $projects_data = [];
+                        $projects = $boat->projectsRelatedToUser($user->id);
+                        if ($projects->count()) {
+                            foreach ($projects as $proj) {
+                                $projects_data_item = $proj;
+                                $projects_data_item->location = $proj->siteLocation();
+                                $projects_data[] = $projects_data_item;
+                            }
+                        }
+                        $attributes->projects = $projects;
                         $data['data'][] = [
                             'id' => $boat->id,
                             'type' => 'boats',
