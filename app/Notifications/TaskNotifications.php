@@ -3,10 +3,13 @@
 namespace App\Notifications;
 
 use App\Task;
+use App\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Support\Facades\Auth;
+use function is_null;
 use function is_object;
 use function sprintf;
 use StormUtils;
@@ -17,15 +20,23 @@ class TaskNotifications extends Notification
     use Queueable;
 
     public $task;
+    public $actionAuthor;  // who did the action that fires the notification
 
     /**
      * Create a new notification instance.
      *
+     * @param $task
+     * @param $author
      * @return void
      */
-    public function __construct(Task $task)
+    public function __construct(Task $task, User $author = null)
     {
         $this->task = $task;
+        $this->actionAuthor = $author;
+        if (is_null($this->actionAuthor) && Auth::check()) {
+            $this->actionAuthor = Auth::user();
+        }
+
     }
 
     /**
@@ -79,7 +90,8 @@ class TaskNotifications extends Notification
     {
         return [
             'task_id' => $this->task->id,
-            'author_id' => $this->task->author_id,
+            'task_author_id' => $this->task->author_id,
+            'action_author_id' => $this->actionAuthor ? $this->actionAuthor->id : null,
             'section_id' =>  $this->task->section_id,
             'project_id' => $this->getProjectId(),
             'project_name' => $this->getProjectName(),

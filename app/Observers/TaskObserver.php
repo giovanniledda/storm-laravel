@@ -162,13 +162,8 @@ class TaskObserver
             ]);
         }
          
-        // mette in coda il job
-//        NotifyTaskUpdates::dispatch(new TaskCreated($task))->onConnection('redis')->onQueue(QUEUE_TASK_CREATED);   // default queue
-        NotifyTaskUpdates::dispatch(new TaskCreated($task));   // default queue
-
         /** setto la variabile added_by_storm **/
-     
-        
+        $task_author = null;
         if (is_object($user)) {
             // se sei in boat_user
             if ($user->can(PERMISSION_BOAT_MANAGER)) {
@@ -177,7 +172,13 @@ class TaskObserver
             if ($user->can(PERMISSION_ADMIN) || $user->can(PERMISSION_WORKER) || $user->can(PERMISSION_BACKEND_MANAGER)) {
                 $task->update(['added_by_storm' => 1, 'author_id' => $user->id]);
             }
+            $task_author = $user;
         }
+
+        // mette in coda il job
+//        NotifyTaskUpdates::dispatch(new TaskCreated($task))->onConnection('redis')->onQueue(QUEUE_TASK_CREATED);   // default queue
+        NotifyTaskUpdates::dispatch(new TaskCreated($task, $task_author));   // default queue
+
 //        Log::info('foo');
     }
 

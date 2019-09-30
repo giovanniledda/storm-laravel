@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\DatabaseNotification;
+use function is_null;
 use function json_decode;
 
 // NOTA BENE: non usare mai questa classe per scrivere, ma SOLO PER LEGGERE sul DB (per creare/aggiornare le "notifications").
@@ -52,6 +53,26 @@ class Update extends Model
     public function getProjectId() {
         $data = $this->getDataArray();
         return isset($data['project_id']) ? $data['project_id'] : null;
+    }
+
+    /**
+     * Who did the action that fires the notification
+     *
+     * @return null|integer
+     */
+    public function getActionAuthorId() {
+        $data = $this->getDataArray();
+        return isset($data['action_author_id']) ? $data['action_author_id'] : null;
+    }
+
+    /**
+     * Who did the action that fires the notification
+     *
+     * @return null|User
+     */
+    public function getActionAuthor() {
+        $id = $this->getActionAuthorId();
+        return !is_null($id) ? User::find($id) : null;
     }
 
     public function isRead()

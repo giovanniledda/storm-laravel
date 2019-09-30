@@ -15,6 +15,7 @@ use function snake_case;
 use Spatie\Permission\Traits\HasRoles;
 use Lecturize\Addresses\Traits\HasAddresses;
 use StormUtils;
+use Illuminate\Support\Str;
 
 
 class User extends Authenticatable
@@ -195,7 +196,13 @@ class User extends Authenticatable
     public function getNickname()
     {
         // per ora la logica è questa ma possiamo inserire anche un nuovo campo
-        return snake_case($this->name);
+        return Str::snake($this->name);
+    }
+
+    public function getFullName()
+    {
+        // per ora la logica è questa ma possiamo inserire anche un nuovo campo
+        return $this->name. ' '.$this->surname;
     }
 
     /**

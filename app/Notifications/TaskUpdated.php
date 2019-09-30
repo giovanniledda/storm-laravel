@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Task;
+use App\User;
 use StormUtils;
 use const TASK_UPDATED_MOBILE_APP_TEXT;
 
@@ -13,9 +14,9 @@ class TaskUpdated extends TaskNotifications
      *
      * @return void
      */
-    public function __construct(Task $task)
+    public function __construct(Task $task, User $author = null)
     {
-        parent::__construct($task);
+        parent::__construct($task, $author);
     }
 
     /**
@@ -35,7 +36,7 @@ class TaskUpdated extends TaskNotifications
     {
 
         return StormUtils::replacePlaceholders(TASK_UPDATED_MOBILE_APP_TEXT, [
-            '@someone' => 'Someone',
+            '@someone' => $this->actionAuthor ? $this->actionAuthor->getFullName() : 'Someone',
             '@task_id' => $this->task->id,
             '@project_name' => $this->getProjectName(),
             '@boat_name' => $this->getBoatName(),

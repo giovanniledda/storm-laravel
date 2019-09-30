@@ -44,7 +44,7 @@ class Adapter extends AbstractAdapter
         }
         
          if ($author_id = $filters->get('author_id')) {
-             $query->where('notifications.data', 'regexp' , '"author_id":"[[:<:]]'.$author_id.'[[:>:]]"');
+             $query->where('notifications.data', 'regexp' , '"action_author_id":"[[:<:]]'.$author_id.'[[:>:]]"');
          }
          
          if ($boat_id = $filters->get('boat_id')) {

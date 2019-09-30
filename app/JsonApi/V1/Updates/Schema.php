@@ -29,6 +29,13 @@ class Schema extends SchemaProvider
      */
     public function getAttributes($resource)
     {
+        $author_data = null;
+        if ($author = $resource->getActionAuthor()) {
+            $author_data = $author;
+            $author_data->hasPhoto = $author->hasProfilePhoto();
+            $author_data->profilePhoto = $author->hasPhoto ? $author->getProfilePhotoDocument()->id : null;
+        }
+
         return [
             'update-id' => $resource->getUpdateId(),
             'is-read' => $resource->isRead(),
@@ -39,6 +46,7 @@ class Schema extends SchemaProvider
             'project' => $resource->getProjectName(),
             'project-id' => $resource->getProjectId(),
             'message' => $resource->getMessage(),
+            'author' => $author,
             'created-at' => $resource->created_at->toAtomString(),
             'updated-at' => $resource->updated_at->toAtomString(),
         ];
