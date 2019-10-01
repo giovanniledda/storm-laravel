@@ -85,7 +85,7 @@ class Schema extends SchemaProvider
          }
          
         $owner = $resource
-                ->select('users.name', 'users.surname')
+                ->select('users.name', 'users.surname', 'users.id')
                 ->Join('boat_user', 'boat_user.boat_id', '=', 'boats.id')
                 ->Join('professions', 'boat_user.profession_id', '=', 'professions.id')
                 ->Join('users', 'users.id', '=', 'boat_user.user_id')
