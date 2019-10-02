@@ -121,7 +121,7 @@ class DatabaseSeeder extends Seeder
             $projects = [];
             $this->command->warn(" ------ PROJECTS FOR BOAT {$boat->name} --------");
 
-            $open = $closed = 0;
+            $open = $closed = $imported = 0;
             for ($p = 0; $p < 3; $p++) {
                 $project = $this->utils->createProject($site, $boat);
 
@@ -136,7 +136,12 @@ class DatabaseSeeder extends Seeder
                 for ($t = 0; $t < $this->faker->numberBetween(1, 20); $t++) {
                     $section = $this->faker->randomElement($boat->sections);
                     $intervent_type = TaskInterventType::firstOrCreate($this->faker->randomElement($intervent_types));
-                    $task = $this->utils->createTask($project, $section, null, null, $intervent_type);
+
+                    $author = $this->faker->randomElement($boat_managers);
+                    $task = $this->utils->createTask($project, $section, null, $author, $intervent_type);
+                    $proj_start = $project->start_date;
+                    $creation_date = $this->faker->dateTimeBetween($proj_start, '+2 years');
+                    $task->update(['created_at' => $creation_date]);
                     $this->command->info("Task {$task->name} for Project {$project->name}, created");
 
                     if ($task->status != TASKS_STATUS_DRAFT) {
@@ -204,6 +209,10 @@ class DatabaseSeeder extends Seeder
                     continue;
                 }
                 $project->update(['project_status' => PROJECT_STATUS_CLOSED]);
+                if ($imported == 0) {
+                    $imported++;
+                    $project->update(['imported' => 1]);
+                }
             }
         }
     }
