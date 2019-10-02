@@ -5,6 +5,7 @@ namespace App\JsonApi\V1\Projects;
 use Neomerx\JsonApi\Schema\SchemaProvider;
 
 use App\Boat;
+use App\Site;
 
 class Schema extends SchemaProvider
 {
@@ -75,12 +76,15 @@ class Schema extends SchemaProvider
     public function getAttributes($resource)
     {
         $boat =  Boat::find($resource->boat_id);
-
+        $site =  Site::select('sites.name', 'sites.location') 
+                     ->where('id', '=', $resource->site_id)
+                     ->first();
         return [
             'name' => $resource->name,
             'boat_id' => $resource->boat_id,
             'project_id' => $resource->id,
             'boat' =>$boat,
+            'location' => $site,
             'status' => $resource->project_status,
             'imported'  => $resource->imported,
             'project_progress'=> $resource->project_progress,
