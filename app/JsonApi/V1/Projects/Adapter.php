@@ -12,7 +12,7 @@ use Illuminate\Support\Collection;
 class Adapter extends AbstractAdapter
 {
 
-    protected $fillable = ['name', 'status', 'boat_id', 'project_type', 'project_progress','site_id', 'start_date', 'end_date'];
+    protected $fillable = ['name', 'status', 'boat_id', 'project_type', 'project_progress','site_id', 'start_date', 'end_date', 'imported'];
 
     /**
      * Mapping of JSON API attribute field names to model keys.
@@ -58,7 +58,7 @@ class Adapter extends AbstractAdapter
         $user = \Auth::user();
         if (!$user->can(PERMISSION_ADMIN) || !$user->can(PERMISSION_BACKEND_MANAGER)) { 
             if ($user->hasRole(ROLE_WORKER)) {
-                 $query->Join('project_user', 'projects.id', '=', 'project_user.project_id')
+                 $query->select('projects.*')->Join('project_user', 'projects.id', '=', 'project_user.project_id')
                          ->where('project_user.user_id', '=', $user->id)->groupBy('projects.id');
              } 
               if ($user->can(PERMISSION_BOAT_MANAGER)) { 

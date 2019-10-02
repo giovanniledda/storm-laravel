@@ -82,6 +82,7 @@ class Schema extends SchemaProvider
             'project_id' => $resource->id,
             'boat' =>$boat,
             'status' => $resource->project_status,
+            'imported'  => $resource->imported,
             'project_progress'=> $resource->project_progress,
             'project_type' => $resource->project_type,
             'created-at' => $resource->created_at->toAtomString(),

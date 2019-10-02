@@ -21,7 +21,7 @@ class Project extends Model {
 
     protected $table = 'projects';
     protected $fillable = [
-        'name', 'project_status', 'boat_id', 'project_type', 'project_progress', 'site_id', 'start_date', 'end_date'
+        'name', 'project_status', 'boat_id', 'project_type', 'project_progress', 'site_id', 'start_date', 'end_date', 'imported'
     ];
 
     protected static function boot() {
