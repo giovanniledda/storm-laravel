@@ -2221,16 +2221,16 @@
         },
         {
             "name": "laravel/passport",
-            "version": "v7.4.1",
+            "version": "v7.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/passport.git",
-                "reference": "cc39dc6a36ebf5926906eb5ad3c62dba50c9bbd0"
+                "reference": "663e720a6d15e8ec70bf5309f774439a110efc89"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/passport/zipball/cc39dc6a36ebf5926906eb5ad3c62dba50c9bbd0",
-                "reference": "cc39dc6a36ebf5926906eb5ad3c62dba50c9bbd0",
+                "url": "https://api.github.com/repos/laravel/passport/zipball/663e720a6d15e8ec70bf5309f774439a110efc89",
+                "reference": "663e720a6d15e8ec70bf5309f774439a110efc89",
                 "shasum": ""
             },
             "require": {
@@ -2288,7 +2288,7 @@
                 "oauth",
                 "passport"
             ],
-            "time": "2019-09-10T19:55:34+00:00"
+            "time": "2019-09-24T20:59:35+00:00"
         },
         {
             "name": "laravel/telescope",
@@ -2735,16 +2735,16 @@
         },
         {
             "name": "league/iso3166",
-            "version": "2.1.2",
+            "version": "2.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/iso3166.git",
-                "reference": "5e8f504eea3f13e45fa397da86313371b3eb20d5"
+                "reference": "5283b39654ea1da15e8ceb981bac4644776c2431"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/iso3166/zipball/5e8f504eea3f13e45fa397da86313371b3eb20d5",
-                "reference": "5e8f504eea3f13e45fa397da86313371b3eb20d5",
+                "url": "https://api.github.com/repos/thephpleague/iso3166/zipball/5283b39654ea1da15e8ceb981bac4644776c2431",
+                "reference": "5283b39654ea1da15e8ceb981bac4644776c2431",
                 "shasum": ""
             },
             "require": {
@@ -2785,7 +2785,7 @@
                 "iso",
                 "library"
             ],
-            "time": "2019-03-14T08:34:44+00:00"
+            "time": "2019-09-25T11:18:25+00:00"
         },
         {
             "name": "league/oauth2-server",
@@ -3283,7 +3283,7 @@
             "source": {
                 "type": "git",
                 "url": "https://net7.codebasehq.com/nautica/net7documents.git",
-                "reference": "2556a89d8af33677b8301a6ae49da612691522c5"
+                "reference": "ed959c34810a3e30387f784e7b894516c91bbf72"
             },
             "require": {
                 "cloudcreativity/laravel-json-api": "^1.1",
@@ -3321,7 +3321,7 @@
                 }
             ],
             "description": "Add documents to an object of your application",
-            "time": "2019-09-18T07:36:58+00:00"
+            "time": "2019-09-27T11:02:19+00:00"
         },
         {
             "name": "net7/logging",
@@ -4562,16 +4562,16 @@
         },
         {
             "name": "spatie/laravel-medialibrary",
-            "version": "7.12.2",
+            "version": "7.14.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-medialibrary.git",
-                "reference": "43fbf653dbb2abee55529ecc494fe0f9549252d9"
+                "reference": "34f3700a2dc58032d0ab443dcb09c2be72d2a826"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-medialibrary/zipball/43fbf653dbb2abee55529ecc494fe0f9549252d9",
-                "reference": "43fbf653dbb2abee55529ecc494fe0f9549252d9",
+                "url": "https://api.github.com/repos/spatie/laravel-medialibrary/zipball/34f3700a2dc58032d0ab443dcb09c2be72d2a826",
+                "reference": "34f3700a2dc58032d0ab443dcb09c2be72d2a826",
                 "shasum": ""
             },
             "require": {
@@ -4642,7 +4642,7 @@
                 "media",
                 "spatie"
             ],
-            "time": "2019-09-24T07:11:53+00:00"
+            "time": "2019-09-26T22:59:00+00:00"
         },
         {
             "name": "spatie/laravel-model-status",
@@ -6405,16 +6405,16 @@
         },
         {
             "name": "venturecraft/revisionable",
-            "version": "1.31.1",
+            "version": "1.32.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/VentureCraft/revisionable.git",
-                "reference": "e5951803d8349eb497bbb78940babd6a0ae0f8b2"
+                "reference": "4e288ba15f82a5614cf10bc18698cc8a8f374498"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/VentureCraft/revisionable/zipball/e5951803d8349eb497bbb78940babd6a0ae0f8b2",
-                "reference": "e5951803d8349eb497bbb78940babd6a0ae0f8b2",
+                "url": "https://api.github.com/repos/VentureCraft/revisionable/zipball/4e288ba15f82a5614cf10bc18698cc8a8f374498",
+                "reference": "4e288ba15f82a5614cf10bc18698cc8a8f374498",
                 "shasum": ""
             },
             "require": {
@@ -6454,7 +6454,7 @@
                 "model",
                 "revision"
             ],
-            "time": "2019-09-04T05:30:44+00:00"
+            "time": "2019-09-23T21:20:15+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
@@ -7032,16 +7032,16 @@
         },
         {
             "name": "mockery/mockery",
-            "version": "1.2.3",
+            "version": "1.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mockery/mockery.git",
-                "reference": "4eff936d83eb809bde2c57a3cea0ee9643769031"
+                "reference": "b3453f75fd23d9fd41685f2148f4abeacabc6405"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mockery/mockery/zipball/4eff936d83eb809bde2c57a3cea0ee9643769031",
-                "reference": "4eff936d83eb809bde2c57a3cea0ee9643769031",
+                "url": "https://api.github.com/repos/mockery/mockery/zipball/b3453f75fd23d9fd41685f2148f4abeacabc6405",
+                "reference": "b3453f75fd23d9fd41685f2148f4abeacabc6405",
                 "shasum": ""
             },
             "require": {
@@ -7055,7 +7055,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0.x-dev"
+                    "dev-master": "1.2.x-dev"
                 }
             },
             "autoload": {
@@ -7093,7 +7093,7 @@
                 "test double",
                 "testing"
             ],
-            "time": "2019-08-07T15:01:07+00:00"
+            "time": "2019-09-30T08:30:27+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -8426,16 +8426,16 @@
         },
         {
             "name": "spatie/laravel-web-tinker",
-            "version": "1.5.0",
+            "version": "1.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-web-tinker.git",
-                "reference": "412ce5dd94632e44451f0f1627163ff5cec718e0"
+                "reference": "f2d485a1f667ff814f359c8370b881f81e8e0fff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-web-tinker/zipball/412ce5dd94632e44451f0f1627163ff5cec718e0",
-                "reference": "412ce5dd94632e44451f0f1627163ff5cec718e0",
+                "url": "https://api.github.com/repos/spatie/laravel-web-tinker/zipball/f2d485a1f667ff814f359c8370b881f81e8e0fff",
+                "reference": "f2d485a1f667ff814f359c8370b881f81e8e0fff",
                 "shasum": ""
             },
             "require": {
@@ -8482,7 +8482,7 @@
                 "spatie",
                 "web-tinker"
             ],
-            "time": "2019-09-04T11:12:27+00:00"
+            "time": "2019-09-30T17:51:41+00:00"
         },
         {
             "name": "theseer/tokenizer",

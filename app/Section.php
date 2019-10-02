@@ -4,11 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Faker\Generator as Faker;
+use Illuminate\Support\Arr;
+use Net7\Documents\Document;
 use Net7\Documents\DocumentableTrait;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class Section extends Model
 {
-
 
     use DocumentableTrait;
 
@@ -87,5 +89,28 @@ class Section extends Model
         );
         $section->save();
         return $section;
+    }
+
+
+    /**
+     * Adds an image as a generic_image Net7/Document
+     *
+     */
+    public function addImagePhoto(string $filepath, string $type = null)
+    {
+        // TODO: mettere tutto in una funzione
+        $f_arr = explode('/', $filepath);
+        $filename = Arr::last($f_arr);
+        $tempFilepath = '/tmp/' . $filename;
+        copy('./storage/seeder/' . $filepath, $tempFilepath);
+        $file = new UploadedFile($tempFilepath, $filename, null, null, true);
+
+        $doc = new Document([
+            'title' => "Image photo for section {$this->id}",
+            'file' => $file,
+        ]);
+        $this->addDocumentWithType($doc, $type ? $type : Document::GENERIC_IMAGE_TYPE);
+
+        return $doc;
     }
 }

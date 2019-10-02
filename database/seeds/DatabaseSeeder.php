@@ -4,6 +4,7 @@ use App\Comment;
 use App\TaskInterventType;
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
+use Net7\Documents\Document;
 use Seeds\SeederUtils as Utils;
 
 class DatabaseSeeder extends Seeder
@@ -50,15 +51,27 @@ class DatabaseSeeder extends Seeder
                 // Creare un left, un right e gli altri deck
                 if (!$left_done) {
                     $sections[$boats[$i]->id]->update(['section_type' => SECTION_TYPE_LEFT_SIDE]);
+
+                    // associo la foto di SX
+                    $this->utils->addImageToSection($sections[$boats[$i]->id], './section/left.svg');
+
                     $left_done = true;
                     continue;
                 }
                 if (!$right_done) {
                     $sections[$boats[$i]->id]->update(['section_type' => SECTION_TYPE_RIGHT_SIDE]);
+
+                    // associo la foto di DX
+                    $this->utils->addImageToSection($sections[$boats[$i]->id], './section/right.svg');
+
                     $right_done = true;
                     continue;
                 }
                 $sections[$boats[$i]->id]->update(['section_type' => SECTION_TYPE_DECK]);
+
+                // associo la foto di un ponte a caso
+                $num = $this->faker->randomElement(['1', '2', '3', '4']);
+                $this->utils->addImageToSection($sections[$boats[$i]->id], "./section/deck$num.svg");
             }
         }
 
@@ -139,9 +152,18 @@ class DatabaseSeeder extends Seeder
 
                     $author = $this->faker->randomElement($boat_managers);
                     $task = $this->utils->createTask($project, $section, null, $author, $intervent_type);
+
+                    // cambio la data di creazione
                     $proj_start = $project->start_date;
                     $creation_date = $this->faker->dateTimeBetween($proj_start, '+2 years');
                     $task->update(['created_at' => $creation_date]);
+
+                    // associo qualche foto
+                    $this->utils->addImageToTask($task, './task/photo1.jpg', Document::GENERIC_IMAGE_TYPE);
+                    $this->utils->addImageToTask($task, './task/photo2.jpg', Document::GENERIC_IMAGE_TYPE);
+                    $this->utils->addImageToTask($task, './task/photo3.jpg', Document::GENERIC_IMAGE_TYPE);
+                    $this->utils->addImageToTask($task, './task/photo4.jpg', Document::ADDITIONAL_IMAGE_TYPE);
+
                     $this->command->info("Task {$task->name} for Project {$project->name}, created");
 
                     if ($task->status != TASKS_STATUS_DRAFT) {

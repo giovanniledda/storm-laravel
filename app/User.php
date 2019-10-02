@@ -8,6 +8,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use function is_object;
 use Laravel\Passport\HasApiTokens;
+use Net7\Documents\Document;
 use Net7\Documents\DocumentableTrait;
 use const PERMISSION_ADMIN;
 use const PROJECT_STATUS_CLOSED;
@@ -224,6 +225,19 @@ class User extends Authenticatable
     public function getProfilePhotoDocument()
     {
         return $this->generic_images->last() ? $this->generic_images->last() : '';
+    }
+
+    /**
+     * Adds an image as a generic_image Net7/Document
+     *
+     */
+    public function addProfilePhoto($file)
+    {
+        $doc = new Document([
+            'title' => "Profile photo for user {$this->id}",
+            'file' => $file,
+        ]);
+        $this->addDocumentWithType($doc, Document::GENERIC_IMAGE_TYPE);
     }
 
     /**

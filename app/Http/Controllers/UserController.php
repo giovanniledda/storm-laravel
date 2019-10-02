@@ -153,11 +153,7 @@ class UserController extends Controller
         $file = $request->file('photo');
 //        $file = Document::createUploadedFileFromBase64( $base64File, $filename);
         if ($file) {
-            $doc = new Document([
-                'title' => "Profile photo for user $id",
-                'file' => $file,
-            ]);
-            $user->addDocumentWithType($doc, Document::GENERIC_IMAGE_TYPE);
+            $user->addProfilePhoto($file);
         }
 
         return redirect()->route('users.index')

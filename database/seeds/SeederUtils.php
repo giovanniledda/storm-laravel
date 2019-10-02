@@ -14,6 +14,7 @@ use App\Subsection;
 use App\Task;
 use App\TaskInterventType;
 use Faker\Factory as Faker;
+use Illuminate\Support\Facades\Storage;
 use StormUtils;
 use User;
 
@@ -142,8 +143,6 @@ class SeederUtils
         return [];
     }
 
-
-
     public function createManyProjectsAndAssociateWithSiteAndBoats($site, $boats)
     {
         $all_projects = [];
@@ -170,5 +169,29 @@ class SeederUtils
         }
 
         return $all_projects;
+    }
+
+    /**
+     * @param Task $task
+     * @param string $filepath
+     * @param string|null $type
+     */
+    public function addImageToTask(Task $task, string $filepath, string $type = null)
+    {
+        if (Storage::disk('local-seeder')->exists($filepath)) {
+            $task->addDamageReportPhoto($filepath, $type);
+        }
+    }
+
+    /**
+     * @param Section $section
+     * @param string $filepath
+     * @param string|null $type
+     */
+    public function addImageToSection(Section $section, string $filepath, string $type = null)
+    {
+        if (Storage::disk('local-seeder')->exists($filepath)) {
+            $section->addImagePhoto($filepath, $type);
+        }
     }
 }

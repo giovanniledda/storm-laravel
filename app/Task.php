@@ -2,18 +2,22 @@
 
 namespace App;
 
+use function explode;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use App\Observers\TaskObserver;
+use Spatie\ModelStatus\HasStatuses;
+use Venturecraft\Revisionable\RevisionableTrait;
+use Net7\Documents\Document;
+use Net7\Documents\DocumentableTrait;
+use Faker\Generator as Faker;
+
 use function in_array;
 use function is_object;
 use const PROJECT_STATUS_CLOSED;
-use Spatie\ModelStatus\HasStatuses;
 use const TASKS_STATUS_COMPLETED;
 use const TASKS_STATUS_DENIED;
-use Venturecraft\Revisionable\RevisionableTrait;
-use Faker\Generator as Faker;
-use Net7\Documents\DocumentableTrait;
-
-use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
@@ -40,7 +44,8 @@ class Task extends Model
     ];
 
 
-    public function getMediaPath($media){
+    public function getMediaPath($media)
+    {
 
         $document = $media->model;
         $media_id = $media->id;
@@ -49,23 +54,22 @@ class Task extends Model
         $project_id = $project->id;
         $task_id = $this->id;
         $path = 'projects' . DIRECTORY_SEPARATOR . $project_id . DIRECTORY_SEPARATOR . 'tasks' . DIRECTORY_SEPARATOR .
-                $task_id . DIRECTORY_SEPARATOR . $document->type . DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
+            $task_id . DIRECTORY_SEPARATOR . $document->type . DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
 
         return $path;
 
     }
 
-/*
+    /*
 
-  $task = $model;
-                $project = $task->project;
-                $project_id = $project->id;
-                $task_id = $task->id;
-                $path .= 'projects' . DIRECTORY_SEPARATOR . $project_id . DIRECTORY_SEPARATOR . 'tasks' . DIRECTORY_SEPARATOR .
-                        $task_id . DIRECTORY_SEPARATOR . $document->type . DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
+      $task = $model;
+                    $project = $task->project;
+                    $project_id = $project->id;
+                    $task_id = $task->id;
+                    $path .= 'projects' . DIRECTORY_SEPARATOR . $project_id . DIRECTORY_SEPARATOR . 'tasks' . DIRECTORY_SEPARATOR .
+                            $task_id . DIRECTORY_SEPARATOR . $document->type . DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
 
-*/
-
+    */
 
 
     protected static function boot()
@@ -135,14 +139,13 @@ class Task extends Model
      *
      * Restituisce gli utenti (e contiene la logica per recuperarli) che devono ricevere una notifica legata agi eventi del Task
      */
-    public function getUsersToNotify() {
+    public function getUsersToNotify()
+    {
 
 // aggiungere qua altra logica, se serve (tipo filtri sui ruoli, etc)
 //        return StormUtils::getAllBoatManagers();
         return $this->getProjectUsers();
     }
-
-
 
 
     /**
@@ -189,4 +192,27 @@ class Task extends Model
 
         return $t;
     }
+
+    /**
+     * Adds an image as a generic_image Net7/Document
+     *
+     */
+    public function addDamageReportPhoto(string $filepath, string $type = null)
+    {
+        // mettere tutto in una funzione
+        $f_arr = explode('/', $filepath);
+        $filename = Arr::last($f_arr);
+        $tempFilepath = '/tmp/' . $filename;
+        copy('./storage/seeder/' . $filepath, $tempFilepath);
+        $file = new UploadedFile($tempFilepath, $filename, null, null, true);
+
+        $doc = new Document([
+            'title' => "Damage photo for task {$this->id}",
+            'file' => $file,
+        ]);
+        $this->addDocumentWithType($doc, $type ? $type : Document::GENERIC_IMAGE_TYPE);
+
+        return $doc;
+    }
+
 }
