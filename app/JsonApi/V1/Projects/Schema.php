@@ -85,6 +85,8 @@ class Schema extends SchemaProvider
             'imported'  => $resource->imported,
             'project_progress'=> $resource->project_progress,
             'project_type' => $resource->project_type,
+            'start_date' => $resource->start_date->toAtomString(),
+            'end_date' => $resource->end_date->toAtomString(),
             'created-at' => $resource->created_at->toAtomString(),
             'updated-at' => $resource->updated_at->toAtomString(),
         ];
