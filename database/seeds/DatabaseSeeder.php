@@ -53,10 +53,11 @@ class DatabaseSeeder extends Seeder
         for ($i = 0; $i < 5; $i++) {
             $boats[$i] = $this->utils->createBoat();
 
+            // aggiungo delle immagini alle barche in base al loro tipo
             // 'boat_type' = [BOAT_TYPE_SAIL, BOAT_TYPE_MOTOR]
             $num = $this->faker->randomElement(['1', '2', '3', '4']);
             if ($boats[$i]->boat_type == BOAT_TYPE_SAIL) {
-                $this->utils->addImageToBoat($boats[$i], "./boat/sail$num.jpeg", Document::GENERIC_IMAGE_TYPE);
+                $this->utils->addImageToBoat($boats[$i], "./boat/sail$num.jpg", Document::GENERIC_IMAGE_TYPE);
             } else {
                 $this->utils->addImageToBoat($boats[$i], "./boat/motor$num.jpg", Document::GENERIC_IMAGE_TYPE);
             }
