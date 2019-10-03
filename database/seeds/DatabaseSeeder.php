@@ -53,6 +53,14 @@ class DatabaseSeeder extends Seeder
         for ($i = 0; $i < 5; $i++) {
             $boats[$i] = $this->utils->createBoat();
 
+            // 'boat_type' = [BOAT_TYPE_SAIL, BOAT_TYPE_MOTOR]
+            $num = $this->faker->randomElement(['1', '2', '3', '4']);
+            if ($boats[$i]->boat_type == BOAT_TYPE_SAIL) {
+                $this->utils->addImageToBoat($boats[$i], "./boat/sail$num.jpeg", Document::GENERIC_IMAGE_TYPE);
+            } else {
+                $this->utils->addImageToBoat($boats[$i], "./boat/motor$num.jpg", Document::GENERIC_IMAGE_TYPE);
+            }
+
             $this->command->info("Boat {$boats[$i]->name} created");
 
             // ... e 5 sezioni per ciascuna
@@ -182,10 +190,14 @@ class DatabaseSeeder extends Seeder
                     $creation_date = $this->faker->dateTimeBetween($proj_start, '+2 years');
                     $task->update(['created_at' => $creation_date]);
 
+                    // cambio la data del primo history
+                    $first_history = $task->history()->first();
+                    $first_history->update(['event_date' => $creation_date]);
+
                     // associo qualche foto
-                    $this->utils->addImageToTask($task, './task/photo1.jpg', Document::GENERIC_IMAGE_TYPE);
-                    $this->utils->addImageToTask($task, './task/photo2.jpg', Document::GENERIC_IMAGE_TYPE);
-                    $this->utils->addImageToTask($task, './task/photo3.jpg', Document::GENERIC_IMAGE_TYPE);
+                    $this->utils->addImageToTask($task, './task/photo1.jpg', Document::DETAILED_IMAGE_TYPE);
+                    $this->utils->addImageToTask($task, './task/photo2.jpg', Document::DETAILED_IMAGE_TYPE);
+                    $this->utils->addImageToTask($task, './task/photo3.jpg', Document::DETAILED_IMAGE_TYPE);
                     $this->utils->addImageToTask($task, './task/photo4.jpg', Document::ADDITIONAL_IMAGE_TYPE);
 
                     $this->command->info("Task {$task->name} for Project {$project->name}, created");

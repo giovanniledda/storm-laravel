@@ -147,32 +147,40 @@ class TaskObserver
          * @todo quando inserisci un task da storm lo stato deve essere accepted
          */
          
-        $user = \Auth::user();
-        if (isset($user->id)) { 
-            Task::find($task->id)->history()->create([
-                'event_date' => date("Y-m-d H:i:s", time()),
-                'event_body' => json_encode([
-                    'user_id'=>$user->id,
-                    'user_name'=>$user->name.' '.$user->surname,
-                    'original_task_status'=>null,
-                    'task_status'=>TASKS_STATUS_DRAFT,
-                    'comment_id'=>null,
-                    'comment_body'=>null,
-                ])
-            ]);
+        $auth_user = \Auth::user();
+        if (isset($auth_user->id)) {
+            $u_id = $auth_user->id;
+            $u_fullname = $auth_user->name.' '.$auth_user->surname;
+        } elseif ($task->author_id) {
+            $u_id = $task->author_id;
+            $u_fullname = $task->author->name.' '.$task->author->surname;
+        } else {
+            $u_id = $u_fullname = null;
         }
-         
+
+        Task::find($task->id)->history()->create([
+            'event_date' => date("Y-m-d H:i:s", time()),
+            'event_body' => json_encode([
+                'user_id' => $u_id,
+                'user_name' => $u_fullname,
+                'original_task_status' => null,
+                'task_status' => TASKS_STATUS_DRAFT,
+                'comment_id' => null,
+                'comment_body' => null,
+            ])
+        ]);
+
         /** setto la variabile added_by_storm **/
-        $task_author = null;
-        if (is_object($user)) {
+        $task_author = $task->author;
+        if (is_object($auth_user)) {
             // se sei in boat_user
-            if ($user->can(PERMISSION_BOAT_MANAGER)) {
-                $task->update(['added_by_storm' => 0, 'author_id' => $user->id]);
+            if ($auth_user->can(PERMISSION_BOAT_MANAGER)) {
+                $task->update(['added_by_storm' => 0, 'author_id' => $auth_user->id]);
             }
-            if ($user->can(PERMISSION_ADMIN) || $user->can(PERMISSION_WORKER) || $user->can(PERMISSION_BACKEND_MANAGER)) {
-                $task->update(['added_by_storm' => 1, 'author_id' => $user->id]);
+            if ($auth_user->can(PERMISSION_ADMIN) || $auth_user->can(PERMISSION_WORKER) || $auth_user->can(PERMISSION_BACKEND_MANAGER)) {
+                $task->update(['added_by_storm' => 1, 'author_id' => $auth_user->id]);
             }
-            $task_author = $user;
+            $task_author = $auth_user;
         }
 
         // mette in coda il job

@@ -184,6 +184,18 @@ class SeederUtils
     }
 
     /**
+     * @param Boat $boat
+     * @param string $filepath
+     * @param string|null $type
+     */
+    public function addImageToBoat(Boat $boat, string $filepath, string $type = null)
+    {
+        if (Storage::disk('local-seeder')->exists($filepath)) {
+            $boat->addMainPhoto($filepath, $type);
+        }
+    }
+
+    /**
      * @param Section $section
      * @param string $filepath
      * @param string|null $type

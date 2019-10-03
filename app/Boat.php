@@ -5,8 +5,11 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Arr;
+use Net7\Documents\Document;
 use Net7\Documents\DocumentableTrait;
 use const PROJECT_STATUS_CLOSED;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class Boat extends Model
 {
@@ -204,5 +207,28 @@ class Boat extends Model
     {
         $boat_ids = Project::activeProjects()->pluck('boat_id');
         return Boat::whereIn('id', $boat_ids)->get();
+    }
+
+
+    /**
+     * Adds an image as a generic_image Net7/Document
+     *
+     */
+    public function addMainPhoto(string $filepath, string $type = null)
+    {
+        // mettere tutto in una funzione
+        $f_arr = explode('/', $filepath);
+        $filename = Arr::last($f_arr);
+        $tempFilepath = '/tmp/' . $filename;
+        copy('./storage/seeder/' . $filepath, $tempFilepath);
+        $file = new UploadedFile($tempFilepath, $filename, null, null, true);
+
+        $doc = new Document([
+            'title' => "Photo for boat {$this->id} of type {$this->boat_type}",
+            'file' => $file,
+        ]);
+        $this->addDocumentWithType($doc, $type ? $type : Document::GENERIC_IMAGE_TYPE);
+
+        return $doc;
     }
 }
