@@ -43,6 +43,51 @@ class Task extends Model
         'is_open',
     ];
 
+    private $min_x;
+    private $max_x;
+    private $min_y;
+    private $max_y;
+
+    /**
+     * @param mixed $min_x
+     * @return Task
+     */
+    public function setMinX($min_x)
+    {
+        $this->min_x = $min_x;
+        return $this;
+    }
+
+    /**
+     * @param mixed $max_x
+     * @return Task
+     */
+    public function setMaxX($max_x)
+    {
+        $this->max_x = $max_x;
+        return $this;
+    }
+
+    /**
+     * @param mixed $min_y
+     * @return Task
+     */
+    public function setMinY($min_y)
+    {
+        $this->min_y = $min_y;
+        return $this;
+    }
+
+    /**
+     * @param mixed $max_y
+     * @return Task
+     */
+    public function setMaxY($max_y)
+    {
+        $this->max_y = $max_y;
+        return $this;
+    }
+
 
     public function getMediaPath($media)
     {
@@ -176,8 +221,8 @@ class Task extends Model
                 'description' => $faker->text(),
                 'estimated_hours' => $faker->randomFloat(1, 0, 100),
                 'worked_hours' => $faker->randomFloat(1, 0, 100),
-                'x_coord' => $faker->randomFloat(2, 1000, 2000),
-                'y_coord' => $faker->randomFloat(2, 300, 600),
+                'x_coord' => $faker->randomFloat(2, 1119.29, 1159.29), // scostarsi del 5% dal punto 1139.29
+                'y_coord' => $faker->randomFloat(2, 267.95, 307.95),  // scostarsi del 5% dal punto  287.95
                 'task_status' => $status, //$faker->randomElement(TASKS_STATUSES),
                 'is_open' => $is_open, //$faker->randomElement([1, 0]),
                 'project_id' => $proj ? $proj->id : null,
@@ -192,6 +237,15 @@ class Task extends Model
 
         return $t;
     }
+
+    public function updateXYCoordinates(Faker &$faker)
+    {
+        $this->update([
+            'x_coord' => $faker->randomFloat(2, $this->min_x ? $this->min_x : 1119.29, $this->max_x ? $this->max_x : 1159.29), // scostarsi del 5% dal punto 1139.29
+            'y_coord' => $faker->randomFloat(2, $this->min_y ? $this->min_y : 267.95, $this->max_y ? $this->max_y : 307.95),  // scostarsi del 5% dal punto  287.95
+        ]);
+    }
+
 
     /**
      * Adds an image as a generic_image Net7/Document

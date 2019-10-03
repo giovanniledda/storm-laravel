@@ -20,6 +20,47 @@ class Site extends Model
         'lng'
     ];
 
+    /**
+     * @param mixed $name
+     * @return Site
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+        return $this;
+    }
+
+    /**
+     * @param mixed $location
+     * @return Site
+     */
+    public function setLocation($location)
+    {
+        $this->location = $location;
+        return $this;
+    }
+
+    /**
+     * @param mixed $lat
+     * @return Site
+     */
+    public function setLat($lat)
+    {
+        $this->lat = $lat;
+        return $this;
+    }
+
+    /**
+     * @param mixed $lng
+     * @return Site
+     */
+    public function setLng($lng)
+    {
+        $this->lng = $lng;
+        return $this;
+    }
+
+
     protected static function boot()
     {
         parent::boot();

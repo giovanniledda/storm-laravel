@@ -27,7 +27,24 @@ class DatabaseSeeder extends Seeder
 
         $site = $this->utils->createSite();
 
+        $site->setName('Cantieri Benetti Livorno')
+            ->setLocation('Via Edda Fagni, 1, 57100 – Livorno, Italy')
+            ->setLat(43.5430829)
+            ->setLng(10.2994663)
+            ->save();
+
         $this->command->info("Site {$site->name} created");
+
+
+        $site2 = $this->utils->createSite();
+
+        $site2->setName('Cantieri Net7')
+            ->setLocation('Via Giusti, 1, 56123 – Pisa, Italy')
+            ->setLat(44.5430829)
+            ->setLng(11.2994663)
+            ->save();
+
+        $this->command->info("Site {$site2->name} created");
 
         // crea N boat...
         $this->command->warn(" ------ BOATS & SECTIONS --------");
@@ -152,6 +169,13 @@ class DatabaseSeeder extends Seeder
 
                     $author = $this->faker->randomElement($boat_managers);
                     $task = $this->utils->createTask($project, $section, null, $author, $intervent_type);
+
+                    // le coordinate fake del task cambiano in base alla tipologia di sezione
+                    if ($section->section_type == SECTION_TYPE_DECK) {
+                        $task->setMinX(1250)->setMaxX(1350)->updateXYCoordinates($this->faker);
+                    } else {
+                        $task->setMinX(850)->setMaxX(950)->updateXYCoordinates($this->faker);
+                    }
 
                     // cambio la data di creazione
                     $proj_start = $project->start_date;
