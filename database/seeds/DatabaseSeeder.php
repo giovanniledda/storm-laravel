@@ -76,7 +76,9 @@ class DatabaseSeeder extends Seeder
 
                 // Creare un left, un right e gli altri deck
                 if (!$left_done) {
-                    $sections[$boats[$i]->id]->update(['section_type' => SECTION_TYPE_LEFT_SIDE]);
+                    $sections[$boats[$i]->id]->update([
+                        'section_type' => SECTION_TYPE_LEFT_SIDE,
+                        'name' => 'Left']);
 
                     // associo la foto di SX
                     $this->utils->addImageToSection($sections[$boats[$i]->id], './section/left.svg');
@@ -85,7 +87,9 @@ class DatabaseSeeder extends Seeder
                     continue;
                 }
                 if (!$right_done) {
-                    $sections[$boats[$i]->id]->update(['section_type' => SECTION_TYPE_RIGHT_SIDE]);
+                    $sections[$boats[$i]->id]->update([
+                        'section_type' => SECTION_TYPE_RIGHT_SIDE,
+                        'name' => 'Right']);
 
                     // associo la foto di DX
                     $this->utils->addImageToSection($sections[$boats[$i]->id], './section/right.svg');
@@ -93,11 +97,14 @@ class DatabaseSeeder extends Seeder
                     $right_done = true;
                     continue;
                 }
-                $sections[$boats[$i]->id]->update(['section_type' => SECTION_TYPE_DECK]);
+                $num = $this->faker->randomElement(['1', '2', '3', '4']);
+                $name = "deck$num";
+                $sections[$boats[$i]->id]->update([
+                    'section_type' => SECTION_TYPE_DECK,
+                    'name' => ucfirst($name)]);
 
                 // associo la foto di un ponte a caso
-                $num = $this->faker->randomElement(['1', '2', '3', '4']);
-                $this->utils->addImageToSection($sections[$boats[$i]->id], "./section/deck$num.svg");
+                $this->utils->addImageToSection($sections[$boats[$i]->id], "./section/$name.svg");
             }
         }
 
