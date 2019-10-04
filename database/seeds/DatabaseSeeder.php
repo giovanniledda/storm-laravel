@@ -97,8 +97,7 @@ class DatabaseSeeder extends Seeder
                     $right_done = true;
                     continue;
                 }
-                $num = $this->faker->randomElement(['1', '2', '3', '4']);
-                $name = "deck$num";
+                $name = $this->faker->randomElement(['sundeck', 'upperdeck', 'maindeck', 'lowerdeck']);
                 $sections[$boats[$i]->id]->update([
                     'section_type' => SECTION_TYPE_DECK,
                     'name' => ucfirst($name)]);
