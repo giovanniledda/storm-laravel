@@ -78,10 +78,10 @@ class DatabaseSeeder extends Seeder
                 if (!$left_done) {
                     $sections[$boats[$i]->id]->update([
                         'section_type' => SECTION_TYPE_LEFT_SIDE,
-                        'name' => 'Left']);
+                        'name' => 'Starboard']);
 
                     // associo la foto di SX
-                    $this->utils->addImageToSection($sections[$boats[$i]->id], './section/left.svg');
+                    $this->utils->addImageToSection($sections[$boats[$i]->id], './section/starboard.svg');
 
                     $left_done = true;
                     continue;
@@ -89,10 +89,10 @@ class DatabaseSeeder extends Seeder
                 if (!$right_done) {
                     $sections[$boats[$i]->id]->update([
                         'section_type' => SECTION_TYPE_RIGHT_SIDE,
-                        'name' => 'Right']);
+                        'name' => 'Port']);
 
                     // associo la foto di DX
-                    $this->utils->addImageToSection($sections[$boats[$i]->id], './section/right.svg');
+                    $this->utils->addImageToSection($sections[$boats[$i]->id], './section/port.svg');
 
                     $right_done = true;
                     continue;

@@ -80,68 +80,6 @@ class TaskObserver
                 ])
             ]);
         }
-
-
-        /*
-          $revisions      = new Revisions();
-
-
-
-          /** parte che impatta sullo storico dei progetti **/
-
-        // è cambiato lo stato del task
-        /*   if ($original['task_status']!=$task->task_status && $task->task_status==TASKS_STATUS_CLOSED) {
-               /*
-               $c = $revisions->join('tasks', 'revisions.revisionable_id', '=',  'tasks.id')
-                      ->where('tasks.project_id', '=', $task->project_id)
-                      ->where('revisions.key', '=', 'task_status')
-                      ->where('revisions.new_value', 'like', TASKS_STATUS_CLOSED)
-                      ->where('revisions.created_at', 'like', substr($task->updated_at, 0,10).'%')
-                      ->groupBy('tasks.id')->count();
-               */
-
-        /*     $c = $revisions->join('tasks', 'statuses.model_id', '=',  'tasks.id')
-                    ->where('tasks.project_id', '=', $task->project_id)
-                    ->where('statuses.name', '=', TASKS_STATUS_CLOSED)
-                     ;
-
-
-             Log::info($c);
-
-             /*
-              *  se il task è stato TASKS_STATUS_CLOSED allora conto tutti i task chiusi
-              *  nello stesso giorno e scrivo l'evento
-              *
-              *  TODO : vedere se si puo usare insert or update con eloquent bisogna anche usare like
-              */
-
-        /*
-        $projectHistory->updateOrInsert(
-                ['project_id' => $task->project_id, 'event_type' => PROJECT_EVENT_TYPE_MARK_COMPLETED],
-                ['author_id' => $user->id, 'project_id'=>$task->project_id, 'author_id'=>$user->id,'event'=>$c .' '.PROJECT_EVENT_MARK_COMPLETED ]
-        );
-        */
-
-        /*       $eventExist= $projectHistory
-                         ->where('project_id', '=', $task->project_id)
-                         ->where('event_type', '=', PROJECT_EVENT_TYPE_MARK_COMPLETED)
-                         ->where('created_at', 'like', substr($task->updated_at, 0,10).'%');
-               if ($eventExist->count()) {
-                   //update event
-                   $eventExist->update(['event'=>$c .' '.PROJECT_EVENT_MARK_COMPLETED]);
-               } else {
-                   // write event
-                   //  'author_id','project_id','event'
-
-                   ProjectHistory::create([
-                       'project_id'=>$task->project_id,
-                       'event_type'=>PROJECT_EVENT_TYPE_MARK_COMPLETED,
-                       'author_id'=>  $user->id,
-                       'event'=>$c .' '.PROJECT_EVENT_MARK_COMPLETED
-                       ]);
-               }
-          }  */
-
     }
 
 
