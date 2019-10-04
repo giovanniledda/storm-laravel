@@ -38,11 +38,11 @@ class TaskObserver
                 ->create(
                     ['event_date' => date("Y-m-d H:i:s", time()),
                         'event_body' => 'Task number #' . $task->number . ' marked to closed']);
-           
+
         }
-        
+
         /**
-         * per la history del task occorre scrivere nella history del task 
+         * per la history del task occorre scrivere nella history del task
          * nel campo event_body bisogna scrivere una payload così formata :
          *  {
          *      user_id : 1,
@@ -51,26 +51,37 @@ class TaskObserver
          *      comment_body: 'this is a comment' ,
          *      task_status : 'open',
          *      original_task_status : '',
-         *      
+         *
          *  }
-         * 
+         *
          */
-        if (isset($original['task_status']) && $original['task_status']!=$task->task_status) {
-            $user = \Auth::user();
+        if (isset($original['task_status']) && $original['task_status'] != $task->task_status) {
+
+            $auth_user = \Auth::user();
+            if (isset($auth_user->id)) {
+                $u_id = $auth_user->id;
+                $u_fullname = $auth_user->name . ' ' . $auth_user->surname;
+            } elseif ($task->author_id) {
+                $u_id = $task->author_id;
+                $u_fullname = $task->author->name . ' ' . $task->author->surname;
+            } else {
+                $u_id = $u_fullname = null;
+            }
+
             Task::find($task->id)->history()->create([
                 'event_date' => date("Y-m-d H:i:s", time()),
                 'event_body' => json_encode([
-                    'user_id'=>$user->id,
-                    'user_name'=>$user->name.' '.$user->surname,
-                    'original_task_status'=>$original['task_status'],
-                    'task_status'=>$task->task_status,
-                    'comment_id'=>null,
-                    'comment_body'=>null,
+                    'user_id' => $u_id,
+                    'user_name' => $u_fullname,
+                    'original_task_status' => $original['task_status'],
+                    'task_status' => $task->task_status,
+                    'comment_id' => null,
+                    'comment_body' => null,
                 ])
             ]);
         }
-        
-        
+
+
         /*
           $revisions      = new Revisions();
 
@@ -146,14 +157,14 @@ class TaskObserver
         /**
          * @todo quando inserisci un task da storm lo stato deve essere accepted
          */
-         
+
         $auth_user = \Auth::user();
         if (isset($auth_user->id)) {
             $u_id = $auth_user->id;
-            $u_fullname = $auth_user->name.' '.$auth_user->surname;
+            $u_fullname = $auth_user->name . ' ' . $auth_user->surname;
         } elseif ($task->author_id) {
             $u_id = $task->author_id;
-            $u_fullname = $task->author->name.' '.$task->author->surname;
+            $u_fullname = $task->author->name . ' ' . $task->author->surname;
         } else {
             $u_id = $u_fullname = null;
         }
