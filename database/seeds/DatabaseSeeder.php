@@ -201,6 +201,15 @@ class DatabaseSeeder extends Seeder
                     $this->utils->addImageToTask($task, './task/photo3.jpg', Document::DETAILED_IMAGE_TYPE);
                     $this->utils->addImageToTask($task, './task/photo4.jpg', Document::ADDITIONAL_IMAGE_TYPE);
 
+                    // se il task è chiuso, lo stato non può essere diverso da COMPLETED o DECLINED
+                    if (!$task->is_open) {
+                        $task->update(['task_status' => $this->faker->randomElement([TASKS_STATUS_COMPLETED, TASKS_STATUS_DENIED])]);
+                    }
+                    // se il task è di stato MONITORED, deve essere aperto
+                    if ($task->task_status == TASKS_STATUS_MONITORED) {
+                        $task->update(['is_open' => 1]);
+                    }
+
                     $this->command->info("Task {$task->name} for Project {$project->name}, created");
 
                     if ($task->status != TASKS_STATUS_DRAFT) {
