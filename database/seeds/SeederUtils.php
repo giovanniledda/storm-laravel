@@ -44,6 +44,7 @@ class SeederUtils
             'name' => $faker->name,
             'email' => $email,
             'password' => $password,
+            'is_storm' => $this->faker->boolean(30),
         ]);
 
         $user->assignRole($role_name);

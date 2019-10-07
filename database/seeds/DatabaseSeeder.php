@@ -232,8 +232,8 @@ class DatabaseSeeder extends Seeder
                     }
 
                     // accoppio la sezione al progetto
-                    $this->command->warn(" ------ SECTIONS FOR PROJECT {$project->name} --------");
-                    $this->utils->associateSectionToProject($section, $project);
+//                    $this->command->warn(" ------ SECTIONS FOR PROJECT {$project->name} --------");
+//                    $this->utils->associateSectionToProject($section, $project);
                 }
 
                 $this->command->warn(" ------ USERS FOR PROJECT {$project->name} --------");
