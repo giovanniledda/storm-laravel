@@ -3,7 +3,7 @@
 namespace App\JsonApi\V1\Boats;
 
 use Neomerx\JsonApi\Schema\SchemaProvider;
-use App\Project;
+use App\Section;
 
 class Schema extends SchemaProvider
 {
@@ -69,6 +69,9 @@ class Schema extends SchemaProvider
      */
     public function getAttributes($resource)
     { 
+        $n_utenti = 0;
+        $n_sezioni= 0;
+         
          $project_active = $resource->projects() 
                 ->whereIn('project_status', [PROJECT_STATUS_OPERATIONAL,PROJECT_STATUS_IN_SITE ]) 
                 ->orderBy('created_at', 'DESC')
@@ -82,6 +85,16 @@ class Schema extends SchemaProvider
                      ->first();
                      
             $project_active->location= $location;
+            
+            // se il progetto e' attivo allora aggiungo anche il numero degli utenti del progetto
+           $n_utenti = $resource->projects()
+                     ->select('project_user.user_id')
+                     ->RightJoin('project_user', 'project_user.project_id', '=', 'projects.id')
+                     ->where('project_user.project_id', '=', $project_active->id)->count();
+           $n_sezioni= Section::where('boat_id','=',$resource->id)->count(); 
+           $project_active->sections = $n_sezioni;
+           $project_active->users    = $n_utenti;
+           
          }
          
         $owner = $resource
