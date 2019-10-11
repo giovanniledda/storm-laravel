@@ -189,9 +189,9 @@ class DatabaseSeeder extends Seeder
 
                     // le coordinate fake del task cambiano in base alla tipologia di sezione
                     if ($section->section_type == SECTION_TYPE_DECK) {
-                        $task->setMinY(600)->setMaxY(2500)->setMinX(1000)->setMaxX(14000)->updateXYCoordinates($this->faker);
+                        $task->setMinX(600)->setMaxX(2500)->setMinY(1000)->setMaxY(14000)->updateXYCoordinates($this->faker);
                     } else {
-                        $task->setMinY(500)->setMaxY(2000)->setMinX(2000)->setMaxX(13000)->updateXYCoordinates($this->faker);
+                        $task->setMinX(500)->setMaxX(2000)->setMinY(2000)->setMaxY(13000)->updateXYCoordinates($this->faker);
                     }
 
                     // cambio la data di creazione
