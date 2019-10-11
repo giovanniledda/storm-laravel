@@ -38,7 +38,7 @@ class ProjectUser extends Pivot
      * @param int $profession
      * @return int
      */
-    public static function createOneIfNotExists(int $user_id, int $project_id, int $profession_id)
+    public static function createOneIfNotExists(int $user_id, int $project_id, int $profession_id = null)
     {
         try {
             return ProjectUser::create([

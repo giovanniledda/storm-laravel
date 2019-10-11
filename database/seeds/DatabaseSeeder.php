@@ -194,8 +194,6 @@ class DatabaseSeeder extends Seeder
                         $task->setMinY(500)->setMaxY(2000)->setMinX(2000)->setMaxX(13000)->updateXYCoordinates($this->faker);
                     }
 
-                    // (15653 - 15983)x(2776 - 11499)
-
                     // cambio la data di creazione
                     $proj_start = $project->start_date;
                     $creation_date = $this->faker->dateTimeBetween($proj_start, '+2 years');

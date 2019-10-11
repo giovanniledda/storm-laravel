@@ -21,7 +21,8 @@ restored
  */
 namespace App\Observers;
 
-use App\Project; 
+use App\Project;
+use App\ProjectUser;
 use Log;
 
 class ProjectObserver
@@ -68,7 +69,13 @@ class ProjectObserver
      */
     public function created(Project $project)
     {
-        $project->setStatus(PROJECT_STATUS_IN_SITE); 
+        $project->setStatus(PROJECT_STATUS_IN_SITE);
+
+        // ticket: 250, associare l'utente di sessione al progetto appena creato
+        if (\Auth::check()) {
+            $auth_user = \Auth::user();
+            ProjectUser::createOneIfNotExists($auth_user->id, $project->id);
+        }
     }
 
     /**
