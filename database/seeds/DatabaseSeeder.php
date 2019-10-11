@@ -83,7 +83,7 @@ class DatabaseSeeder extends Seeder
                         'name' => 'Starboard']);
 
                     // associo la foto di SX
-                    $this->utils->addImageToSection($sections[$boats[$i]->id], './section/starboard.svg');
+                    $this->utils->addImageToSection($sections[$boats[$i]->id], './section/starboard.png');
 
                     $left_done = true;
                     continue;
@@ -94,18 +94,18 @@ class DatabaseSeeder extends Seeder
                         'name' => 'Port']);
 
                     // associo la foto di DX
-                    $this->utils->addImageToSection($sections[$boats[$i]->id], './section/port.svg');
+                    $this->utils->addImageToSection($sections[$boats[$i]->id], './section/port.png');
 
                     $right_done = true;
                     continue;
                 }
-                $name = $this->faker->randomElement(['sundeck', 'upperdeck', 'maindeck', 'lowerdeck']);
+                $name = $this->faker->randomElement(['sundeck', 'upperdeck', 'maindeck', 'lowerdeck', 'topdeck', 'wheelhousedeck']);
                 $sections[$boats[$i]->id]->update([
                     'section_type' => SECTION_TYPE_DECK,
                     'name' => ucfirst($name)]);
 
                 // associo la foto di un ponte a caso
-                $this->utils->addImageToSection($sections[$boats[$i]->id], "./section/$name.svg");
+                $this->utils->addImageToSection($sections[$boats[$i]->id], "./section/$name.png");
             }
         }
 
@@ -189,10 +189,12 @@ class DatabaseSeeder extends Seeder
 
                     // le coordinate fake del task cambiano in base alla tipologia di sezione
                     if ($section->section_type == SECTION_TYPE_DECK) {
-                        $task->setMinX(1250)->setMaxX(1350)->updateXYCoordinates($this->faker);
+                        $task->setMinY(600)->setMaxY(2500)->setMinX(1000)->setMaxX(14000)->updateXYCoordinates($this->faker);
                     } else {
-                        $task->setMinX(850)->setMaxX(950)->updateXYCoordinates($this->faker);
+                        $task->setMinY(500)->setMaxY(2000)->setMinX(2000)->setMaxX(13000)->updateXYCoordinates($this->faker);
                     }
+
+                    // (15653 - 15983)x(2776 - 11499)
 
                     // cambio la data di creazione
                     $proj_start = $project->start_date;
