@@ -57,9 +57,11 @@ class DatabaseSeeder extends Seeder
             // 'boat_type' = [BOAT_TYPE_SAIL, BOAT_TYPE_MOTOR]
             $num = $this->faker->randomElement(['1', '2', '3', '4']);
             if ($boats[$i]->boat_type == BOAT_TYPE_SAIL) {
-                $this->utils->addImageToBoat($boats[$i], "./boat/sail$num.jpg", Document::GENERIC_IMAGE_TYPE);
+//                $this->utils->addImageToBoat($boats[$i], "./boat/sail$num.jpg", Document::GENERIC_IMAGE_TYPE);
+                $this->utils->addImageToBoat($boats[$i], "./boat/generic_sail_img.png", Document::GENERIC_IMAGE_TYPE);
             } else {
-                $this->utils->addImageToBoat($boats[$i], "./boat/motor$num.jpg", Document::GENERIC_IMAGE_TYPE);
+//                $this->utils->addImageToBoat($boats[$i], "./boat/motor$num.jpg", Document::GENERIC_IMAGE_TYPE);
+                $this->utils->addImageToBoat($boats[$i], "./boat/generic_motor_img.png", Document::GENERIC_IMAGE_TYPE);
             }
 
             $this->command->info("Boat {$boats[$i]->name} created");
