@@ -22,6 +22,7 @@ protected $professions;
         $this->professions = $this->populateProfessions();
 
         $this->populateTaskTypes();
+        $this->createUsers();
     }
 
 
