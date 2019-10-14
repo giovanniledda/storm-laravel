@@ -27,7 +27,9 @@ class Schema extends SchemaProvider
 
     /**
      * ritorna il nome del file associato all'immagine della sezione.
-     * @param type $resource
+     * @param mixed $resource
+     *
+     * @return string
      */
     public function getImageName($resource) {
          $image = $resource->generic_images->last();
@@ -36,6 +38,22 @@ class Schema extends SchemaProvider
               return ($media['file_name']);
          }
          return null;
+    }
+
+
+    /**
+     * ritorna l'id del file associato all'immagine della sezione.
+     * @param mixed $resource
+     *
+     * @return string
+     */
+    public function getImageId($resource) {
+        $image = $resource->generic_images->last();
+        if ($image) {
+            $media = $image->getRelatedMedia();
+            return $media->id;
+        }
+        return null;
     }
 
      public function getPrimaryMeta($resource)
@@ -84,8 +102,9 @@ class Schema extends SchemaProvider
             'position' => $resource->position,
             'code' => $resource->code,
             'boat_id' => $resource->boat_id,
-            'image'=>$this->getImageName($resource),
-            'dimension_factor'=>$dimension_fraction,
+            'image' => $this->getImageName($resource),
+            'image_id' => $this->getImageId($resource),
+            'dimension_factor' => $dimension_fraction,
             'created-at' => $resource->created_at->toAtomString(),
             'updated-at' => $resource->updated_at->toAtomString(),
         ];
