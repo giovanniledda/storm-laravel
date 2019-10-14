@@ -219,7 +219,12 @@ return [
         Net7\Logging\LoggingServiceProvider::class,
 
         // Documents
-        Net7\Documents\DocumentsServiceProvider::class
+        Net7\Documents\DocumentsServiceProvider::class,
+
+
+        // google
+
+        App\Providers\GoogleDriveServiceProvider::class,
     ],
 
     /*
