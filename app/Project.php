@@ -10,6 +10,7 @@ use Faker\Generator as Faker;
 
 use \Net7\Documents\DocumentableTrait;
 use \Net7\Documents\Document;
+use Illuminate\Support\Facades\Storage;
 
 class Project extends Model {
 
@@ -69,6 +70,79 @@ class Project extends Model {
         // TODO: finish it up
     }
 
+    private function getGooglePathFromHumanPath($path){
+        $lastPath = '';
+        $contents = collect(Storage::cloud()->listContents($lastPath, false));
+
+        $lastDir = false;
+        $folderSteps = explode(DIRECTORY_SEPARATOR, $path);
+        foreach ($folderSteps as $step){
+
+            // apparently we can't just ask google drive for subdirectories, like
+            // '/boats/Pinta/3'
+            // we need to cycle dir by dir and use their IDs to identify the directories
+
+            if (!trim($step)) {
+                // sometimes there are empty steps, go figure
+                continue;
+            }
+
+            $dir = $contents->where('type', '=', 'dir')->where('filename', '=', $step)->first();
+
+            if (!$dir){
+                // we need to create it
+                $path ='';
+                if ($lastDir) {
+                    $path .= $lastPath . '/';
+                }
+
+                $path .= $step;
+                Storage::cloud()->makeDirectory($path);
+                // we refresh the value so we can take the new dir ['path'] value
+                $contents = collect(Storage::cloud()->listContents($lastPath, false));
+
+            }
+
+            $lastDir = $contents->where('type', '=', 'dir')->where('filename', '=', $step)->first();
+            $lastPath = $lastDir['path'];
+            $contents = collect(Storage::cloud()->listContents($lastPath, false));
+
+        }
+
+        $path = $lastDir['path'];
+
+        return $path;
+
+    }
+
+    public function sendDocumentToGoogleDrive(\Net7\Documents\Document $document){
+
+        $document = Document::find($document->id);
+        $media = $document->getRelatedMedia();
+
+        $filepath = $media->getPath();
+
+        $fh = fopen($filepath, 'r');
+        $content = fread($fh, filesize($filepath));
+        fclose ($fh);
+
+        $filename = $media->file_name;
+        $googleFolder =  $this->getGoogleFolderPath($document);
+        $filename =  $this->getGoogleFilename($document, $filename);
+
+        $path = $this->getGooglePathFromHumanPath($googleFolder);
+
+        // now we have the full path made of directory Ids, we can upload our file there.
+
+
+        $path .=  '/'. $filename;
+        Storage::cloud()->put($path, $content);
+
+        //TODO: check errors?
+
+
+    }
+
     /**
      *
      * @Override the base method to send the updated files to dropbox
@@ -77,8 +151,13 @@ class Project extends Model {
 
         $this->traitUpdateDocument( $document, $file);
 
-        if (env('DROPBOX_TOKEN')) {
+        if (env('USE_DROPBOX')) {
             $this->sendDocumentToDropbox($document);
+        }
+
+        if (env('USE_GOOGLE_DRIVE')){
+            $this->sendDocumentToGoogleDrive($document);
+
         }
     }
 
@@ -96,10 +175,14 @@ class Project extends Model {
 
         $this->save();
         $document->refresh();
-        if (env('DROPBOX_TOKEN')) {
+        if (env('USE_DROPBOX')) {
             $this->sendDocumentToDropbox($document);
         }
 
+        if (env('USE_GOOGLE_DRIVE')){
+            $this->sendDocumentToGoogleDrive($document);
+
+        }
     }
 
     public function getDocumentFromDropbox(\Net7\Documents\Document $document){
@@ -113,25 +196,86 @@ class Project extends Model {
 
         $client = new \Spatie\Dropbox\Client(env('DROPBOX_TOKEN'));
 
-
         $link = $client->getTemporaryLink($dropboxFilepath );
 
         return $link;
     }
 
+
+    public function getDocumentFromGoogle(\Net7\Documents\Document $document){
+
+
+        $media = $document->getRelatedMedia();
+        $filename = $media->file_name;
+
+        $googleFolder =  $this->getGoogleFolderPath($document);
+        $filename =  $this->getGoogleFilename($document, $filename);
+
+        $path = $this->getGooglePathFromHumanPath($googleFolder);
+
+        // $path .= '/' . $filename;
+        // //non va TODO!
+        //         $readStream = Storage::cloud()->getDriver()->readStream($path);
+
+
+        // $path = '1kiNK2LX1x-IEIa9nHKq8eYobX3P4iO50';
+
+        $recursive = false; // Get subdirectories also?
+        $contents = collect(Storage::cloud()->listContents($path, $recursive));
+
+        // Get file details...
+        $file = $contents
+            ->where('type', '=', 'file')
+            ->where('filename', '=', pathinfo($filename, PATHINFO_FILENAME))
+            ->where('extension', '=', pathinfo($filename, PATHINFO_EXTENSION))
+            ->first(); // there can be duplicate file names!
+
+
+        $readStream = Storage::cloud()->getDriver()->readStream($file['path']);
+
+        return response()->stream(function () use ($readStream) {
+            fpassthru($readStream);
+        }, 200, [
+            'Content-Type' => $media->mime_type,
+            'Content-disposition' => 'attachment; filename="'.$filename.'"', // force download?
+        ]);
+
+
+
+/*
+ $readStream = Storage::cloud()->getDriver()->readStream($file['path']);
+
+    return response()->stream(function () use ($readStream) {
+        fpassthru($readStream);
+    }, 200, [
+        'Content-Type' => $file['mimetype'],
+        //'Content-disposition' => 'attachment; filename="'.$filename.'"', // force download?
+    ]);
+*/
+
+
+        return $link;
+
+    }
+
+
+
     public function getRelatedMedia(){
         // return $this->media;
     }
 
-    public function getDropboxFilePath ($document, $filename){
-
+    public function getDropboxFilename($document, $filename){
         $media = $document->getRelatedMedia();
 
         $path_parts = pathinfo($this->getMediaPath($media) . $filename);
 
         $basename = $path_parts['filename'];
         $extension = $path_parts['extension'];
-        return $this->getDropboxFolderPath($document) .  $basename . '_' . $media->id . '.' . $extension;
+        return $basename . '_' . $media->id . '.' . $extension;
+    }
+
+    public function getDropboxFilePath ($document, $filename){
+        return $this->getDropboxFolderPath($document) .$this->getDropboxFilename($document, $filename);
     }
 
     public function getDropboxFolderPath($document){
@@ -151,6 +295,17 @@ class Project extends Model {
 
     }
 
+    public function getGoogleFilename($document, $filename){
+        return $this->getDropboxFilename($document, $filename);
+    }
+
+    public function getGoogleFilePath ($document, $filename){
+        return $this->getDropboxFilePath ($document, $filename);
+    }
+
+    public function getGoogleFolderPath($document){
+        return $this->getDropboxFolderPath($document);
+    }
 
     public function getMediaPath($media){
 

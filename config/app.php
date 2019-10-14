@@ -224,6 +224,9 @@ return [
         // cors plug in 
         Barryvdh\Cors\ServiceProvider::class,
 
+        // google
+
+        App\Providers\GoogleDriveServiceProvider::class,
     ],
 
     /*
