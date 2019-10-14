@@ -97,7 +97,8 @@ class RolesAndPermissionsSeeder extends Seeder
                 'name' => \Config('auth.default_admin.username'),
                 'email' => \Config('auth.default_admin.username'),
                 'password' => \Config('auth.default_admin.password'),
-            ]);
+                'is_storm' => true,
+                ]);
             $user->assignRole(ROLE_ADMIN);
             $this->created_users[\Config('auth.default_admin.password')] = $user;
         }
