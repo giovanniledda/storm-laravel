@@ -213,13 +213,6 @@ class Project extends Model {
 
         $path = $this->getGooglePathFromHumanPath($googleFolder);
 
-        // $path .= '/' . $filename;
-        // //non va TODO!
-        //         $readStream = Storage::cloud()->getDriver()->readStream($path);
-
-
-        // $path = '1kiNK2LX1x-IEIa9nHKq8eYobX3P4iO50';
-
         $recursive = false; // Get subdirectories also?
         $contents = collect(Storage::cloud()->listContents($path, $recursive));
 
