@@ -236,6 +236,8 @@ class DatabaseSeeder extends Seeder
                     // accoppio la sezione al progetto
 //                    $this->command->warn(" ------ SECTIONS FOR PROJECT {$project->name} --------");
 //                    $this->utils->associateSectionToProject($section, $project);
+                    unset($section);
+                    $this->utils->print_mem();
                 }
 
                 $this->command->warn(" ------ USERS FOR PROJECT {$project->name} --------");
@@ -289,7 +291,11 @@ class DatabaseSeeder extends Seeder
                     $imported++;
                     $project->update(['imported' => 1]);
                 }
+                unset($project);
+                $this->utils->print_mem();
             }
+            unset($boat);
+            $this->utils->print_mem();
         }
     }
 }
