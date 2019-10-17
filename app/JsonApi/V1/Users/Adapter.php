@@ -18,7 +18,7 @@ class Adapter extends AbstractAdapter
     protected $attributes = [];
     
     protected $fillable = [
-        'name', 'surname', 'email', 'password', 'is_storm'
+        'name', 'surname', 'email', 'password', 'is_storm', 'disable_login'
     ];
     /**
      * Adapter constructor.

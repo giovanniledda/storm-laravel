@@ -24,7 +24,7 @@ class User extends Authenticatable
     use Notifiable, HasApiTokens, HasRoles, CanResetPassword, HasAddresses, DocumentableTrait;
 
     protected $fillable = [
-        'name', 'surname', 'email', 'password', 'is_storm'
+        'name', 'surname', 'email', 'password', 'is_storm', 'disable_login'
     ];
 
     /**
