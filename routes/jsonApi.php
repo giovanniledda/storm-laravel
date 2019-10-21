@@ -94,6 +94,7 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
         ->routes(function ($docs) {
             $docs->get('{record}/show/{size}', 'show')->name('show_with_size');
             $docs->get('{record}/show', 'show')->name('show');
+            $docs->get('{record}/show-base64', 'showBase64')->name('show-base64');
             $docs->post('create', 'create')->name('create');
         });
 
