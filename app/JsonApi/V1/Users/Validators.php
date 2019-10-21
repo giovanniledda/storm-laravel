@@ -3,6 +3,7 @@
 namespace App\JsonApi\V1\Users;
 
 use CloudCreativity\LaravelJsonApi\Validation\AbstractValidators;
+use const VALIDATOR_EMAIL_UNIQUE;
 
 class Validators extends AbstractValidators
 {
@@ -17,8 +18,9 @@ class Validators extends AbstractValidators
         'surname.string' => 'surname '.VALIDATOR_STRING,
         'password.required' => 'password '.VALIDATOR_REQUIRED,
         'password.string' => 'password '.VALIDATOR_STRING,
-  //      'email.required' => 'email '.VALIDATOR_REQUIRED, 
-  //      'email.email' => 'email '.VALIDATOR_EMAIL, 
+        'email.unique' => VALIDATOR_EMAIL_UNIQUE,
+  //      'email.required' => 'email '.VALIDATOR_REQUIRED,
+  //      'email.email' => 'email '.VALIDATOR_EMAIL,
         ];
 
     /**
@@ -49,7 +51,7 @@ class Validators extends AbstractValidators
           return [
            'name' => 'required|string|min:1|max:255',
            'surname' => 'required|string|min:1|max:255',   
-           'email' => 'required|email:rfc,dns',
+           'email' => 'required|email:rfc,dns|unique:users',
            'password' => 'required|string|min:1|max:255',   
            'is_storm' => 'required|numeric'
         ];

@@ -152,8 +152,9 @@ defined('VALIDATOR_REQUIRED') or define('VALIDATOR_REQUIRED', 'is required and c
 defined('VALIDATOR_STRING') or define('VALIDATOR_STRING', 'is not a string');
 defined('VALIDATOR_NUMERIC') or define('VALIDATOR_NUMERIC', 'is not a numeric value');
 defined('VALIDATOR_IN') or define('VALIDATOR_IN', 'is not a valid value, valid values are : ');
-defined('VALIDATOR_EMAIL') or define('VALIDATOR_EMAIL', 'is not a valid email addresss');
-defined('VALIDATOR_EXIST') or define('VALIDATOR_EXIST', 'is not exist in the database');
+defined('VALIDATOR_EMAIL') or define('VALIDATOR_EMAIL', 'is not a valid email address');
+defined('VALIDATOR_EMAIL_UNIQUE') or define('VALIDATOR_EMAIL_UNIQUE', 'this email address is already used in the system, please choose another one.');
+defined('VALIDATOR_EXIST') or define('VALIDATOR_EXIST', 'do not exist in the database');
 /*
  * RESET PASSWORD MESSAGES
  */
