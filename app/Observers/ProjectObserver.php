@@ -13,10 +13,10 @@ deleting
 deleted
 restoring
 restored
- * 
- * The retrieved event will fire when an existing model is retrieved from the database. 
- * When a new model is saved for the first time, the creating and created events will fire. 
- * If a model already existed in the database and the save method is called, the updating / updated events will fire. 
+ *
+ * The retrieved event will fire when an existing model is retrieved from the database.
+ * When a new model is saved for the first time, the creating and created events will fire.
+ * If a model already existed in the database and the save method is called, the updating / updated events will fire.
  * However, in both cases, the saving / saved events will fire.
  */
 namespace App\Observers;
@@ -27,8 +27,8 @@ use Log;
 
 class ProjectObserver
 {
-    
-    
+
+
     /**
      * Handle the project "updating" event.
      *
@@ -36,31 +36,31 @@ class ProjectObserver
      * @return void
      */
    public function updating(Project $project)
-    { 
+    {
         $original = $project->getOriginal();
-        
+
         // è cambiato lo stato del progetto
         if (isset($original['project_status']) && isset($project->project_status) && $original['project_status']!=$project->project_status) {
            Project::find($project->id)
                             ->history()
                             ->create(
                                     ['event_date'=> date("Y-m-d H:i:s", time()),
-                                     'event_body'=>'project status changed to '.$project->project_status]); 
-            
+                                     'event_body'=>'project status changed to '.$project->project_status]);
+
         }
-        
+
          // è cambiato lo stato di avanzamento
         if (isset($original['project_progress']) && isset($project->project_progress) && $original['project_progress']!=$project->project_progress) {
            Project::find($project->id)
                             ->history()
                             ->create(
                                     ['event_date'=> date("Y-m-d H:i:s", time()),
-                                     'event_body'=>$project->project_progress.'% percentage']); 
+                                     'event_body'=>$project->project_progress.'% percentage']);
         }
-         
-        
+
+
     }
-    
+
     /**
      * Handle the project "created" event.
      *
@@ -76,6 +76,13 @@ class ProjectObserver
             $auth_user = \Auth::user();
             ProjectUser::createOneIfNotExists($auth_user->id, $project->id);
         }
+
+        if (env('USE_GOOGLE_DRIVE')){
+            $projectDocumentsPath = $project->getGoogleProjectDocumentsFolderPath();
+            // this will create the directory in the google drive account
+            $project->getGooglePathFromHumanPath($projectDocumentsPath);
+        }
+
     }
 
     /**
@@ -85,7 +92,7 @@ class ProjectObserver
      * @return void
      */
     public function updated(Project $project)
-    { 
+    {
         $project->setStatus($project->project_status);
     }
 
@@ -121,6 +128,6 @@ class ProjectObserver
     {
         //
     }
-    
-    
+
+
 }
