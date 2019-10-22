@@ -293,7 +293,12 @@ class Project extends Model {
         $project_id = $this->id;
         $boat_name = $boat->name;
 
-        $path = DIRECTORY_SEPARATOR .'boats' . DIRECTORY_SEPARATOR .$boat_name . '_'. sprintf("%07d", $project_id)   . '_' .
+        $path = '';
+        if (env('CLOUD_BASE_DIR')) {
+            $path .= DIRECTORY_SEPARATOR . env('CLOUD_BASE_DIR');
+        }
+
+        $path .= DIRECTORY_SEPARATOR .'boats' . DIRECTORY_SEPARATOR .$boat_name . '_'. sprintf("%07d", $project_id)   . '_' .
         $this->project_type. '_' . date ('Y-m-d', strtotime($this->created_at)). DIRECTORY_SEPARATOR;
 
         if ( $document && $document->document_number) {
