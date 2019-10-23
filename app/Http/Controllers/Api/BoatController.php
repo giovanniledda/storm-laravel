@@ -49,6 +49,9 @@ class BoatController extends Controller
                 'owner_id' => $rel->id
             ]];
 
+        $user = User::Find($user_id);
+        $user->assignRole(ROLE_BOAT_MANAGER);
+
         $resp = Response(["data" => $data], 201);
         $resp->header('Content-Type', 'application/vnd.api+json');
 
