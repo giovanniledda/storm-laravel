@@ -13,6 +13,8 @@ use \Net7\Documents\Document;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Queue\SerializesModels;
 
+// use Illuminate\Support\Facades\Queue;
+
 class Project extends Model {
 
     use DocumentableTrait {
@@ -601,12 +603,18 @@ class Project extends Model {
         foreach ($this->generic_documents as $document){
 
             $media = $document->getRelatedMedia();
-            $cloudStorageData = json_decode($document->cloud_storage_data, true);
-            if (isset($cloudStorageData) && isset($cloudStorageData['storage']) && $cloudStorageData['storage'] == 'gDrive' && !in_array( $media->file_name, $filenamesOnGoogle)) {
-                $document->delete();
+            if ($media) {
+                $cloudStorageData = json_decode($document->cloud_storage_data, true);
+                if (isset($cloudStorageData) && isset($cloudStorageData['storage']) && $cloudStorageData['storage'] == 'gDrive' && !in_array( $media->file_name, $filenamesOnGoogle)) {
+                    $document->delete();
+                }
             }
 
         }
+
+        $now =  date("Y-m-d H:i:s");
+        $this->last_cloud_sync = $now;
+        $this->save();
     }
 
 
@@ -639,5 +647,19 @@ class Project extends Model {
         return str_replace($malevolentCharacters, '', $path);
     }
 
+    public function getGoogleSyncQueueName(){
 
+        return 'project-google-sync-'.$this->id;
+    }
+
+    public function getGoogleSyncQueueSize(){
+
+        // $queue = App::make('queue.connection');
+        // $size = $queue->size($this->getGoogleSyncQueueName());
+
+//TODO: fix
+        $size = Queue::size($this->getGoogleSyncQueueName());
+        return $size;
+
+    }
 }
