@@ -15,6 +15,7 @@ use Illuminate\Validation\Rule;
 use Net7\Documents\Document;
 use App\Utils\Utils;
 use Net7\Logging\models\Logs as Log;
+use App\Jobs\ProjectGoogleSync;
 
 class ProjectController extends Controller
 {
@@ -139,5 +140,32 @@ class ProjectController extends Controller
             }
         }
         return Utils::jsonAbortWithInternalError(422, 130, PROJECT_TYPE_API_VALIDATION_TITLE, PROJECT_TYPE_API_VALIDATION_MSG);
+    }
+
+ /**
+     * API used to sync the project google drive dir
+     *
+     * @param Request $request
+     * @param $record
+     *
+     * @return mixed
+     */
+
+    public function cloudSync(Request $request, $record){
+
+        $project = Project::findOrFail($record->id);
+
+        // $project->checkForUpdatedFilesOnGoogleDrive();
+        ProjectGoogleSync::dispatch($project);
+
+        $resp = Response(['data' => [
+            'type' => 'projects',
+            'id' => $project->id,
+            "attributes" => ["syncronized" => "queued"]
+        ]], 200);
+
+        $resp->header('Content-Type', 'application/vnd.api+json');
+
+        return $resp;
     }
 }
