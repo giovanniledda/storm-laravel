@@ -21,6 +21,7 @@ restored
  */
 namespace App\Observers;
 
+use App\Jobs\ProjectGoogleDirSetup;
 use App\Project;
 use App\ProjectUser;
 use Log;
@@ -78,9 +79,11 @@ class ProjectObserver
         }
 
         if (env('USE_GOOGLE_DRIVE')){
-            $projectDocumentsPath = $project->getGoogleProjectDocumentsFolderPath();
-            // this will create the directory in the google drive account
-            $project->getGooglePathFromHumanPath($projectDocumentsPath);
+
+
+            // uses the queue
+            ProjectGoogleDirSetup::dispatch($project);
+
         }
 
     }

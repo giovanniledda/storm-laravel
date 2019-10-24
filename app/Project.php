@@ -11,6 +11,7 @@ use Faker\Generator as Faker;
 use \Net7\Documents\DocumentableTrait;
 use \Net7\Documents\Document;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Queue\SerializesModels;
 
 class Project extends Model {
 
@@ -18,7 +19,7 @@ class Project extends Model {
          addDocumentWithType as traitAddDocumentWithType;
          updateDocument as traitUpdateDocument;
     }
-    use HasStatuses;
+    use HasStatuses, SerializesModels;
 
     protected $table = 'projects';
     protected $fillable = [
