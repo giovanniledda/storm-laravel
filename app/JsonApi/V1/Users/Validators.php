@@ -51,7 +51,7 @@ class Validators extends AbstractValidators
           return [
            'name' => 'required|string|min:1|max:255',
            'surname' => 'required|string|min:1|max:255',   
-           'email' => 'required|email:rfc,dns|unique:users',
+           'email' => 'unique:users', //email:rfc,dns|
            'password' => 'required|string|min:1|max:255',   
            'is_storm' => 'required|numeric'
         ];
