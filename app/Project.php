@@ -11,6 +11,9 @@ use Faker\Generator as Faker;
 use \Net7\Documents\DocumentableTrait;
 use \Net7\Documents\Document;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Queue\SerializesModels;
+
+// use Illuminate\Support\Facades\Queue;
 
 class Project extends Model {
 
@@ -18,7 +21,7 @@ class Project extends Model {
          addDocumentWithType as traitAddDocumentWithType;
          updateDocument as traitUpdateDocument;
     }
-    use HasStatuses;
+    use HasStatuses, SerializesModels;
 
     protected $table = 'projects';
     protected $fillable = [
@@ -30,7 +33,6 @@ class Project extends Model {
 
         Project::observe(ProjectObserver::class);
     }
-
 
     public function sendDocumentToDropbox(\Net7\Documents\Document $document){
 
@@ -70,7 +72,7 @@ class Project extends Model {
         // TODO: finish it up
     }
 
-    private function getGooglePathFromHumanPath($path){
+    public function getGooglePathFromHumanPath($path){
         $lastPath = '';
         $contents = collect(Storage::cloud()->listContents($lastPath, false));
 
@@ -147,17 +149,19 @@ class Project extends Model {
      *
      * @Override the base method to send the updated files to dropbox
      */
-    public function updateDocument(\Net7\Documents\Document $document, $file){
+    public function updateDocument(\Net7\Documents\Document $document, $file, $useCloud = true){
 
         $this->traitUpdateDocument( $document, $file);
 
-        if (env('USE_DROPBOX')) {
-            $this->sendDocumentToDropbox($document);
-        }
+        if ($useCloud){
+            if (env('USE_DROPBOX')) {
+                $this->sendDocumentToDropbox($document);
+            }
 
-        if (env('USE_GOOGLE_DRIVE')){
-            $this->sendDocumentToGoogleDrive($document);
+            if (env('USE_GOOGLE_DRIVE')){
+                $this->sendDocumentToGoogleDrive($document);
 
+            }
         }
     }
 
@@ -167,7 +171,7 @@ class Project extends Model {
      */
 
 
-    public function addDocumentWithType(\Net7\Documents\Document $document, $type) {
+    public function addDocumentWithType(\Net7\Documents\Document $document, $type, $useCloud = true) {
 
         $this->traitAddDocumentWithType($document, $type);
 
@@ -175,13 +179,16 @@ class Project extends Model {
 
         $this->save();
         $document->refresh();
-        if (env('USE_DROPBOX')) {
-            $this->sendDocumentToDropbox($document);
-        }
 
-        if (env('USE_GOOGLE_DRIVE')){
-            $this->sendDocumentToGoogleDrive($document);
+        if ($useCloud){
+            if (env('USE_DROPBOX')) {
+                $this->sendDocumentToDropbox($document);
+            }
 
+            if (env('USE_GOOGLE_DRIVE')){
+                $this->sendDocumentToGoogleDrive($document);
+
+            }
         }
     }
 
@@ -208,8 +215,20 @@ class Project extends Model {
         $media = $document->getRelatedMedia();
         $filename = $media->file_name;
 
-        $googleFolder =  $this->getGoogleFolderPath($document);
-        $filename =  $this->getGoogleFilename($document, $filename);
+
+        $cloudStorageData = json_decode($document->cloud_storage_data, true);
+
+        if (isset($cloudStorageData['path'])) {
+            $googleFolder = $cloudStorageData['path'];
+        } else {
+            $googleFolder =  $this->getGoogleFolderPath($document);
+        }
+        if (isset($cloudStorageData['filename'])) {
+            $filename = $cloudStorageData['filename'];
+        } else {
+            $filename =  $this->getGoogleFilename($document, $filename);
+
+        }
 
         $path = $this->getGooglePathFromHumanPath($googleFolder);
 
@@ -222,7 +241,6 @@ class Project extends Model {
             ->where('filename', '=', pathinfo($filename, PATHINFO_FILENAME))
             ->where('extension', '=', pathinfo($filename, PATHINFO_EXTENSION))
             ->first(); // there can be duplicate file names!
-
 
         $readStream = Storage::cloud()->getDriver()->readStream($file['path']);
 
@@ -268,23 +286,28 @@ class Project extends Model {
     }
 
     public function getDropboxFilePath ($document, $filename){
-        return $this->getDropboxFolderPath($document) .$this->getDropboxFilename($document, $filename);
+        $path = $this->getDropboxFolderPath($document) .$this->getDropboxFilename($document, $filename);
+        return $this->sanitizePathForCloudStorages($path);
     }
 
-    public function getDropboxFolderPath($document){
+    public function getDropboxFolderPath($document = false){
 
         $boat = $this->boat;
         $project_id = $this->id;
         $boat_name = $boat->name;
 
-        $path = DIRECTORY_SEPARATOR .'boats' . DIRECTORY_SEPARATOR .$boat_name . '_'. sprintf("%07d", $project_id)   . '_' .
-        $this->project_type. '_' . date ('Y-m-d', strtotime($this->created_at)). DIRECTORY_SEPARATOR;
-
-        if ($document->document_number) {
-            $path .= $document->document_number . DIRECTORY_SEPARATOR;
+        $path = '';
+        if (env('CLOUD_BASE_DIR')) {
+            $path .= DIRECTORY_SEPARATOR . env('CLOUD_BASE_DIR');
         }
 
-        return $path;
+        $path .= DIRECTORY_SEPARATOR .'boats' . DIRECTORY_SEPARATOR .$boat_name . '_'. sprintf("%07d", $project_id)   . '_' .
+        $this->project_type. '_' . date ('Y-m-d', strtotime($this->created_at)). DIRECTORY_SEPARATOR;
+
+        if ( $document && $document->document_number) {
+            $path .= $document->document_number . DIRECTORY_SEPARATOR;
+        }
+        return $this->sanitizePathForCloudStorages($path);
 
     }
 
@@ -292,13 +315,19 @@ class Project extends Model {
         return $this->getDropboxFilename($document, $filename);
     }
 
-    public function getGoogleFilePath ($document, $filename){
-        return $this->getDropboxFilePath ($document, $filename);
-    }
+    // public function getGoogleFilePath ($document, $filename){
+    //     return $this->getDropboxFilePath ($document, $filename);
+    // }
 
     public function getGoogleFolderPath($document){
         return $this->getDropboxFolderPath($document);
     }
+
+    public function getGoogleProjectDocumentsFolderPath(){
+        return $this->getDropboxFolderPath() . 'documents' . DIRECTORY_SEPARATOR;
+    }
+
+
 
     public function getMediaPath($media){
 
@@ -513,6 +542,82 @@ class Project extends Model {
         }
     }
 
+    public function checkForUpdatedFilesOnGoogleDrive(){
+
+        $projectDocumentsPath = $this->getGoogleProjectDocumentsFolderPath();
+        // this will create the directory in the google drive account
+        $path = $this->getGooglePathFromHumanPath($projectDocumentsPath);
+
+        $contents = collect(Storage::cloud()->listContents($path, false));
+
+        $filenamesOnGoogle = [];
+
+        foreach ($contents as $file){
+
+            $filenamesOnGoogle []= $file['name'];
+
+            $found = false;
+            foreach ($this->generic_documents as $d){
+                if ($found) {
+                    continue;
+                }
+                $timestamp = $file['timestamp'];
+                $media = $d->getRelatedMedia();
+                if ($file['name'] == $media->file_name) {
+                    $found = true;
+                    if ($timestamp > strtotime($media->updated_at)){
+                        // update file on disk and media updated_at in db
+                        $rawData = Storage::cloud()->get($file['path']);
+                        $base64FileContent = base64_encode($rawData);
+                        $newfile = Document::createUploadedFileFromBase64($base64FileContent, $file['name']);
+                        // we received the file from google drive, so we don't want to update it there as well
+                        $this->updateDocument($d, $newfile, false);
+
+                    }
+                }
+            }
+            if (!$found){
+                    // we didn't know about this file, so create the file in the DB
+                    $rawData = Storage::cloud()->get($file['path']);
+
+                    $base64FileContent = base64_encode($rawData);
+                    $uploadedFile = Document::createUploadedFileFromBase64($base64FileContent,  $file['name']);
+                    $cloudStorageData = [
+                        'storage' => 'gDrive',
+                        'path' =>  $projectDocumentsPath,
+                        'filename' =>  $file['name']
+                    ];
+                    $doc = new Document([
+                        'title' => $file['name'],
+                        'file' => $uploadedFile,
+                        'cloud_storage_data' => json_encode($cloudStorageData)
+                    ]);
+                    // we received the file from google drive, so we don't want to update it there as well
+                    $this->addDocumentWithType($doc, Document::GENERIC_DOCUMENT_TYPE, false);
+            }
+
+        }
+
+        // we remove entries from DB if the file doesn't exist anymore on google drive
+
+        foreach ($this->generic_documents as $document){
+
+            $media = $document->getRelatedMedia();
+            if ($media) {
+                $cloudStorageData = json_decode($document->cloud_storage_data, true);
+                if (isset($cloudStorageData) && isset($cloudStorageData['storage']) && $cloudStorageData['storage'] == 'gDrive' && !in_array( $media->file_name, $filenamesOnGoogle)) {
+                    $document->delete();
+                }
+            }
+
+        }
+
+        $now =  date("Y-m-d H:i:s");
+        $this->last_cloud_sync = $now;
+        $this->save();
+    }
+
+
     /**
      * Get all closed projects
      */
@@ -527,5 +632,34 @@ class Project extends Model {
     public static function activeProjects()
     {
         return Project::where('project_status', '!=', PROJECT_STATUS_CLOSED)->get();
+    }
+
+
+    /**
+     * removes malevolent characters from path to be used on google drive, dropbox, etc.
+     */
+    private function sanitizePathForCloudStorages($path){
+
+        $malevolentCharacters = [
+            "'", "*", "\\", ".", "\""
+        ];
+
+        return str_replace($malevolentCharacters, '', $path);
+    }
+
+    public function getGoogleSyncQueueName(){
+
+        return 'project-google-sync-'.$this->id;
+    }
+
+    public function getGoogleSyncQueueSize(){
+
+        // $queue = App::make('queue.connection');
+        // $size = $queue->size($this->getGoogleSyncQueueName());
+
+//TODO: fix
+        $size = Queue::size($this->getGoogleSyncQueueName());
+        return $size;
+
     }
 }
