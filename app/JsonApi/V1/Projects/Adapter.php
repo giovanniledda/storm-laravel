@@ -12,17 +12,17 @@ use Illuminate\Support\Collection;
 class Adapter extends AbstractAdapter
 {
 
-    protected $fillable = ['name', 'status', 'boat_id', 'project_type', 'project_progress','site_id', 'start_date', 'end_date', 'imported'];
+    protected $fillable = ['name', 'status', 'boat_id', 'project_type', 'project_progress','site_id', 'start_date', 'end_date', 'imported', 'last_cloud_sync'  ];
 
     /**
      * Mapping of JSON API attribute field names to model keys.
      *
      * @var array
      */
-    
+
     // mappa il nome della proprieta della risorsa API con il nome del campo nel database
      protected $attributes = ['status'=> 'project_status'];
- 
+
       /**
      * @inheritdoc
      */
@@ -46,32 +46,32 @@ class Adapter extends AbstractAdapter
      * @return void
      */
     protected function filter($query, Collection $filters)
-    { 
-        
+    {
+
         if ($status = $filters->get('status')) {
             $query->where('project_status', '=', "{$status}");
         }
         if ($boat_id = $filters->get('boat_id')) {
             $query->where('boat_id', '=', "{$boat_id}");
         }
-      
+
         $user = \Auth::user();
-        if (!$user->can(PERMISSION_ADMIN) || !$user->can(PERMISSION_BACKEND_MANAGER)) { 
+        if (!$user->can(PERMISSION_ADMIN) || !$user->can(PERMISSION_BACKEND_MANAGER)) {
             if ($user->hasRole(ROLE_WORKER)) {
                  $query->select('projects.*')->Join('project_user', 'projects.id', '=', 'project_user.project_id')
                          ->where('project_user.user_id', '=', $user->id)->groupBy('projects.id');
-             } 
-              if ($user->can(PERMISSION_BOAT_MANAGER)) { 
-               $e =  $query->select('projects.*')->Join('boat_user', 'projects.boat_id', '=', 'boat_user.boat_id')  
+             }
+              if ($user->can(PERMISSION_BOAT_MANAGER)) {
+               $e =  $query->select('projects.*')->Join('boat_user', 'projects.boat_id', '=', 'boat_user.boat_id')
                         ->where('boat_user.user_id', '=', $user->id)->groupBy('projects.id') ;
              /*   $query = str_replace(array('?'), array('\'%s\''), $e->toSql());
                 $query = vsprintf($query, $e->getBindings());
                 echo $query;*/
-             }    
-        } 
-       
-        
-        
+             }
+        }
+
+
+
         /** implementa la ricerca per name non cancellare ma commentare */
         /*if ($this->status = $filters->get('status')) {
             $query->whereIn(
@@ -111,7 +111,7 @@ class Adapter extends AbstractAdapter
       protected function users() {
         return $this->hasMany();
     }
-    
+
     protected function tasks() {
         return $this->hasMany();
     }
@@ -137,5 +137,5 @@ class Adapter extends AbstractAdapter
 //        return parent::update($record, $document, $parameters);
 //    }
 
-    
+
 }
