@@ -18,7 +18,7 @@ class CreateTasksTable extends Migration
             $table->bigIncrements('id');
             $table->integer('number')->nullable();
             $table->string('title')->nullable();
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->float('estimated_hours')->nullable();
             $table->float('worked_hours')->nullable();
             $table->boolean('for_admins')->nullable(); 
