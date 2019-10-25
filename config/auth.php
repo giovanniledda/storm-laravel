@@ -114,6 +114,7 @@ return [
     ],
 
     'default_admin' => [
+        'fullname' => env('ADMIN_FULLNAME', 'Mario Rossi'),
         'username' => env('ADMIN_USERNAME', 'admin'),
         'password' => env('ADMIN_PASSWORD', 'admin'),
     ]
