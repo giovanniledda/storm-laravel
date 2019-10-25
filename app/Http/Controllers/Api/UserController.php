@@ -64,7 +64,17 @@ class UserController extends Controller
     }
 
     public function getVersion() {
-        return getenv('VERSION');
+        
+         $ret = ['data' => [
+                'type' => 'version',
+                'id' => getenv('VERSION'),
+                'attributes' => [
+                    'version' => getenv('VERSION')
+            
+                ]
+            ]];
+            return Utils::renderStandardJsonapiResponse($ret, 200);
+       
     }
     
 }

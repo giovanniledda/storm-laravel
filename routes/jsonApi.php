@@ -62,6 +62,8 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
 
         $api->get('/boats-dashboard', 'BoatController@dashboard')->name('boats-dashboard');  // tutte le boat di progetti chiusi
 
+        $api->get('/version', 'UserController@getVersion')->name('version');  
+        
         $api->resource('projects')->only(
             'statuses',
             'close',
