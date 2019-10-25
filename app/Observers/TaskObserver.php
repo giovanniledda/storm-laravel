@@ -91,7 +91,6 @@ class TaskObserver
      */
     public function created(Task $task)
     {
-        $task->setStatus(TASKS_STATUS_DRAFT);
         /**
          * @todo quando inserisci un task da storm lo stato deve essere accepted
          */
@@ -107,17 +106,23 @@ class TaskObserver
             $u_id = $u_fullname = null;
         }
 
-        Task::find($task->id)->history()->create([
-            'event_date' => date("Y-m-d H:i:s", time()),
-            'event_body' => json_encode([
-                'user_id' => $u_id,
-                'user_name' => $u_fullname,
-                'original_task_status' => null,
-                'task_status' => TASKS_STATUS_DRAFT,
-                'comment_id' => null,
-                'comment_body' => null,
-            ])
-        ]);
+        // se l'utente non è loggato oppure c'è ma non è storm, metto DRAFT
+        if ((isset($auth_user->id) && !$auth_user->is_storm) || !\Auth::check()) {
+            $task->setStatus(TASKS_STATUS_DRAFT);
+
+            Task::find($task->id)->history()->create([
+                'event_date' => date("Y-m-d H:i:s", time()),
+                'event_body' => json_encode([
+                    'user_id' => $u_id,
+                    'user_name' => $u_fullname,
+                    'original_task_status' => null,
+                    'task_status' => TASKS_STATUS_DRAFT,
+                    'comment_id' => null,
+                    'comment_body' => null,
+                ])
+            ]);
+        }
+
 
         /** setto la variabile added_by_storm **/
         $task_author = $task->author;
