@@ -39,7 +39,7 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
         });
 
         $api->resource('users');
-        
+
         $api->resource('users')->only('closed-projects')->controller('UserController') //uses the App\Http\Controllers\Api\UserController
         ->routes(function ($boats) {
             $boats->post('{record}/update-photo', 'updatePhoto')->name('update-photo');
@@ -54,7 +54,7 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
             $relations->hasMany('users');
         });
 
-        $api->resource('boats')->only('owner', 'closed-projects')->controller('BoatController')//uses the App\Http\Controllers\Api\ProjectController
+        $api->resource('boats')->only('owner', 'closed-projects')->controller('BoatController')//uses the App\Http\Controllers\Api\BoatController
         ->routes(function ($boats) {
             $boats->post('{record}/owner', 'owner')->name('owner');
             $boats->get('{record}/closed-projects', 'closedProjects')->name('closed-projects');  // tutti i progetti chiusi di una certa boat
@@ -72,6 +72,12 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
             $projects->post('/{record}/close', 'close')->name('close');
             $projects->get('{record}/history', 'history')->name('history');
             $projects->post('/{record}/change-type', 'changeType')->name('change-type');
+        });
+
+
+        $api->resource('projects')->only('cloud-sync')->controller('ProjectController')//uses the App\Http\Controllers\Api\ProjectController
+        ->routes(function ($project) {
+            $project->get('{record}/cloud-sync', 'cloudSync')->name('cloud-sync');
         });
 
         $api->resource('projects')->relationships(function ($relations) {

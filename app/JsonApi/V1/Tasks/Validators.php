@@ -29,7 +29,7 @@ class Validators extends AbstractValidators
       // 'number.required' => 'number '.VALIDATOR_REQUIRED,
         'number.numeric' => 'number '.VALIDATOR_NUMERIC,
         'worked_hours.numeric' => 'worked_hours '.VALIDATOR_NUMERIC,
-        'description.string' => 'description '.VALIDATOR_STRING,
+//        'description.string' => 'description '.VALIDATOR_STRING,
         'project_id.numeric'=> 'project_id '.VALIDATOR_NUMERIC,
         'project_id.required'=> 'project_id '.VALIDATOR_REQUIRED,
         'project_id.exists'=> 'project_id '.VALIDATOR_EXIST,
@@ -58,7 +58,7 @@ class Validators extends AbstractValidators
     {
        return [
         //'title' => 'string|min:1|max:255',
-        'description' => 'string',
+//        'description' => 'string',
         'number' => 'numeric',
         'worked_hours' => 'numeric',
         'estimated_hours' => 'numeric',

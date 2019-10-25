@@ -94,7 +94,8 @@ class RolesAndPermissionsSeeder extends Seeder
         else {
             // Register the new user or whatever.
             $user = User::create([
-                'name' => \Config('auth.default_admin.username'),
+                'name' => \Config('auth.default_admin.name'),
+                'surname' => \Config('auth.default_admin.surname'),
                 'email' => \Config('auth.default_admin.username'),
                 'password' => \Config('auth.default_admin.password'),
                 'is_storm' => true,
