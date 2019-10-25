@@ -63,4 +63,8 @@ class UserController extends Controller
         return Utils::jsonAbortWithInternalError(500, 500, USER_PHOTO_API_NO_DOC_TITLE, USER_PHOTO_API_NO_DOC_MSG);
     }
 
+    public function getVersion() {
+        return getenv('VERSION');
+    }
+    
 }
