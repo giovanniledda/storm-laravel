@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Arr;
+use Net7\DocsGenerator\Traits\HasDocsGenerator;
 use Net7\Documents\Document;
 use Net7\Documents\DocumentableTrait;
 use const PROJECT_STATUS_CLOSED;
@@ -14,7 +15,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class Boat extends Model
 {
 
-    use DocumentableTrait;
+    use DocumentableTrait, HasDocsGenerator;
 
     protected $table = 'boats';
     protected $fillable = [
@@ -231,4 +232,36 @@ class Boat extends Model
 
         return $doc;
     }
+
+    /**
+     * Retrieve iamge's path
+     *
+     * @return string
+     */
+    public function getMainPhotoPath()
+    {
+        return $this->getDocumentMediaFilePath(Document::GENERIC_IMAGE_TYPE);
+    }
+
+    /**
+     * Gets an information array about projects, to be printed on a .docx template
+     *
+     * @return array
+     */
+    public function getAllProjectsTableRowInfo()
+    {
+
+        $replacements = [];
+
+        foreach ($this->projects as $project) {
+            $replacements[] = [
+                'row_tableOne' => $project->id,
+                'projName' => $project->name,
+                'projType' => $project->project_type,
+                'projStatus' => $project->project_status,
+                'projStart' => $project->start_date];
+        }
+        return $replacements;
+    }
+
 }
