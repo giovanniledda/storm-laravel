@@ -122,6 +122,21 @@ class TaskObserver
                 ])
             ]);
         }
+        
+        if((isset($auth_user->id) && $auth_user->is_storm)) {
+
+            Task::find($task->id)->history()->create([
+                'event_date' => date("Y-m-d H:i:s", time()),
+                'event_body' => json_encode([
+                    'user_id' => $u_id,
+                    'user_name' => $u_fullname,
+                    'original_task_status' => null,
+                    'task_status' => $task->task_status,
+                    'comment_id' => null,
+                    'comment_body' => null,
+                ])
+            ]);
+        }
 
 
         /** setto la variabile added_by_storm **/
