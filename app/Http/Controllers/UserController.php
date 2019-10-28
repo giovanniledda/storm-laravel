@@ -64,12 +64,13 @@ class UserController extends Controller
         //Validate name, email and password fields
         $this->validate($request, [
             'name' => 'required|max:120',
+            'surname' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6|confirmed',
             'roles' => 'required|min:1'
         ]);
 
-        $user = User::create($request->only('email', 'name', 'password')); //Retrieving only the email and password data
+        $user = User::create($request->only('email', 'name', 'surname', 'password'));
         $user->is_storm = $request->has('is_storm');
         $user->disable_login = $request->has('disable_login');
         $user->save();
@@ -129,13 +130,14 @@ class UserController extends Controller
         //Validate name, email and password fields
         $validated = $this->validate($request, [
             'name' => 'required|max:120',
+            'surname' => 'required',
             'email' => 'required|email|unique:users,email,' . $id,
             'password' => 'nullable|min:6|confirmed', // **
             'photo' => 'image|mimes:jpeg,bmp,png'
         ]);
 
         // **
-        $fields = !empty($validated['password']) ? ['name', 'email', 'password'] : ['name', 'email'];
+        $fields = !empty($validated['password']) ? ['name', 'surname', 'email', 'password'] : ['name', 'surname', 'email'];
 
         $input = $request->only($fields); //Retreive the name, email and password fields
         $user->fill($input);

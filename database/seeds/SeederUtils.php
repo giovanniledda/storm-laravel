@@ -41,7 +41,8 @@ class SeederUtils
         // Register the new user or whatever.
         $password = $role_name;
         $user = User::create([
-            'name' => $faker->name,
+            'name' => $this->faker->boolean(30) ? $faker->firstNameMale : $faker->firstNameFemale,
+            'surname' => $faker->lastName,
             'email' => $email,
             'password' => $password,
             'is_storm' => $this->faker->boolean(30),

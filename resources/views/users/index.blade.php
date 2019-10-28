@@ -20,7 +20,7 @@
                 <table class="table table-bordered table-striped">
                     <thead>
                     <tr>
-                        <th>Name</th>
+                        <th>Name - Surname</th>
                         <th>Email</th>
                         <th>Photo</th>
                         <th>STORM</th>
@@ -35,7 +35,7 @@
                     @foreach ($users as $user)
                         <tr>
 
-                            <td>{{ $user->name }}</td>
+                            <td>{{ $user->name . ' ' .$user->surname }}</td>
                             <td>{{ $user->email }}</td>
                             <td>
                             @if($user->hasProfilePhoto())

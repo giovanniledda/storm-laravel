@@ -23,6 +23,11 @@
         </div>
 
         <div class="form-group">
+            {{ Form::label('surname', 'Surname') }}
+            {{ Form::text('surname', null, array('class' => 'form-control')) }}
+        </div>
+
+        <div class="form-group">
             {{ Form::label('email', 'Email') }}
             {{ Form::email('email', '', array('class' => 'form-control')) }}
         </div>
