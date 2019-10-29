@@ -120,7 +120,7 @@ class RolesAndPermissionsSeeder extends Seeder
         // Register the new user or whatever.
         $password = $role_name;
         $user = User::create([
-            'name' => $this->faker->boolean(30) ? $faker->firstNameMale : $faker->firstNameFemale,
+            'name' => $faker->boolean(30) ? $faker->firstNameMale : $faker->firstNameFemale,
             'surname' => $faker->lastName,
             'email' => $email,
             'password' => $password,

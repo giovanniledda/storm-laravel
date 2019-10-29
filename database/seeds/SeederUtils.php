@@ -35,14 +35,14 @@ class SeederUtils
     public function createUser($role_name)
     {
 
-        $faker = Faker::create();
+        $faker = $this->faker ? $this->faker : Faker::create();
         $email = StormUtils::getFakeStormEmail($role_name);
 
         // Register the new user or whatever.
         $password = $role_name;
         $user = User::create([
-            'name' => $this->faker->boolean(30) ? $faker->firstNameMale : $faker->firstNameFemale,
-            'surname' => $faker->lastName,
+            'name' => $this->faker->boolean(30) ? $this->faker->firstNameMale : $this->faker->firstNameFemale,
+            'surname' => $this->faker->lastName,
             'email' => $email,
             'password' => $password,
             'is_storm' => $this->faker->boolean(30),
