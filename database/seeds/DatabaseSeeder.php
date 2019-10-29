@@ -207,7 +207,8 @@ class DatabaseSeeder extends Seeder
                     $this->utils->addImageToTask($task, './task/photo1.jpg', Document::DETAILED_IMAGE_TYPE);
                     $this->utils->addImageToTask($task, './task/photo2.jpg', Document::DETAILED_IMAGE_TYPE);
                     $this->utils->addImageToTask($task, './task/photo3.jpg', Document::DETAILED_IMAGE_TYPE);
-                    $this->utils->addImageToTask($task, './task/photo4.jpg', Document::ADDITIONAL_IMAGE_TYPE);
+                    $this->utils->addImageToTask($task, './task/photo4.jpg', Document::DETAILED_IMAGE_TYPE);
+                    $this->utils->addImageToTask($task, './task/photo5.jpg', Document::ADDITIONAL_IMAGE_TYPE);
 
                     // se il task è chiuso, lo stato non può essere diverso da COMPLETED o DECLINED
                     if (!$task->is_open) {

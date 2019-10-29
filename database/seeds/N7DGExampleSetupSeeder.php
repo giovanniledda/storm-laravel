@@ -21,9 +21,11 @@ class N7DGExampleSetupSeeder extends Seeder
         $this->faker = Faker::create();
         $this->utils = new SeederUtils();
 
-        $this->command->warn(" ------ MANAGE & ASSOCIATE TEMPLATE TO MODEL (Boat) --------");
 
         $boat = Boat::find(1);
+
+        // Template: Boat
+        $this->command->warn(" ------ MANAGE & ASSOCIATE TEMPLATE TO MODEL (Boat) --------");
         $category = $boat->persistAndAssignTemplateCategory('Boat');
         $placeholders = [
             '${boat_name}' => 'name',
@@ -34,6 +36,44 @@ class N7DGExampleSetupSeeder extends Seeder
             '${row_tableOne}' => 'getAllProjectsTableRowInfo()',
         ];
         $boat->insertPlaceholders('Boat', $placeholders, true);
+//        $user1->updateTemplateDirPath('User', null);  // prende il default (/storage/app/docs-generator/...)
+
+        // Template: StormBoatTasks
+        $this->command->warn(" ------ MANAGE & ASSOCIATE TEMPLATE TO MODEL (StormBoatTasks) --------");
+        $category = $boat->persistAndAssignTemplateCategory('StormBoatTasks');
+        $placeholders = [
+            '${boat_name}' => 'name',
+            '${boat_reg_num}' => 'registration_number',
+            '${boat_type}' => 'boat_type',
+            '${boat_float}' => 'flag',
+            '${img_BoatImage:150:150:false}' => 'getMainPhotoPath()',
+            '${blC_bloccoTask}' => 'getBloccoTaskInfoArray()',
+            '${img_currentTask_img1}' => 'getCurrentTaskImg1()',
+            '${img_currentTask_img2}' => 'getCurrentTaskImg2()',
+            '${img_currentTask_img3}' => 'getCurrentTaskImg3()',
+            '${img_currentTask_img4}' => 'getCurrentTaskImg4()',
+            '${img_currentTask_img5}' => 'getCurrentTaskImg5()',
+        ];
+        $boat->insertPlaceholders('StormBoatTasks', $placeholders, true);
+
+        // Template: StormBoatTasks
+        $this->command->warn(" ------ MANAGE & ASSOCIATE TEMPLATE TO MODEL (SampleReport) --------");
+        $category = $boat->persistAndAssignTemplateCategory('SampleReport');
+        $placeholders = [
+            '${boat_name}' => 'name',
+            '${boat_reg_num}' => 'registration_number',
+            '${boat_type}' => 'boat_type',
+            '${img_BoatImage:250:250:false}' => 'getMainPhotoPath()',
+            '${date}' => 'printDocxTodayDate()',
+            '${blC_bloccoTask}' => 'getBloccoTaskSampleReportInfoArray()',
+            '${pageBreak}' => 'printDocxPageBreak()',
+            '${img_currentTask_img1}' => 'getCurrentTaskImg1()',
+            '${img_currentTask_img2}' => 'getCurrentTaskImg2()',
+            '${img_currentTask_img3}' => 'getCurrentTaskImg3()',
+            '${img_currentTask_img4}' => 'getCurrentTaskImg4()',
+            '${img_currentTask_img5}' => 'getCurrentTaskImg5()',
+        ];
+        $boat->insertPlaceholders('SampleReport', $placeholders, true);
 //        $user1->updateTemplateDirPath('User', null);  // prende il default (/storage/app/docs-generator/...)
 
     }
