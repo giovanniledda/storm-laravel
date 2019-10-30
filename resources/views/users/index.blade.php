@@ -34,7 +34,6 @@
                     <tbody>
                     @foreach ($users as $user)
                         <tr>
-
                             <td>{{ $user->name . ' ' .$user->surname }}</td>
                             <td>{{ $user->email }}</td>
                             <td>

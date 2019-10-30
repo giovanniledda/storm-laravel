@@ -146,6 +146,11 @@ class Task extends Model
         return $this->belongsTo('App\Subsection');
     }
 
+    public function section()
+    {
+        return $this->belongsTo('App\Section');
+    }
+
     public function author()
     {
         return $this->belongsTo('App\User');
@@ -269,4 +274,22 @@ class Task extends Model
         return $doc;
     }
 
+    /**
+     * Retrieve iamge's path
+     *
+     * @return string
+     */
+    public function getAdditionalPhotoPath()
+    {
+        return $this->getDocumentMediaFilePath(Document::ADDITIONAL_IMAGE_TYPE);
+    }
+    /**
+     * Retrieve iamge's path
+     *
+     * @return string
+     */
+    public function getDetailedPhotoPaths()
+    {
+        return $this->getAllDocumentsMediaFilePathArray(Document::DETAILED_IMAGE_TYPE);
+    }
 }

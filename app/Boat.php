@@ -27,9 +27,11 @@ class Boat extends Model
         'length',
         'draft',
         'beam'
-
     ];
 
+    // Usate con il DocsGenerator
+    protected $_currentTask;
+    protected $_currentTaskPhotos;
 
     public function getMediaPath($media){
 
@@ -43,7 +45,6 @@ class Boat extends Model
         return $path;
 
     }
-
 
     public function site()
     {
@@ -233,6 +234,8 @@ class Boat extends Model
         return $doc;
     }
 
+    /** DOCS GENERATOR FUNCTIONS **/
+
     /**
      * Retrieve iamge's path
      *
@@ -263,5 +266,111 @@ class Boat extends Model
         }
         return $replacements;
     }
+
+    public function updateCurrentTaskPhotosArray()
+    {
+        if ($this->_currentTask) {
+            $index = 1;
+            foreach ($this->_currentTask->getDetailedPhotoPaths() as $path) {
+                $this->_currentTaskPhotos[$index++] = $path;
+            }
+            $this->_currentTaskPhotos[$index] = $this->_currentTask->getAdditionalPhotoPath();
+        }
+    }
+
+    public function getBloccoTaskInfoArray()
+    {
+        $replacements = [];
+        foreach ($this->projects as $project) {
+            foreach ($project->tasks as $task) {
+                $this->_currentTask = $task;
+                $this->updateCurrentTaskPhotosArray();
+                $replacements[] =
+                    [
+                        'task_status' => $task->task_status,
+                        'task_type' => $task->intervent_type ? $task->intervent_type->name : '?',
+                        'task_location' => $task->section ? $task->section->name : '?',
+                        'img_currentTask_img1' => $this->getCurrentTaskImg1(),
+                        'img_currentTask_img2' => $this->getCurrentTaskImg2(),
+                        'img_currentTask_img3' => $this->getCurrentTaskImg3(),
+                        'img_currentTask_img4' => $this->getCurrentTaskImg4(),
+                        'img_currentTask_img5' => $this->getCurrentTaskImg5(),
+                    ]
+                ;
+            }
+        }
+        return $replacements;
+    }
+
+
+    public function getBloccoTaskSampleReportInfoArray()
+    {
+        $replacements = [];
+        foreach ($this->projects as $project) {
+            foreach ($project->tasks as $task) {
+                $this->_currentTask = $task;
+                $this->updateCurrentTaskPhotosArray();
+                $replacements[] =
+                    [
+                        'task_id' => $task->id,
+                        'task_status' => $task->task_status,
+                        'task_description' => $task->description,
+                        'task_created_at' => $task->created_at,
+                        'task_updated_at' => $task->updated_at,
+                        'task_type' => $task->intervent_type ? $task->intervent_type->name : '?',
+                        'task_location' => $task->section ? $task->section->name : '?',
+                        'pageBreak' => $this->printDocxPageBreak(),
+                        'img_currentTask_img1' => $this->getCurrentTaskImg1(),
+                        'img_currentTask_img2' => $this->getCurrentTaskImg2(),
+                        'img_currentTask_img3' => $this->getCurrentTaskImg3(),
+                        'img_currentTask_img4' => $this->getCurrentTaskImg4(),
+                        'img_currentTask_img5' => $this->getCurrentTaskImg5(),
+                    ]
+                ;
+            }
+        }
+        return $replacements;
+    }
+
+    public function getCurrentTaskImg($index)
+    {
+        return isset($this->_currentTaskPhotos[$index]) ? $this->_currentTaskPhotos[$index] : '';
+    }
+
+    public function getCurrentTaskImg1()
+    {
+        return $this->getCurrentTaskImg(1);
+    }
+
+    public function getCurrentTaskImg2()
+    {
+        return $this->getCurrentTaskImg(2);
+    }
+
+    public function getCurrentTaskImg3()
+    {
+        return $this->getCurrentTaskImg(3);
+    }
+
+    public function getCurrentTaskImg4()
+    {
+        return $this->getCurrentTaskImg(4);
+    }
+
+    public function getCurrentTaskImg5()
+    {
+        return $this->getCurrentTaskImg(5);
+    }
+
+    public function printDocxPageBreak()
+    {
+        return '</w:t></w:r>'.'<w:r><w:br w:type="page"/></w:r>'. '<w:r><w:t>';
+    }
+
+    public function printDocxTodayDate()
+    {
+        return date('Y-m-d', time());
+    }
+
 
 }
