@@ -220,8 +220,11 @@ return [
 
         // Documents
         Net7\Documents\DocumentsServiceProvider::class,
-        
-        // cors plug in 
+
+        // DocsGenerator
+        Net7\DocsGenerator\DocsGeneratorServiceProvider::class,
+
+        // cors plug in
         Barryvdh\Cors\ServiceProvider::class,
 
         // google
