@@ -24,7 +24,9 @@ class N7DGExampleSetupSeeder extends Seeder
 
         $boat = Boat::find(1);
 
-        // Template: Boat
+/*
+
+     // Template: Boat
         $this->command->warn(" ------ MANAGE & ASSOCIATE TEMPLATE TO MODEL (Boat) --------");
         $category = $boat->persistAndAssignTemplateCategory('Boat');
         $placeholders = [
@@ -38,6 +40,9 @@ class N7DGExampleSetupSeeder extends Seeder
         $boat->insertPlaceholders('Boat', $placeholders, true);
 //        $user1->updateTemplateDirPath('User', null);  // prende il default (/storage/app/docs-generator/...)
 
+*/
+
+/*
         // Template: StormBoatTasks
         $this->command->warn(" ------ MANAGE & ASSOCIATE TEMPLATE TO MODEL (StormBoatTasks) --------");
         $category = $boat->persistAndAssignTemplateCategory('StormBoatTasks');
@@ -56,6 +61,7 @@ class N7DGExampleSetupSeeder extends Seeder
         ];
         $boat->insertPlaceholders('StormBoatTasks', $placeholders, true);
 
+*/
         // Template: StormBoatTasks
         $this->command->warn(" ------ MANAGE & ASSOCIATE TEMPLATE TO MODEL (SampleReport) --------");
         $category = $boat->persistAndAssignTemplateCategory('SampleReport');
