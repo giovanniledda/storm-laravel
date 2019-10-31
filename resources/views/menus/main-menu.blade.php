@@ -12,3 +12,8 @@
 <a href="{{ route('professions.index') }}"><i class="fa fa-btn fa-user-tie"></i> Professions</a>
 <a href="{{ route('task_intervent_types.index') }}"><i class="fa fa-btn fa-hammer"></i> Intervent types</a>
 
+@if(Route::has('docs-gen-be-index'))
+    <hr />
+    <h4>Reports</h4>
+    <a href="{{ route('docs-gen-be-index') }}"><i class="fa fa-btn fa-download"></i> Test your report files!</a>
+@endif
