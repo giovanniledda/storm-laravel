@@ -41,6 +41,8 @@ class Task extends Model
         'x_coord',
         'y_coord',
         'is_open',
+        'bridge_position',
+
     ];
 
     private $min_x;
