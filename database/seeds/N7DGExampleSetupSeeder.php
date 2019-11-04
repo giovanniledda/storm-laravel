@@ -63,6 +63,8 @@ class N7DGExampleSetupSeeder extends Seeder
         $boat->insertPlaceholders('StormBoatTasks', $placeholders, true);
 
 */
+
+/*
         // Template: StormBoatTasks
         $this->command->warn(" ------ MANAGE & ASSOCIATE TEMPLATE TO MODEL (SampleReport) --------");
         $category = $boat->persistAndAssignTemplateCategory('SampleReport');
@@ -83,6 +85,7 @@ class N7DGExampleSetupSeeder extends Seeder
         $boat->insertPlaceholders('SampleReport', $placeholders, true);
 //        $user1->updateTemplateDirPath('User', null);  // prende il default (/storage/app/docs-generator/...)
 
+*/
 
         $project = Project::find(1);
         $this->command->warn(" ------ MANAGE & ASSOCIATE TEMPLATE TO PROJECT (SampleReport) --------");
@@ -95,7 +98,7 @@ class N7DGExampleSetupSeeder extends Seeder
             '${date}' => 'printDocxTodayDate()',
             '${blC_bloccoTask}' => 'getBloccoTaskSampleReportInfoArray()',
             '${pageBreak}' => 'printDocxPageBreak()',
-            '${bridge_img_currentTask}' => 'getCurrentTaskBridgeImage()',
+            '${img_currentTaskBridgeImage}' => 'getCurrentTaskBridgeImage()',
             '${img_currentTask_img1}' => 'getCurrentTaskImg1()',
             '${img_currentTask_img2}' => 'getCurrentTaskImg2()',
             '${img_currentTask_img3}' => 'getCurrentTaskImg3()',

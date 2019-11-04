@@ -782,6 +782,7 @@ class Project extends Model {
             return $data['path'];
         }
 
+        return '';
     }
 
     public function setTasksToIncludeInReport($tasks){
