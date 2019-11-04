@@ -13,7 +13,7 @@ class Schema extends SchemaProvider
     /**
      * @var string
      */
-    protected $resourceType = 'tasks';
+    protected $resourceType = 'task-minimized';
 
     /**
      * @param $resource
