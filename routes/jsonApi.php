@@ -27,6 +27,7 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
         $api->resource('project-users')->only('create', 'update'); //->only('create')   ->only('create'); // usato solo per associazione project  - user
         $api->resource('project-sections')->only('create'); //->only('create'); // usato solo per associazione project  - user
         $api->resource('tasks');
+     //   $api->resource('task-minimized');
 
         $api->resource('tasks')->only('statuses')->controller('TaskController')//uses the App\Http\Controllers\Api\TaskController
         ->routes(function ($tasks) {
