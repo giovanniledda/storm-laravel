@@ -57,6 +57,7 @@ return [
         'documents' => \Net7\Documents\Document::class,
         'projects' => \App\Project::class,
         'tasks' => \App\Task::class,
+        'task-minimized' => \App\Task::class,
         'task-intervent-types' => \App\TaskInterventType::class,
         'boats' => \App\Boat::class,
         'boat-users' => \App\BoatUser::class,
