@@ -16,6 +16,7 @@ use Net7\Documents\Document;
 use App\Utils\Utils;
 use Net7\Logging\models\Logs as Log;
 use App\Jobs\ProjectGoogleSync;
+use Net7\DocsGenerator\DocsGenerator;
 
 class ProjectController extends Controller
 {
@@ -168,4 +169,59 @@ class ProjectController extends Controller
 
         return $resp;
     }
+/**
+     * API used to generate a report from the project
+     *
+     * @param Request $request
+     * @param $record
+     *
+     * @return mixed
+     */
+
+
+    public function generateReport(Request $request, $record){
+        $project = Project::findOrFail($record->id);
+        $tasks = $request->tasks;
+        $template = $request->template;
+
+        $project->setTasksToIncludeInReport(explode(',', $tasks));
+
+        // TODO: take it from input
+        $template = 'SampleReport';
+
+        try {
+            $dg = new DocsGenerator($template, $project);
+        } catch (\Exception $e) {
+            // TODO: return error $e->getMessage()
+        }
+
+        if (!$dg->checkTemplateCategory()) {
+            $msg = __("Template :name not valid (there's no such a Model on DB)!", ['name' => $template]);
+           // TODO return error $msg
+        }
+
+        // ...e che ci sia il template associato nel filesystem.
+        try {
+            $dg->checkIfTemplateFileExistsWithTemplateObjectCheck(true);
+        } catch (FileNotFoundException $e) {
+            $msg = __("Template :name not found (you're searching on ':e_msg')!", ['name' => $template, 'e_msg' => $e->getMessage()]);
+         // TODO return error  $msg
+        }
+
+
+        try {
+            $dg->startProcess();
+        } catch (\Exception $e) {
+           // TODO return error $e->getMessage()
+        }
+
+        $project->closeAllTasksTemporaryFiles();
+
+        $filepath = $dg->getRealFinalFilePath();
+        $headers = ['Cache-Control' => 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0'];
+        return response()
+            ->download($filepath, $dg->getFinalFileName(), $headers);
+
+    }
+
 }

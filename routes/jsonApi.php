@@ -62,8 +62,8 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
 
         $api->get('/boats-dashboard', 'BoatController@dashboard')->name('boats-dashboard');  // tutte le boat di progetti chiusi
 
-        $api->get('/version', 'UserController@getVersion')->name('version');  
-        
+        $api->get('/version', 'UserController@getVersion')->name('version');
+
         $api->resource('projects')->only(
             'statuses',
             'close',
@@ -80,6 +80,11 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
         $api->resource('projects')->only('cloud-sync')->controller('ProjectController')//uses the App\Http\Controllers\Api\ProjectController
         ->routes(function ($project) {
             $project->get('{record}/cloud-sync', 'cloudSync')->name('cloud-sync');
+        });
+
+        $api->resource('projects')->only('generate-report')->controller('ProjectController')//uses the App\Http\Controllers\Api\ProjectController
+        ->routes(function ($project) {
+            $project->get('{record}/generate-report', 'generateReport')->name('generate-report');
         });
 
         $api->resource('projects')->relationships(function ($relations) {

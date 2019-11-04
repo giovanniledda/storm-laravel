@@ -294,4 +294,22 @@ class Task extends Model
     {
         return $this->getAllDocumentsMediaFilePathArray(Document::DETAILED_IMAGE_TYPE);
     }
+
+    public function generateBridgePositionFileFromBase64(){
+        $base64 = $this->bridge_position;
+        $handle = tmpfile();
+        $path = stream_get_meta_data($handle)['uri'];
+        fwrite($handle, base64_decode($base64));
+        fseek($handle, 0);
+
+        return [
+            'path' => $path,
+            'handle' => $handle
+        ];
+
+    }
+
+    public function removeTempFileByHandle($handle){
+        fclose ($handle); // this removes the file
+    }
 }

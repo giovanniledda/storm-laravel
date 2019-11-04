@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\ModelStatus\HasStatuses;
 use Faker\Generator as Faker;
+use Net7\DocsGenerator\Traits\HasDocsGenerator;
 
+use App\Task;
 use \Net7\Documents\DocumentableTrait;
 use \Net7\Documents\Document;
 use Illuminate\Support\Facades\Storage;
@@ -21,12 +23,18 @@ class Project extends Model {
          addDocumentWithType as traitAddDocumentWithType;
          updateDocument as traitUpdateDocument;
     }
-    use HasStatuses, SerializesModels;
+    use HasStatuses, SerializesModels,  HasDocsGenerator;
 
     protected $table = 'projects';
     protected $fillable = [
         'name', 'project_status', 'boat_id', 'project_type', 'project_progress', 'site_id', 'start_date', 'end_date', 'imported'
     ];
+
+    // Usate con il DocsGenerator
+    protected $_currentTask;
+    protected $_currentTaskPhotos;
+    protected $_taskToIncludeInReport;
+    protected $_openHandles = [];
 
     protected static function boot() {
         parent::boot();
@@ -662,4 +670,143 @@ class Project extends Model {
         return $size;
 
     }
+
+
+    /*  methods for net7 docs-generator templates */
+
+    public function getBoatName(){
+        $boat = $this->boat;
+        return $boat->name;
+    }
+
+    public function getBoatRegistrationNumber(){
+        $boat = $this->boat;
+        return $boat->registration_number;
+    }
+
+    public function getBoatType(){
+        $boat = $this->boat;
+        return $boat->boat_type;
+    }
+
+    public function getBoatMainPhotoPath(){
+
+        $boat = $this->boat;
+        return $boat->getMainPhotoPath();
+    }
+
+
+    public function printDocxPageBreak()
+    {
+        return '</w:t></w:r>'.'<w:r><w:br w:type="page"/></w:r>'. '<w:r><w:t>';
+    }
+
+    public function printDocxTodayDate()
+    {
+        return date('Y-m-d', time());
+    }
+
+    public function getBloccoTaskSampleReportInfoArray()
+    {
+        $replacements = [];
+        foreach ($this->getTasksToIncludeInReport() as $task) {
+            $this->_currentTask = $task;
+            $this->updateCurrentTaskPhotosArray();
+            $replacements[] =
+                [
+                    'task_id' => $task->id,
+                    'task_status' => $task->task_status,
+                    'task_description' => $task->description,
+                    'task_created_at' => $task->created_at,
+                    'task_updated_at' => $task->updated_at,
+                    'task_type' => $task->intervent_type ? $task->intervent_type->name : '?',
+                    'task_location' => $task->section ? $task->section->name : '?',
+                    'pageBreak' => $this->boat->printDocxPageBreak(),
+                    'img_currentTask_img1' => $this->boat->getCurrentTaskImg1(),
+                    'img_currentTask_img2' => $this->boat->getCurrentTaskImg2(),
+                    'img_currentTask_img3' => $this->boat->getCurrentTaskImg3(),
+                    'img_currentTask_img4' => $this->boat->getCurrentTaskImg4(),
+                    'img_currentTask_img5' => $this->boat->getCurrentTaskImg5(),
+                ]
+            ;
+        }
+        return $replacements;
+    }
+
+    public function getCurrentTaskImg($index)
+    {
+        return isset($this->_currentTaskPhotos[$index]) ? $this->_currentTaskPhotos[$index] : '';
+    }
+
+    public function getCurrentTaskImg1()
+    {
+        return $this->getCurrentTaskImg(1);
+    }
+
+    public function getCurrentTaskImg2()
+    {
+        return $this->getCurrentTaskImg(2);
+    }
+
+    public function getCurrentTaskImg3()
+    {
+        return $this->getCurrentTaskImg(3);
+    }
+
+    public function getCurrentTaskImg4()
+    {
+        return $this->getCurrentTaskImg(4);
+    }
+
+    public function getCurrentTaskImg5()
+    {
+        return $this->getCurrentTaskImg(5);
+    }
+
+    public function updateCurrentTaskPhotosArray()
+    {
+        if ($this->_currentTask) {
+            $index = 1;
+            foreach ($this->_currentTask->getDetailedPhotoPaths() as $path) {
+                $this->_currentTaskPhotos[$index++] = $path;
+            }
+            $this->_currentTaskPhotos[$index] = $this->_currentTask->getAdditionalPhotoPath();
+        }
+    }
+
+    public function getCurrentTaskBridgeImage(){
+        if ($this->_currentTask && $this->_currentTask->bridge_position) {
+            $data =  $this->_currentTask->generateBridgePositionFileFromBase64();
+
+            $this->_openHandles []= $data['handle'];
+            return $data['path'];
+        }
+
+    }
+
+    public function setTasksToIncludeInReport($tasks){
+        $this->_taskToIncludeInReport = $tasks;
+    }
+
+    public function getTasksToIncludeInReport(){
+        if ($this->_taskToIncludeInReport){
+            $tasks = [];
+            foreach($this->_taskToIncludeInReport as $task_id){
+                $tasks []= Task::Find($task_id);
+            }
+            return $tasks;
+        } else {
+            return $this->tasks;
+        }
+
+
+    }
+
+    public function closeAllTasksTemporaryFiles(){
+        foreach ($this->_openHandles as $handle){
+
+            fclose($handle);
+        }
+    }
 }
+

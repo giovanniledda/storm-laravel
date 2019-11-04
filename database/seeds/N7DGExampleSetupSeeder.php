@@ -1,6 +1,7 @@
 <?php
 
 use App\Boat;
+use App\Project;
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
 use Seeds\SeederUtils;
@@ -81,6 +82,27 @@ class N7DGExampleSetupSeeder extends Seeder
         ];
         $boat->insertPlaceholders('SampleReport', $placeholders, true);
 //        $user1->updateTemplateDirPath('User', null);  // prende il default (/storage/app/docs-generator/...)
+
+
+        $project = Project::find(1);
+        $this->command->warn(" ------ MANAGE & ASSOCIATE TEMPLATE TO PROJECT (SampleReport) --------");
+        $category = $project->persistAndAssignTemplateCategory('SampleReport');
+        $placeholders = [
+            '${boat_name}' => 'getBoatName()',
+            '${boat_reg_num}' => 'getBoatRegistrationNumber()',
+            '${boat_type}' => 'getBoatType()',
+            '${img_BoatImage:250:250:false}' => 'getBoatMainPhotoPath()',
+            '${date}' => 'printDocxTodayDate()',
+            '${blC_bloccoTask}' => 'getBloccoTaskSampleReportInfoArray()',
+            '${pageBreak}' => 'printDocxPageBreak()',
+            '${bridge_img_currentTask}' => 'getCurrentTaskBridgeImage()',
+            '${img_currentTask_img1}' => 'getCurrentTaskImg1()',
+            '${img_currentTask_img2}' => 'getCurrentTaskImg2()',
+            '${img_currentTask_img3}' => 'getCurrentTaskImg3()',
+            '${img_currentTask_img4}' => 'getCurrentTaskImg4()',
+            '${img_currentTask_img5}' => 'getCurrentTaskImg5()',
+        ];
+        $project->insertPlaceholders('SampleReport', $placeholders, true);
 
     }
 }
