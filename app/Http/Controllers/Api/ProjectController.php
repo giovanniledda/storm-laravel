@@ -218,7 +218,7 @@ class ProjectController extends Controller
         $project->closeAllTasksTemporaryFiles();
 
         $filepath = $dg->getRealFinalFilePath();
-        $headers = ['Cache-Control' => 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0'];
+        $headers = ['Cache-Control' => 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0', "Content-Type" => "application/octet-stream"];
         return response()
             ->download($filepath, $dg->getFinalFileName(), $headers);
 
