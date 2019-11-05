@@ -299,7 +299,9 @@ class Task extends Model
         $base64 = $this->bridge_position;
         $handle = tmpfile();
         $path = stream_get_meta_data($handle)['uri'];
-        fwrite($handle, base64_decode($base64));
+        $data = explode(',', $base64);
+
+        fwrite($handle, base64_decode($data[1]));
         fseek($handle, 0);
 
         return [
