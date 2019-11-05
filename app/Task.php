@@ -304,8 +304,13 @@ class Task extends Model
         fwrite($handle, base64_decode($data[1]));
         fseek($handle, 0);
 
+
+        $pngPath = $path . ".jpg";
+
+        shell_exec("convert " . $path  . " "  . $pngPath);
+
         return [
-            'path' => $path,
+            'path' => $pngPath,
             'handle' => $handle
         ];
 

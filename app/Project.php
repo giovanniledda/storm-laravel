@@ -34,7 +34,7 @@ class Project extends Model {
     protected $_currentTask;
     protected $_currentTaskPhotos;
     protected $_taskToIncludeInReport;
-    protected $_openHandles = [];
+    protected $_openFiles = [];
 
     protected static function boot() {
         parent::boot();
@@ -721,7 +721,7 @@ class Project extends Model {
                     'task_updated_at' => $task->updated_at,
                     'task_type' => $task->intervent_type ? $task->intervent_type->name : '?',
                     'task_location' => $task->section ? $task->section->name : '?',
-                    'img_currentTaskBridgeImage' => $this->getCurrentTaskBridgeImage(),
+                    'img_currentTask_brPos' => $this->getCurrentTaskBridgeImage(),
                     'pageBreak' => $this->printDocxPageBreak(),
                     'img_currentTask_img1' => $this->getCurrentTaskImg1(),
                     'img_currentTask_img2' => $this->getCurrentTaskImg2(),
@@ -779,7 +779,7 @@ class Project extends Model {
         if ($this->_currentTask && $this->_currentTask->bridge_position) {
             $data =  $this->_currentTask->generateBridgePositionFileFromBase64();
 
-            $this->_openHandles []= $data['handle'];
+            $this->_openFiles []= $data;
             return $data['path'];
         }
 
@@ -805,9 +805,9 @@ class Project extends Model {
     }
 
     public function closeAllTasksTemporaryFiles(){
-        foreach ($this->_openHandles as $handle){
-
-            fclose($handle);
+        foreach ($this->_openFiles as $data){
+            fclose($data['handle']);
+            unlink($data['path']);
         }
     }
 
@@ -820,7 +820,7 @@ class Project extends Model {
             '${date}' => 'printDocxTodayDate()',
             '${blC_bloccoTask}' => 'getBloccoTaskSampleReportInfoArray()',
             '${pageBreak}' => 'printDocxPageBreak()',
-            '${img_currentTask_brPos}' => 'getCurrentTaskBridgeImage()',
+            '${img_currentTask_brPos:450:450:false}' => 'getCurrentTaskBridgeImage()',
             '${img_currentTask_img1}' => 'getCurrentTaskImg1()',
             '${img_currentTask_img2}' => 'getCurrentTaskImg2()',
             '${img_currentTask_img3}' => 'getCurrentTaskImg3()',
