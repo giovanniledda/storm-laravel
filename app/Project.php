@@ -721,12 +721,13 @@ class Project extends Model {
                     'task_updated_at' => $task->updated_at,
                     'task_type' => $task->intervent_type ? $task->intervent_type->name : '?',
                     'task_location' => $task->section ? $task->section->name : '?',
-                    'pageBreak' => $this->boat->printDocxPageBreak(),
-                    'img_currentTask_img1' => $this->boat->getCurrentTaskImg1(),
-                    'img_currentTask_img2' => $this->boat->getCurrentTaskImg2(),
-                    'img_currentTask_img3' => $this->boat->getCurrentTaskImg3(),
-                    'img_currentTask_img4' => $this->boat->getCurrentTaskImg4(),
-                    'img_currentTask_img5' => $this->boat->getCurrentTaskImg5(),
+                    'img_currentTaskBridgeImage' => $this->getCurrentTaskBridgeImage(),
+                    'pageBreak' => $this->printDocxPageBreak(),
+                    'img_currentTask_img1' => $this->getCurrentTaskImg1(),
+                    'img_currentTask_img2' => $this->getCurrentTaskImg2(),
+                    'img_currentTask_img3' => $this->getCurrentTaskImg3(),
+                    'img_currentTask_img4' => $this->getCurrentTaskImg4(),
+                    'img_currentTask_img5' => $this->getCurrentTaskImg5(),
                 ]
             ;
         }
