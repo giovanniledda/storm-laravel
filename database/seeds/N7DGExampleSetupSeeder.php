@@ -98,7 +98,7 @@ class N7DGExampleSetupSeeder extends Seeder
             '${date}' => 'printDocxTodayDate()',
             '${blC_bloccoTask}' => 'getBloccoTaskSampleReportInfoArray()',
             '${pageBreak}' => 'printDocxPageBreak()',
-            '${img_currentTaskBridgeImage}' => 'getCurrentTaskBridgeImage()',
+            '${img_currentTask_brPos}' => 'getCurrentTaskBridgeImage()',
             '${img_currentTask_img1}' => 'getCurrentTaskImg1()',
             '${img_currentTask_img2}' => 'getCurrentTaskImg2()',
             '${img_currentTask_img3}' => 'getCurrentTaskImg3()',
