@@ -78,14 +78,14 @@ class ProjectObserver
             ProjectUser::createOneIfNotExists($auth_user->id, $project->id);
         }
 
-        if (env('USE_GOOGLE_DRIVE')){
-
-
+        if (env('USE_GOOGLE_DRIVE')) {
             // uses the queue
             ProjectGoogleDirSetup::dispatch($project);
 
         }
 
+        // Doc Generator from template
+        $project->setupTemplate();
     }
 
     /**

@@ -17,6 +17,7 @@ use App\Utils\Utils;
 use Net7\Logging\models\Logs as Log;
 use App\Jobs\ProjectGoogleSync;
 use Net7\DocsGenerator\DocsGenerator;
+use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 
 class ProjectController extends Controller
 {
@@ -195,7 +196,7 @@ class ProjectController extends Controller
             // TODO: return error $e->getMessage()
         }
 
-        if (!$dg->checkTemplateCategory()) {
+        if (isset($dg) && !$dg->checkTemplateCategory()) {
             $msg = __("Template :name not valid (there's no such a Model on DB)!", ['name' => $template]);
            // TODO return error $msg
         }

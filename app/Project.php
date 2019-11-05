@@ -816,7 +816,9 @@ class Project extends Model {
         }
     }
 
-    public function setupTemplate(){
+    public function setupTemplate()
+    {
+        $category = $this->persistAndAssignTemplateCategory('SampleReport');
         $placeholders = [
             '${boat_name}' => 'getBoatName()',
             '${boat_reg_num}' => 'getBoatRegistrationNumber()',
@@ -833,7 +835,6 @@ class Project extends Model {
             '${img_currentTask_img5}' => 'getCurrentTaskImg5()',
         ];
         $this->insertPlaceholders('SampleReport', $placeholders, true);
-
     }
 }
 
