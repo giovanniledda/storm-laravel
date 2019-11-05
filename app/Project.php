@@ -712,7 +712,7 @@ class Project extends Model {
         foreach ($this->getTasksToIncludeInReport() as $task) {
             $this->_currentTask = $task;
             $this->updateCurrentTaskPhotosArray();
-            $replacements[] =
+            $repl_array =
                 [
                     'task_id' => $task->id,
                     'task_status' => $task->task_status,
@@ -723,13 +723,18 @@ class Project extends Model {
                     'task_location' => $task->section ? $task->section->name : '?',
                     'img_currentTaskBridgeImage' => $this->getCurrentTaskBridgeImage(),
                     'pageBreak' => $this->printDocxPageBreak(),
-                    'img_currentTask_img1' => $this->getCurrentTaskImg1(),
-                    'img_currentTask_img2' => $this->getCurrentTaskImg2(),
-                    'img_currentTask_img3' => $this->getCurrentTaskImg3(),
-                    'img_currentTask_img4' => $this->getCurrentTaskImg4(),
-                    'img_currentTask_img5' => $this->getCurrentTaskImg5(),
-                ]
-            ;
+//                    'img_currentTask_img1' => $this->getCurrentTaskImg1(),
+//                    'img_currentTask_img2' => $this->getCurrentTaskImg2(),
+//                    'img_currentTask_img3' => $this->getCurrentTaskImg3(),
+//                    'img_currentTask_img4' => $this->getCurrentTaskImg4(),
+//                    'img_currentTask_img5' => $this->getCurrentTaskImg5(),
+                ];
+            for ($i = 1; $i <= 5; $i++) {
+                if ($this->getCurrentTaskImg($i)) {
+                    $repl_array["img_currentTask_img$i"] = $this->getCurrentTaskImg($i);
+                }
+            }
+            $replacements[] = $repl_array;
         }
         return $replacements;
     }
