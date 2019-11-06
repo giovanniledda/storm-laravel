@@ -782,7 +782,7 @@ class Project extends Model {
             foreach ($this->_currentTask->getDetailedPhotoPaths() as $path) {
                 $this->_currentTaskPhotos[$index++] = $path;
             }
-            $this->_currentTaskPhotos[$index] = $this->_currentTask->getAdditionalPhotoPath();
+            $this->_currentTaskPhotos[5] = $this->_currentTask->getAdditionalPhotoPath();
         }
     }
 
