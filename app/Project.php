@@ -717,7 +717,7 @@ class Project extends Model {
                 [
                     'task_id' => $task->id,
                     'task_status' => $task->task_status,
-                    'task_description' => Net7\DocsGenerator\Utils::sanitizeTextsForPlaceholders($task->description),
+                    'task_description' => \Net7\DocsGenerator\Utils::sanitizeTextsForPlaceholders($task->description),
                     'task_created_at' => $task->created_at,
                     'task_updated_at' => $task->updated_at,
                     'task_type' => $task->intervent_type ? $task->intervent_type->name : '?',
