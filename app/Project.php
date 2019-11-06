@@ -776,6 +776,7 @@ class Project extends Model {
 
     public function updateCurrentTaskPhotosArray()
     {
+        $this->_currentTaskPhotos = [];
         if ($this->_currentTask) {
             $index = 1;
             foreach ($this->_currentTask->getDetailedPhotoPaths() as $path) {
