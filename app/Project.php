@@ -9,8 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\ModelStatus\HasStatuses;
 use Faker\Generator as Faker;
 use Net7\DocsGenerator\Traits\HasDocsGenerator;
-
-use App\Task;
+use Net7\DocsGenerator\Utils;
 use \Net7\Documents\DocumentableTrait;
 use \Net7\Documents\Document;
 use Illuminate\Support\Facades\Storage;
@@ -717,7 +716,7 @@ class Project extends Model {
                 [
                     'task_id' => $task->id,
                     'task_status' => $task->task_status,
-                    'task_description' => Net7\DocsGenerator\Utils::sanitizeTextsForPlaceholders($task->description),
+                    'task_description' => Utils::sanitizeTextsForPlaceholders($task->description),
                     'task_created_at' => $task->created_at,
                     'task_updated_at' => $task->updated_at,
                     'task_type' => $task->intervent_type ? $task->intervent_type->name : '?',
