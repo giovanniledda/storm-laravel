@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Observers\ProjectObserver;
+use function array_merge;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\ModelStatus\HasStatuses;
@@ -739,34 +740,38 @@ class Project extends Model {
         return $replacements;
     }
 
-    public function getCurrentTaskImg($index)
+    public function getCurrentTaskImg($index, $task_id = null)
     {
+        if ($task_id) {
+            $this->_currentTask = Task::find($task_id);
+            $this->updateCurrentTaskPhotosArray();
+        }
         return isset($this->_currentTaskPhotos[$index]) ? $this->_currentTaskPhotos[$index] : '';
     }
 
-    public function getCurrentTaskImg1()
+    public function getCurrentTaskImg1($task_id = null)
     {
-        return $this->getCurrentTaskImg(1);
+        return $this->getCurrentTaskImg(1, $task_id);
     }
 
-    public function getCurrentTaskImg2()
+    public function getCurrentTaskImg2($task_id = null)
     {
-        return $this->getCurrentTaskImg(2);
+        return $this->getCurrentTaskImg(2, $task_id);
     }
 
-    public function getCurrentTaskImg3()
+    public function getCurrentTaskImg3($task_id = null)
     {
-        return $this->getCurrentTaskImg(3);
+        return $this->getCurrentTaskImg(3, $task_id);
     }
 
-    public function getCurrentTaskImg4()
+    public function getCurrentTaskImg4($task_id = null)
     {
-        return $this->getCurrentTaskImg(4);
+        return $this->getCurrentTaskImg(4, $task_id);
     }
 
-    public function getCurrentTaskImg5()
+    public function getCurrentTaskImg5($task_id = null)
     {
-        return $this->getCurrentTaskImg(5);
+        return $this->getCurrentTaskImg(5, $task_id);
     }
 
     public function updateCurrentTaskPhotosArray()
@@ -780,11 +785,16 @@ class Project extends Model {
         }
     }
 
-    public function getCurrentTaskBridgeImage(){
-        if ($this->_currentTask && $this->_currentTask->bridge_position) {
-            $data =  $this->_currentTask->generateBridgePositionFileFromBase64();
+    public function getCurrentTaskBridgeImage($task_id = null)
+    {
+        if ($task_id) {
+            $this->_currentTask = Task::find($task_id);
+        }
 
-            $this->_openFiles []= $data;
+        if ($this->_currentTask && $this->_currentTask->bridge_position) {
+            $data = $this->_currentTask->generateBridgePositionFileFromBase64();
+
+            $this->_openFiles[] = $data;
             return $data['path'];
         }
 
@@ -795,18 +805,17 @@ class Project extends Model {
         $this->_taskToIncludeInReport = $tasks;
     }
 
-    public function getTasksToIncludeInReport(){
-        if ($this->_taskToIncludeInReport){
+    public function getTasksToIncludeInReport()
+    {
+        if ($this->_taskToIncludeInReport) {
             $tasks = [];
-            foreach($this->_taskToIncludeInReport as $task_id){
-                $tasks []= Task::Find($task_id);
+            foreach ($this->_taskToIncludeInReport as $task_id) {
+                $tasks[] = Task::Find($task_id);
             }
             return $tasks;
         } else {
             return $this->tasks;
         }
-
-
     }
 
     public function closeAllTasksTemporaryFiles(){
@@ -827,6 +836,7 @@ class Project extends Model {
             '${date}' => 'printDocxTodayDate()',
             '${blC_bloccoTask}' => 'getBloccoTaskSampleReportInfoArray()',
             '${pageBreak}' => 'printDocxPageBreak()',
+//            '${row_tableOne}' => 'getTableTaskSampleReportInfoArray()',
 //            '${img_currentTask_brPos:450:450:false}' => 'getCurrentTaskBridgeImage()',
 //            '${img_currentTask_img1}' => 'getCurrentTaskImg1()',
 //            '${img_currentTask_img2}' => 'getCurrentTaskImg2()',
@@ -834,6 +844,7 @@ class Project extends Model {
 //            '${img_currentTask_img4}' => 'getCurrentTaskImg4()',
 //            '${img_currentTask_img5}' => 'getCurrentTaskImg5()',
         ];
+
         $this->insertPlaceholders('SampleReport', $placeholders, true);
     }
 }
