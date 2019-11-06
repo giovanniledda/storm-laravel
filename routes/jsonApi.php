@@ -85,7 +85,7 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
 
         $api->resource('projects')->only('generate-report')->controller('ProjectController')//uses the App\Http\Controllers\Api\ProjectController
         ->routes(function ($project) {
-            $project->get('{record}/generate-report', 'generateReport')->name('generate-report');
+            $project->post('{record}/generate-report', 'generateReport')->name('generate-report');
         });
 
         $api->resource('projects')->relationships(function ($relations) {
