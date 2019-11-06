@@ -676,12 +676,12 @@ class Project extends Model {
 
     public function getBoatName(){
         $boat = $this->boat;
-        return $boat->name;
+        return Utils::sanitizeTextsForPlaceholders($boat->name);
     }
 
     public function getBoatRegistrationNumber(){
         $boat = $this->boat;
-        return $boat->registration_number;
+        return Utils::sanitizeTextsForPlaceholders($boat->registration_number);
     }
 
     public function getBoatType(){
@@ -715,12 +715,12 @@ class Project extends Model {
             $repl_array =
                 [
                     'task_id' => $task->id,
-                    'task_status' => $task->task_status,
+                    'task_status' => Utils::sanitizeTextsForPlaceholders($task->task_status),
                     'task_description' => Utils::sanitizeTextsForPlaceholders($task->description),
                     'task_created_at' => $task->created_at,
                     'task_updated_at' => $task->updated_at,
-                    'task_type' => $task->intervent_type ? $task->intervent_type->name : '?',
-                    'task_location' => $task->section ? $task->section->name : '?',
+                    'task_type' => $task->intervent_type ? Utils::sanitizeTextsForPlaceholders($task->intervent_type->name) : '?',
+                    'task_location' => $task->section ? Utils::sanitizeTextsForPlaceholders($task->section->name) : '?',
                     'pageBreak' => $this->printDocxPageBreak(),
                     'img_currentTask_brPos' => $this->getCurrentTaskBridgeImage(),
                    'img_currentTask_img1' => $this->getCurrentTaskImg1(),
