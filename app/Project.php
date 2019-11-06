@@ -721,8 +721,8 @@ class Project extends Model {
                     'task_updated_at' => $task->updated_at,
                     'task_type' => $task->intervent_type ? $task->intervent_type->name : '?',
                     'task_location' => $task->section ? $task->section->name : '?',
-                    'img_currentTask_brPos' => $this->getCurrentTaskBridgeImage(),
                     'pageBreak' => $this->printDocxPageBreak(),
+                    'img_currentTask_brPos' => $this->getCurrentTaskBridgeImage(),
 //                    'img_currentTask_img1' => $this->getCurrentTaskImg1(),
 //                    'img_currentTask_img2' => $this->getCurrentTaskImg2(),
 //                    'img_currentTask_img3' => $this->getCurrentTaskImg3(),
@@ -827,12 +827,12 @@ class Project extends Model {
             '${date}' => 'printDocxTodayDate()',
             '${blC_bloccoTask}' => 'getBloccoTaskSampleReportInfoArray()',
             '${pageBreak}' => 'printDocxPageBreak()',
-            '${img_currentTask_brPos:450:450:false}' => 'getCurrentTaskBridgeImage()',
-            '${img_currentTask_img1}' => 'getCurrentTaskImg1()',
-            '${img_currentTask_img2}' => 'getCurrentTaskImg2()',
-            '${img_currentTask_img3}' => 'getCurrentTaskImg3()',
-            '${img_currentTask_img4}' => 'getCurrentTaskImg4()',
-            '${img_currentTask_img5}' => 'getCurrentTaskImg5()',
+//            '${img_currentTask_brPos:450:450:false}' => 'getCurrentTaskBridgeImage()',
+//            '${img_currentTask_img1}' => 'getCurrentTaskImg1()',
+//            '${img_currentTask_img2}' => 'getCurrentTaskImg2()',
+//            '${img_currentTask_img3}' => 'getCurrentTaskImg3()',
+//            '${img_currentTask_img4}' => 'getCurrentTaskImg4()',
+//            '${img_currentTask_img5}' => 'getCurrentTaskImg5()',
         ];
         $this->insertPlaceholders('SampleReport', $placeholders, true);
     }
