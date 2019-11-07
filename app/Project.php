@@ -723,11 +723,11 @@ class Project extends Model {
                     'task_location' => $task->section ? Utils::sanitizeTextsForPlaceholders($task->section->name) : '?',
                     'pageBreak' => $this->printDocxPageBreak(),
                     'img_currentTask_brPos' => $this->getCurrentTaskBridgeImage(),
-                   'img_currentTask_img1' => $this->getCurrentTaskImg1(),
-                   'img_currentTask_img2' => $this->getCurrentTaskImg2(),
-                   'img_currentTask_img3' => $this->getCurrentTaskImg3(),
-                   'img_currentTask_img4' => $this->getCurrentTaskImg4(),
-                   'img_currentTask_img5' => $this->getCurrentTaskImg5(),
+                    'img_currentTask_img1' => $this->getCurrentTaskImg1(),
+                    'img_currentTask_img2' => $this->getCurrentTaskImg2(),
+                    'img_currentTask_img3' => $this->getCurrentTaskImg3(),
+                    'img_currentTask_img4' => $this->getCurrentTaskImg4(),
+                    'img_currentTask_img5' => $this->getCurrentTaskImg5(),
                 ];
             // for ($i = 1; $i <= 5; $i++) {
             //     if ($this->getCurrentTaskImg($i)) {
