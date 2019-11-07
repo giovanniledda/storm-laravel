@@ -193,12 +193,12 @@ class ProjectController extends Controller
         try {
             $dg = new DocsGenerator($template, $project);
         } catch (\Exception $e) {
-            // TODO: return error $e->getMessage()
+            return Utils::jsonAbortWithInternalError(422, 402, "Error instantiating DocsGenerator", $e->getMessage());
         }
 
         if (isset($dg) && !$dg->checkTemplateCategory()) {
             $msg = __("Template :name not valid (there's no such a Model on DB)!", ['name' => $template]);
-           // TODO return error $msg
+            return Utils::jsonAbortWithInternalError(422, 402, "Error checking template", $msg);
         }
 
         // ...e che ci sia il template associato nel filesystem.
@@ -206,14 +206,13 @@ class ProjectController extends Controller
             $dg->checkIfTemplateFileExistsWithTemplateObjectCheck(true);
         } catch (FileNotFoundException $e) {
             $msg = __("Template :name not found (you're searching on ':e_msg')!", ['name' => $template, 'e_msg' => $e->getMessage()]);
-         // TODO return error  $msg
+            return Utils::jsonAbortWithInternalError(422, 402, "Error checking template existance", $msg);
         }
-
 
         try {
             $dg->startProcess();
         } catch (\Exception $e) {
-           // TODO return error $e->getMessage()
+            return Utils::jsonAbortWithInternalError(422, 402, "Error generatig report", $e->getMessage());
         }
 
         $project->closeAllTasksTemporaryFiles();

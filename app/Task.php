@@ -283,7 +283,7 @@ class Task extends Model
      */
     public function getAdditionalPhotoPath()
     {
-        return $this->getDocumentMediaFilePath(Document::ADDITIONAL_IMAGE_TYPE);
+        return $this->getDocumentMediaFilePath(Document::ADDITIONAL_IMAGE_TYPE, 'report-large');
     }
     /**
      * Retrieve iamge's path
@@ -292,7 +292,7 @@ class Task extends Model
      */
     public function getDetailedPhotoPaths()
     {
-        return $this->getAllDocumentsMediaFilePathArray(Document::DETAILED_IMAGE_TYPE);
+        return $this->getAllDocumentsMediaFilePathArray(Document::DETAILED_IMAGE_TYPE, 'report');
     }
 
     public function generateBridgePositionFileFromBase64(){
