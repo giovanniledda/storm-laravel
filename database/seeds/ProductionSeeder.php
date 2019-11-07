@@ -107,22 +107,39 @@ protected $professions;
     private function createUsers(){
 
         $users = [
-        'Claudio' => 'claudio@stormyachts.eu',
-        'Info' => 'info@stormyachts.eu',
-        'Matteo' => 'matteo@stormyachts.eu',
-        'Francesco' => 'francesco@stormyachts.eu',
-        'Elisa' => 'elisa@stormyachts.eu'
+            [
+                'name' => 'Claudio',
+                'surname' => 'Mazzuoli',
+                'email'   => 'claudio@stormyachts.eu'
+            ],  [
+                'name' => 'David Andrew',
+                'surname' => 'Fryer',
+                'email' => 'info@stormyachts.eu',
+            ],  [
+                'name' => 'Matteo',
+                'surname' => 'Gabbriellini',
+                'email'  => 'matteo@stormyachts.eu'
+            ],  [
+                'name' =>  'Francesco' ,
+                'surname' => 'Sassano',
+                'email'  => 'francesco@stormyachts.eu'
+            ],  [
+                'name' =>  'Elisa' ,
+                'surname' => 'Roberti',
+                'email' => 'elisa@stormyachts.eu'
+            ]
+
         ];
 
 
         $password = 'password';
 
-        foreach ($users as $name => $email) {
+        foreach ($users as $u)  {
 
             $user = User::create([
-            'name' => $name,
-            'surname' => '',
-            'email' => $email,
+            'name' => $u['name'],
+            'surname' => $u['surname'],
+            'email' => $u['email'],
             'password' => $password,
             'is_storm' => true,
         ]);
