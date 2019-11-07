@@ -98,7 +98,7 @@ class Schema extends SchemaProvider
             'estimated_hours'=> $resource->estimated_hours,
             'status'=> $resource->task_status,
             'author_id'=> $resource->author ? $author->id : '',
-            'author'=> $resource->author ? $author->name : '',
+            'author'=> $resource->author ? $author->name.' '.$author->surname: '',
             'is_open' => $resource->is_open,
             'added_by_storm' => $resource->added_by_storm,
             'project_id' => $resource->project_id,
