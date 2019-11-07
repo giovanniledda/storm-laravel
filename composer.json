@@ -19,6 +19,10 @@
         {
             "type": "git",
             "url": "https://net7.codebasehq.com/nautica/net7docs-generator.git"
+        },
+        {
+            "type" : "git",
+            "url" : "https://github.com/net7/PHPWord.git"
         }
     ],
     "require": {
