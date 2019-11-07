@@ -88,8 +88,8 @@ class N7DGExampleSetupSeeder extends Seeder
 */
 
         $project = Project::find(1);
-        $this->command->warn(" ------ MANAGE & ASSOCIATE TEMPLATE TO PROJECT (SampleReport) --------");
-        $category = $project->persistAndAssignTemplateCategory('SampleReport');
+        $this->command->warn(" ------ MANAGE & ASSOCIATE TEMPLATE TO PROJECT (corrosion_map) --------");
+        $category = $project->persistAndAssignTemplateCategory('corrosion_map');
         $placeholders = [
             '${boat_name}' => 'getBoatName()',
             '${boat_reg_num}' => 'getBoatRegistrationNumber()',
@@ -105,7 +105,7 @@ class N7DGExampleSetupSeeder extends Seeder
             '${img_currentTask_img4}' => 'getCurrentTaskImg4()',
             '${img_currentTask_img5}' => 'getCurrentTaskImg5()',
         ];
-        $project->insertPlaceholders('SampleReport', $placeholders, true);
+        $project->insertPlaceholders('corrosion_map', $placeholders, true);
 
     }
 }

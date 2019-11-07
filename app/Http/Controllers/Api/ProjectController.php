@@ -188,7 +188,7 @@ class ProjectController extends Controller
         $project->setTasksToIncludeInReport(explode(',', $tasks));
 
         // TODO: take it from input
-        $template = 'SampleReport';
+        $template = 'corrosion_map';
 
         try {
             $dg = new DocsGenerator($template, $project);

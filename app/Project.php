@@ -827,7 +827,7 @@ class Project extends Model {
 
     public function setupTemplate()
     {
-        $category = $this->persistAndAssignTemplateCategory('SampleReport');
+        $category = $this->persistAndAssignTemplateCategory('corrosion_map');
         $placeholders = [
             '${boat_name}' => 'getBoatName()',
             '${boat_reg_num}' => 'getBoatRegistrationNumber()',
