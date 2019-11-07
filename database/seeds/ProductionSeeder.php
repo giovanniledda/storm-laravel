@@ -105,9 +105,38 @@ protected $professions;
     }
 
     private function createUsers(){
-        for ($s = 0; $s < 25; $s++) {
-            $worker = $this->utils->createUser(ROLE_WORKER);
-        }
+
+        $users = [
+        'Claudio' => 'claudio@stormyachts.eu',
+        'Info' => 'info@stormyachts.eu',
+        'Matteo' => 'matteo@stormyachts.eu',
+        'Francesco' => 'francesco@stormyachts.eu',
+        'Elisa' => 'elisa@stormyachts.eu'
+        ];
+
+
+        $password = 'password';
+
+        foreach ($users as $name => $email) {
+
+            $user = User::create([
+            'name' => $name,
+            'surname' => '',
+            'email' => $email,
+            'password' => $password,
+            'is_storm' => true,
+        ]);
+
+
+
+        $user->assignRole(PERMISSION_ADMIN);
+        $user->assignRole(PERMISSION_BOAT_MANAGER);
+        $user->assignRole(PERMISSION_BACKEND_MANAGER);
+        $user->assignRole(PERMISSION_WORKER);
+
+
+
+    }
 
     }
 
