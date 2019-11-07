@@ -845,7 +845,7 @@ class Project extends Model {
 //            '${img_currentTask_img5}' => 'getCurrentTaskImg5()',
         ];
 
-        $this->insertPlaceholders('SampleReport', $placeholders, true);
+        $this->insertPlaceholders('corrosion_map', $placeholders, true);
     }
 }
 
