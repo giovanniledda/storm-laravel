@@ -1202,14 +1202,25 @@ class TemplateProcessor
             $localXmlBlock = $xmlBlock;
             foreach ($replacementArray as $search => $replacement) {
                 if ($this->isImagePlaceholder($search)) {
-//                    $localXmlBlock = $this->setValueForPart(self::ensureMacroCompleted($search), $replacement, $localXmlBlock, self::MAXIMUM_REPLACEMENTS_DEFAULT);
 
                     if (!$replacement){
-                        $replacement = storage_path('app/puntino.jpg');
+                        // $replacement = storage_path('app/puntino.jpg');
+                        $replacement = "";
+
+                        $partVariables = $this->getVariablesForPart($localXmlBlock);
+
+                        $varsToReplace = array_filter($partVariables, function ($partVar) use ($search) {
+                            return ($partVar == $search) || preg_match('/^' . preg_quote($search) . ':/', $partVar);
+                        });
+                        if (is_array($varsToReplace) && isset($varsToReplace[0])){
+                            $search = $varsToReplace[0];
+                        }
+
+                        $localXmlBlock = $this->setValueForPart(self::ensureMacroCompleted($search), $replacement, $localXmlBlock, self::MAXIMUM_REPLACEMENTS_DEFAULT);
+                    } else {
+
+                        $localXmlBlock = $this->setImageValueGettingXml(self::ensureMacroCompleted($search), $replacement, $localXmlBlock, self::MAXIMUM_REPLACEMENTS_DEFAULT);
                     }
-
-                    $localXmlBlock = $this->setImageValueGettingXml(self::ensureMacroCompleted($search), $replacement, $localXmlBlock, self::MAXIMUM_REPLACEMENTS_DEFAULT);
-
                 } else {
                     $localXmlBlock = $this->setValueForPart(self::ensureMacroCompleted($search), $replacement, $localXmlBlock, self::MAXIMUM_REPLACEMENTS_DEFAULT);
                 }
