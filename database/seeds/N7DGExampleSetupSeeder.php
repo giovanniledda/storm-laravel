@@ -4,6 +4,7 @@ use App\Boat;
 use App\Project;
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
+use Net7\DocsGenerator\DocsGenerator;
 use Seeds\SeederUtils;
 
 class N7DGExampleSetupSeeder extends Seeder
@@ -84,8 +85,8 @@ class N7DGExampleSetupSeeder extends Seeder
         ];
         $boat->insertPlaceholders('SampleReport', $placeholders, true);
 //        $user1->updateTemplateDirPath('User', null);  // prende il default (/storage/app/docs-generator/...)
-
 */
+
 
         $project = Project::find(1);
         $this->command->warn(" ------ MANAGE & ASSOCIATE TEMPLATE TO PROJECT (corrosion_map) --------");
@@ -106,6 +107,12 @@ class N7DGExampleSetupSeeder extends Seeder
             '${img_currentTask_img5}' => 'getCurrentTaskImg5()',
         ];
         $project->insertPlaceholders('corrosion_map', $placeholders, true);
+
+
+//        $this->command->warn(" ------ MANAGE TEMPLATE (TestImmagine) --------");
+//
+//        $comp_dg = new DocsGenerator('TestImmagine');
+//        $comp_dg->updateStrategy(REPLACEMENT_STRATEGY_CUSTOM);
 
     }
 }
