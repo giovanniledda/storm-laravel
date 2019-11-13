@@ -38,8 +38,8 @@ class TaskObserver
                 ->create(
                     ['event_date' => date("Y-m-d H:i:s", time()),
                         'event_body' => 'Task number #' . $task->number . ' marked to closed']);
-                         
-           
+
+
         }
 
         /**
@@ -57,7 +57,7 @@ class TaskObserver
          *
          */
         if (isset($original['task_status']) && $original['task_status'] != $task->task_status) {
-           
+
             $auth_user = \Auth::user();
             if (isset($auth_user->id)) {
                 $u_id = $auth_user->id;
@@ -81,7 +81,7 @@ class TaskObserver
                 ])
             ]);
         }
-        
+
          $task->updateMap();
     }
 
@@ -125,7 +125,7 @@ class TaskObserver
                 ])
             ]);
         }
-        
+
         if((isset($auth_user->id) && $auth_user->is_storm)) {
 
             Task::find($task->id)->history()->create([
@@ -154,11 +154,12 @@ class TaskObserver
             }
             $task_author = $auth_user;
         }
+        $task->updateMap();
+
 
         // mette in coda il job
 //        NotifyTaskUpdates::dispatch(new TaskCreated($task))->onConnection('redis')->onQueue(QUEUE_TASK_CREATED);   // default queue
         NotifyTaskUpdates::dispatch(new TaskCreated($task, $task_author));   // default queue
-        $task->updateMap();
 //        Log::info('foo');
     }
 
