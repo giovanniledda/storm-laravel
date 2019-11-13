@@ -383,9 +383,9 @@ class Task extends Model
         $icon = $icon.'.png';
         $path = storage_path() . DIRECTORY_SEPARATOR . 'storm-pins';
         if (!$isOpen) {
-            return $path.DIRECTORY_SEPARATOR.ucfirst($status).DIRECTORY_SEPARATOR.$icon;
+            return $path.DIRECTORY_SEPARATOR.$status.DIRECTORY_SEPARATOR.$icon;
         } 
-       return $path.DIRECTORY_SEPARATOR.ucfirst($status).DIRECTORY_SEPARATOR.$icon;
+       return $path.DIRECTORY_SEPARATOR.$status.DIRECTORY_SEPARATOR.$icon;
     }
     /*
     static getIconPath(state, isOpen) {
