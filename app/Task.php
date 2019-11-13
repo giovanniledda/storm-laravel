@@ -381,6 +381,7 @@ class Task extends Model
 
     private function getIcon($status, $isOpen, $icon = 'Active') {
         $icon = $icon.'.png';
+        $status= str_replace(' ', '_', $status);
         $path = storage_path() . DIRECTORY_SEPARATOR . 'storm-pins';
         if (!$isOpen) {
             return $path.DIRECTORY_SEPARATOR.$status.DIRECTORY_SEPARATOR.$icon;
