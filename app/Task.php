@@ -369,7 +369,7 @@ class Task extends Model
             imagedestroy($image); 
             $mapfile = file_get_contents($map);
             $this->bridge_position = "data:image/png;base64,".base64_encode($mapfile);
-            $this->save();
+           // $this->save();
          //   unlink($map);
             return ['success' => true] ;
             
@@ -387,28 +387,5 @@ class Task extends Model
         } 
        return $path.DIRECTORY_SEPARATOR.$status.DIRECTORY_SEPARATOR.$icon;
     }
-    /*
-    static getIconPath(state, isOpen) {
-     const Icons = {
-      draft: '/assets/storm-pins/Draft/Active.svg',
-      submitted: '/assets/storm-pins/Sent/Active.svg',
-      accepted: '/assets/storm-pins/Accepted/Active.svg',
-      'closed-completed': '/assets/storm-pins/Closed/Completed/Active.svg',
-      'closed-denied': '/assets/storm-pins/Closed/Declined/Active.svg',
-      completed: '/assets/storm-pins/Completed/Active.svg',
-      denied: '/assets/storm-pins/Declined/Active.svg',
-      'in progress': '/assets/storm-pins/Progress/Active.svg',
-      monitored: '/assets/storm-pins/Monitored/Active.svg',
-      remarked: '/assets/storm-pins/Remark/Active.svg',
-    };
-     if (!isOpen && state === 'completed') {
-        return Icons['closed-completed'];
-      }
-     if (!isOpen && state === 'denied') {
-        return Icons['closed-denied'];
-    }
-     return Icons[state];
-  }
-    */
-    
+   
 }
