@@ -319,12 +319,16 @@ class Task extends Model
     public function removeTempFileByHandle($handle){
         fclose ($handle); // this removes the file
     }
-    
-    
+
+
     public function updateMap() {
         $task =$this;
-        $map = storage_path() . DIRECTORY_SEPARATOR . 'map.png';
-        // prendo l'immagine del ponte 
+
+        // $map = storage_path() . DIRECTORY_SEPARATOR . 'map.png';
+
+        $handle = tmpfile();
+        $map = stream_get_meta_data($handle)['uri'];
+        // prendo l'immagine del ponte
         $isOpen = $task['is_open'];
         $status = $task['task_status'];
 
@@ -339,7 +343,7 @@ class Task extends Model
         // sfondo bianco
        // $im = @imagecreate(110, 20)  or die("Cannot Initialize new GD image stream");
        // $background_color = imagecolorallocate($im, 255, 255, 255);
-        
+
         if (exif_imagetype($bridgeImagePath) === IMAGETYPE_PNG) {
             // il ponte e' un'immagine png
             $dest = imagecreatefrompng($bridgeImagePath);
@@ -351,7 +355,7 @@ class Task extends Model
         }
         imagecopy($image, $dest, 0, 0, 0, 0, $bridgeImageInfo[0] ,$bridgeImageInfo[1]);
         try {
-            
+
             $pinPath = $this->getIcon($status, $isOpen);
             $iconInfo = getimagesize($pinPath);
             $src = imagecreatefrompng($pinPath);
@@ -363,20 +367,22 @@ class Task extends Model
             if ($im2 !== FALSE) {
                 imagepng($im2, $map);
                 imagedestroy($im2);
-            } 
+            }
             imagedestroy($dest);
-            imagedestroy($src); 
-            imagedestroy($image); 
+            imagedestroy($src);
+            imagedestroy($image);
             $mapfile = file_get_contents($map);
             $this->bridge_position = "data:image/png;base64,".base64_encode($mapfile);
            // $this->save();
-         //   unlink($map);
+
+            // close and remove the tmpfile();
+            fclose ($handle);
             return ['success' => true] ;
-            
+
         } catch (\Exception $exc) {
             return ['success' => false, 'error' =>$exc->getMessage() ] ;
         }
-        
+
     }
 
     private function getIcon($status, $isOpen, $icon = 'Active') {
@@ -385,8 +391,8 @@ class Task extends Model
         $path = storage_path() . DIRECTORY_SEPARATOR . 'storm-pins';
         if (!$isOpen) {
             return $path.DIRECTORY_SEPARATOR.$status.DIRECTORY_SEPARATOR.$icon;
-        } 
+        }
        return $path.DIRECTORY_SEPARATOR.$status.DIRECTORY_SEPARATOR.$icon;
     }
-   
+
 }
