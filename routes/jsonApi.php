@@ -37,6 +37,7 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
         $api->resource('tasks')->only('history')->controller('TaskController')//uses the App\Http\Controllers\Api\TaskController
         ->routes(function ($task) {
             $task->get('{record}/history', 'history')->name('history');
+            $task->post('{record}/generatemap', 'generateMap')->name('generateMap');
         });
 
         $api->resource('users');

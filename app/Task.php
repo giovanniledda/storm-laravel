@@ -12,7 +12,7 @@ use Venturecraft\Revisionable\RevisionableTrait;
 use Net7\Documents\Document;
 use Net7\Documents\DocumentableTrait;
 use Faker\Generator as Faker;
-
+use App\Section;
 use function in_array;
 use function is_object;
 use const PROJECT_STATUS_CLOSED;
@@ -319,4 +319,96 @@ class Task extends Model
     public function removeTempFileByHandle($handle){
         fclose ($handle); // this removes the file
     }
+    
+    
+    public function updateMap() {
+        $task =$this;
+        $map = storage_path() . DIRECTORY_SEPARATOR . 'map.png';
+        // prendo l'immagine del ponte 
+        $isOpen = $task['is_open'];
+        $status = $task['task_status'];
+
+        $section = Section::find($task['section_id']);
+        $bridgeMedia = $section->generic_images->last();
+
+        $bridgeImagePath = $bridgeMedia->getPathBySize('');
+        $bridgeImageInfo = getimagesize($bridgeImagePath);
+        $image = imagecreate ($bridgeImageInfo[0] ,$bridgeImageInfo[1]  ) ;
+                 imagecolorallocate (  $image ,255,255 , 255 );
+
+        // sfondo bianco
+       // $im = @imagecreate(110, 20)  or die("Cannot Initialize new GD image stream");
+       // $background_color = imagecolorallocate($im, 255, 255, 255);
+        
+        if (exif_imagetype($bridgeImagePath) === IMAGETYPE_PNG) {
+            // il ponte e' un'immagine png
+            $dest = imagecreatefrompng($bridgeImagePath);
+        }
+
+        if (exif_imagetype($bridgeImagePath) === IMAGETYPE_JPEG) {
+            // il ponte e' un'immagine jpg
+            $dest = imagecreatefromjpeg($bridgeImagePath);
+        }
+        imagecopy($image, $dest, 0, 0, 0, 0, $bridgeImageInfo[0] ,$bridgeImageInfo[1]);
+        try {
+            
+            $pinPath = $this->getIcon($status, $isOpen);
+            $iconInfo = getimagesize($pinPath);
+            $src = imagecreatefrompng($pinPath);
+            //  imagecopymerge($dst_im, $src_im, $dst_x, $dst_y, $src_x, $src_y, $src_w, $src_h, $pct)
+            imagecopymerge($image, $src, $task['y_coord' ] - $iconInfo[0]/2, $bridgeImageInfo[1] - $task['x_coord'] - $iconInfo[1], 0, 0, $iconInfo[0], $iconInfo[1], 75);
+            $sizeW = $bridgeImageInfo[0]/2;
+            $sizeH = $bridgeImageInfo[1]/2;
+            $im2 = imagecrop($image, ['x' => ( $task['y_coord'] - $sizeW /2 ) + ( $iconInfo[0] /2 ) , 'y' =>   $sizeH+ $task['x_coord']  - $iconInfo[1] , 'width' => $sizeW, 'height' => $sizeH]);
+            if ($im2 !== FALSE) {
+                imagepng($im2, $map);
+                imagedestroy($im2);
+            } 
+            imagedestroy($dest);
+            imagedestroy($src); 
+            imagedestroy($image); 
+            $mapfile = file_get_contents($map);
+            $this->bridge_position = "data:image/png;base64,".base64_encode($mapfile);
+            $this->save();
+         //   unlink($map);
+            return ['success' => true] ;
+            
+        } catch (\Exception $exc) {
+            return ['success' => false, 'error' =>$exc->getMessage() ] ;
+        }
+        
+    }
+
+    private function getIcon($status, $isOpen, $icon = 'Active') {
+        $icon = $icon.'.png';
+        $path = storage_path() . DIRECTORY_SEPARATOR . 'storm-pins';
+        if (!$isOpen) {
+            return $path.DIRECTORY_SEPARATOR.ucfirst($status).DIRECTORY_SEPARATOR.$icon;
+        } 
+       return $path.DIRECTORY_SEPARATOR.ucfirst($status).DIRECTORY_SEPARATOR.$icon;
+    }
+    /*
+    static getIconPath(state, isOpen) {
+     const Icons = {
+      draft: '/assets/storm-pins/Draft/Active.svg',
+      submitted: '/assets/storm-pins/Sent/Active.svg',
+      accepted: '/assets/storm-pins/Accepted/Active.svg',
+      'closed-completed': '/assets/storm-pins/Closed/Completed/Active.svg',
+      'closed-denied': '/assets/storm-pins/Closed/Declined/Active.svg',
+      completed: '/assets/storm-pins/Completed/Active.svg',
+      denied: '/assets/storm-pins/Declined/Active.svg',
+      'in progress': '/assets/storm-pins/Progress/Active.svg',
+      monitored: '/assets/storm-pins/Monitored/Active.svg',
+      remarked: '/assets/storm-pins/Remark/Active.svg',
+    };
+     if (!isOpen && state === 'completed') {
+        return Icons['closed-completed'];
+      }
+     if (!isOpen && state === 'denied') {
+        return Icons['closed-denied'];
+    }
+     return Icons[state];
+  }
+    */
+    
 }
