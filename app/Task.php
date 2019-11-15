@@ -375,8 +375,10 @@ class Task extends Model
             imagedestroy($dest);
             imagedestroy($src); 
             imagedestroy($image);
-            $mapfile = file_get_contents($map);
-            $this->bridge_position = "data:image/png;base64,".base64_encode($mapfile);
+            $type = pathinfo($map, PATHINFO_EXTENSION);
+            $data = file_get_contents($map);
+            $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+            $this->bridge_position = $base64;
  
             return ['success' => true, 'y'=> $sizeW, 'y1' => $sizeH] ;
             
