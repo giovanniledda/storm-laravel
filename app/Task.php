@@ -323,6 +323,7 @@ class Task extends Model
     
     public function updateMap() {
         $task =$this;
+        $fixedSizeW = 1200;
         $map = storage_path() . DIRECTORY_SEPARATOR . 'map.png';
         // prendo l'immagine del ponte 
         $isOpen = $task['is_open'];
@@ -335,7 +336,7 @@ class Task extends Model
         $bridgeImageInfo = getimagesize($bridgeImagePath);
         $image = imagecreate ($bridgeImageInfo[0] ,$bridgeImageInfo[1]  ) ;
                  imagecolorallocate (  $image ,255,255 , 255 );
-
+        
         // sfondo bianco
        // $im = @imagecreate(110, 20)  or die("Cannot Initialize new GD image stream");
        // $background_color = imagecolorallocate($im, 255, 255, 255);
@@ -354,32 +355,40 @@ class Task extends Model
             
             $pinPath = $this->getIcon($status, $isOpen);
             $iconInfo = getimagesize($pinPath);
+            
             $src = imagecreatefrompng($pinPath);
+            
+            // resize non funziona la trasparenza del pin
+            //$iconInfo = [64, 96];
+            //$src = $this->resize_image($pinPath, 64, 96);
+            
+            $sizeW = $fixedSizeW ;
+            $sizeH = ( $fixedSizeW * $bridgeImageInfo[1])  / $bridgeImageInfo[0] ;
             //  imagecopymerge($dst_im, $src_im, $dst_x, $dst_y, $src_x, $src_y, $src_w, $src_h, $pct)
             imagecopymerge($image, $src, $task['y_coord' ] - $iconInfo[0]/2, $bridgeImageInfo[1] - $task['x_coord'] - $iconInfo[1], 0, 0, $iconInfo[0], $iconInfo[1], 75);
-            $sizeW = $bridgeImageInfo[0]/2;
-            $sizeH = $bridgeImageInfo[1]/2;
-            $im2 = imagecrop($image, ['x' => ( $task['y_coord'] - $sizeW /2 ) + ( $iconInfo[0] /2 ) , 'y' =>   $sizeH+ $task['x_coord']  - $iconInfo[1] , 'width' => $sizeW, 'height' => $sizeH]);
+            $im2 = imagecrop($image, ['x' => ( $task['y_coord'] - $sizeW / 2 )  , 'y' =>  $sizeH  -  $task['x_coord'] + $iconInfo[1], 'width' => $sizeW, 'height' => $sizeH]);
             if ($im2 !== FALSE) {
                 imagepng($im2, $map);
                 imagedestroy($im2);
             } 
+            
             imagedestroy($dest);
             imagedestroy($src); 
-            imagedestroy($image); 
+            imagedestroy($image);
             $mapfile = file_get_contents($map);
             $this->bridge_position = "data:image/png;base64,".base64_encode($mapfile);
-           // $this->save();
-         //   unlink($map);
-            return ['success' => true] ;
+ 
+            return ['success' => true, 'y'=> $sizeW, 'y1' => $sizeH] ;
             
         } catch (\Exception $exc) {
             return ['success' => false, 'error' =>$exc->getMessage() ] ;
         }
-        
     }
 
     private function getIcon($status, $isOpen, $icon = 'Active') {
+      //  return storage_path() .
+        //        DIRECTORY_SEPARATOR . 'storm-pins'.DIRECTORY_SEPARATOR.'Active.png';
+                 
         $icon = $icon.'.png';
         $status= str_replace(' ', '_', $status);
         $path = storage_path() . DIRECTORY_SEPARATOR . 'storm-pins';
@@ -388,5 +397,34 @@ class Task extends Model
         } 
        return $path.DIRECTORY_SEPARATOR.$status.DIRECTORY_SEPARATOR.$icon;
     }
+    
+    private function resize_image($file, $w, $h, $crop=FALSE) {
+    list($width, $height) = getimagesize($file);
+    $r = $width / $height;
+    if ($crop) {
+        if ($width > $height) {
+            $width = ceil($width-($width*abs($r-$w/$h)));
+        } else {
+            $height = ceil($height-($height*abs($r-$w/$h)));
+        }
+        $newwidth = $w;
+        $newheight = $h;
+    } else {
+        if ($w/$h > $r) {
+            $newwidth = $h*$r;
+            $newheight = $h;
+        } else {
+            $newheight = $w/$r;
+            $newwidth = $w;
+        }
+    }
+    $src = imagecreatefrompng($file);
+    $dst = imagecreatetruecolor($newwidth, $newheight);
+    imagecopyresampled($dst, $src, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
+
+    return $dst;
+}
+    
+    
    
 }
