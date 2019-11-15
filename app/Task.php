@@ -319,8 +319,8 @@ class Task extends Model
     public function removeTempFileByHandle($handle){
         fclose ($handle); // this removes the file
     }
-    
-    
+
+
     public function updateMap() {
         $task =$this;
         $fixedSizeW = 1200;
@@ -340,7 +340,7 @@ class Task extends Model
         // sfondo bianco
        // $im = @imagecreate(110, 20)  or die("Cannot Initialize new GD image stream");
        // $background_color = imagecolorallocate($im, 255, 255, 255);
-        
+
         if (exif_imagetype($bridgeImagePath) === IMAGETYPE_PNG) {
             // il ponte e' un'immagine png
             $dest = imagecreatefrompng($bridgeImagePath);
@@ -352,7 +352,7 @@ class Task extends Model
         }
         imagecopy($image, $dest, 0, 0, 0, 0, $bridgeImageInfo[0] ,$bridgeImageInfo[1]);
         try {
-            
+
             $pinPath = $this->getIcon($status, $isOpen);
             $iconInfo = getimagesize($pinPath);
             
@@ -385,7 +385,7 @@ class Task extends Model
         } catch (\Exception $exc) {
             return ['success' => false, 'error' =>$exc->getMessage() ] ;
         }
-    }
+            }
 
     private function getIcon($status, $isOpen, $icon = 'Active') {
       //  return storage_path() .
@@ -396,7 +396,7 @@ class Task extends Model
         $path = storage_path() . DIRECTORY_SEPARATOR . 'storm-pins';
         if (!$isOpen) {
             return $path.DIRECTORY_SEPARATOR.$status.DIRECTORY_SEPARATOR.$icon;
-        } 
+        }
        return $path.DIRECTORY_SEPARATOR.$status.DIRECTORY_SEPARATOR.$icon;
     }
     
