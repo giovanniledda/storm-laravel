@@ -21,6 +21,10 @@
             "url": "https://net7.codebasehq.com/nautica/net7docs-generator.git"
         },
         {
+            "type": "git",
+            "url": "https://net7.codebasehq.com/nautica/net7env-measure.git"
+        },
+        {
             "type" : "git",
             "url" : "https://github.com/net7/PHPWord.git"
         }
@@ -44,7 +48,8 @@
         "nao-pon/flysystem-google-drive": "~1.1",
         "net7/documents": "dev-master",
         "net7/logging": "dev-master",
-        "net7/docs-generator": "dev-master",
+        "net7/docs-generator": "dev-develop",
+        "net7/env-measure": "dev-master",
         "norse-blue/parentity": "dev-master",
         "predis/predis": "^1.1",
         "propaganistas/laravel-phone": "^4.2",
