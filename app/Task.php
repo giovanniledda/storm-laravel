@@ -342,12 +342,12 @@ class Task extends Model {
             $cropY =  ( $sizeH - $task['x_coord'] + $iconInfo[1] ) +  $bridgeImageInfo[1] / 2;
             $cropX = ( ( $task['y_coord'] - $sizeW / 2 ) ) +  $bridgeImageInfo[0] /2 ;
             
-            //imagealphablending($image, false);
-          //  imagesavealpha($image, true);
+            imagealphablending($image, false);
+            imagesavealpha($image, true);
             $im2 = imagecrop($image, ['x' => $cropX, 'y' => $cropY, 'width' => $sizeW, 'height' => $sizeH]);
                        
-          //  imagealphablending($im2, false);
-          //  imagesavealpha($im2, true);
+            imagealphablending($im2, false);
+            imagesavealpha($im2, true);
             imagecopymerge($im2, $src, $sizeW / 2 - ($iconInfo[0] / 2), $sizeH / 2 - ($iconInfo[1] ), 0, 0, $iconInfo[0], $iconInfo[1], 100);
             
             if ($im2 !== FALSE) {
