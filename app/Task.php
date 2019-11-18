@@ -292,7 +292,7 @@ class Task extends Model {
         if (!is_dir($map_dir)) {
             mkdir($map_dir);
         }
-        $fixedSizeW = 1200;
+       
         $map = storage_path() . DIRECTORY_SEPARATOR . '/tasks/' . DIRECTORY_SEPARATOR . $task->id . '_map.png';
         if (is_file($map)) {
             unlink($map);
@@ -306,7 +306,7 @@ class Task extends Model {
 
         $bridgeImagePath = $bridgeMedia->getPathBySize('');
         $bridgeImageInfo = getimagesize($bridgeImagePath);
-        $image = imagecreate($bridgeImageInfo[0] + $bridgeImageInfo[0] , $bridgeImageInfo[1]+  $bridgeImageInfo[1]);
+        $image = imagecreate($bridgeImageInfo[0], $bridgeImageInfo[1]);
         imagecolorallocate($image, 255, 255, 255);
 
         if (exif_imagetype($bridgeImagePath) === IMAGETYPE_PNG) {
@@ -318,39 +318,33 @@ class Task extends Model {
             // il ponte e' un'immagine jpg
             $dest = imagecreatefromjpeg($bridgeImagePath);
         }
-        imagecopy($image, $dest, $bridgeImageInfo[0] / 2,  $bridgeImageInfo[1] / 2, 0, 0, $bridgeImageInfo[0] , $bridgeImageInfo[1] );
+        imagecopy($image, $dest, 0, 0, 0, 0, $bridgeImageInfo[0] , $bridgeImageInfo[1] );
         
-       // $path = storage_path() . DIRECTORY_SEPARATOR . 'storm-pins';
-       //  imagepng($image, $path.DIRECTORY_SEPARATOR.'main.png');
+       
         
         try {
-
+            
             
             $pinPath = $this->getIcon($status, $isOpen);
             $iconInfo = getimagesize($pinPath);
             $src = imagecreatefrompng($pinPath);
-
-            imagealphablending($src, false);
-            imagesavealpha($src, true);
-            // resize non funziona la trasparenza del pin
-            //$iconInfo = [64, 96];
-            //$src = $this->resize_image($pinPath, 64, 96);
-
-            $sizeW = $fixedSizeW;
-            $sizeH =  $fixedSizeW * ( $bridgeImageInfo[1] ) / ($bridgeImageInfo[0] ) ;
-
-            $cropY =  ( $sizeH - $task['x_coord'] + $iconInfo[1] ) +  $bridgeImageInfo[1] / 2;
-            $cropX = ( ( $task['y_coord'] - $sizeW / 2 ) ) +  $bridgeImageInfo[0] /2 ;
-            
-            imagealphablending($image, false);
-            imagesavealpha($image, true);
-            $im2 = imagecrop($image, ['x' => $cropX, 'y' => $cropY, 'width' => $sizeW, 'height' => $sizeH]);
+            imagecopymerge($image, $src, $task['y_coord'] - $iconInfo[0] / 2, $bridgeImageInfo[1] -  $task['x_coord'] - $iconInfo[1], 0, 0, $iconInfo[0], $iconInfo[1], 100);
+            $sfondo = imagecreate($bridgeImageInfo[0]*2, $bridgeImageInfo[1]*2);
+                       imagecolorallocate($image, 255, 255, 255);
                        
-            imagealphablending($im2, false);
-            imagesavealpha($im2, true);
-            imagecopymerge($im2, $src, $sizeW / 2 - ($iconInfo[0] / 2), $sizeH / 2 - ($iconInfo[1] ), 0, 0, $iconInfo[0], $iconInfo[1], 100);
+             imagecopy($sfondo, $image,  $bridgeImageInfo[0]/2,  $bridgeImageInfo[1]/2, 0, 0, $bridgeImageInfo[0] , $bridgeImageInfo[1] );
+                       
+             $path = storage_path() . DIRECTORY_SEPARATOR . 'tasks';
+             imagepng($sfondo, $path.DIRECTORY_SEPARATOR.'map2.png');
             
-            if ($im2 !== FALSE) {
+             $sizeW =  1000; 
+             $sizeH =   500;
+             
+            $cropX =  ( $task['y_coord'] ) - $sizeW / 2 ;
+            $cropY =  ($bridgeImageInfo[1] -  $task['x_coord'] + $iconInfo[1]/2 ) - $sizeH/2 ;
+             
+            $im2 = imagecrop($image, ['x' => $cropX  , 'y' => $cropY, 'width' => $sizeW, 'height' => $sizeH]);
+             if ($im2 !== FALSE) {
                 imagepng($im2, $map);
                 imagedestroy($im2);
             }
@@ -358,7 +352,38 @@ class Task extends Model {
             imagedestroy($dest);
             imagedestroy($src);
             imagedestroy($image);
+             
             return ['success' => true, 'Y' => $cropY, 'X' => $cropX, 'H'=>$sizeH, 'W'=> $sizeW];
+             
+         //   imagealphablending($src, false);
+           // imagesavealpha($src, true);
+            // resize non funziona la trasparenza del pin
+            //$iconInfo = [64, 96];
+            //$src = $this->resize_image($pinPath, 64, 96);
+
+     //       $sizeW =  $fixedSizeW;
+         //   $sizeH =  $fixedSizeW * ( $bridgeImageInfo[1] ) / ($bridgeImageInfo[0] ) ;
+
+       //     $cropY =  ( $sizeH - $task['x_coord'] + $iconInfo[1] ) +  $bridgeImageInfo[1];
+           // $cropX = ( ( $task['y_coord'] - $sizeW / 2 ) ) +  $bridgeImageInfo[0];
+            
+            //imagealphablending($image, false);
+          //  imagesavealpha($image, true);
+            //$im2 = imagecrop($image, ['x' => $cropX, 'y' => $cropY, 'width' => $sizeW, 'height' => $sizeH]);
+            //imagepng($im2, $path.DIRECTORY_SEPARATOR.'map1.png');           
+          //  imagealphablending($im2, false);
+          //  imagesavealpha($im2, true);
+           // imagecopymerge($im2, $src, $sizeW / 2 - ($iconInfo[0] / 2), $sizeH / 2 - ($iconInfo[1] ), 0, 0, $iconInfo[0], $iconInfo[1], 100);
+            
+            /*if ($im2 !== FALSE) {
+                imagepng($im2, $map);
+                imagedestroy($im2);
+            }
+
+            imagedestroy($dest);
+            imagedestroy($src);
+            imagedestroy($image);*/
+          //  return ['success' => true, 'Y' => $cropY, 'X' => $cropX, 'H'=>$sizeH, 'W'=> $sizeW];
         } catch (\Exception $exc) {
             return ['success' => false, 'error' => $exc->getMessage()];
         }
