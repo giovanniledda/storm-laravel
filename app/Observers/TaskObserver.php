@@ -155,7 +155,7 @@ class TaskObserver
             }
             $task_author = $auth_user;
         }
-        //$task->updateMap();
+        $task->updateMap();
 
 
         // mette in coda il job

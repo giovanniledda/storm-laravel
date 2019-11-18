@@ -306,7 +306,7 @@ class Task extends Model {
 
         $bridgeImagePath = $bridgeMedia->getPathBySize('');
         $bridgeImageInfo = getimagesize($bridgeImagePath);
-        $image = imagecreate($bridgeImageInfo[0], $bridgeImageInfo[1]);
+        $image = imagecreate($bridgeImageInfo[0] + $bridgeImageInfo[0] , $bridgeImageInfo[1]+  $bridgeImageInfo[1]);
         imagecolorallocate($image, 255, 255, 255);
 
         if (exif_imagetype($bridgeImagePath) === IMAGETYPE_PNG) {
@@ -318,8 +318,11 @@ class Task extends Model {
             // il ponte e' un'immagine jpg
             $dest = imagecreatefromjpeg($bridgeImagePath);
         }
-        imagecopy($image, $dest, 0, 0, 0, 0, $bridgeImageInfo[0], $bridgeImageInfo[1]);
-
+        imagecopy($image, $dest, $bridgeImageInfo[0] / 2,  $bridgeImageInfo[1] / 2, 0, 0, $bridgeImageInfo[0] , $bridgeImageInfo[1] );
+        
+        $path = storage_path() . DIRECTORY_SEPARATOR . 'storm-pins';
+         imagepng($image, $path.DIRECTORY_SEPARATOR.'main.png');
+        
         try {
 
             
@@ -334,17 +337,17 @@ class Task extends Model {
             //$src = $this->resize_image($pinPath, 64, 96);
 
             $sizeW = $fixedSizeW;
-            $sizeH = ( $fixedSizeW * $bridgeImageInfo[1]) / $bridgeImageInfo[0];
+            $sizeH =  $fixedSizeW * ( $bridgeImageInfo[1] ) / ($bridgeImageInfo[0] ) ;
 
-            $cropY =   $sizeH - $task['x_coord'] + $iconInfo[1];
-            $cropX = ( $task['y_coord'] - $sizeW / 2 );
+            $cropY =  ( $sizeH - $task['x_coord'] + $iconInfo[1] ) +  $bridgeImageInfo[1] / 2;
+            $cropX = ( ( $task['y_coord'] - $sizeW / 2 ) ) +  $bridgeImageInfo[0] /2 ;
             
-            imagealphablending($image, false);
-            imagesavealpha($image, true);
+            //imagealphablending($image, false);
+          //  imagesavealpha($image, true);
             $im2 = imagecrop($image, ['x' => $cropX, 'y' => $cropY, 'width' => $sizeW, 'height' => $sizeH]);
                        
-            imagealphablending($im2, false);
-            imagesavealpha($im2, true);
+          //  imagealphablending($im2, false);
+          //  imagesavealpha($im2, true);
             imagecopymerge($im2, $src, $sizeW / 2 - ($iconInfo[0] / 2), $sizeH / 2 - ($iconInfo[1] ), 0, 0, $iconInfo[0], $iconInfo[1], 100);
             
             if ($im2 !== FALSE) {
