@@ -320,8 +320,8 @@ class Task extends Model {
         }
         imagecopy($image, $dest, $bridgeImageInfo[0] / 2,  $bridgeImageInfo[1] / 2, 0, 0, $bridgeImageInfo[0] , $bridgeImageInfo[1] );
         
-        $path = storage_path() . DIRECTORY_SEPARATOR . 'storm-pins';
-         imagepng($image, $path.DIRECTORY_SEPARATOR.'main.png');
+       // $path = storage_path() . DIRECTORY_SEPARATOR . 'storm-pins';
+       //  imagepng($image, $path.DIRECTORY_SEPARATOR.'main.png');
         
         try {
 
