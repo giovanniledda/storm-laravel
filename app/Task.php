@@ -19,12 +19,13 @@ use const PROJECT_STATUS_CLOSED;
 use const TASKS_STATUS_COMPLETED;
 use const TASKS_STATUS_DENIED;
 
-class Task extends Model
-{
-    use RevisionableTrait, HasStatuses, DocumentableTrait;
+class Task extends Model {
+
+    use RevisionableTrait,
+        HasStatuses,
+        DocumentableTrait;
 
     protected $table = 'tasks';
-
     protected $fillable = [
         'number',
         'title',
@@ -42,9 +43,7 @@ class Task extends Model
         'y_coord',
         'is_open',
         'bridge_position',
-
     ];
-
     private $min_x;
     private $max_x;
     private $min_y;
@@ -54,8 +53,7 @@ class Task extends Model
      * @param mixed $min_x
      * @return Task
      */
-    public function setMinX($min_x)
-    {
+    public function setMinX($min_x) {
         $this->min_x = $min_x;
         return $this;
     }
@@ -64,8 +62,7 @@ class Task extends Model
      * @param mixed $max_x
      * @return Task
      */
-    public function setMaxX($max_x)
-    {
+    public function setMaxX($max_x) {
         $this->max_x = $max_x;
         return $this;
     }
@@ -74,8 +71,7 @@ class Task extends Model
      * @param mixed $min_y
      * @return Task
      */
-    public function setMinY($min_y)
-    {
+    public function setMinY($min_y) {
         $this->min_y = $min_y;
         return $this;
     }
@@ -84,15 +80,12 @@ class Task extends Model
      * @param mixed $max_y
      * @return Task
      */
-    public function setMaxY($max_y)
-    {
+    public function setMaxY($max_y) {
         $this->max_y = $max_y;
         return $this;
     }
 
-
-    public function getMediaPath($media)
-    {
+    public function getMediaPath($media) {
 
         $document = $media->model;
         $media_id = $media->id;
@@ -101,81 +94,67 @@ class Task extends Model
         $project_id = $project->id;
         $task_id = $this->id;
         $path = 'projects' . DIRECTORY_SEPARATOR . $project_id . DIRECTORY_SEPARATOR . 'tasks' . DIRECTORY_SEPARATOR .
-            $task_id . DIRECTORY_SEPARATOR . $document->type . DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
+                $task_id . DIRECTORY_SEPARATOR . $document->type . DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
 
         return $path;
-
     }
 
     /*
 
       $task = $model;
-                    $project = $task->project;
-                    $project_id = $project->id;
-                    $task_id = $task->id;
-                    $path .= 'projects' . DIRECTORY_SEPARATOR . $project_id . DIRECTORY_SEPARATOR . 'tasks' . DIRECTORY_SEPARATOR .
-                            $task_id . DIRECTORY_SEPARATOR . $document->type . DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
+      $project = $task->project;
+      $project_id = $project->id;
+      $task_id = $task->id;
+      $path .= 'projects' . DIRECTORY_SEPARATOR . $project_id . DIRECTORY_SEPARATOR . 'tasks' . DIRECTORY_SEPARATOR .
+      $task_id . DIRECTORY_SEPARATOR . $document->type . DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
 
-    */
+     */
 
-
-    protected static function boot()
-    {
+    protected static function boot() {
         parent::boot();
 
         Task::observe(TaskObserver::class);
     }
 
-    public function intervent_type()
-    {
+    public function intervent_type() {
         return $this->belongsTo('App\TaskInterventType');
     }
 
-    public function project()
-    {
+    public function project() {
         return $this->belongsTo('App\Project');
     }
 
-    public function getProjectBoat()
-    {
+    public function getProjectBoat() {
 //        $this->hasOneThrough('App\Boat','App\Project'); // così non funziona perché va a cercare 'projects.task_id' in 'field list' (SQL: select `boats`.*, `projects`.`task_id` as `laravel_through_key` from `boats` inner join `projects` on `projects`.`id` = `boats`.`project_id` where `projects`.`task_id` = 13 limit 1)'
         return $this->project ? $this->project->boat : null;
     }
 
-
-    public function subsection()
-    {
+    public function subsection() {
         return $this->belongsTo('App\Subsection');
     }
 
-    public function section()
-    {
+    public function section() {
         return $this->belongsTo('App\Section');
     }
 
-    public function author()
-    {
+    public function author() {
         return $this->belongsTo('App\User');
     }
 
-    public function comments()
-    {
+    public function comments() {
         return $this->morphMany('App\Comment', 'commentable');
     }
 
-    public function history()
-    {
+    public function history() {
         return $this->morphMany('App\History', 'historyable');
     }
 
-    public function taskIntervents()
-    {
+    public function taskIntervents() {
         return $this->hasOne('App\TaskInterventType');
 //        return $this->hasOneThrough('App\Site', 'App\Project');  // NON funziona perché i progetti sono "many" e il site è "one"
     }
 
-    public function getProjectUsers()
-    {
+    public function getProjectUsers() {
         $proj = $this->project;
         if (is_object($proj)) {
             $users = $proj->users;
@@ -191,14 +170,12 @@ class Task extends Model
      *
      * Restituisce gli utenti (e contiene la logica per recuperarli) che devono ricevere una notifica legata agi eventi del Task
      */
-    public function getUsersToNotify()
-    {
+    public function getUsersToNotify() {
 
 // aggiungere qua altra logica, se serve (tipo filtri sui ruoli, etc)
 //        return StormUtils::getAllBoatManagers();
         return $this->getProjectUsers();
     }
-
 
     /**
      * Creates a Task using some fake data and some others that have sense
@@ -212,32 +189,26 @@ class Task extends Model
      *
      * @return Task $t
      */
-    public static function createSemiFake(Faker $faker,
-                                          Project $proj = null,
-                                          Section $sect = null,
-                                          Subsection $ssect = null,
-                                          User $author = null,
-                                          TaskInterventType $type = null)
-    {
+    public static function createSemiFake(Faker $faker, Project $proj = null, Section $sect = null, Subsection $ssect = null, User $author = null, TaskInterventType $type = null) {
 
         $status = $faker->randomElement(TASKS_STATUSES);
         $is_open = is_object($proj) ? ($proj->project_status != PROJECT_STATUS_CLOSED) : !in_array($status, [TASKS_STATUS_COMPLETED, TASKS_STATUS_DENIED]);
         $t = new Task([
-                'number' => $faker->randomDigitNotNull(),
-                'title' => $faker->sentence(),
-                'description' => $faker->text(),
-                'estimated_hours' => $faker->randomFloat(1, 0, 100),
-                'worked_hours' => $faker->randomFloat(1, 0, 100),
-                'x_coord' => $faker->randomFloat(2, 1119.29, 1159.29), // scostarsi del 5% dal punto 1139.29
-                'y_coord' => $faker->randomFloat(2, 267.95, 307.95),  // scostarsi del 5% dal punto  287.95
-                'task_status' => $status, //$faker->randomElement(TASKS_STATUSES),
-                'is_open' => $is_open, //$faker->randomElement([1, 0]),
-                'project_id' => $proj ? $proj->id : null,
-                'section_id' => $sect ? $sect->id : null,
-                'subsection_id' => $ssect ? $ssect->id : null,
-                'author_id' => $author ? $author->id : null,
-                'intervent_type_id' => $type ? $type->id : null,
-            ]
+            'number' => $faker->randomDigitNotNull(),
+            'title' => $faker->sentence(),
+            'description' => $faker->text(),
+            'estimated_hours' => $faker->randomFloat(1, 0, 100),
+            'worked_hours' => $faker->randomFloat(1, 0, 100),
+            'x_coord' => $faker->randomFloat(2, 1119.29, 1159.29), // scostarsi del 5% dal punto 1139.29
+            'y_coord' => $faker->randomFloat(2, 267.95, 307.95), // scostarsi del 5% dal punto  287.95
+            'task_status' => $status, //$faker->randomElement(TASKS_STATUSES),
+            'is_open' => $is_open, //$faker->randomElement([1, 0]),
+            'project_id' => $proj ? $proj->id : null,
+            'section_id' => $sect ? $sect->id : null,
+            'subsection_id' => $ssect ? $ssect->id : null,
+            'author_id' => $author ? $author->id : null,
+            'intervent_type_id' => $type ? $type->id : null,
+                ]
         );
         $t->save();
         $t->setStatus($status);
@@ -245,21 +216,18 @@ class Task extends Model
         return $t;
     }
 
-    public function updateXYCoordinates(Faker &$faker)
-    {
+    public function updateXYCoordinates(Faker &$faker) {
         $this->update([
             'x_coord' => $faker->randomFloat(2, $this->min_x ? $this->min_x : 1119.29, $this->max_x ? $this->max_x : 1159.29), // scostarsi del 5% dal punto 1139.29
-            'y_coord' => $faker->randomFloat(2, $this->min_y ? $this->min_y : 267.95, $this->max_y ? $this->max_y : 307.95),  // scostarsi del 5% dal punto  287.95
+            'y_coord' => $faker->randomFloat(2, $this->min_y ? $this->min_y : 267.95, $this->max_y ? $this->max_y : 307.95), // scostarsi del 5% dal punto  287.95
         ]);
     }
-
 
     /**
      * Adds an image as a generic_image Net7/Document
      *
      */
-    public function addDamageReportPhoto(string $filepath, string $type = null)
-    {
+    public function addDamageReportPhoto(string $filepath, string $type = null) {
         // mettere tutto in una funzione
         $f_arr = explode('/', $filepath);
         $filename = Arr::last($f_arr);
@@ -281,21 +249,20 @@ class Task extends Model
      *
      * @return string
      */
-    public function getAdditionalPhotoPath()
-    {
+    public function getAdditionalPhotoPath() {
         return $this->getDocumentMediaFilePath(Document::ADDITIONAL_IMAGE_TYPE, 'report-large');
     }
+
     /**
      * Retrieve iamge's path
      *
      * @return string
      */
-    public function getDetailedPhotoPaths()
-    {
+    public function getDetailedPhotoPaths() {
         return $this->getAllDocumentsMediaFilePathArray(Document::DETAILED_IMAGE_TYPE, 'report');
     }
 
-    public function generateBridgePositionFileFromBase64(){
+    public function generateBridgePositionFileFromBase64() {
         $base64 = $this->bridge_position;
         $handle = tmpfile();
         $path = stream_get_meta_data($handle)['uri'];
@@ -307,24 +274,29 @@ class Task extends Model
 
         $pngPath = $path . ".jpg";
 
-        shell_exec("convert " . $path  . " "  . $pngPath);
+        shell_exec("convert " . $path . " " . $pngPath);
 
         return [
             'path' => $pngPath,
             'handle' => $handle
         ];
-
     }
 
-    public function removeTempFileByHandle($handle){
-        fclose ($handle); // this removes the file
+    public function removeTempFileByHandle($handle) {
+        fclose($handle); // this removes the file
     }
-
 
     public function updateMap() {
-        $task =$this;
+        $task = $this;
+        $map_dir = storage_path() . DIRECTORY_SEPARATOR . '/tasks/';
+        if (!is_dir($map_dir)) {
+            mkdir($map_dir);
+        }
         $fixedSizeW = 1200;
-        $map = storage_path() . DIRECTORY_SEPARATOR . 'map.png';
+        $map = storage_path() . DIRECTORY_SEPARATOR . '/tasks/' . DIRECTORY_SEPARATOR . $task->id . '_map.png';
+        if (is_file($map)) {
+            unlink($map);
+        }
         // prendo l'immagine del ponte 
         $isOpen = $task['is_open'];
         $status = $task['task_status'];
@@ -334,12 +306,8 @@ class Task extends Model
 
         $bridgeImagePath = $bridgeMedia->getPathBySize('');
         $bridgeImageInfo = getimagesize($bridgeImagePath);
-        $image = imagecreate ($bridgeImageInfo[0] ,$bridgeImageInfo[1]  ) ;
-                 imagecolorallocate (  $image ,255,255 , 255 );
-        
-        // sfondo bianco
-       // $im = @imagecreate(110, 20)  or die("Cannot Initialize new GD image stream");
-       // $background_color = imagecolorallocate($im, 255, 255, 255);
+        $image = imagecreate($bridgeImageInfo[0], $bridgeImageInfo[1]);
+        imagecolorallocate($image, 255, 255, 255);
 
         if (exif_imagetype($bridgeImagePath) === IMAGETYPE_PNG) {
             // il ponte e' un'immagine png
@@ -350,83 +318,86 @@ class Task extends Model
             // il ponte e' un'immagine jpg
             $dest = imagecreatefromjpeg($bridgeImagePath);
         }
-        imagecopy($image, $dest, 0, 0, 0, 0, $bridgeImageInfo[0] ,$bridgeImageInfo[1]);
+        imagecopy($image, $dest, 0, 0, 0, 0, $bridgeImageInfo[0], $bridgeImageInfo[1]);
+
         try {
 
+            
             $pinPath = $this->getIcon($status, $isOpen);
             $iconInfo = getimagesize($pinPath);
-            
             $src = imagecreatefrompng($pinPath);
-            
+
+            imagealphablending($src, false);
+            imagesavealpha($src, true);
             // resize non funziona la trasparenza del pin
             //$iconInfo = [64, 96];
             //$src = $this->resize_image($pinPath, 64, 96);
+
+            $sizeW = $fixedSizeW;
+            $sizeH = ( $fixedSizeW * $bridgeImageInfo[1]) / $bridgeImageInfo[0];
+
+            $cropY =   $sizeH - $task['x_coord'] + $iconInfo[1];
+            $cropX = ( $task['y_coord'] - $sizeW / 2 );
             
-            $sizeW = $fixedSizeW ;
-            $sizeH = ( $fixedSizeW * $bridgeImageInfo[1])  / $bridgeImageInfo[0] ;
-            //  imagecopymerge($dst_im, $src_im, $dst_x, $dst_y, $src_x, $src_y, $src_w, $src_h, $pct)
-            imagecopymerge($image, $src, $task['y_coord' ] - $iconInfo[0]/2, $bridgeImageInfo[1] - $task['x_coord'] - $iconInfo[1], 0, 0, $iconInfo[0], $iconInfo[1], 75);
-            $im2 = imagecrop($image, ['x' => ( $task['y_coord'] - $sizeW / 2 )  , 'y' =>  $sizeH  -  $task['x_coord'] + $iconInfo[1], 'width' => $sizeW, 'height' => $sizeH]);
+            imagealphablending($image, false);
+            imagesavealpha($image, true);
+            $im2 = imagecrop($image, ['x' => $cropX, 'y' => $cropY, 'width' => $sizeW, 'height' => $sizeH]);
+                       
+            imagealphablending($im2, false);
+            imagesavealpha($im2, true);
+            imagecopymerge($im2, $src, $sizeW / 2 - ($iconInfo[0] / 2), $sizeH / 2 - ($iconInfo[1] ), 0, 0, $iconInfo[0], $iconInfo[1], 100);
+            
             if ($im2 !== FALSE) {
                 imagepng($im2, $map);
                 imagedestroy($im2);
-            } 
-            
-            imagedestroy($dest);
-            imagedestroy($src); 
-            imagedestroy($image);
-            $type = pathinfo($map, PATHINFO_EXTENSION);
-            $data = file_get_contents($map);
-            $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
-            $this->bridge_position = $base64;
- 
-            return ['success' => true, 'y'=> $sizeW, 'y1' => $sizeH] ;
-            
-        } catch (\Exception $exc) {
-            return ['success' => false, 'error' =>$exc->getMessage() ] ;
-        }
             }
 
+            imagedestroy($dest);
+            imagedestroy($src);
+            imagedestroy($image);
+            return ['success' => true, 'Y' => $cropY, 'X' => $cropX, 'H'=>$sizeH, 'W'=> $sizeW];
+        } catch (\Exception $exc) {
+            return ['success' => false, 'error' => $exc->getMessage()];
+        }
+    }
+
     private function getIcon($status, $isOpen, $icon = 'Active') {
-      //  return storage_path() .
-        //        DIRECTORY_SEPARATOR . 'storm-pins'.DIRECTORY_SEPARATOR.'Active.png';
-                 
-        $icon = $icon.'.png';
-        $status= str_replace(' ', '_', $status);
+        /* return storage_path() .
+          DIRECTORY_SEPARATOR . 'storm-pins'.DIRECTORY_SEPARATOR.'Active.png';
+         */
+        $icon = $icon . '.png';
+        $status = str_replace(' ', '_', $status);
         $path = storage_path() . DIRECTORY_SEPARATOR . 'storm-pins';
         if (!$isOpen) {
-            return $path.DIRECTORY_SEPARATOR.$status.DIRECTORY_SEPARATOR.$icon;
+            return $path . DIRECTORY_SEPARATOR . $status . DIRECTORY_SEPARATOR . $icon;
         }
-       return $path.DIRECTORY_SEPARATOR.$status.DIRECTORY_SEPARATOR.$icon;
+        return $path . DIRECTORY_SEPARATOR . $status . DIRECTORY_SEPARATOR . $icon;
     }
-    
-    private function resize_image($file, $w, $h, $crop=FALSE) {
-    list($width, $height) = getimagesize($file);
-    $r = $width / $height;
-    if ($crop) {
-        if ($width > $height) {
-            $width = ceil($width-($width*abs($r-$w/$h)));
-        } else {
-            $height = ceil($height-($height*abs($r-$w/$h)));
-        }
-        $newwidth = $w;
-        $newheight = $h;
-    } else {
-        if ($w/$h > $r) {
-            $newwidth = $h*$r;
+
+    private function resize_image($file, $w, $h, $crop = FALSE) {
+        list($width, $height) = getimagesize($file);
+        $r = $width / $height;
+        if ($crop) {
+            if ($width > $height) {
+                $width = ceil($width - ($width * abs($r - $w / $h)));
+            } else {
+                $height = ceil($height - ($height * abs($r - $w / $h)));
+            }
+            $newwidth = $w;
             $newheight = $h;
         } else {
-            $newheight = $w/$r;
-            $newwidth = $w;
+            if ($w / $h > $r) {
+                $newwidth = $h * $r;
+                $newheight = $h;
+            } else {
+                $newheight = $w / $r;
+                $newwidth = $w;
+            }
         }
-    }
-    $src = imagecreatefrompng($file);
-    $dst = imagecreatetruecolor($newwidth, $newheight);
-    imagecopyresampled($dst, $src, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
+        $src = imagecreatefrompng($file);
+        $dst = imagecreatetruecolor($newwidth, $newheight);
+        imagecopyresampled($dst, $src, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
 
-    return $dst;
-}
-    
-    
-   
+        return $dst;
+    }
 }

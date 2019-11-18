@@ -29,6 +29,7 @@ class TaskObserver
      */
     public function updating(Task $task)
     {
+       $task->updateMap();
         $original = $task->getOriginal();
 
         if (isset($original['is_open']) && $original['is_open'] != $task->is_open && $task->is_open == 0) {
@@ -37,8 +38,7 @@ class TaskObserver
                 ->history()
                 ->create(
                     ['event_date' => date("Y-m-d H:i:s", time()),
-                        'event_body' => 'Task number #' . $task->number . ' marked to closed']);
-
+                        'event_body' => 'Task number #' . $task->number . ' marked to closed']); 
 
         }
 
@@ -82,7 +82,8 @@ class TaskObserver
             ]);
         }
 
-         $task->updateMap();
+
+        
     }
 
 
@@ -154,7 +155,7 @@ class TaskObserver
             }
             $task_author = $auth_user;
         }
-        $task->updateMap();
+        //$task->updateMap();
 
 
         // mette in coda il job
