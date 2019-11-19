@@ -11,10 +11,46 @@ use Phpdocx\Create\CreateDocxFromTemplate;
 use Phpdocx\Elements\WordFragment;
 use function count;
 use function date;
+use function min;
 use function time;
 
 trait TemplateReplacementRules
 {
+
+    public function getHtmlProva()
+    {
+        return '<h1>HELLO WORLD!</h1>';
+    }
+
+    /**
+     *  Per ora ritorna un array fisso per TEST dei doc template
+     *
+     * @return array
+     */
+    public function getBlockInfo()
+    {
+        return [
+            ['task_status' => 'Pippo', 'task_type' => 'Pippopoli', 'task_location' => '323289898989', 'img_img1' => $this->getProfilePhoto()],
+            ['task_status' => 'Nonna Papera', 'task_type' => 'Fattoriopoli', 'task_location' => '323289898666', 'img_img1' => $this->getProfilePhoto()]
+        ];
+    }
+
+    /**
+     * Per ora ritorna un array fisso per TEST dei doc template
+     *
+     * @return array
+     */
+    public function getAllUsersTableRowInfo()
+    {
+
+        $replacements = [];
+
+        $users = User::all();
+        foreach ($users as $user) {
+            $replacements[] = ['row_tableOne' => $user->id, 'userName' => $user->name, 'userSurname' => $user->surname];
+        }
+        return $replacements;
+    }
 
 
     public function handleBloccoProvaHTML(CreateDocxFromTemplate &$template_processor)
@@ -74,7 +110,7 @@ trait TemplateReplacementRules
         if ($env_param) {
 
             $data = [
-                'legend' => [$legend],
+                'legend' => $env_param->min_threshold ? ['Min Threshold', $legend] : [$legend],
             ];
 
             /** @var Measurement $measurement */
@@ -82,11 +118,10 @@ trait TemplateReplacementRules
             $hax_print_step = 10;
             foreach ($env_param->measurements as $measurement) {
                 $step = ++$i%$hax_print_step;
-                $r=0;
                 $data['data'][] =
                     [
                         'name' => ($step == 0) ? $measurement->measurement_time : '',
-                        'values' => [$measurement->measured_value]
+                        'values' => $env_param->min_threshold ? [$env_param->min_threshold, $measurement->measured_value] : [$measurement->measured_value]
                     ];
             }
 
@@ -109,7 +144,7 @@ trait TemplateReplacementRules
                 'hgrid' => '1',
                 'vgrid' => '1',
                 'scalingMax' => $env_param->getMaximum(),
-                'scalingMin' => $env_param->getMinimum(),
+                'scalingMin' => $env_param->min_threshold ? min($env_param->min_threshold, $env_param->getMinimum()) : $env_param->getMinimum(),
                 'horizontalOffset' => 360,
                 'formatDataLabels' => [
                     'rotation' => 45,
@@ -124,29 +159,28 @@ trait TemplateReplacementRules
         }
     }
 
-
     /**
      * @param CreateDocxFromTemplate $template_processor
      * @param string $chart_name
      */
     public function handlePhpdocxCharts(CreateDocxFromTemplate &$template_processor, string $chart_name)
     {
-        $param_key = $legend = $color = '';
+        $param_key = '';
         switch ($chart_name) {
             case 'chart_temperatureChart':
                 $param_key = 'celsius__app\_user';
                 $legend = 'Temperature';
-                $color = '4';
+                $color = '2';
                 break;
             case 'chart_dewpointChart':
                 $param_key = 'dew_point__app\_user';
                 $legend = 'Dew Point';
-                $color = '5';
+                $color = '2';
                 break;
             case 'chart_humidityChart':
                 $param_key = 'humidity__app\_user';
                 $legend = 'Humidity';
-                $color = '6';
+                $color = '2';
                 break;
         }
         $this->handleEnvironmentalParamChart($template_processor, $chart_name, $param_key, $legend, $color);
