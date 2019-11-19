@@ -25,7 +25,11 @@ class Project extends Model {
          addDocumentWithType as traitAddDocumentWithType;
          updateDocument as traitUpdateDocument;
     }
-    use HasStatuses, SerializesModels,  HasDocsGenerator, TemplateReplacementRules, EnvParamsInputOutputTransations;
+    use HasStatuses,
+        SerializesModels,
+        HasDocsGenerator,
+        TemplateReplacementRules,
+        EnvParamsInputOutputTransations;
 
     protected $table = 'projects';
     protected $fillable = [
@@ -463,7 +467,8 @@ class Project extends Model {
 
     /**
      * Chiude un progetto o tenta di chiuderlo se trova i task tutti chiusi
-     * @param type $force
+     * @param int $force
+     * @return array
      */
     public function close($force = 0) {
 
@@ -673,240 +678,5 @@ class Project extends Model {
 
     }
 
-
-    /*  methods for net7 docs-generator templates */
-
-    public function getBoatName(){
-        $boat = $this->boat;
-        return Utils::sanitizeTextsForPlaceholders($boat->name);
-    }
-
-    public function getBoatRegistrationNumber(){
-        $boat = $this->boat;
-        return Utils::sanitizeTextsForPlaceholders($boat->registration_number);
-    }
-
-    public function getBoatType(){
-        $boat = $this->boat;
-        return $boat->boat_type;
-    }
-
-    public function getBoatMainPhotoPath(){
-
-        $boat = $this->boat;
-        return $boat->getMainPhotoPath();
-    }
-
-
-    public function printDocxPageBreak()
-    {
-        return '</w:t></w:r>'.'<w:r><w:br w:type="page"/></w:r>'. '<w:r><w:t>';
-    }
-
-    public function printDocxTodayDate()
-    {
-        return date('Y-m-d', time());
-    }
-
-    public function getBloccoTaskSampleReportInfoArray()
-    {
-        $replacements = [];
-        foreach ($this->getTasksToIncludeInReport() as $task) {
-            $this->_currentTask = $task;
-            $this->updateCurrentTaskPhotosArray();
-            $repl_array =
-                [
-                    'task_id' => $task->id,
-                    'task_status' => Utils::sanitizeTextsForPlaceholders($task->task_status),
-                    'task_description' => Utils::sanitizeTextsForPlaceholders($task->description),
-                    'task_created_at' => $task->created_at,
-                    'task_updated_at' => $task->updated_at,
-                    'task_type' => $task->intervent_type ? Utils::sanitizeTextsForPlaceholders($task->intervent_type->name) : '?',
-                    'task_location' => $task->section ? Utils::sanitizeTextsForPlaceholders($task->section->name) : '?',
-                    'pageBreak' => $this->printDocxPageBreak(),
-                    'img_currentTask_brPos' => $this->getCurrentTaskBridgeImage(),
-                    'img_currentTask_img1' => $this->getCurrentTaskImg1(),
-                    'img_currentTask_img2' => $this->getCurrentTaskImg2(),
-                    'img_currentTask_img3' => $this->getCurrentTaskImg3(),
-                    'img_currentTask_img4' => $this->getCurrentTaskImg4(),
-                    'img_currentTask_img5' => $this->getCurrentTaskImg5(),
-                ];
-            // for ($i = 1; $i <= 5; $i++) {
-            //     if ($this->getCurrentTaskImg($i)) {
-            //         $repl_array["img_currentTask_img$i"] = $this->getCurrentTaskImg($i);
-            //     }
-            // }
-            $replacements[] = $repl_array;
-        }
-        return $replacements;
-    }
-
-    public function getCurrentTaskImg($index, $task_id = null)
-    {
-        if ($task_id) {
-            $this->_currentTask = Task::find($task_id);
-            $this->updateCurrentTaskPhotosArray();
-        }
-        return isset($this->_currentTaskPhotos[$index]) ? $this->_currentTaskPhotos[$index] : '';
-    }
-
-    public function getCurrentTaskImg1($task_id = null)
-    {
-        return $this->getCurrentTaskImg(1, $task_id);
-    }
-
-    public function getCurrentTaskImg2($task_id = null)
-    {
-        return $this->getCurrentTaskImg(2, $task_id);
-    }
-
-    public function getCurrentTaskImg3($task_id = null)
-    {
-        return $this->getCurrentTaskImg(3, $task_id);
-    }
-
-    public function getCurrentTaskImg4($task_id = null)
-    {
-        return $this->getCurrentTaskImg(4, $task_id);
-    }
-
-    public function getCurrentTaskImg5($task_id = null)
-    {
-        return $this->getCurrentTaskImg(5, $task_id);
-    }
-
-    public function updateCurrentTaskPhotosArray()
-    {
-        $this->_currentTaskPhotos = [];
-        if ($this->_currentTask) {
-            $index = 1;
-            foreach ($this->_currentTask->getDetailedPhotoPaths() as $path) {
-                $this->_currentTaskPhotos[$index++] = $path;
-            }
-            $this->_currentTaskPhotos[5] = $this->_currentTask->getAdditionalPhotoPath();
-        }
-    }
-
-    public function getCurrentTaskBridgeImage($task_id = null)
-    {
-        if ($task_id) {
-            $this->_currentTask = Task::find($task_id);
-        }
-
-        if ($this->_currentTask && $this->_currentTask->bridge_position) {
-            $data = $this->_currentTask->generateBridgePositionFileFromBase64();
-
-            $this->_openFiles[] = $data;
-            return $data['path'];
-        }
-
-        return '';
-    }
-
-    public function setTasksToIncludeInReport($tasks){
-        $this->_taskToIncludeInReport = $tasks;
-    }
-
-    public function getTasksToIncludeInReport()
-    {
-        if ($this->_taskToIncludeInReport) {
-            $tasks = [];
-            foreach ($this->_taskToIncludeInReport as $task_id) {
-                $tasks[] = Task::Find($task_id);
-            }
-            return $tasks;
-        } else {
-            return $this->tasks;
-        }
-    }
-
-    public function closeAllTasksTemporaryFiles(){
-        foreach ($this->_openFiles as $data){
-            fclose($data['handle']);
-            unlink($data['path']);
-        }
-    }
-    public function getPageBreak() {
-        return '<p style="page-break-before: always;"></p>';
-     }
-
-
-     public function getBlockHtml(){
-
-        // return '<div><h3>Titotlo</h3><div>il corpo </div></div>';
-
-        $toRet = '';
-        // TODO: use this
-        $replacements = [];
-
-        $html = '';
-        foreach ($this->getTasksToIncludeInReport() as $task) {
-            $this->_currentTask = $task;
-
-            $corrosionMapFilePath = $task->getCorrosionMapFilePath();
-
-
-            $html .= $task->getCorrosionMapHtml($task->id);
-
-            $toRet .= " " . $corrosionMapFilePath  . " ";
-            // $this->updateCurrentTaskPhotosArray();
-            // $repl_array =
-            //     [
-            //         'task_id' => $task->id,
-            //         'task_status' => Utils::sanitizeTextsForPlaceholders($task->task_status),
-            //         'task_description' => Utils::sanitizeTextsForPlaceholders($task->description),
-            //         'task_created_at' => $task->created_at,
-            //         'task_updated_at' => $task->updated_at,
-            //         'task_type' => $task->intervent_type ? Utils::sanitizeTextsForPlaceholders($task->intervent_type->name) : '?',
-            //         'task_location' => $task->section ? Utils::sanitizeTextsForPlaceholders($task->section->name) : '?',
-            //         'pageBreak' => $this->printDocxPageBreak(),
-            //         'img_currentTask_brPos' => $this->getCurrentTaskBridgeImage(),
-            //         'img_currentTask_img1' => $this->getCurrentTaskImg1(),
-            //         'img_currentTask_img2' => $this->getCurrentTaskImg2(),
-            //         'img_currentTask_img3' => $this->getCurrentTaskImg3(),
-            //         'img_currentTask_img4' => $this->getCurrentTaskImg4(),
-            //         'img_currentTask_img5' => $this->getCurrentTaskImg5(),
-            //     ];
-            for ($i = 1; $i <= 5; $i++) {
-                if ($this->getCurrentTaskImg($i)) {
-                    $repl_array["img_currentTask_img$i"] = $this->getCurrentTaskImg($i);
-                }
-            }
-            // $replacements[] = $repl_array;
-        }
-
-        return $html;
-        // return $replacements;
-     }
-
-
-    public function setupTemplate()
-    {
-        $category = $this->persistAndAssignTemplateCategory('corrosion_map');
-        $placeholders = [
-
-            '$pageBreak$' => 'getPageBreak()',
-            '$html_bloccoTask$' => 'getBlockHtml()',
-            '$boat_type$' => 'getBoatType()',
-            '$boat_name$' => 'getBoatName()'
-
-            // '${boat_name}' => 'getBoatName()',
-            // '${boat_reg_num}' => 'getBoatRegistrationNumber()',
-            // '${boat_type}' => 'getBoatType()',
-            // '${img_BoatImage:250:250:false}' => 'getBoatMainPhotoPath()',
-            // '${date}' => 'printDocxTodayDate()',
-            // '${blC_bloccoTask}' => 'getBloccoTaskSampleReportInfoArray()',
-            // '${pageBreak}' => 'printDocxPageBreak()',
-//            '${row_tableOne}' => 'getTableTaskSampleReportInfoArray()',
-//            '${img_currentTask_brPos:450:450:false}' => 'getCurrentTaskBridgeImage()',
-//            '${img_currentTask_img1}' => 'getCurrentTaskImg1()',
-//            '${img_currentTask_img2}' => 'getCurrentTaskImg2()',
-//            '${img_currentTask_img3}' => 'getCurrentTaskImg3()',
-//            '${img_currentTask_img4}' => 'getCurrentTaskImg4()',
-//            '${img_currentTask_img5}' => 'getCurrentTaskImg5()',
-        ];
-
-        $this->insertPlaceholders('corrosion_map', $placeholders, true);
-    }
 }
 
