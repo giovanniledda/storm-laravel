@@ -49,6 +49,10 @@ class Task extends Model {
     private $min_y;
     private $max_y;
 
+    public const CORROSION_MAP_DOCUMENT_TYPE = 'corrosion_map';
+
+    protected $shouldUseRevision = false;
+
     /**
      * @param mixed $min_x
      * @return Task
@@ -286,18 +290,38 @@ class Task extends Model {
         fclose($handle); // this removes the file
     }
 
+
+    public function getCorrosionMapFilePath(){
+        $document = $this->documents->where('type', self::CORROSION_MAP_DOCUMENT_TYPE)->first();
+        if ($document) {
+            $media = $document->getRelatedMedia();
+            return $media->getPath();
+        } else {
+            return '';
+        }
+    }
+
     public function updateMap() {
         $task = $this;
+
+/*
         $map_dir = storage_path() . DIRECTORY_SEPARATOR . '/tasks/';
         if (!is_dir($map_dir)) {
             mkdir($map_dir);
         }
-       
-        $map = storage_path() . DIRECTORY_SEPARATOR . '/tasks/' . DIRECTORY_SEPARATOR . $task->id . '_map.png';
-        if (is_file($map)) {
-            unlink($map);
+
+        $tmpfilePath = storage_path() . DIRECTORY_SEPARATOR . '/tasks/' . DIRECTORY_SEPARATOR . $task->id . '_map.png';
+        if (is_file($tmpfilePath)) {
+            unlink($tmpfilePath);
         }
-        // prendo l'immagine del ponte 
+*/
+
+
+        $tmpfileHandle = tmpfile();
+        $tmpfilePath = stream_get_meta_data($tmpfileHandle)['uri'];
+
+
+        // prendo l'immagine del ponte
         $isOpen = $task['is_open'];
         $status = $task['task_status'];
 
@@ -319,42 +343,49 @@ class Task extends Model {
             $dest = imagecreatefromjpeg($bridgeImagePath);
         }
         imagecopy($image, $dest, 0, 0, 0, 0, $bridgeImageInfo[0] , $bridgeImageInfo[1] );
-        
-       
-        
+
+
+
         try {
-            
-            
+
+
             $pinPath = $this->getIcon($status, $isOpen);
             $iconInfo = getimagesize($pinPath);
             $src = imagecreatefrompng($pinPath);
             imagecopymerge($image, $src, $task['y_coord'] - $iconInfo[0] / 2, $bridgeImageInfo[1] -  $task['x_coord'] - $iconInfo[1], 0, 0, $iconInfo[0], $iconInfo[1], 100);
             $sfondo = imagecreate($bridgeImageInfo[0]*2, $bridgeImageInfo[1]*2);
                        imagecolorallocate($image, 255, 255, 255);
-                       
+
              imagecopy($sfondo, $image,  $bridgeImageInfo[0]/2,  $bridgeImageInfo[1]/2, 0, 0, $bridgeImageInfo[0] , $bridgeImageInfo[1] );
-                       
+
              $path = storage_path() . DIRECTORY_SEPARATOR . 'tasks';
              imagepng($sfondo, $path.DIRECTORY_SEPARATOR.'map2.png');
-            
-             $sizeW =  1000; 
+
+             $sizeW =  1000;
              $sizeH =   500;
-             
+
             $cropX =  ( $task['y_coord'] ) - $sizeW / 2 ;
             $cropY =  ($bridgeImageInfo[1] -  $task['x_coord'] + $iconInfo[1]/2 ) - $sizeH/2 ;
-             
+
             $im2 = imagecrop($image, ['x' => $cropX  , 'y' => $cropY, 'width' => $sizeW, 'height' => $sizeH]);
              if ($im2 !== FALSE) {
-                imagepng($im2, $map);
+                // imagepng($im2, $map);
+                imagepng($im2, $tmpfilePath);
                 imagedestroy($im2);
             }
 
             imagedestroy($dest);
             imagedestroy($src);
             imagedestroy($image);
-             
+
+
+            $this->addFileOrUpdateDocumentWithType($tmpfilePath,  $this::CORROSION_MAP_DOCUMENT_TYPE, 'corrosion_map');
+
+            fclose ($tmpfileHandle); //this removes the tempfile
+
+
             return ['success' => true, 'Y' => $cropY, 'X' => $cropX, 'H'=>$sizeH, 'W'=> $sizeW];
-             
+
          //   imagealphablending($src, false);
            // imagesavealpha($src, true);
             // resize non funziona la trasparenza del pin
@@ -366,15 +397,15 @@ class Task extends Model {
 
        //     $cropY =  ( $sizeH - $task['x_coord'] + $iconInfo[1] ) +  $bridgeImageInfo[1];
            // $cropX = ( ( $task['y_coord'] - $sizeW / 2 ) ) +  $bridgeImageInfo[0];
-            
+
             //imagealphablending($image, false);
           //  imagesavealpha($image, true);
             //$im2 = imagecrop($image, ['x' => $cropX, 'y' => $cropY, 'width' => $sizeW, 'height' => $sizeH]);
-            //imagepng($im2, $path.DIRECTORY_SEPARATOR.'map1.png');           
+            //imagepng($im2, $path.DIRECTORY_SEPARATOR.'map1.png');
           //  imagealphablending($im2, false);
           //  imagesavealpha($im2, true);
            // imagecopymerge($im2, $src, $sizeW / 2 - ($iconInfo[0] / 2), $sizeH / 2 - ($iconInfo[1] ), 0, 0, $iconInfo[0], $iconInfo[1], 100);
-            
+
             /*if ($im2 !== FALSE) {
                 imagepng($im2, $map);
                 imagedestroy($im2);
@@ -427,5 +458,139 @@ class Task extends Model {
         imagecopyresampled($dst, $src, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
 
         return $dst;
+    }
+
+
+
+    public function getCorrosionMapHtml(){
+
+        $html = <<<EOF
+        <div style="
+
+	margin: 50px auto;
+	font-family: Raleway, serif;">
+
+	<p style="
+		text-align: center;
+		font-size: 21px;
+		font-weight: bold;
+		color: #1f519b;">Point #$point_id
+	</p>
+
+	<img src="$task_map" alt="$img_currentTask" style="
+		width: 100%;
+		height: auto;
+		margin: 8px 0 32px;">
+
+	<table style="width: 100%">
+		<tr>
+			<td style="
+					font-size: 16px;
+					color: #1f519b;
+					width: 50%">
+					<span style="
+						font-weight: bold;">Location: </span>$task_location</td>
+			<td style="
+					font-size: 16px;
+					color: #1f519b;
+					width: 50%">
+					<span style="
+							font-weight: bold;">Type: </span>$task_type</td>
+		</tr>
+	</table>
+
+	<table style="width: 100%; margin-bottom: 32px;">
+		<tr>
+			<td rowspan="2" style="
+								font-size: 16px;
+								padding: 8px;
+								color: #1f519b;
+								vertical-align: top;
+								background-color: #eff9fe">
+								<span style="
+										font-weight: bold;">Description: </span>$description</td>
+			<td rowspan="1" style="
+								font-size: 16px;
+								padding: 8px;
+								color: #1f519b;
+								background-color: #eff9fe">
+								<span style="
+										font-weight: bold;">Created: </span>$created</td>
+		</tr>
+
+		<tr>
+			<td rowspan="1" style="
+								font-size: 16px;
+								padding: 8px;
+								color: #1f519b;
+								background-color: #eff9fe">
+								<span style="
+										font-weight: bold;">Last edited: </span>$updated</td>
+		</tr>
+	</table>
+
+	<p style="
+		text-align: left;
+		font-size: 16px;
+		font-weight: bold;
+		color: #1f519b;">Detail photos</p>
+
+    <table style="width: 100%; margin-bottom: 32px">
+
+EOF;
+
+/*
+		<tr>
+			<td style="
+					width: 50%;
+					background-color: black;
+					border: 4px solid white;
+					padding: 0">
+					<img src="file://$img1" alt="$img_currentTask img 1" style="width: 100%; height: auto;"></td>
+			<td style="
+					width: 50%;
+					background-color: black;
+					border: 4px solid white;
+					padding: 0">
+					<img src="file://$img2" alt="$img_currentTask img 2" style="width: 100%; height: auto;"></td>
+		</tr>
+		<tr>
+			<td style="
+					width: 50%;
+					background-color: black;
+					border: 4px solid white;
+					padding: 0">
+					<img src="file://$img3" alt="$img_currentTask img 3" style="width: 100%; height: auto;"></td>
+			<td style="
+					width: 50%;
+					background-color: black;
+					border: 4px solid white;
+					padding: 0">
+					<img src="file://$img4" alt="$img_currentTask img 4" style="width: 100%; height: auto;"></td>
+        </tr>
+*/
+
+$html .= <<<EOF
+	</table>
+
+	<p style="
+		text-align: left;
+		font-size: 16px;
+		font-weight: bold;
+		color: #1f519b;">Overview photo</p>
+	<table style="width: 100%">
+		<tr>
+			<td style="
+					background-color: black;
+					border: 4px solid white;
+					padding: 0">
+					<img src="file://$img_dettaglio" alt="$img_currentTask img 5" style="width: 100%; height: auto;"></td>
+		</tr>
+	</table>
+
+	<p style="page-break-before: always;"></p>
+</div>
+EOF;
+
     }
 }
