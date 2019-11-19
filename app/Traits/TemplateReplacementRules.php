@@ -343,20 +343,20 @@ trait TemplateReplacementRules
      */
     public function handlePhpdocxCharts(CreateDocxFromTemplate &$template_processor, string $chart_name)
     {
-        $param_key = '';
+        $param_key = $legend = $color = '';
         switch ($chart_name) {
             case 'chart_temperatureChart':
-                $param_key = 'celsius__app\_user';
+                $param_key = 'celsius__app\_project';
                 $legend = 'Temperature';
                 $color = '2';
                 break;
             case 'chart_dewpointChart':
-                $param_key = 'dew_point__app\_user';
+                $param_key = 'dew_point__app\_project';
                 $legend = 'Dew Point';
                 $color = '2';
                 break;
             case 'chart_humidityChart':
-                $param_key = 'humidity__app\_user';
+                $param_key = 'humidity__app\_project';
                 $legend = 'Humidity';
                 $color = '2';
                 break;
