@@ -42,9 +42,9 @@ trait EnvParamsInputOutputTransations
      * "Serial Number" => "-"
      * ],
      * ...
-     *
+     * @param array $min_thresholds
      */
-    public function translateMeasurementsInput($measurements, $source = null)
+    public function translateMeasurementsInput($measurements, $source = null, $min_thresholds = [])
     {
         foreach ($measurements as $measurement_array) {
             $time = $measurement_array['Time'];
@@ -52,7 +52,8 @@ trait EnvParamsInputOutputTransations
                 $param_name_uom = utf8_encode($param_name_uom_noutf8);
                 $param_name = Str::before($param_name_uom, '(');
                 $uom = Str::before(Str::after($param_name_uom, '('), ')');
-                $this->addMeasurement($param_name, $value, $time, $uom, $source);
+                $min_threshold = isset($min_thresholds[$param_name]) ? $min_thresholds[$param_name] : null;
+                $this->addMeasurement($param_name, $value, $time, $uom, $source, $min_threshold);
             }
         }
     }
