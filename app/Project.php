@@ -5,6 +5,7 @@ namespace App;
 use App\Observers\ProjectObserver;
 use App\Traits\EnvParamsInputOutputTransations;
 use App\Traits\TemplateReplacementRules;
+use Net7\EnvironmentalMeasurement\Traits\HasMeasurements;
 use function array_merge;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -28,6 +29,7 @@ class Project extends Model {
     use HasStatuses,
         SerializesModels,
         HasDocsGenerator,
+        HasMeasurements,
         TemplateReplacementRules,
         EnvParamsInputOutputTransations;
 

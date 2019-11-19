@@ -17,3 +17,9 @@
     <h4>Reports</h4>
     <a href="{{ route('docs-gen-be-index') }}"><i class="fa fa-btn fa-download"></i> Test your report files!</a>
 @endif
+
+@if(Route::has('env-measure-be-index'))
+    <hr />
+    <h4>Environmental Measures</h4>
+    <a href="{{ route('env-measure-be-index') }}"><i class="fa fa-btn fa-download"></i> Test it!</a>
+@endif

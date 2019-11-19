@@ -20,7 +20,7 @@ php artisan db:seed --class="RolesAndPermissionsSeeder"
 # seeder tabella countries
 php artisan db:seed --class="CountriesSeeder"
 
-php artisan db:seed --class="ProductionSeeder"
+php artisan db:seed --class="LightSeeder"
 
 
 
