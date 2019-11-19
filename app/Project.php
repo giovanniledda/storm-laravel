@@ -3,6 +3,8 @@
 namespace App;
 
 use App\Observers\ProjectObserver;
+use App\Traits\EnvParamsInputOutputTransations;
+use App\Traits\TemplateReplacementRules;
 use function array_merge;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -23,7 +25,7 @@ class Project extends Model {
          addDocumentWithType as traitAddDocumentWithType;
          updateDocument as traitUpdateDocument;
     }
-    use HasStatuses, SerializesModels,  HasDocsGenerator;
+    use HasStatuses, SerializesModels,  HasDocsGenerator, TemplateReplacementRules, EnvParamsInputOutputTransations;
 
     protected $table = 'projects';
     protected $fillable = [
