@@ -824,18 +824,77 @@ class Project extends Model {
             unlink($data['path']);
         }
     }
+    public function getPageBreak() {
+        return '<p style="page-break-before: always;"></p>';
+     }
+
+
+     public function getBlockHtml(){
+
+        // return '<div><h3>Titotlo</h3><div>il corpo </div></div>';
+
+        $toRet = '';
+        // TODO: use this
+        $replacements = [];
+
+        $html = '';
+        foreach ($this->getTasksToIncludeInReport() as $task) {
+            $this->_currentTask = $task;
+
+            $corrosionMapFilePath = $task->getCorrosionMapFilePath();
+
+
+            $html .= $task->getCorrosionMapHtml($task->id);
+
+            $toRet .= " " . $corrosionMapFilePath  . " ";
+            // $this->updateCurrentTaskPhotosArray();
+            // $repl_array =
+            //     [
+            //         'task_id' => $task->id,
+            //         'task_status' => Utils::sanitizeTextsForPlaceholders($task->task_status),
+            //         'task_description' => Utils::sanitizeTextsForPlaceholders($task->description),
+            //         'task_created_at' => $task->created_at,
+            //         'task_updated_at' => $task->updated_at,
+            //         'task_type' => $task->intervent_type ? Utils::sanitizeTextsForPlaceholders($task->intervent_type->name) : '?',
+            //         'task_location' => $task->section ? Utils::sanitizeTextsForPlaceholders($task->section->name) : '?',
+            //         'pageBreak' => $this->printDocxPageBreak(),
+            //         'img_currentTask_brPos' => $this->getCurrentTaskBridgeImage(),
+            //         'img_currentTask_img1' => $this->getCurrentTaskImg1(),
+            //         'img_currentTask_img2' => $this->getCurrentTaskImg2(),
+            //         'img_currentTask_img3' => $this->getCurrentTaskImg3(),
+            //         'img_currentTask_img4' => $this->getCurrentTaskImg4(),
+            //         'img_currentTask_img5' => $this->getCurrentTaskImg5(),
+            //     ];
+            for ($i = 1; $i <= 5; $i++) {
+                if ($this->getCurrentTaskImg($i)) {
+                    $repl_array["img_currentTask_img$i"] = $this->getCurrentTaskImg($i);
+                }
+            }
+            // $replacements[] = $repl_array;
+        }
+
+        return $html;
+        // return $replacements;
+     }
+
 
     public function setupTemplate()
     {
         $category = $this->persistAndAssignTemplateCategory('corrosion_map');
         $placeholders = [
-            '${boat_name}' => 'getBoatName()',
-            '${boat_reg_num}' => 'getBoatRegistrationNumber()',
-            '${boat_type}' => 'getBoatType()',
-            '${img_BoatImage:250:250:false}' => 'getBoatMainPhotoPath()',
-            '${date}' => 'printDocxTodayDate()',
-            '${blC_bloccoTask}' => 'getBloccoTaskSampleReportInfoArray()',
-            '${pageBreak}' => 'printDocxPageBreak()',
+
+            '$pageBreak$' => 'getPageBreak()',
+            '$html_bloccoTask$' => 'getBlockHtml()',
+            '$boat_type$' => 'getBoatType()',
+            '$boat_name$' => 'getBoatName()'
+
+            // '${boat_name}' => 'getBoatName()',
+            // '${boat_reg_num}' => 'getBoatRegistrationNumber()',
+            // '${boat_type}' => 'getBoatType()',
+            // '${img_BoatImage:250:250:false}' => 'getBoatMainPhotoPath()',
+            // '${date}' => 'printDocxTodayDate()',
+            // '${blC_bloccoTask}' => 'getBloccoTaskSampleReportInfoArray()',
+            // '${pageBreak}' => 'printDocxPageBreak()',
 //            '${row_tableOne}' => 'getTableTaskSampleReportInfoArray()',
 //            '${img_currentTask_brPos:450:450:false}' => 'getCurrentTaskBridgeImage()',
 //            '${img_currentTask_img1}' => 'getCurrentTaskImg1()',
