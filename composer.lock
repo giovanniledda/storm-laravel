@@ -3765,7 +3765,7 @@
             "source": {
                 "type": "git",
                 "url": "https://net7.codebasehq.com/nautica/net7docs-generator.git",
-                "reference": "d03a3a0da580b238d6b18174b420d04eebd97805"
+                "reference": "e481f7d859f1a016049e82dd7fba36513ea88fdf"
             },
             "require": {
                 "mckenziearts/laravel-notify": "dev-master",
@@ -3802,7 +3802,7 @@
                 }
             ],
             "description": "Generate documents starting from custom templates.",
-            "time": "2019-11-18T11:59:25+00:00"
+            "time": "2019-11-19T10:43:56+00:00"
         },
         {
             "name": "net7/documents",
@@ -3810,7 +3810,7 @@
             "source": {
                 "type": "git",
                 "url": "https://net7.codebasehq.com/nautica/net7documents.git",
-                "reference": "db60c98a1f14c9e20b6ee52fbde8d33054570eb4"
+                "reference": "183220dab846fca7a37a15737128e4a50a1a1ba7"
             },
             "require": {
                 "cloudcreativity/laravel-json-api": "^1.1",
@@ -3848,7 +3848,7 @@
                 }
             ],
             "description": "Add documents to an object of your application",
-            "time": "2019-11-07T09:54:41+00:00"
+            "time": "2019-11-19T15:01:03+00:00"
         },
         {
             "name": "net7/env-measure",
@@ -3856,7 +3856,7 @@
             "source": {
                 "type": "git",
                 "url": "https://net7.codebasehq.com/nautica/net7env-measure.git",
-                "reference": "43d5942b59f0f8f41d0f27dbd90fa5938707c06f"
+                "reference": "c026f6ebf1cec6d9247f039dfdf0b23dd663e98f"
             },
             "require": {
                 "mckenziearts/laravel-notify": "dev-master",
@@ -3889,7 +3889,7 @@
                 }
             ],
             "description": "Handle any kind of environmental measurement associated to a Model",
-            "time": "2019-11-15T08:30:30+00:00"
+            "time": "2019-11-19T15:49:59+00:00"
         },
         {
             "name": "net7/logging",
