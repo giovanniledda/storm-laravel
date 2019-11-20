@@ -508,44 +508,89 @@ EOF;
         $updated_at = $this->updated_at;
 
         $html = <<<EOF
+
+<style type="text/css">
+	#title_$point_id {
+		text-align: center;
+		font-size: 21px;
+		font-weight: bold;
+		color: #1f519b;
+	}
+
+	#subtitle_$point_id {
+		text-align: left;
+		font-size: 16px;
+		font-weight: bold;
+		color: #1f519b;
+	}
+
+	#cell_background_$point_id {
+		padding: 8px;
+		color: #1f519b;
+		vertical-align: top;
+		background-color: #eff9fe;
+	}
+
+	#cell_img_$point_id {
+		width: 50%;
+		background-color: black;
+		border: 4px solid white;
+		padding: 0;
+	}
+
+	p {
+		font-family: Raleway, sans-serif;
+	}
+
+	table {
+		width: 100%;
+		margin-bottom: 32px;
+		font-family: Raleway, sans-serif;
+	}
+
+	td {
+		width: 50%;
+		font-size: 16px;
+		color: #1f519b;
+	}
+
+	img {
+		width: 100%;
+		height: auto;
+		margin: 0;
+	}
+
+	span {
+		font-weight: bold;
+	}
+</style>
+
         <div>
-            <p>Point #$point_id</p>
+            <p id="title_$point_id">Point #$point_id</p>
         
             $corrosionMapHTML
         
-            <table>
-                <tr>
-                    <td>
-                            <span>Location: </span>$task_location</td>
-                    <td>
-                            <span>Type: </span>$task_type</td>
-                </tr>
-            </table>
+            <div style="width: 100%; background-color: lightblue;">
+                <span style="width: 50%;"><span>Location: </span>$task_location</span>
+                <span style="width: 50%;"><span>Type: </span>$task_type</span>
+            </div>
         
-            <table>
-                <tr>
-                    <td rowspan="2">
-                                        <span>Description: </span>$description</td>
-                    <td rowspan="1">
-                                        <span>Created: </span>$created_at</td>
-                </tr>
         
-                <tr>
-                    <td rowspan="1">
-                                        <span>Last edited: </span>$updated_at</td>
-                </tr>
-            </table>
+            <div style="width: 100%; background-color: lightblue;">
+                <span style="width: 50%;"><span>Description: </span>$description</span>
+                <span style="width: 50%;"><span>Created: </span>$created_at</span>
+                <span style="width: 50%;"><span>Last edited: </span>$updated_at</span>
+            </div>
+
 EOF;
         // creo la tabella a seconda delle immagini che ho
         if (!empty($photos_array) && count($photos_array) > 1) {
             $tds_1 = <<<EOF
-                    <td>
-                            <img src="file://$photos_array[1]" alt="Corrosion img 1"></td>
+                    <td id="cell_img_$point_id"><img src="file://$photos_array[1]" alt="Corrosion img 1"></td>
 EOF;
             if (isset($photos_array[2])) {
                 $tds_1 .= <<<EOF
-                    <td>
-                            <img src="file://$photos_array[2]" alt="Corrosion img 2"></td>
+                    <td id="cell_img_$point_id"><img src="file://$photos_array[2]" alt="Corrosion img 2"></td>
 EOF;
             }
 
@@ -553,21 +598,19 @@ EOF;
 
             if (isset($photos_array[3])) {
                 $tds_2 = <<<EOF
-                    <td>
-                            <img src="file://$photos_array[3]" alt="Corrosion img 3"></td>
+                    <td id="cell_img_$point_id"><img src="file://$photos_array[3]" alt="Corrosion img 3"></td>
 EOF;
 
                 if (isset($photos_array[4])) {
                     $tds_2 .= <<<EOF
-                    <td>
-                            <img src="file://$photos_array[4]" alt="Corrosion img 4"></td>
+                    <td id="cell_img_$point_id"><img src="file://$photos_array[4]" alt="Corrosion img 4"></td>
 EOF;
                 }
 
                 $trs .= "<tr>$tds_2</tr>";
             }
 
-            $images_table =  '<p>Detail photos</p><table >'.$trs.'</table>';
+            $images_table =  '<p id="subtitle_$point_id">Detail photos</p><table >'.$trs.'</table>';
 
             $html .= $images_table;
         }
@@ -575,11 +618,10 @@ EOF;
         $img_dettaglioHTML = '';
         if ($img_dettaglio = $this->getAdditionalPhotoPath()) {
             $img_dettaglioHTML = <<<EOF
-                <p>Overview photo</p>
-                    <table>
+                <p id="subtitle_$point_id">Overview photo</p>
+                    <table width="900px">
                         <tr>
-                            <td>
-                                    <img src="file://$img_dettaglio" alt="Detailed image"></td>
+                            <td id="cell_img_$point_id"><img src="file://$img_dettaglio" alt="Detailed image"></td>
                         </tr>
                     </table>
 EOF;
