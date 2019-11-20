@@ -65,15 +65,14 @@ class Project extends Model {
 
     public function addTemplateResultDocument($temporary_final_file_path, $final_file_name, $template_object_id, $type=self::REPORT_DOCUMENT_TYPE) {
 
+        // $document = $this->traitAddTemplateResultDocument($temporary_final_file_path, $final_file_name, $template_object_id, $type);
 
-        $document = $this->traitAddTemplateResultDocument($temporary_final_file_path, $final_file_name, $template_object_id, $type);
 
-        if ($document) {
+        // $this->addDocumentFile will call the $this->addDocumentWithType method, which in turn will
+        //  take care of google and/or dropbox sync
+        $document = $this->addDocumentFile($temporary_final_file_path, $final_file_name, $type);
+        unlink($temporary_final_file_path);
 
-            SendDocumentsToGoogleDrive::dispatch($this, $document);
-
-            // $this->sendDocumentToGoogleDrive($document);
-        }
 
         return $document;
     }
@@ -105,11 +104,8 @@ class Project extends Model {
             $client->createFolder($dropboxFolder);
         }
 
-        // try {
-            $client->upload($dropboxFilepath, $content, 'add');
-        // } catch (Exception $e){
+        $client->upload($dropboxFilepath, $content, 'add');
 
-        // }
 
         // $client->getMetadata($fullPath);
 
@@ -183,19 +179,35 @@ class Project extends Model {
         $path = $this->getGooglePathFromHumanPath($googleFolder);
 
         // now we have the full path made of directory Ids, we can upload our file there.
-
-
         $path .=  '/'. $filename;
         Storage::cloud()->put($path, $content);
 
         //TODO: check errors?
 
 
+        $link = $this->getDocumentLinkFromGoogle($document);
+        $document_cloud_storage_data = json_decode($document['cloud_storage_data'], true);
+
+        $document_cloud_storage_data['gdrive_link'] = $link;
+        $document_cloud_storage_data['gdrive_filename'] = $filename;
+        $document['cloud_storage_data'] = json_encode($document_cloud_storage_data);
+        $document->save();
+
     }
 
 
     public function getReportsLinks(){
 
+        $reports = $this->documents()->where('type', self::REPORT_DOCUMENT_TYPE);
+
+        $links = [];
+        foreach ($reports as $report){
+            $data = json_decode($report->cloud_storage_data, true);
+            $links []= [
+                'link' => $data['gdrive_link'],
+                'name' => $data['gdrive_filename']
+            ];
+        }
         return $this->getListOfReportsFromGoogle();
 
     }
@@ -233,8 +245,6 @@ class Project extends Model {
 
         $this->traitAddDocumentWithType($document, $type);
 
-        // TODO: spostarlo in un job per le code
-
         $this->save();
         $document->refresh();
 
@@ -251,6 +261,7 @@ class Project extends Model {
 
             }
         }
+        return $document;
     }
 
     public function getDocumentFromDropbox(\Net7\Documents\Document $document){

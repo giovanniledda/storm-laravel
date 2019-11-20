@@ -219,7 +219,8 @@ class ProjectController extends Controller
 
         // $filepath = $dg->getRealFinalFilePath();
         // $filename = $dg->getFinalFileName()
-
+if ($document) {
+    $document->refresh();
         $filepath = $document->getPathBySize('');
         $filename = $document->file_name;
 
@@ -227,6 +228,7 @@ class ProjectController extends Controller
         return response()
             ->download($filepath, $filename, $headers);
 
+}
     }
 
 }
