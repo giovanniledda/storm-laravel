@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Net7\DocsGenerator\Utils;
 use function explode;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Illuminate\Database\Eloquent\Model;
@@ -485,137 +486,171 @@ class Task extends Model
         return $dst;
     }
 
-
-    public function getCorrosionMapHtml()
+    /**
+     * @param $photos_array
+     * @return string
+     */
+    public function getCorrosionMapHtml($photos_array)
     {
+        $corrosionMapHTML = '';
+        if ($corrosionMapFilePath = $this->getCorrosionMapFilePath()) {
+            $corrosionMapHTML = <<<EOF
+                <img src="file://$corrosionMapFilePath" alt="Corrosion Map" style="
+                                width: 100%;
+                                height: auto;
+                                margin: 8px 0 32px;">
+EOF;
+        }
+
+        $point_id = $this->id;
+        $task_location = $this->section ? Utils::sanitizeTextsForPlaceholders($this->section->name) : '?';
+        $task_type = $this->intervent_type ? Utils::sanitizeTextsForPlaceholders($this->intervent_type->name) : '?';
+        //         'task_status' => Utils::sanitizeTextsForPlaceholders($task->task_status),
+        $description = Utils::sanitizeTextsForPlaceholders($this->description);
+        $created_at = $this->created_at;
+        $updated_at = $this->updated_at;
 
         $html = <<<EOF
-        <div style="
+        <div style="margin: 50px auto; font-family: Raleway, serif;">
 
-	margin: 50px auto;
-	font-family: Raleway, serif;">
+            <p style="
+                text-align: center;
+                font-size: 21px;
+                font-weight: bold;
+                color: #1f519b;">Point #$point_id</p>
+        
+            $corrosionMapHTML
+        
+            <table style="width: 100%">
+                <tr>
+                    <td style="
+                            font-size: 16px;
+                            color: #1f519b;
+                            width: 50%">
+                            <span style="
+                                font-weight: bold;">Location: </span>$task_location</td>
+                    <td style="
+                            font-size: 16px;
+                            color: #1f519b;
+                            width: 50%">
+                            <span style="
+                                    font-weight: bold;">Type: </span>$task_type</td>
+                </tr>
+            </table>
+        
+            <table style="width: 100%; margin-bottom: 32px;">
+                <tr>
+                    <td rowspan="2" style="
+                                        font-size: 16px;
+                                        padding: 8px;
+                                        color: #1f519b;
+                                        vertical-align: top;
+                                        background-color: #eff9fe">
+                                        <span style="
+                                                font-weight: bold;">Description: </span>$description</td>
+                    <td rowspan="1" style="
+                                        font-size: 16px;
+                                        padding: 8px;
+                                        color: #1f519b;
+                                        background-color: #eff9fe">
+                                        <span style="
+                                                font-weight: bold;">Created: </span>$created_at</td>
+                </tr>
+        
+                <tr>
+                    <td rowspan="1" style="
+                                        font-size: 16px;
+                                        padding: 8px;
+                                        color: #1f519b;
+                                        background-color: #eff9fe">
+                                        <span style="
+                                                font-weight: bold;">Last edited: </span>$updated_at</td>
+                </tr>
+            </table>
+EOF;
+        // creo la tabella a seconda delle immagini che ho
+        if (!empty($photos_array) && count($photos_array) > 1) {
+            $tds_1 = <<<EOF
+                    <td style="
+                            width: 50%;
+                            background-color: black;
+                            border: 4px solid white;
+                            padding: 0">
+                            <img src="file://$photos_array[1]" alt="Corrosion img 1" style="width: 100%; height: auto;"></td>
+EOF;
+            if (isset($photos_array[2])) {
+                $tds_1 .= <<<EOF
+                    <td style="
+                            width: 50%;
+                            background-color: black;
+                            border: 4px solid white;
+                            padding: 0">
+                            <img src="file://$photos_array[2]" alt="Corrosion img 2" style="width: 100%; height: auto;"></td>
+EOF;
+            }
 
-	<p style="
-		text-align: center;
-		font-size: 21px;
-		font-weight: bold;
-		color: #1f519b;">Point #$point_id
-	</p>
+            $trs = "<tr>$tds_1</tr>";
 
-	<img src="$task_map" alt="$img_currentTask" style="
-		width: 100%;
-		height: auto;
-		margin: 8px 0 32px;">
-
-	<table style="width: 100%">
-		<tr>
-			<td style="
-					font-size: 16px;
-					color: #1f519b;
-					width: 50%">
-					<span style="
-						font-weight: bold;">Location: </span>$task_location</td>
-			<td style="
-					font-size: 16px;
-					color: #1f519b;
-					width: 50%">
-					<span style="
-							font-weight: bold;">Type: </span>$task_type</td>
-		</tr>
-	</table>
-
-	<table style="width: 100%; margin-bottom: 32px;">
-		<tr>
-			<td rowspan="2" style="
-								font-size: 16px;
-								padding: 8px;
-								color: #1f519b;
-								vertical-align: top;
-								background-color: #eff9fe">
-								<span style="
-										font-weight: bold;">Description: </span>$description</td>
-			<td rowspan="1" style="
-								font-size: 16px;
-								padding: 8px;
-								color: #1f519b;
-								background-color: #eff9fe">
-								<span style="
-										font-weight: bold;">Created: </span>$created</td>
-		</tr>
-
-		<tr>
-			<td rowspan="1" style="
-								font-size: 16px;
-								padding: 8px;
-								color: #1f519b;
-								background-color: #eff9fe">
-								<span style="
-										font-weight: bold;">Last edited: </span>$updated</td>
-		</tr>
-	</table>
-
-	<p style="
-		text-align: left;
-		font-size: 16px;
-		font-weight: bold;
-		color: #1f519b;">Detail photos</p>
-
-    <table style="width: 100%; margin-bottom: 32px">
-
+            if (isset($photos_array[3])) {
+                $tds_2 = <<<EOF
+                    <td style="
+                            width: 50%;
+                            background-color: black;
+                            border: 4px solid white;
+                            padding: 0">
+                            <img src="file://$photos_array[3]" alt="Corrosion img 3" style="width: 100%; height: auto;"></td>
 EOF;
 
-        /*
-                <tr>
+                if (isset($photos_array[4])) {
+                    $tds_2 .= <<<EOF
                     <td style="
                             width: 50%;
                             background-color: black;
                             border: 4px solid white;
                             padding: 0">
-                            <img src="file://$img1" alt="$img_currentTask img 1" style="width: 100%; height: auto;"></td>
-                    <td style="
-                            width: 50%;
-                            background-color: black;
-                            border: 4px solid white;
-                            padding: 0">
-                            <img src="file://$img2" alt="$img_currentTask img 2" style="width: 100%; height: auto;"></td>
-                </tr>
-                <tr>
-                    <td style="
-                            width: 50%;
-                            background-color: black;
-                            border: 4px solid white;
-                            padding: 0">
-                            <img src="file://$img3" alt="$img_currentTask img 3" style="width: 100%; height: auto;"></td>
-                    <td style="
-                            width: 50%;
-                            background-color: black;
-                            border: 4px solid white;
-                            padding: 0">
-                            <img src="file://$img4" alt="$img_currentTask img 4" style="width: 100%; height: auto;"></td>
-                </tr>
-        */
+                            <img src="file://$photos_array[4]" alt="Corrosion img 4" style="width: 100%; height: auto;"></td>
+EOF;
+                }
+
+                $trs .= "<tr>$tds_2</tr>";
+            }
+
+            $images_table =  '<p style="
+                text-align: left;
+                font-size: 16px;
+                font-weight: bold;
+                color: #1f519b;">Detail photos</p><table style="width: 100%; margin-bottom: 32px">'.$trs.'</table>';
+
+            $html .= $images_table;
+        }
+
+        $img_dettaglioHTML = '';
+        if ($img_dettaglio = $this->getAdditionalPhotoPath()) {
+            $img_dettaglioHTML = <<<EOF
+                <p style="
+                text-align: left;
+                font-size: 16px;
+                font-weight: bold;
+                color: #1f519b;">Overview photo</p>
+                    <table style="width: 100%">
+                        <tr>
+                            <td style="
+                                    background-color: black;
+                                    border: 4px solid white;
+                                    padding: 0">
+                                    <img src="file://$img_dettaglio" alt="Detailed image" style="width: 100%; height: auto;"></td>
+                        </tr>
+                    </table>
+EOF;
+        }
 
         $html .= <<<EOF
-	</table>
-
-	<p style="
-		text-align: left;
-		font-size: 16px;
-		font-weight: bold;
-		color: #1f519b;">Overview photo</p>
-	<table style="width: 100%">
-		<tr>
-			<td style="
-					background-color: black;
-					border: 4px solid white;
-					padding: 0">
-					<img src="file://$img_dettaglio" alt="$img_currentTask img 5" style="width: 100%; height: auto;"></td>
-		</tr>
-	</table>
-
-	<p style="page-break-before: always;"></p>
-</div>
+        
+            $img_dettaglioHTML
+        
+            <p style="page-break-before: always;"></p>
+        </div>
 EOF;
-
+        return $html;
     }
 }

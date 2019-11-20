@@ -186,51 +186,16 @@ trait TemplateReplacementRules
 
     public function getCorrosionMapHtmlBlock()
     {
-
-        // return '<div><h3>Titotlo</h3><div>il corpo </div></div>';
-
-        $toRet = '';
-        // TODO: use this
-        $replacements = [];
-
         $html = '';
-        foreach ($this->getTasksToIncludeInReport() as $task) {
+        /** @var Task $task */
+        $tasks = $this->getTasksToIncludeInReport();
+        $html = '';
+        foreach ($tasks as $task) {
             $this->_currentTask = $task;
-
-            $corrosionMapFilePath = $task->getCorrosionMapFilePath();
-
-
-            $html .= $task->getCorrosionMapHtml($task->id);
-
-            $toRet .= " " . $corrosionMapFilePath  . " ";
-            // $this->updateCurrentTaskPhotosArray();
-            // $repl_array =
-            //     [
-            //         'task_id' => $task->id,
-            //         'task_status' => Utils::sanitizeTextsForPlaceholders($task->task_status),
-            //         'task_description' => Utils::sanitizeTextsForPlaceholders($task->description),
-            //         'task_created_at' => $task->created_at,
-            //         'task_updated_at' => $task->updated_at,
-            //         'task_type' => $task->intervent_type ? Utils::sanitizeTextsForPlaceholders($task->intervent_type->name) : '?',
-            //         'task_location' => $task->section ? Utils::sanitizeTextsForPlaceholders($task->section->name) : '?',
-            //         'pageBreak' => $this->printDocxPageBreak(),
-            //         'img_currentTask_brPos' => $this->getCurrentTaskBridgeImage(),
-            //         'img_currentTask_img1' => $this->getCurrentTaskImg1(),
-            //         'img_currentTask_img2' => $this->getCurrentTaskImg2(),
-            //         'img_currentTask_img3' => $this->getCurrentTaskImg3(),
-            //         'img_currentTask_img4' => $this->getCurrentTaskImg4(),
-            //         'img_currentTask_img5' => $this->getCurrentTaskImg5(),
-            //     ];
-            for ($i = 1; $i <= 5; $i++) {
-                if ($this->getCurrentTaskImg($i)) {
-                    $repl_array["img_currentTask_img$i"] = $this->getCurrentTaskImg($i);
-                }
-            }
-            // $replacements[] = $repl_array;
+            $this->updateCurrentTaskPhotosArray();
+            $html .= $task->getCorrosionMapHtml($this->_currentTaskPhotos);
         }
-
         return $html;
-        // return $replacements;
     }
 
 
