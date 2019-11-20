@@ -170,6 +170,34 @@ class ProjectController extends Controller
 
         return $resp;
     }
+
+
+ /**
+     * API used to get the list of reports name and links from google drive
+     *
+     * @param Request $request
+     * @param $record
+     *
+     * @return mixed
+     */
+
+    public function reportsList(Request $request, $project){
+
+        // $project = Project::findOrFail($record->id);
+
+        $data = $project->getReportsLinks();
+
+        $resp = Response(['data' => [
+            $data
+        ]], 200);
+
+        $resp->header('Content-Type', 'application/vnd.api+json');
+
+        return $resp;
+    }
+
+
+
 /**
      * API used to generate a report from the project
      *

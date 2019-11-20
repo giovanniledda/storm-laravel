@@ -84,6 +84,11 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
             $project->get('{record}/cloud-sync', 'cloudSync')->name('cloud-sync');
         });
 
+        $api->resource('projects')->only('reports-list')->controller('ProjectController')//uses the App\Http\Controllers\Api\ProjectController
+        ->routes(function ($project) {
+            $project->get('{record}/reports-list', 'reportsList')->name('reports-list');
+        });
+
         $api->resource('projects')->only('generate-report')->controller('ProjectController')//uses the App\Http\Controllers\Api\ProjectController
         ->routes(function ($project) {
             $project->post('{record}/generate-report', 'generateReport')->name('generate-report');

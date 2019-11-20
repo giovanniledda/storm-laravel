@@ -198,7 +198,7 @@ class Project extends Model {
 
     public function getReportsLinks(){
 
-        $reports = $this->documents()->where('type', self::REPORT_DOCUMENT_TYPE);
+        $reports = $this->documents->where('type', self::REPORT_DOCUMENT_TYPE);
 
         $links = [];
         foreach ($reports as $report){
@@ -208,7 +208,10 @@ class Project extends Model {
                 'name' => $data['gdrive_filename']
             ];
         }
-        return $this->getListOfReportsFromGoogle();
+
+        return $links;
+
+//        return $this->getListOfReportsFromGoogle();
 
     }
 
