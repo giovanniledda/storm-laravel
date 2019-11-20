@@ -62,10 +62,14 @@ class Project extends Model {
     }
 
 
-    public function addTemplateResultDocument($temporary_final_file_path, $final_file_name, $type=REPORT_DOCUMENT_TYPE) {
+    public function addTemplateResultDocument($temporary_final_file_path, $final_file_name, $type=self::REPORT_DOCUMENT_TYPE) {
 
-        $this->traitAddTemplateResultDocument($temporary_final_file_path, $final_file_name, $type);
 
+        $document = $this->traitAddTemplateResultDocument($temporary_final_file_path, $final_file_name, $type);
+
+        if ($document) {
+            $this->sendDocumentToGoogleDrive($document);
+        }
         // TODO: mandalo a google
     }
 
@@ -354,7 +358,12 @@ class Project extends Model {
 
         $basename = $path_parts['filename'];
         $extension = $path_parts['extension'];
-        return $basename . '_' . $media->id . '.' . $extension;
+
+
+        if ($document->type == self::REPORT_DOCUMENT_TYPE){
+            $basename .= date('Y_m_d__h_i', time());
+        }
+        return $basename . '__' . $media->id . '.' . $extension;
     }
 
     public function getDropboxFilePath ($document, $filename){
@@ -380,7 +389,7 @@ class Project extends Model {
             $path .= $document->document_number . DIRECTORY_SEPARATOR;
         }
 
-        if ( $document && $document->type == Task::REPORT_DOCUMENT_TYPE) {
+        if ( $document && $document->type == self::REPORT_DOCUMENT_TYPE) {
             $path .= $this::REPORT_FOLDER . DIRECTORY_SEPARATOR;
 
         }
