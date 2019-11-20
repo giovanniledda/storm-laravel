@@ -35,5 +35,11 @@ class ProjectGoogleDirSetup implements ShouldQueue
         $projectDocumentsPath = $this->project->getGoogleProjectDocumentsFolderPath();
         // this will create the directory in the google drive account
         $this->project->getGooglePathFromHumanPath($projectDocumentsPath);
+
+        $projectReportsPath = $this->project->getGoogleProjectReportsFolderPath();
+        // this will create the directory in the google drive account
+        $this->project->getGooglePathFromHumanPath($projectReportsPath);
+
+
     }
 }

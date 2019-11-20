@@ -36,6 +36,9 @@ class Project extends Model {
     protected $_taskToIncludeInReport;
     protected $_openFiles = [];
 
+    public const REPORT_FOLDER = 'reports';
+    public const DOCUMENTS_FOLDER  = 'documents';
+
     protected static function boot() {
         parent::boot();
 
@@ -217,7 +220,13 @@ class Project extends Model {
     }
 
 
-    public function getDocumentFromGoogle(\Net7\Documents\Document $document){
+    public function getDocumentLinkFromGoogle(\Net7\Documents\Document $document){
+
+        return $this->getDocumentFromGoogle($document, true);
+
+    }
+
+    public function getDocumentFromGoogle(\Net7\Documents\Document $document, $justALink = false){
 
 
         $media = $document->getRelatedMedia();
@@ -249,6 +258,26 @@ class Project extends Model {
             ->where('filename', '=', pathinfo($filename, PATHINFO_FILENAME))
             ->where('extension', '=', pathinfo($filename, PATHINFO_EXTENSION))
             ->first(); // there can be duplicate file names!
+
+
+        if ($justALink) {
+
+            $service = Storage::cloud()->getAdapter()->getService();
+            $permission = new \Google_Service_Drive_Permission();
+            $permission->setRole('reader');
+            $permission->setType('anyone');
+            $permission->setAllowFileDiscovery(false);
+            $permissions = $service->permissions->create($file['basename'], $permission);
+
+
+            // I couldn't find a method to create this, I guess it's alright doing it this way...
+            $link  = 'https://docs.google.com/document/d/'.$file['basename'].'/edit';
+            return $link;
+
+            // if we want the downloadable file link
+            return Storage::cloud()->url($file['path']);
+
+        }
 
         $readStream = Storage::cloud()->getDriver()->readStream($file['path']);
 
@@ -315,6 +344,11 @@ class Project extends Model {
         if ( $document && $document->document_number) {
             $path .= $document->document_number . DIRECTORY_SEPARATOR;
         }
+
+        if ( $document && $document->type == Task::REPORT_DOCUMENT_TYPE) {
+            $path .= $this::REPORT_FOLDER . DIRECTORY_SEPARATOR;
+
+        }
         return $this->sanitizePathForCloudStorages($path);
 
     }
@@ -331,10 +365,109 @@ class Project extends Model {
         return $this->getDropboxFolderPath($document);
     }
 
-    public function getGoogleProjectDocumentsFolderPath(){
-        return $this->getDropboxFolderPath() . 'documents' . DIRECTORY_SEPARATOR;
+    public function getGoogleProjectReportsFolderPath(){
+        return $this->getDropboxFolderPath() . $this::REPORT_FOLDER . DIRECTORY_SEPARATOR;
     }
 
+    public function getGoogleProjectDocumentsFolderPath(){
+        return $this->getDropboxFolderPath() . $this::DOCUMENTS_FOLDER . DIRECTORY_SEPARATOR;
+    }
+
+
+    public function getListOfReportsFromGoogle(){
+
+        $projectReportsPath = $this->getGoogleProjectReportsFolderPath();
+
+        // this will create the directory in the google drive account
+        $path = $this->getGooglePathFromHumanPath($projectReportsPath);
+
+        $contents = collect(Storage::cloud()->listContents($path, false));
+
+        $files = [];
+
+        foreach ($contents as $file){
+
+            /*
+               $file is something like:
+
+               Array
+                (
+                    [name] => environmental_report.docx
+                    [type] => file
+                    [path] => 13pP-bjm4mnMFvj3Q6uqwHW9xXo3kW0Qp/19PpAVdMJVCV4gBeERPIhnyWXeNutwkhz/1O6Z1qGNGXXlFzzrvpADpdRXLYaDxKDTM/1TZr1iEtv9Aex-YZr0MlkdWlSYamM8t3n/1nwxaWxSOr9WCEU54_G_zVlNSPaXKstpT
+                    [filename] => environmental_report
+                    [extension] => docx
+                    [timestamp] => 1574195592
+                    [mimetype] => application/vnd.openxmlformats-officedocument.wordprocessingml.document
+                    [size] => 738199
+                    [dirname] => 13pP-bjm4mnMFvj3Q6uqwHW9xXo3kW0Qp/19PpAVdMJVCV4gBeERPIhnyWXeNutwkhz/1O6Z1qGNGXXlFzzrvpADpdRXLYaDxKDTM/1TZr1iEtv9Aex-YZr0MlkdWlSYamM8t3n
+                    [basename] => 1nwxaWxSOr9WCEU54_G_zVlNSPaXKstpT
+                )
+             */
+
+            $service = Storage::cloud()->getAdapter()->getService();
+            $permission = new \Google_Service_Drive_Permission();
+            $permission->setRole('reader');
+            $permission->setType('anyone');
+            $permission->setAllowFileDiscovery(false);
+            $permissions = $service->permissions->create($file['basename'], $permission);
+
+            /*
+                    $permissions is now somthing like:
+
+                    Google_Service_Drive_Permission Object
+                    (
+                        [collection_key:protected] => teamDrivePermissionDetails
+                        [allowFileDiscovery] =>
+                        [deleted] =>
+                        [displayName] =>
+                        [domain] =>
+                        [emailAddress] =>
+                        [expirationTime] =>
+                        [id] => anyoneWithLink
+                        [kind] => drive#permission
+                        [permissionDetailsType:protected] => Google_Service_Drive_PermissionPermissionDetails
+                        [permissionDetailsDataType:protected] => array
+                        [photoLink] =>
+                        [role] => reader
+                        [teamDrivePermissionDetailsType:protected] => Google_Service_Drive_PermissionTeamDrivePermissionDetails
+                        [teamDrivePermissionDetailsDataType:protected] => array
+                        [type] => anyone
+                        [internal_gapi_mappings:protected] => Array
+                            (
+                            )
+
+                        [modelData:protected] => Array
+                            (
+                            )
+
+                        [processed:protected] => Array
+                            (
+                            )
+
+                    )
+            */
+
+            // This creates a downloadable link like:
+            // https://drive.google.com/uc?id=1nwxaWxSOr9WCEU54_G_zVlNSPaXKstpT&export=media
+            //
+            // $link = Storage::cloud()->url($file['path']);
+            //
+
+            // I couldn't find a method to create this, I guess it's alright doing it this way...
+            $link = 'https://docs.google.com/document/d/'.$file['basename'].'/edit';
+
+
+            $files []= [
+                'name' => $file['name'],
+                'link' => $link
+
+            ];
+
+        }
+
+        return $files;
+    }
 
 
     public function getMediaPath($media){
@@ -586,8 +719,23 @@ class Project extends Model {
             }
             if (!$found){
                     // we didn't know about this file, so create the file in the DB
-                    $rawData = Storage::cloud()->get($file['path']);
 
+                    if ($file['mimetype'] == 'application/vnd.google-apps.document'){
+                        // use export for docs
+
+                        $url = Storage::cloud()->url($file['path']);
+                        $rawData =
+
+                        $ch = curl_init($url);
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+                        $rawData = curl_exec($ch);
+
+                        curl_close($ch);
+                    } else {
+                       $rawData = Storage::cloud()->get($file['path']);
+
+                    }
                     $base64FileContent = base64_encode($rawData);
                     $uploadedFile = Document::createUploadedFileFromBase64($base64FileContent,  $file['name']);
                     $cloudStorageData = [

@@ -49,7 +49,7 @@ class Task extends Model {
     private $min_y;
     private $max_y;
 
-    public const CORROSION_MAP_DOCUMENT_TYPE = 'corrosion_map';
+    public const REPORT_DOCUMENT_TYPE = 'report';
 
     protected $shouldUseRevision = false;
 
@@ -292,7 +292,7 @@ class Task extends Model {
 
 
     public function getCorrosionMapFilePath(){
-        $document = $this->documents->where('type', self::CORROSION_MAP_DOCUMENT_TYPE)->first();
+        $document = $this->documents->where('type', self::REPORT_DOCUMENT_TYPE)->first();
         if ($document) {
             $media = $document->getRelatedMedia();
             return $media->getPath();
@@ -348,7 +348,6 @@ class Task extends Model {
 
         try {
 
-
             $pinPath = $this->getIcon($status, $isOpen);
             $iconInfo = getimagesize($pinPath);
             $src = imagecreatefrompng($pinPath);
@@ -379,7 +378,7 @@ class Task extends Model {
             imagedestroy($image);
 
 
-            $this->addFileOrUpdateDocumentWithType($tmpfilePath,  $this::CORROSION_MAP_DOCUMENT_TYPE, 'corrosion_map');
+            $this->addFileOrUpdateDocumentWithType($tmpfilePath,  $this::REPORT_DOCUMENT_TYPE, 'corrosion_map');
 
             fclose ($tmpfileHandle); //this removes the tempfile
 
