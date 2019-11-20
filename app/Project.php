@@ -62,10 +62,10 @@ class Project extends Model {
     }
 
 
-    public function addTemplateResultDocument($temporary_final_file_path, $final_file_name, $type=self::REPORT_DOCUMENT_TYPE) {
+    public function addTemplateResultDocument($temporary_final_file_path, $final_file_name, $template_object_id, $type=self::REPORT_DOCUMENT_TYPE) {
 
 
-        $document = $this->traitAddTemplateResultDocument($temporary_final_file_path, $final_file_name, $type);
+        $document = $this->traitAddTemplateResultDocument($temporary_final_file_path, $final_file_name, $template_object_id, $type);
 
         if ($document) {
             $this->sendDocumentToGoogleDrive($document);
@@ -73,8 +73,8 @@ class Project extends Model {
         // TODO: mandalo a google
     }
 
-    public function getTemplateResultDocument() {
-         return $this->traitGetTemplateResultDocument();
+    public function getTemplateResultDocument($template_object_id) {
+         return $this->traitGetTemplateResultDocument($template_object_id);
     }
 
     public function sendDocumentToDropbox(\Net7\Documents\Document $document){
