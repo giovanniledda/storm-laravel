@@ -210,17 +210,22 @@ class ProjectController extends Controller
         }
 
         try {
-            $dg->startProcess();
+            $document =  $dg->startProcess();
         } catch (\Exception $e) {
             return Utils::jsonAbortWithInternalError(422, 402, "Error generatig report", $e->getMessage());
         }
 
         $project->closeAllTasksTemporaryFiles();
 
-        $filepath = $dg->getRealFinalFilePath();
+        // $filepath = $dg->getRealFinalFilePath();
+        // $filename = $dg->getFinalFileName()
+
+        $filepath = $document->getPathBySize('');
+        $filename = $document->file_name;
+
         $headers = ['Cache-Control' => 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0', "Content-Type" => "application/octet-stream"];
         return response()
-            ->download($filepath, $dg->getFinalFileName(), $headers);
+            ->download($filepath, $filename, $headers);
 
     }
 

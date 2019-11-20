@@ -17,6 +17,7 @@ use \Net7\Documents\DocumentableTrait;
 use \Net7\Documents\Document;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Queue\SerializesModels;
+use App\Jobs\SendDocumentsToGoogleDrive;
 
 // use Illuminate\Support\Facades\Queue;
 
@@ -68,9 +69,13 @@ class Project extends Model {
         $document = $this->traitAddTemplateResultDocument($temporary_final_file_path, $final_file_name, $template_object_id, $type);
 
         if ($document) {
-            $this->sendDocumentToGoogleDrive($document);
+
+            SendDocumentsToGoogleDrive::dispatch($this, $document);
+
+            // $this->sendDocumentToGoogleDrive($document);
         }
-        // TODO: mandalo a google
+
+        return $document;
     }
 
     public function getTemplateResultDocument($template_object_id) {
@@ -209,7 +214,10 @@ class Project extends Model {
             }
 
             if (env('USE_GOOGLE_DRIVE')){
-                $this->sendDocumentToGoogleDrive($document);
+                SendDocumentsToGoogleDrive::dispatch($this, $document);
+
+
+                // $this->sendDocumentToGoogleDrive($document);
 
             }
         }
@@ -236,7 +244,10 @@ class Project extends Model {
             }
 
             if (env('USE_GOOGLE_DRIVE')){
-                $this->sendDocumentToGoogleDrive($document);
+
+                SendDocumentsToGoogleDrive::dispatch($this, $document);
+
+                // $this->sendDocumentToGoogleDrive($document);
 
             }
         }
