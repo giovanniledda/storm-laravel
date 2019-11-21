@@ -383,8 +383,8 @@ class Task extends Model
 
                 imagecopy($sfondo, $image, $bridgeImageInfo[0] / 2, $bridgeImageInfo[1] / 2, 0, 0, $bridgeImageInfo[0], $bridgeImageInfo[1]);
 
-                $path = storage_path() . DIRECTORY_SEPARATOR . 'tasks';
-                imagepng($sfondo, $path . DIRECTORY_SEPARATOR . 'map2.png');
+                // $path = storage_path() . DIRECTORY_SEPARATOR . 'tasks';
+                // imagepng($sfondo, $path . DIRECTORY_SEPARATOR . 'map2.png');
 
                 $sizeW = 1000;
                 $sizeH = 500;
@@ -567,15 +567,15 @@ EOF;
 
         <div>
             <p id="title_$point_id">Point #$point_id</p>
-        
+
             $corrosionMapHTML
-        
+
             <div style="width: 100%; background-color: lightblue;">
                 <span style="width: 50%;"><span>Location: </span>$task_location</span>
                 <span style="width: 50%;"><span>Type: </span>$task_type</span>
             </div>
-        
-        
+
+
             <div style="width: 100%; background-color: lightblue;">
                 <span style="width: 50%;"><span>Description: </span>$description</span>
                 <span style="width: 50%;"><span>Created: </span>$created_at</span>
@@ -628,9 +628,9 @@ EOF;
         }
 
         $html .= <<<EOF
-        
+
             $img_dettaglioHTML
-        
+
             <p></p>
         </div>
 EOF;
