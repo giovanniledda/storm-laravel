@@ -17,7 +17,7 @@ class Adapter extends AbstractAdapter
      * @var array
      */
     protected $attributes = [];
-    
+
     /**
      * Adapter constructor.
      *
@@ -52,29 +52,47 @@ class Adapter extends AbstractAdapter
 
 
          /** restringe il recordset in caso di mancanza di permessi */
-         if (!$user->can(PERMISSION_ADMIN) || !$user->can(PERMISSION_BACKEND_MANAGER)) { 
-             // L'utente loggato non e' un admin   
+         if (!$user->can(PERMISSION_ADMIN) || !$user->can(PERMISSION_BACKEND_MANAGER)) {
+             // L'utente loggato non e' un admin
              // SE SI TRATTA DI UN DIPENDENTE  ALLORA MOSTRO SOLO QUELLI LEGATI A project_user
              if ($user->hasRole(ROLE_WORKER)) {
-                 $query->Join('projects', 'boats.id', '=', 'projects.boat_id')->where('projects.project_status', '=', PROJECT_STATUS_IN_SITE)
-                    ->whereExists(function ($q) {
-                        $user = \Auth::user();
-                        $q->from('project_user')->whereRaw("project_user.user_id = {$user->id}");
-                  });
-             } 
-             
+
+//
+//
+//
+/**
+ *  trovo solo le barche che hanno un progetto dove l'utente di sessione e' associato  in project_user
+ *
+ */
+                $query->select('boats.*')
+                ->leftJoin('projects', 'boats.id', '=', 'projects.boat_id')
+                ->leftJoin('project_user', 'projects.id', '=', 'project_user.project_id')
+
+                ->where('project_user.user_id', '=' , $user->id);
+
+//                 ->where( function ($q){
+//                     $user = \Auth::user();
+//                     $q->where('project_user.user_id', '=' , $user->id)
+//                     ;
+//                 })
+//                 ->where('projects.project_status', '=', PROJECT_STATUS_IN_SITE)
+// ;
+
+            }
+
              // RUOLO BOOT MANAGER potrebbe essere questo il ruolo da assegnare all'equipaggio ? da discutere con Danilo
              if ($user->can(ROLE_BOAT_MANAGER)) {
                 $query->whereHas('users', function($q) use ($user)
                      {
                         $q->whereUser_id($user->id);
                      });
-             }    
-         } 
+             }
+         }
+
 
     }
-     
-    
+
+
     /* RELAZIONI PER LE RISORSE*/
     public function sections()
     {
