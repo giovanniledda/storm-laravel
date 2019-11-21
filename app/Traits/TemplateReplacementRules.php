@@ -285,10 +285,11 @@ trait TemplateReplacementRules
         $env_param = $this->retrieveEnvironmentalParameterByKey($param_key);
         if ($env_param) {
 
+            $uom = $env_param->unity_of_measure;
             $min_threshold = isset($this->_current_min_tresholds[$env_param->name]) ? $this->_current_min_tresholds[$env_param->name] : null;
 
             $data = [
-                'legend' => $min_threshold ? ['Min Threshold', $legend] : [$legend],
+                'legend' => $min_threshold ? ["Min Threshold - ($min_threshold $uom)", "$legend ($uom)"] : ["$legend ($uom)"],
             ];
 
             /** @var Measurement $measurement */
@@ -303,7 +304,6 @@ trait TemplateReplacementRules
                     ];
             }
 
-            $uom = $env_param->unity_of_measure;
             $vax_label = "$legend ($uom)";
             $paramsChart = array(
                 'data' => $data,
