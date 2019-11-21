@@ -245,6 +245,30 @@ trait TemplateReplacementRules
      *
      */
 
+    /**
+     * @param $date_start
+     */
+    public function setCurrentDateStart($date_start)
+    {
+        $this->_current_date_start = $date_start;
+    }
+
+    /**
+     * @param $date_end
+     */
+    public function setCurrentDateEnd($date_end)
+    {
+        $this->_current_date_end = $date_end;
+    }
+
+    /**
+     * @param $min_tresholds
+     */
+    public function setCurrentMinThresholds($min_tresholds)
+    {
+        $this->_current_min_tresholds = $min_tresholds;
+    }
+
 
     /**
      * Insert a chart with measurement values for a specific param
@@ -261,8 +285,10 @@ trait TemplateReplacementRules
         $env_param = $this->retrieveEnvironmentalParameterByKey($param_key);
         if ($env_param) {
 
+            $min_threshold = isset($this->_current_min_tresholds[$env_param->name]) ? $this->_current_min_tresholds[$env_param->name] : null;
+
             $data = [
-                'legend' => $env_param->min_threshold ? ['Min Threshold', $legend] : [$legend],
+                'legend' => $min_threshold ? ['Min Threshold', $legend] : [$legend],
             ];
 
             /** @var Measurement $measurement */
@@ -273,7 +299,7 @@ trait TemplateReplacementRules
                 $data['data'][] =
                     [
                         'name' => ($step == 0) ? $measurement->measurement_time : '',
-                        'values' => $env_param->min_threshold ? [$env_param->min_threshold, $measurement->measured_value] : [$measurement->measured_value]
+                        'values' => $min_threshold ? [$min_threshold, $measurement->measured_value] : [$measurement->measured_value]
                     ];
             }
 
@@ -296,7 +322,7 @@ trait TemplateReplacementRules
                 'hgrid' => '1',
                 'vgrid' => '1',
                 'scalingMax' => $env_param->getMaximum(),
-                'scalingMin' => $env_param->min_threshold ? min($env_param->min_threshold, $env_param->getMinimum()) : $env_param->getMinimum(),
+                'scalingMin' => $min_threshold ? min($min_threshold, $env_param->getMinimum()) : $env_param->getMinimum(),
                 'horizontalOffset' => 360,
                 'formatDataLabels' => [
                     'rotation' => 45,
