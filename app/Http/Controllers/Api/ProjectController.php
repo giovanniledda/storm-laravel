@@ -209,18 +209,15 @@ class ProjectController extends Controller
      * @param string $template
      * @param Project $project
      * @return Response|mixed
+     * @throws \Exception
      */
     private function reportGenerationProcess(string $template, Project $project)
     {
-        try {
-            $dg = new DocsGenerator($template, $project);
-        } catch (\Exception $e) {
-            return Utils::jsonAbortWithInternalError(422, 402, "Error instantiating DocsGenerator", $e->getMessage());
-        }
+        $dg = new DocsGenerator($template, $project);
 
         if (isset($dg) && !$dg->checkTemplateCategory()) {
             $msg = __("Template :name not valid (there's no such a Model on DB)!", ['name' => $template]);
-            return Utils::jsonAbortWithInternalError(422, 402, "Error checking template", $msg);
+            throw new \Exception($msg);
         }
 
         // ...e che ci sia il template associato nel filesystem.
@@ -228,13 +225,14 @@ class ProjectController extends Controller
             $dg->checkIfTemplateFileExistsWithTemplateObjectCheck(true);
         } catch (FileNotFoundException $e) {
             $msg = __("Template :name not found (you're searching on ':e_msg')!", ['name' => $template, 'e_msg' => $e->getMessage()]);
-            return Utils::jsonAbortWithInternalError(422, 402, "Error checking template existance", $msg);
+            throw new \Exception($msg);
         }
 
         try {
             $document = $dg->startProcess();
         } catch (\Exception $e) {
-            return Utils::jsonAbortWithInternalError(422, 402, "Error generatig report", $e->getMessage());
+            $msg = __("Error generatig report (':e_msg')!", ['e_msg' => $e->getMessage()]);
+            throw new \Exception($msg);
         }
 
         return $document;
@@ -327,16 +325,7 @@ class ProjectController extends Controller
             if ($document) {
                 $file_path = $project->getDocumentMediaFilePath(MEASUREMENT_FILE_TYPE);
                 $array = \Net7\EnvironmentalMeasurement\Utils::convertCsvInAssociativeArray($file_path);
-                $min_thresholds = [
-//                    'Celsius' => $request->has('temp_min_threshold') ? $request->input('temp_min_threshold') : null,
-//                    'Dew Point' => $request->has('dp_min_threshold') ? $request->input('dp_min_threshold') : null,
-//                    'Humidity' => $request->has('hum_min_threshold') ? $request->input('hum_min_threshold') : null,
-
-//                    'Celsius' => isset($request->data['attributes']['temp_min_threshold']) ? $request->data['attributes']['temp_min_threshold'] : null,
-//                    'Dew Point' => isset($request->data['attributes']['dp_min_threshold']) ? $request->data['attributes']['dp_min_threshold'] : null,
-//                    'Humidity' => isset($request->data['attributes']['hum_min_threshold']) ? $request->data['attributes']['hum_min_threshold'] : null,
-                ];
-                $project->translateMeasurementsInputForTempDPHumSensor($array, 'STORM - Web App Frontend', $min_thresholds);
+                $project->translateMeasurementsInputForTempDPHumSensor($array, 'STORM - Web App Frontend');
 
                 $ret = ['data' => [
                     'type' => 'documents',
@@ -368,13 +357,15 @@ class ProjectController extends Controller
     public function generateEnvironmentalReport(Request $request, $record)
     {
         $project = Project::findOrFail($record->id);
-        $tasks = $request->tasks;
-        $template = $request->template;
 
-        $project->setTasksToIncludeInReport(explode(',', $tasks));
-
-        // TODO: take it from input
-        // $template = 'corrosion_map';
+        $template = $request->input('template');
+        $date_start = $request->input('date_start');
+        $date_end = $request->input('date_end');
+        $min_thresholds = [
+            'Celsius' => $request->has('temp_min_threshold') ? $request->input('temp_min_threshold') : null,
+            'Dew Point' => $request->has('dp_min_threshold') ? $request->input('dp_min_threshold') : null,
+            'Humidity' => $request->has('hum_min_threshold') ? $request->input('hum_min_threshold') : null,
+        ];
 
         // TODO: REFACTORING DRY usare la reportGenerationProcess gestendo meglio le eccezioni
 
