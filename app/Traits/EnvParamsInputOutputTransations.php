@@ -44,7 +44,7 @@ trait EnvParamsInputOutputTransations
      * ...
      * @param array $min_thresholds
      */
-    public function translateMeasurementsInput($measurements, $source = null, $min_thresholds = [])
+    public function translateMeasurementsInputForTempDPHumSensor($measurements, $source = null, $min_thresholds = [])
     {
         foreach ($measurements as $measurement_array) {
             $time = $measurement_array['Time'];

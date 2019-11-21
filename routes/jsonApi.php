@@ -94,6 +94,11 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
             $project->post('{record}/generate-report', 'generateReport')->name('generate-report');
         });
 
+        $api->resource('projects')->only('upload-env-measurement')->controller('ProjectController')//uses the App\Http\Controllers\Api\ProjectController
+        ->routes(function ($project) {
+            $project->post('{record}/upload-env-measurement', 'uploadEnvMeasurement')->name('upload-env-measurement');
+        });
+
         $api->resource('projects')->relationships(function ($relations) {
             $relations->hasOne('boat'); // punta al methodo dell'adapter /app/jsonApi/Projects/Adapter non al modello
             $relations->hasMany('tasks');

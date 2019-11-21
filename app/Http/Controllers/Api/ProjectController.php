@@ -2,19 +2,24 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\RequestProjectChangeType;
+use function __;
+use function json_decode;
+use function notify;
+use function view;
+use const MEASUREMENT_FILE_TYPE;
+use const PROJECT_STATUS_CLOSED;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use App\User;
-use App\Project;
-use const PROJECT_STATUS_CLOSED;
-use Validator;
 use Illuminate\Validation\Rule;
+use App\User;
+use Validator;
 use Net7\Documents\Document;
-use App\Utils\Utils;
 use Net7\Logging\models\Logs as Log;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\RequestProjectChangeType;
+use App\Project;
+use App\Utils\Utils;
 use App\Jobs\ProjectGoogleSync;
 use Net7\DocsGenerator\DocsGenerator;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
@@ -144,7 +149,7 @@ class ProjectController extends Controller
         return Utils::jsonAbortWithInternalError(422, 130, PROJECT_TYPE_API_VALIDATION_TITLE, PROJECT_TYPE_API_VALIDATION_MSG);
     }
 
- /**
+    /**
      * API used to sync the project google drive dir
      *
      * @param Request $request
@@ -153,7 +158,8 @@ class ProjectController extends Controller
      * @return mixed
      */
 
-    public function cloudSync(Request $request, $record){
+    public function cloudSync(Request $request, $record)
+    {
 
         $project = Project::findOrFail($record->id);
 
@@ -172,7 +178,7 @@ class ProjectController extends Controller
     }
 
 
- /**
+    /**
      * API used to get the list of reports name and links from google drive
      *
      * @param Request $request
@@ -181,7 +187,8 @@ class ProjectController extends Controller
      * @return mixed
      */
 
-    public function reportsList(Request $request, $project){
+    public function reportsList(Request $request, $project)
+    {
 
         // $project = Project::findOrFail($record->id);
 
@@ -197,8 +204,7 @@ class ProjectController extends Controller
     }
 
 
-
-/**
+    /**
      * API used to generate a report from the project
      *
      * @param Request $request
@@ -206,9 +212,8 @@ class ProjectController extends Controller
      *
      * @return mixed
      */
-
-
-    public function generateReport(Request $request, $record){
+    public function generateReport(Request $request, $record)
+    {
         $project = Project::findOrFail($record->id);
         $tasks = $request->tasks;
         $template = $request->template;
@@ -238,7 +243,7 @@ class ProjectController extends Controller
         }
 
         try {
-            $document =  $dg->startProcess();
+            $document = $dg->startProcess();
         } catch (\Exception $e) {
             return Utils::jsonAbortWithInternalError(422, 402, "Error generatig report", $e->getMessage());
         }
@@ -247,16 +252,53 @@ class ProjectController extends Controller
 
         // $filepath = $dg->getRealFinalFilePath();
         // $filename = $dg->getFinalFileName()
-if ($document) {
-    $document->refresh();
-        $filepath = $document->getPathBySize('');
-        $filename = $document->file_name;
+        if ($document) {
+            $document->refresh();
+            $filepath = $document->getPathBySize('');
+            $filename = $document->file_name;
 
-        $headers = ['Cache-Control' => 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0', "Content-Type" => "application/octet-stream"];
-        return response()
-            ->download($filepath, $filename, $headers);
+            $headers = ['Cache-Control' => 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0', "Content-Type" => "application/octet-stream"];
+            return response()
+                ->download($filepath, $filename, $headers);
 
-}
+        }
+    }
+
+    /**
+     * API used to upload and parse a sensor log for the environment.
+     * A docx report will be also generated and downloaded by the API.
+     *
+     * @param Request $request
+     * @param $record
+     *
+     * @return mixed
+     * @throws \Throwable
+     */
+    public function uploadEnvMeasurement(Request $request, $record)
+    {
+        try {
+            /** @var Project $project */
+            $project = Project::findOrFail($record->id);
+
+            $file = $request->file('MeasurementsFile');
+            if ($file) {
+                $project->addDocumentFileDirectly($file, 'log_measurements_temp_dp_hum.txt', MEASUREMENT_FILE_TYPE);
+            }
+            $document = $project->getDocument(MEASUREMENT_FILE_TYPE);
+            if ($document) {
+                $file_path = $project->getDocumentMediaFilePath(MEASUREMENT_FILE_TYPE);
+                $array = \Net7\EnvironmentalMeasurement\Utils::convertCsvInAssociativeArray($file_path);
+                $min_thresholds = [
+                    'Celsius' => $request->has('temp_min_threshold') ? $request->input('temp_min_threshold') : null,
+                    'Dew Point' => $request->has('dp_min_threshold') ? $request->input('dp_min_threshold') : null,
+                    'Humidity' => $request->has('hum_min_threshold') ? $request->input('hum_min_threshold') : null,
+                ];
+                $project->translateMeasurementsInputForTempDPHumSensor($array, 'Laravel N7 Env Meas Plugin Backend', $min_thresholds);
+            }
+        } catch (\Exception $e) {
+            $msg = __("Error: ':e_msg'!", ['e_msg' => $e->getMessage()]);
+
+        }
     }
 
 }
