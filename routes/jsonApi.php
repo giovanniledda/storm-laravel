@@ -94,9 +94,9 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
             $project->post('{record}/generate-report', 'generateReport')->name('generate-report');
         });
 
-        $api->resource('projects')->only('upload-env-measurement')->controller('ProjectController')//uses the App\Http\Controllers\Api\ProjectController
+        $api->resource('projects')->only('upload-env-measurement-log')->controller('ProjectController')//uses the App\Http\Controllers\Api\ProjectController
         ->routes(function ($project) {
-            $project->post('{record}/upload-env-measurement', 'uploadEnvMeasurement')->name('upload-env-measurement');
+            $project->post('{record}/upload-env-measurement-log', 'uploadEnvMeasurementLog')->name('upload-env-measurement-log');
         });
 
         $api->resource('projects')->relationships(function ($relations) {

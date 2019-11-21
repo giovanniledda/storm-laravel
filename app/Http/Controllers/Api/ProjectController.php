@@ -274,16 +274,14 @@ class ProjectController extends Controller
      * @return mixed
      * @throws \Throwable
      */
-    public function uploadEnvMeasurement(Request $request, $record)
+    public function uploadEnvMeasurementLog(Request $request, $record)
     {
         try {
             /** @var Project $project */
             $project = Project::findOrFail($record->id);
-
-
             $base64File = $request->data['attributes']['file'];
             $filename = $request->data['attributes']['filename'];
-            $file = Document::createUploadedFileFromBase64( $base64File, $filename);
+            $file = Document::createUploadedFileFromBase64($base64File, $filename);
             if ($file) {
                 $project->addDocumentFileDirectly($file, 'log_measurements_temp_dp_hum.txt', MEASUREMENT_FILE_TYPE);
             }
@@ -296,15 +294,27 @@ class ProjectController extends Controller
 //                    'Dew Point' => $request->has('dp_min_threshold') ? $request->input('dp_min_threshold') : null,
 //                    'Humidity' => $request->has('hum_min_threshold') ? $request->input('hum_min_threshold') : null,
 
-                    'Celsius' => isset($request->data['attributes']['temp_min_threshold']) ? $request->data['attributes']['temp_min_threshold'] : null,
-                    'Dew Point' => isset($request->data['attributes']['dp_min_threshold']) ? $request->data['attributes']['dp_min_threshold'] : null,
-                    'Humidity' => isset($request->data['attributes']['hum_min_threshold']) ? $request->data['attributes']['hum_min_threshold'] : null,
+//                    'Celsius' => isset($request->data['attributes']['temp_min_threshold']) ? $request->data['attributes']['temp_min_threshold'] : null,
+//                    'Dew Point' => isset($request->data['attributes']['dp_min_threshold']) ? $request->data['attributes']['dp_min_threshold'] : null,
+//                    'Humidity' => isset($request->data['attributes']['hum_min_threshold']) ? $request->data['attributes']['hum_min_threshold'] : null,
                 ];
-                $project->translateMeasurementsInputForTempDPHumSensor($array, 'Laravel N7 Env Meas Plugin Backend', $min_thresholds);
+                $project->translateMeasurementsInputForTempDPHumSensor($array, 'STORM - Web App Frontend', $min_thresholds);
+
+                $ret = ['data' => [
+                    'type' => 'documents',
+                    'id' => $document->id,
+                    'attributes' => [
+                        'name' => $document->title,
+                        'created-at' => $document->created_at,
+                        'updated-at' => $document->updated_at
+                    ]
+                ]];
+
+                return Utils::renderStandardJsonapiResponse($ret, 200);
             }
         } catch (\Exception $e) {
             $msg = __("Error: ':e_msg'!", ['e_msg' => $e->getMessage()]);
-
+            return Utils::jsonAbortWithInternalError(422, 402, "Error uploading CSV log file", $msg);
         }
     }
 

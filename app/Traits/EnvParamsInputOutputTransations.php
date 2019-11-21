@@ -3,7 +3,9 @@
 namespace App\Traits;
 
 use App\User;
+use Exception;
 use Faker\Factory as FakerFactory;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Net7\DocsGenerator\Utils;
 use Net7\EnvironmentalMeasurement\Models\EnvironmentalParameter;
@@ -13,6 +15,7 @@ use Phpdocx\Elements\WordFragment;
 use function array_slice;
 use function count;
 use function date;
+use function throw_if;
 use function time;
 
 trait EnvParamsInputOutputTransations
@@ -22,8 +25,6 @@ trait EnvParamsInputOutputTransations
      * Override the function on HasMeasurements Trait
      *
      * @param $measurements
-     * @param null $source
-     *
      * $array ===> array:169 [▼
      * 0 => array:6 [▼
      * "FB 272 SD EXT" => "1"
@@ -42,20 +43,39 @@ trait EnvParamsInputOutputTransations
      * "Serial Number" => "-"
      * ],
      * ...
+     * @param null $source
      * @param array $min_thresholds
+     * @throws Exception
      */
     public function translateMeasurementsInputForTempDPHumSensor($measurements, $source = null, $min_thresholds = [])
     {
+        $array_ok = false;
         foreach ($measurements as $measurement_array) {
+            // TODO: rimettere il controllo, ora non funge perché il carattere ° è corrotto
+//            if (!$array_ok) {
+//                if (!$this->checkTempDPHumSensorLogFileStandardCompliance($measurement_array)) {
+//                    throw new \Exception('The log file is not compliant!');
+//                }
+//                $array_ok = true;
+//            }
             $time = $measurement_array['Time'];
             foreach (array_slice($measurement_array, 2, 3) as $param_name_uom_noutf8 => $value) {
-                $param_name_uom = utf8_encode($param_name_uom_noutf8);
+                $param_name_uom = utf8_encode($param_name_uom_noutf8);  // sistema i caratteri corrotti
                 $param_name = Str::before($param_name_uom, '(');
                 $uom = Str::before(Str::after($param_name_uom, '('), ')');
                 $min_threshold = isset($min_thresholds[$param_name]) ? $min_thresholds[$param_name] : null;
                 $this->addMeasurement($param_name, $value, $time, $uom, $source, $min_threshold);
             }
         }
+    }
+
+    /**
+     * @param $measurement_array
+     * @return bool
+     */
+    public function checkTempDPHumSensorLogFileStandardCompliance($measurement_array)
+    {
+        return Arr::has($measurement_array, ['Time', 'Celsius(°C)', 'Humidity(%rh)', 'Dew Point(°C)', 'Serial Number']);
     }
 
 }
