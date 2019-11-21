@@ -280,7 +280,10 @@ class ProjectController extends Controller
             /** @var Project $project */
             $project = Project::findOrFail($record->id);
 
-            $file = $request->file('MeasurementsFile');
+
+            $base64File = $request->data['attributes']['file'];
+            $filename = $request->data['attributes']['filename'];
+            $file = Document::createUploadedFileFromBase64( $base64File, $filename);
             if ($file) {
                 $project->addDocumentFileDirectly($file, 'log_measurements_temp_dp_hum.txt', MEASUREMENT_FILE_TYPE);
             }
@@ -289,9 +292,13 @@ class ProjectController extends Controller
                 $file_path = $project->getDocumentMediaFilePath(MEASUREMENT_FILE_TYPE);
                 $array = \Net7\EnvironmentalMeasurement\Utils::convertCsvInAssociativeArray($file_path);
                 $min_thresholds = [
-                    'Celsius' => $request->has('temp_min_threshold') ? $request->input('temp_min_threshold') : null,
-                    'Dew Point' => $request->has('dp_min_threshold') ? $request->input('dp_min_threshold') : null,
-                    'Humidity' => $request->has('hum_min_threshold') ? $request->input('hum_min_threshold') : null,
+//                    'Celsius' => $request->has('temp_min_threshold') ? $request->input('temp_min_threshold') : null,
+//                    'Dew Point' => $request->has('dp_min_threshold') ? $request->input('dp_min_threshold') : null,
+//                    'Humidity' => $request->has('hum_min_threshold') ? $request->input('hum_min_threshold') : null,
+
+                    'Celsius' => isset($request->data['attributes']['temp_min_threshold']) ? $request->data['attributes']['temp_min_threshold'] : null,
+                    'Dew Point' => isset($request->data['attributes']['dp_min_threshold']) ? $request->data['attributes']['dp_min_threshold'] : null,
+                    'Humidity' => isset($request->data['attributes']['hum_min_threshold']) ? $request->data['attributes']['hum_min_threshold'] : null,
                 ];
                 $project->translateMeasurementsInputForTempDPHumSensor($array, 'Laravel N7 Env Meas Plugin Backend', $min_thresholds);
             }
