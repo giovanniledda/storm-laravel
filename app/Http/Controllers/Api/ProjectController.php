@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use function __;
+use function explode;
 use function json_decode;
 use function notify;
+use function response;
 use function view;
 use const MEASUREMENT_FILE_TYPE;
 use const PROJECT_STATUS_CLOSED;
@@ -203,6 +205,40 @@ class ProjectController extends Controller
         return $resp;
     }
 
+    /**
+     * @param string $template
+     * @param Project $project
+     * @return Response|mixed
+     */
+    private function reportGenerationProcess(string $template, Project $project)
+    {
+        try {
+            $dg = new DocsGenerator($template, $project);
+        } catch (\Exception $e) {
+            return Utils::jsonAbortWithInternalError(422, 402, "Error instantiating DocsGenerator", $e->getMessage());
+        }
+
+        if (isset($dg) && !$dg->checkTemplateCategory()) {
+            $msg = __("Template :name not valid (there's no such a Model on DB)!", ['name' => $template]);
+            return Utils::jsonAbortWithInternalError(422, 402, "Error checking template", $msg);
+        }
+
+        // ...e che ci sia il template associato nel filesystem.
+        try {
+            $dg->checkIfTemplateFileExistsWithTemplateObjectCheck(true);
+        } catch (FileNotFoundException $e) {
+            $msg = __("Template :name not found (you're searching on ':e_msg')!", ['name' => $template, 'e_msg' => $e->getMessage()]);
+            return Utils::jsonAbortWithInternalError(422, 402, "Error checking template existance", $msg);
+        }
+
+        try {
+            $document = $dg->startProcess();
+        } catch (\Exception $e) {
+            return Utils::jsonAbortWithInternalError(422, 402, "Error generatig report", $e->getMessage());
+        }
+
+        return $document;
+    }
 
     /**
      * API used to generate a report from the project
@@ -222,6 +258,8 @@ class ProjectController extends Controller
 
         // TODO: take it from input
         // $template = 'corrosion_map';
+
+        // TODO: REFACTORING DRY usare la reportGenerationProcess gestendo meglio le eccezioni
 
         try {
             $dg = new DocsGenerator($template, $project);
@@ -315,6 +353,69 @@ class ProjectController extends Controller
         } catch (\Exception $e) {
             $msg = __("Error: ':e_msg'!", ['e_msg' => $e->getMessage()]);
             return Utils::jsonAbortWithInternalError(422, 402, "Error uploading CSV log file", $msg);
+        }
+    }
+
+
+    /**
+     * API used to generate a report from the project
+     *
+     * @param Request $request
+     * @param $record
+     *
+     * @return mixed
+     */
+    public function generateEnvironmentalReport(Request $request, $record)
+    {
+        $project = Project::findOrFail($record->id);
+        $tasks = $request->tasks;
+        $template = $request->template;
+
+        $project->setTasksToIncludeInReport(explode(',', $tasks));
+
+        // TODO: take it from input
+        // $template = 'corrosion_map';
+
+        // TODO: REFACTORING DRY usare la reportGenerationProcess gestendo meglio le eccezioni
+
+        try {
+            $dg = new DocsGenerator($template, $project);
+        } catch (\Exception $e) {
+            return Utils::jsonAbortWithInternalError(422, 402, "Error instantiating DocsGenerator", $e->getMessage());
+        }
+
+        if (isset($dg) && !$dg->checkTemplateCategory()) {
+            $msg = __("Template :name not valid (there's no such a Model on DB)!", ['name' => $template]);
+            return Utils::jsonAbortWithInternalError(422, 402, "Error checking template", $msg);
+        }
+
+        // ...e che ci sia il template associato nel filesystem.
+        try {
+            $dg->checkIfTemplateFileExistsWithTemplateObjectCheck(true);
+        } catch (FileNotFoundException $e) {
+            $msg = __("Template :name not found (you're searching on ':e_msg')!", ['name' => $template, 'e_msg' => $e->getMessage()]);
+            return Utils::jsonAbortWithInternalError(422, 402, "Error checking template existance", $msg);
+        }
+
+        try {
+            $document = $dg->startProcess();
+        } catch (\Exception $e) {
+            return Utils::jsonAbortWithInternalError(422, 402, "Error generatig report", $e->getMessage());
+        }
+
+        $project->closeAllTasksTemporaryFiles();
+
+        // $filepath = $dg->getRealFinalFilePath();
+        // $filename = $dg->getFinalFileName()
+        if ($document) {
+            $document->refresh();
+            $filepath = $document->getPathBySize('');
+            $filename = $document->file_name;
+
+            $headers = ['Cache-Control' => 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0', "Content-Type" => "application/octet-stream"];
+            return response()
+                ->download($filepath, $filename, $headers);
+
         }
     }
 
