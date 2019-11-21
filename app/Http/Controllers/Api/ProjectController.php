@@ -345,9 +345,8 @@ class ProjectController extends Controller
             'Humidity' => $request->has('hum_min_threshold') ? $request->input('hum_min_threshold') : null,
         ];
 
-        $arr = [$project, $template, $date_start, $date_end, $min_thresholds];
-        return Utils::renderStandardJsonapiResponse($arr, 200);
-
+//        $arr = [$project, $template, $date_start, $date_end, $min_thresholds];
+//        return Utils::renderStandardJsonapiResponse($arr, 200);
 
         try {
             $document = $this->reportGenerationProcess($template, $project);
