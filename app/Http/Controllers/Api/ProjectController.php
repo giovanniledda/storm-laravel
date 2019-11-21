@@ -283,7 +283,7 @@ class ProjectController extends Controller
             $filename = $request->data['attributes']['filename'];
             $file = Document::createUploadedFileFromBase64($base64File, $filename);
             if ($file) {
-                $project->addDocumentFileDirectly($file, 'log_measurements_temp_dp_hum.txt', MEASUREMENT_FILE_TYPE);
+                $project->addDocumentFileDirectly($file, $filename, MEASUREMENT_FILE_TYPE);
             }
             $document = $project->getDocument(MEASUREMENT_FILE_TYPE);
             if ($document) {
