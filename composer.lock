@@ -3694,22 +3694,22 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "2.26.0",
+            "version": "2.27.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "e01ecc0b71168febb52ae1fdc1cfcc95428e604e"
+                "reference": "13b8485a8690f103bf19cba64879c218b102b726"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/e01ecc0b71168febb52ae1fdc1cfcc95428e604e",
-                "reference": "e01ecc0b71168febb52ae1fdc1cfcc95428e604e",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/13b8485a8690f103bf19cba64879c218b102b726",
+                "reference": "13b8485a8690f103bf19cba64879c218b102b726",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "php": "^7.1.8 || ^8.0",
-                "symfony/translation": "^3.4 || ^4.0"
+                "symfony/translation": "^3.4 || ^4.0 || ^5.0"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^2.14 || ^3.0",
@@ -3724,6 +3724,9 @@
             ],
             "type": "library",
             "extra": {
+                "branch-alias": {
+                    "dev-master": "2.x-dev"
+                },
                 "laravel": {
                     "providers": [
                         "Carbon\\Laravel\\ServiceProvider"
@@ -3757,7 +3760,7 @@
                 "datetime",
                 "time"
             ],
-            "time": "2019-10-21T21:32:25+00:00"
+            "time": "2019-11-20T06:59:06+00:00"
         },
         {
             "name": "net7/docs-generator",
@@ -3765,7 +3768,7 @@
             "source": {
                 "type": "git",
                 "url": "https://net7.codebasehq.com/nautica/net7docs-generator.git",
-                "reference": "e481f7d859f1a016049e82dd7fba36513ea88fdf"
+                "reference": "d5d3adc6c8f68eb0506855a091b14b88bc1bc160"
             },
             "require": {
                 "mckenziearts/laravel-notify": "dev-master",
@@ -3802,7 +3805,7 @@
                 }
             ],
             "description": "Generate documents starting from custom templates.",
-            "time": "2019-11-19T10:43:56+00:00"
+            "time": "2019-11-20T16:50:09+00:00"
         },
         {
             "name": "net7/documents",
@@ -3810,7 +3813,7 @@
             "source": {
                 "type": "git",
                 "url": "https://net7.codebasehq.com/nautica/net7documents.git",
-                "reference": "183220dab846fca7a37a15737128e4a50a1a1ba7"
+                "reference": "936b64ef02cfd17fd1829bcde5ce5c722294760a"
             },
             "require": {
                 "cloudcreativity/laravel-json-api": "^1.1",
@@ -3848,7 +3851,7 @@
                 }
             ],
             "description": "Add documents to an object of your application",
-            "time": "2019-11-19T15:01:03+00:00"
+            "time": "2019-11-20T10:44:53+00:00"
         },
         {
             "name": "net7/env-measure",
@@ -3856,7 +3859,7 @@
             "source": {
                 "type": "git",
                 "url": "https://net7.codebasehq.com/nautica/net7env-measure.git",
-                "reference": "c026f6ebf1cec6d9247f039dfdf0b23dd663e98f"
+                "reference": "ffc703428dd9237f07080541be2629a4d69f69b8"
             },
             "require": {
                 "mckenziearts/laravel-notify": "dev-master",
@@ -3889,7 +3892,7 @@
                 }
             ],
             "description": "Handle any kind of environmental measurement associated to a Model",
-            "time": "2019-11-19T15:49:59+00:00"
+            "time": "2019-11-20T14:30:45+00:00"
         },
         {
             "name": "net7/logging",
@@ -9021,16 +9024,16 @@
         },
         {
             "name": "sebastian/environment",
-            "version": "4.2.2",
+            "version": "4.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/environment.git",
-                "reference": "f2a2c8e1c97c11ace607a7a667d73d47c19fe404"
+                "reference": "464c90d7bdf5ad4e8a6aea15c091fec0603d4368"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/f2a2c8e1c97c11ace607a7a667d73d47c19fe404",
-                "reference": "f2a2c8e1c97c11ace607a7a667d73d47c19fe404",
+                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/464c90d7bdf5ad4e8a6aea15c091fec0603d4368",
+                "reference": "464c90d7bdf5ad4e8a6aea15c091fec0603d4368",
                 "shasum": ""
             },
             "require": {
@@ -9070,7 +9073,7 @@
                 "environment",
                 "hhvm"
             ],
-            "time": "2019-05-05T09:05:15+00:00"
+            "time": "2019-11-20T08:46:58+00:00"
         },
         {
             "name": "sebastian/exporter",
