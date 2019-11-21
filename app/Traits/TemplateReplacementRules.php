@@ -219,26 +219,10 @@ trait TemplateReplacementRules
     {
         $category = $this->persistAndAssignTemplateCategory('corrosion_map');
         $placeholders = [
-
             '$pageBreak$' => 'getPageBreak()',
             '$html_bloccoTask$' => 'getBlockHtml()',
             '$boat_type$' => 'getBoatType()',
             '$boat_name$' => 'getBoatName()'
-
-            // '${boat_name}' => 'getBoatName()',
-            // '${boat_reg_num}' => 'getBoatRegistrationNumber()',
-            // '${boat_type}' => 'getBoatType()',
-            // '${img_BoatImage:250:250:false}' => 'getBoatMainPhotoPath()',
-            // '${date}' => 'printDocxTodayDate()',
-            // '${blC_bloccoTask}' => 'getBloccoTaskSampleReportInfoArray()',
-            // '${pageBreak}' => 'printDocxPageBreak()',
-//            '${row_tableOne}' => 'getTableTaskSampleReportInfoArray()',
-//            '${img_currentTask_brPos:450:450:false}' => 'getCurrentTaskBridgeImage()',
-//            '${img_currentTask_img1}' => 'getCurrentTaskImg1()',
-//            '${img_currentTask_img2}' => 'getCurrentTaskImg2()',
-//            '${img_currentTask_img3}' => 'getCurrentTaskImg3()',
-//            '${img_currentTask_img4}' => 'getCurrentTaskImg4()',
-//            '${img_currentTask_img5}' => 'getCurrentTaskImg5()',
         ];
 
         $this->insertPlaceholders('corrosion_map', $placeholders, true);
