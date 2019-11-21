@@ -45,15 +45,8 @@ class Project extends Model {
         'name', 'project_status', 'boat_id', 'project_type', 'project_progress', 'site_id', 'start_date', 'end_date', 'imported'
     ];
 
-    // Usate con il DocsGenerator
-    protected $_currentTask;
-    protected $_currentTaskPhotos;
-    protected $_taskToIncludeInReport;
-    protected $_openFiles = [];
-
     public const REPORT_FOLDER = 'reports';
     public const DOCUMENTS_FOLDER  = 'documents';
-
     public const REPORT_DOCUMENT_TYPE = 'report';
 
     protected static function boot() {

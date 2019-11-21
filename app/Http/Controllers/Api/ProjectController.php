@@ -250,8 +250,7 @@ class ProjectController extends Controller
     {
         /** @var Project $project */
         $project = Project::findOrFail($record->id);
-        $tasks = $request->tasks;
-        $project->setTasksToIncludeInReport(explode(',', $tasks));
+        $project->setTasksToIncludeInReport($request->has('tasks') ? explode(',', $request->tasks) : []);
 
         // $template = 'corrosion_map';
         $template = $request->template;

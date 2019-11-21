@@ -20,6 +20,16 @@ use function unlink;
 trait TemplateReplacementRules
 {
 
+    // Usate con il DocsGenerator: per corrosion_map
+    protected $_currentTask;
+    protected $_currentTaskPhotos;
+    protected $_taskToIncludeInReport;
+    protected $_openFiles = [];
+
+    // Usate con il DocsGenerator: per environmental_report
+    protected $_current_date_start;
+    protected $_current_date_end;
+    protected $_current_min_tresholds;
 
     /**
      * *****************************
@@ -27,7 +37,6 @@ trait TemplateReplacementRules
      * *****************************
      *
      */
-
 
     public function getBoatName(){
         $boat = $this->boat;
@@ -156,20 +165,21 @@ trait TemplateReplacementRules
         return '';
     }
 
-    public function setTasksToIncludeInReport($tasks){
-        $this->_taskToIncludeInReport = $tasks;
+    public function setTasksToIncludeInReport($tasks)
+    {
+        $this->_taskToIncludeInReport = $tasks ? $tasks : [];
     }
 
     public function getTasksToIncludeInReport()
     {
-        if ($this->_taskToIncludeInReport) {
+        if (!empty($this->_taskToIncludeInReport)) {
             $tasks = [];
             foreach ($this->_taskToIncludeInReport as $task_id) {
                 $tasks[] = Task::Find($task_id);
             }
             return $tasks;
         } else {
-            return $this->tasks;
+            return $this->tasks;  // è la chiamata alla relazione Eloquent. Si presuppone che il model abbia dei Task
         }
     }
 
@@ -186,10 +196,9 @@ trait TemplateReplacementRules
 
     public function getCorrosionMapHtmlBlock()
     {
-        $html = '';
         /** @var Task $task */
-        $tasks = $this->getTasksToIncludeInReport();
         $html = '';
+        $tasks = $this->getTasksToIncludeInReport();
         foreach ($tasks as $task) {
             $this->_currentTask = $task;
             $this->updateCurrentTaskPhotosArray();
