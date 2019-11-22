@@ -19,6 +19,8 @@ class LightSeeder extends Seeder
      */
     public function run()
     {
+        ini_set('memory_limit', '-1');
+
         $this->faker = Faker::create();
         $this->utils = new Utils();
 
