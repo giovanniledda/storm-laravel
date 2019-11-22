@@ -71,6 +71,17 @@ class ProjectController extends Controller
         //  exit();
     }
 
+    public function envMeasurementsLogs(Request $request, $project){
+
+        // TODO get page & number from api
+        $data = $project->getMeasurementLogsData(1, 5);
+
+        $resp = Response(["data" => $data], 200);
+        $resp->header('Content-Type', 'application/vnd.api+json');
+
+        return $resp;
+    }
+
     public function close(Request $request, $related)
     {
         $data = json_decode($related, true);
@@ -209,18 +220,15 @@ class ProjectController extends Controller
      * @param string $template
      * @param Project $project
      * @return Response|mixed
+     * @throws \Exception
      */
     private function reportGenerationProcess(string $template, Project $project)
     {
-        try {
-            $dg = new DocsGenerator($template, $project);
-        } catch (\Exception $e) {
-            return Utils::jsonAbortWithInternalError(422, 402, "Error instantiating DocsGenerator", $e->getMessage());
-        }
+        $dg = new DocsGenerator($template, $project);
 
         if (isset($dg) && !$dg->checkTemplateCategory()) {
             $msg = __("Template :name not valid (there's no such a Model on DB)!", ['name' => $template]);
-            return Utils::jsonAbortWithInternalError(422, 402, "Error checking template", $msg);
+            throw new \Exception($msg);
         }
 
         // ...e che ci sia il template associato nel filesystem.
@@ -228,13 +236,14 @@ class ProjectController extends Controller
             $dg->checkIfTemplateFileExistsWithTemplateObjectCheck(true);
         } catch (FileNotFoundException $e) {
             $msg = __("Template :name not found (you're searching on ':e_msg')!", ['name' => $template, 'e_msg' => $e->getMessage()]);
-            return Utils::jsonAbortWithInternalError(422, 402, "Error checking template existance", $msg);
+            throw new \Exception($msg);
         }
 
         try {
             $document = $dg->startProcess();
         } catch (\Exception $e) {
-            return Utils::jsonAbortWithInternalError(422, 402, "Error generatig report", $e->getMessage());
+            $msg = __("Error generatig report (':e_msg')!", ['e_msg' => $e->getMessage()]);
+            throw new \Exception($msg);
         }
 
         return $document;
@@ -250,40 +259,17 @@ class ProjectController extends Controller
      */
     public function generateReport(Request $request, $record)
     {
+        /** @var Project $project */
         $project = Project::findOrFail($record->id);
-        $tasks = $request->tasks;
+        $project->setTasksToIncludeInReport($request->has('tasks') ? explode(',', $request->tasks) : []);
+
+        // $template = 'corrosion_map';
         $template = $request->template;
 
-        $project->setTasksToIncludeInReport(explode(',', $tasks));
-
-        // TODO: take it from input
-        // $template = 'corrosion_map';
-
-        // TODO: REFACTORING DRY usare la reportGenerationProcess gestendo meglio le eccezioni
-
         try {
-            $dg = new DocsGenerator($template, $project);
+            $document = $this->reportGenerationProcess($template, $project);
         } catch (\Exception $e) {
-            return Utils::jsonAbortWithInternalError(422, 402, "Error instantiating DocsGenerator", $e->getMessage());
-        }
-
-        if (isset($dg) && !$dg->checkTemplateCategory()) {
-            $msg = __("Template :name not valid (there's no such a Model on DB)!", ['name' => $template]);
-            return Utils::jsonAbortWithInternalError(422, 402, "Error checking template", $msg);
-        }
-
-        // ...e che ci sia il template associato nel filesystem.
-        try {
-            $dg->checkIfTemplateFileExistsWithTemplateObjectCheck(true);
-        } catch (FileNotFoundException $e) {
-            $msg = __("Template :name not found (you're searching on ':e_msg')!", ['name' => $template, 'e_msg' => $e->getMessage()]);
-            return Utils::jsonAbortWithInternalError(422, 402, "Error checking template existance", $msg);
-        }
-
-        try {
-            $document = $dg->startProcess();
-        } catch (\Exception $e) {
-            return Utils::jsonAbortWithInternalError(422, 402, "Error generatig report", $e->getMessage());
+            return Utils::jsonAbortWithInternalError(422, 402, "Error generating report", $e->getMessage());
         }
 
         $project->closeAllTasksTemporaryFiles();
@@ -321,22 +307,13 @@ class ProjectController extends Controller
             $filename = $request->data['attributes']['filename'];
             $file = Document::createUploadedFileFromBase64($base64File, $filename);
             if ($file) {
-                $project->addDocumentFileDirectly($file, $filename, MEASUREMENT_FILE_TYPE);
+                $document = $project->addDocumentFileDirectly($file, $filename, MEASUREMENT_FILE_TYPE);
             }
-            $document = $project->getDocument(MEASUREMENT_FILE_TYPE);
+            // $document = $project->getDocument(MEASUREMENT_FILE_TYPE);
             if ($document) {
                 $file_path = $project->getDocumentMediaFilePath(MEASUREMENT_FILE_TYPE);
                 $array = \Net7\EnvironmentalMeasurement\Utils::convertCsvInAssociativeArray($file_path);
-                $min_thresholds = [
-//                    'Celsius' => $request->has('temp_min_threshold') ? $request->input('temp_min_threshold') : null,
-//                    'Dew Point' => $request->has('dp_min_threshold') ? $request->input('dp_min_threshold') : null,
-//                    'Humidity' => $request->has('hum_min_threshold') ? $request->input('hum_min_threshold') : null,
-
-//                    'Celsius' => isset($request->data['attributes']['temp_min_threshold']) ? $request->data['attributes']['temp_min_threshold'] : null,
-//                    'Dew Point' => isset($request->data['attributes']['dp_min_threshold']) ? $request->data['attributes']['dp_min_threshold'] : null,
-//                    'Humidity' => isset($request->data['attributes']['hum_min_threshold']) ? $request->data['attributes']['hum_min_threshold'] : null,
-                ];
-                $project->translateMeasurementsInputForTempDPHumSensor($array, 'STORM - Web App Frontend', $min_thresholds);
+                $project->translateMeasurementsInputForTempDPHumSensor($array, 'STORM - Web App Frontend', $document);
 
                 $ret = ['data' => [
                     'type' => 'documents',
@@ -357,6 +334,11 @@ class ProjectController extends Controller
     }
 
 
+
+    public function getListOfMeasurement(){
+
+    }
+
     /**
      * API used to generate a report from the project
      *
@@ -368,42 +350,28 @@ class ProjectController extends Controller
     public function generateEnvironmentalReport(Request $request, $record)
     {
         $project = Project::findOrFail($record->id);
-        $tasks = $request->tasks;
-        $template = $request->template;
 
-        $project->setTasksToIncludeInReport(explode(',', $tasks));
+        $template = $request->input('template');
+        $date_start = $request->input('date_start');
+        $date_end = $request->input('date_end');
+        $min_thresholds = [
+            'Celsius' => $request->has('temp_min_threshold') ? $request->input('temp_min_threshold') : null,
+            'Dew Point' => $request->has('dp_min_threshold') ? $request->input('dp_min_threshold') : null,
+            'Humidity' => $request->has('hum_min_threshold') ? $request->input('hum_min_threshold') : null,
+        ];
 
-        // TODO: take it from input
-        // $template = 'corrosion_map';
+        $project->setCurrentDateStart($date_start);
+        $project->setCurrentDateEnd($date_end);
+        $project->setCurrentMinThresholds($min_thresholds);
 
-        // TODO: REFACTORING DRY usare la reportGenerationProcess gestendo meglio le eccezioni
+//        $arr = [$project, $template, $date_start, $date_end, $min_thresholds];
+//        return Utils::renderStandardJsonapiResponse($arr, 200);
 
         try {
-            $dg = new DocsGenerator($template, $project);
+            $document = $this->reportGenerationProcess($template, $project);
         } catch (\Exception $e) {
-            return Utils::jsonAbortWithInternalError(422, 402, "Error instantiating DocsGenerator", $e->getMessage());
+            return Utils::jsonAbortWithInternalError(422, 402, "Error generating report", $e->getMessage());
         }
-
-        if (isset($dg) && !$dg->checkTemplateCategory()) {
-            $msg = __("Template :name not valid (there's no such a Model on DB)!", ['name' => $template]);
-            return Utils::jsonAbortWithInternalError(422, 402, "Error checking template", $msg);
-        }
-
-        // ...e che ci sia il template associato nel filesystem.
-        try {
-            $dg->checkIfTemplateFileExistsWithTemplateObjectCheck(true);
-        } catch (FileNotFoundException $e) {
-            $msg = __("Template :name not found (you're searching on ':e_msg')!", ['name' => $template, 'e_msg' => $e->getMessage()]);
-            return Utils::jsonAbortWithInternalError(422, 402, "Error checking template existance", $msg);
-        }
-
-        try {
-            $document = $dg->startProcess();
-        } catch (\Exception $e) {
-            return Utils::jsonAbortWithInternalError(422, 402, "Error generatig report", $e->getMessage());
-        }
-
-        $project->closeAllTasksTemporaryFiles();
 
         // $filepath = $dg->getRealFinalFilePath();
         // $filename = $dg->getFinalFileName()

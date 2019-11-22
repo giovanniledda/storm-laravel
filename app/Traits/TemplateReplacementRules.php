@@ -20,6 +20,16 @@ use function unlink;
 trait TemplateReplacementRules
 {
 
+    // Usate con il DocsGenerator: per corrosion_map
+    protected $_currentTask;
+    protected $_currentTaskPhotos;
+    protected $_taskToIncludeInReport;
+    protected $_openFiles = [];
+
+    // Usate con il DocsGenerator: per environmental_report
+    protected $_current_date_start;
+    protected $_current_date_end;
+    protected $_current_min_tresholds;
 
     /**
      * *****************************
@@ -28,23 +38,26 @@ trait TemplateReplacementRules
      *
      */
 
-
-    public function getBoatName(){
+    public function getBoatName()
+    {
         $boat = $this->boat;
         return Utils::sanitizeTextsForPlaceholders($boat->name);
     }
 
-    public function getBoatRegistrationNumber(){
+    public function getBoatRegistrationNumber()
+    {
         $boat = $this->boat;
         return Utils::sanitizeTextsForPlaceholders($boat->registration_number);
     }
 
-    public function getBoatType(){
+    public function getBoatType()
+    {
         $boat = $this->boat;
         return $boat->boat_type;
     }
 
-    public function getBoatMainPhotoPath(){
+    public function getBoatMainPhotoPath()
+    {
 
         $boat = $this->boat;
         return $boat->getMainPhotoPath();
@@ -53,7 +66,7 @@ trait TemplateReplacementRules
 
     public function printDocxPageBreak()
     {
-        return '</w:t></w:r>'.'<w:r><w:br w:type="page"/></w:r>'. '<w:r><w:t>';
+        return '</w:t></w:r>' . '<w:r><w:br w:type="page"/></w:r>' . '<w:r><w:t>';
     }
 
     public function printDocxTodayDate()
@@ -156,40 +169,37 @@ trait TemplateReplacementRules
         return '';
     }
 
-    public function setTasksToIncludeInReport($tasks){
-        $this->_taskToIncludeInReport = $tasks;
+    public function setTasksToIncludeInReport($tasks)
+    {
+        $this->_taskToIncludeInReport = $tasks ? $tasks : [];
     }
 
     public function getTasksToIncludeInReport()
     {
-        if ($this->_taskToIncludeInReport) {
+        if (!empty($this->_taskToIncludeInReport)) {
             $tasks = [];
             foreach ($this->_taskToIncludeInReport as $task_id) {
                 $tasks[] = Task::Find($task_id);
             }
             return $tasks;
         } else {
-            return $this->tasks;
+            return $this->tasks;  // è la chiamata alla relazione Eloquent. Si presuppone che il model abbia dei Task
         }
     }
 
-    public function closeAllTasksTemporaryFiles(){
-        foreach ($this->_openFiles as $data){
+    public function closeAllTasksTemporaryFiles()
+    {
+        foreach ($this->_openFiles as $data) {
             fclose($data['handle']);
             unlink($data['path']);
         }
     }
-    public function getPageBreak() {
-        return '<p style="page-break-before: always;"></p>';
-    }
-
 
     public function getCorrosionMapHtmlBlock()
     {
-        $html = '';
         /** @var Task $task */
-        $tasks = $this->getTasksToIncludeInReport();
         $html = '';
+        $tasks = $this->getTasksToIncludeInReport();
         foreach ($tasks as $task) {
             $this->_currentTask = $task;
             $this->updateCurrentTaskPhotosArray();
@@ -198,33 +208,19 @@ trait TemplateReplacementRules
         return $html;
     }
 
-
-    public function setupTemplate()
+    /**
+     * Associate the "corrosion_map" Template and its Placeholders to an object
+     */
+    public function setupCorrosionMapTemplate()
     {
         $category = $this->persistAndAssignTemplateCategory('corrosion_map');
         $placeholders = [
-
-            '$pageBreak$' => 'getPageBreak()',
-            '$html_bloccoTask$' => 'getBlockHtml()',
+            '$date$' => 'currentDate()',
             '$boat_type$' => 'getBoatType()',
-            '$boat_name$' => 'getBoatName()'
-
-            // '${boat_name}' => 'getBoatName()',
-            // '${boat_reg_num}' => 'getBoatRegistrationNumber()',
-            // '${boat_type}' => 'getBoatType()',
-            // '${img_BoatImage:250:250:false}' => 'getBoatMainPhotoPath()',
-            // '${date}' => 'printDocxTodayDate()',
-            // '${blC_bloccoTask}' => 'getBloccoTaskSampleReportInfoArray()',
-            // '${pageBreak}' => 'printDocxPageBreak()',
-//            '${row_tableOne}' => 'getTableTaskSampleReportInfoArray()',
-//            '${img_currentTask_brPos:450:450:false}' => 'getCurrentTaskBridgeImage()',
-//            '${img_currentTask_img1}' => 'getCurrentTaskImg1()',
-//            '${img_currentTask_img2}' => 'getCurrentTaskImg2()',
-//            '${img_currentTask_img3}' => 'getCurrentTaskImg3()',
-//            '${img_currentTask_img4}' => 'getCurrentTaskImg4()',
-//            '${img_currentTask_img5}' => 'getCurrentTaskImg5()',
+            '$boat_name$' => 'getBoatName()',
+            '$break_n1$' => null,  // riconosciuto dal sistema
+            '$html_bloccoTask$' => 'getCorrosionMapHtmlBlock()'
         ];
-
         $this->insertPlaceholders('corrosion_map', $placeholders, true);
     }
 
@@ -236,6 +232,29 @@ trait TemplateReplacementRules
      *
      */
 
+    /**
+     * @param $date_start
+     */
+    public function setCurrentDateStart($date_start)
+    {
+        $this->_current_date_start = $date_start;
+    }
+
+    /**
+     * @param $date_end
+     */
+    public function setCurrentDateEnd($date_end)
+    {
+        $this->_current_date_end = $date_end;
+    }
+
+    /**
+     * @param $min_tresholds
+     */
+    public function setCurrentMinThresholds($min_tresholds)
+    {
+        $this->_current_min_tresholds = $min_tresholds;
+    }
 
     /**
      * Insert a chart with measurement values for a specific param
@@ -252,23 +271,30 @@ trait TemplateReplacementRules
         $env_param = $this->retrieveEnvironmentalParameterByKey($param_key);
         if ($env_param) {
 
+            $uom = $env_param->unity_of_measure;
+            $min_threshold = isset($this->_current_min_tresholds[$env_param->name]) ? $this->_current_min_tresholds[$env_param->name] : null;
+
             $data = [
-                'legend' => $env_param->min_threshold ? ['Min Threshold', $legend] : [$legend],
+                'legend' => $min_threshold ? ["Min Threshold - ($min_threshold $uom)", "$legend ($uom)"] : ["$legend ($uom)"],
             ];
 
             /** @var Measurement $measurement */
             $i = 0;
             $hax_print_step = 10;
-            foreach ($env_param->measurements as $measurement) {
-                $step = ++$i%$hax_print_step;
+            if ($this->_current_date_start && $this->_current_date_end) {
+                $measurements = $env_param->getMeasurementsInRange($this->_current_date_start, $this->_current_date_end);
+            } else {
+                $measurements = $env_param->measurements;
+            }
+            foreach ($measurements as $measurement) {
+                $step = ++$i % $hax_print_step;
                 $data['data'][] =
                     [
                         'name' => ($step == 0) ? $measurement->measurement_time : '',
-                        'values' => $env_param->min_threshold ? [$env_param->min_threshold, $measurement->measured_value] : [$measurement->measured_value]
+                        'values' => $min_threshold ? [$min_threshold, $measurement->measured_value] : [$measurement->measured_value]
                     ];
             }
 
-            $uom = $env_param->unity_of_measure;
             $vax_label = "$legend ($uom)";
             $paramsChart = array(
                 'data' => $data,
@@ -287,7 +313,7 @@ trait TemplateReplacementRules
                 'hgrid' => '1',
                 'vgrid' => '1',
                 'scalingMax' => $env_param->getMaximum(),
-                'scalingMin' => $env_param->min_threshold ? min($env_param->min_threshold, $env_param->getMinimum()) : $env_param->getMinimum(),
+                'scalingMin' => $min_threshold ? min($min_threshold, $env_param->getMinimum()) : $env_param->getMinimum(),
                 'horizontalOffset' => 360,
                 'formatDataLabels' => [
                     'rotation' => 45,
@@ -335,7 +361,11 @@ trait TemplateReplacementRules
         /** @var EnvironmentalParameter $env_param */
         $env_param = $this->retrieveEnvironmentalParameterByKey($param_key);
         if ($env_param) {
-            return $env_param->getMinTime();
+            if ($this->_current_date_start && $this->_current_date_end) {
+                return $env_param->getMinTimeInRange($this->_current_date_start, $this->_current_date_end);
+            } else {
+                return $env_param->getMinTime();
+            }
         }
     }
 
@@ -344,7 +374,11 @@ trait TemplateReplacementRules
         /** @var EnvironmentalParameter $env_param */
         $env_param = $this->retrieveEnvironmentalParameterByKey($param_key);
         if ($env_param) {
-            return $env_param->getMaxTime();
+            if ($this->_current_date_start && $this->_current_date_end) {
+                return $env_param->getMaxTimeInRange($this->_current_date_start, $this->_current_date_end);
+            } else {
+                return $env_param->getMaxTime();
+            }
         }
     }
 
@@ -353,7 +387,11 @@ trait TemplateReplacementRules
         /** @var EnvironmentalParameter $env_param */
         $env_param = $this->retrieveEnvironmentalParameterByKey($param_key);
         if ($env_param) {
-            return $env_param->getMaximum();
+            if ($this->_current_date_start && $this->_current_date_end) {
+                return $env_param->getMaximumInRange($this->_current_date_start, $this->_current_date_end);
+            } else {
+                return $env_param->getMaximum();
+            }
         }
     }
 
@@ -362,7 +400,11 @@ trait TemplateReplacementRules
         /** @var EnvironmentalParameter $env_param */
         $env_param = $this->retrieveEnvironmentalParameterByKey($param_key);
         if ($env_param) {
-            return $env_param->getMinimum();
+            if ($this->_current_date_start && $this->_current_date_end) {
+                return $env_param->getMinimumInRange($this->_current_date_start, $this->_current_date_end);
+            } else {
+                return $env_param->getMinimum();
+            }
         }
     }
 
@@ -371,7 +413,11 @@ trait TemplateReplacementRules
         /** @var EnvironmentalParameter $env_param */
         $env_param = $this->retrieveEnvironmentalParameterByKey($param_key);
         if ($env_param) {
-            return $env_param->getAverage();
+            if ($this->_current_date_start && $this->_current_date_end) {
+                return $env_param->getAverageInRange($this->_current_date_start, $this->_current_date_end);
+            } else {
+                return $env_param->getAverage();
+            }
         }
     }
 
@@ -380,7 +426,11 @@ trait TemplateReplacementRules
         /** @var EnvironmentalParameter $env_param */
         $env_param = $this->retrieveEnvironmentalParameterByKey($param_key);
         if ($env_param) {
-            return $env_param->getStandardDeviation();
+            if ($this->_current_date_start && $this->_current_date_end) {
+               return $env_param->getStandardDeviationInRange($this->_current_date_start, $this->_current_date_end);
+            } else {
+               return $env_param->getStandardDeviation();
+            }
         }
     }
 

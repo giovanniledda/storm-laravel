@@ -18,6 +18,8 @@ use \Net7\Documents\Document;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Queue\SerializesModels;
 use App\Jobs\SendDocumentsToGoogleDrive;
+use Illuminate\Support\Facades\DB;
+use const MEASUREMENT_FILE_TYPE;
 
 // use Illuminate\Support\Facades\Queue;
 
@@ -45,15 +47,8 @@ class Project extends Model {
         'name', 'project_status', 'boat_id', 'project_type', 'project_progress', 'site_id', 'start_date', 'end_date', 'imported'
     ];
 
-    // Usate con il DocsGenerator
-    protected $_currentTask;
-    protected $_currentTaskPhotos;
-    protected $_taskToIncludeInReport;
-    protected $_openFiles = [];
-
     public const REPORT_FOLDER = 'reports';
     public const DOCUMENTS_FOLDER  = 'documents';
-
     public const REPORT_DOCUMENT_TYPE = 'report';
 
     protected static function boot() {
@@ -889,5 +884,49 @@ class Project extends Model {
 
     }
 
+
+    public function getMeasurementLogsFullInfo($measurementLogDocument){
+        // select min(measurement_time), max(measurement_time) from net7em_measurements where document_id = 28 ;
+
+        $measurement = new \Net7\EnvironmentalMeasurement\Models\Measurement();
+
+        $min = DB::table($measurement->getTable())
+        ->where('document_id', '=', $measurementLogDocument->id)
+        ->min('measurement_time');
+
+        $max = DB::table($measurement->getTable())
+        ->where('document_id', '=', $measurementLogDocument->id)
+        ->max('measurement_time');
+return [
+    'min' => $min,
+    'max' => $max
+];
+
+
+    }
+
+    public function getMeasurementLogsData($page, $size){
+        $measurementLogs = $this->measurementLogs;
+        $start = ($page - 1) * $size + 1;
+        $end = $start + $size;
+
+        $res = [];
+        for ($i = $start; $i <= $end; $i++){
+            if (isset($measurementLogs[$i])){
+                $minmax  = $this->getMeasurementLogsFullInfo($measurementLogs[$i]);
+                $res [] = [
+                    'id' => $measurementLogs[$i]->id,
+                    'min' => $minmax['min'],
+                    'max' => $minmax['max']
+                ];
+            }
+        }
+
+        return $res;
+    }
+
+    public function measurementLogs(){
+        return $this->documents()->where('type', MEASUREMENT_FILE_TYPE);
+    }
 }
 
