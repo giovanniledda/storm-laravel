@@ -3768,7 +3768,7 @@
             "source": {
                 "type": "git",
                 "url": "https://net7.codebasehq.com/nautica/net7docs-generator.git",
-                "reference": "e07937c6ef36c4115716bf8a1a5171134f9b751d"
+                "reference": "5ba22b37fb998504556be9166afe7ab5bb296f01"
             },
             "require": {
                 "mckenziearts/laravel-notify": "dev-master",
@@ -3805,7 +3805,7 @@
                 }
             ],
             "description": "Generate documents starting from custom templates.",
-            "time": "2019-11-21T11:30:30+00:00"
+            "time": "2019-11-22T08:29:12+00:00"
         },
         {
             "name": "net7/documents",
@@ -3859,7 +3859,7 @@
             "source": {
                 "type": "git",
                 "url": "https://net7.codebasehq.com/nautica/net7env-measure.git",
-                "reference": "77d5a7965ccf485e6af8a48a58629e4eed11f61a"
+                "reference": "aad7705d740dd1026989694d39665475db46731f"
             },
             "require": {
                 "mckenziearts/laravel-notify": "dev-master",
@@ -3892,7 +3892,7 @@
                 }
             ],
             "description": "Handle any kind of environmental measurement associated to a Model",
-            "time": "2019-11-21T09:04:14+00:00"
+            "time": "2019-11-21T16:02:25+00:00"
         },
         {
             "name": "net7/logging",
