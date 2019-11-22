@@ -199,6 +199,7 @@ class Project extends Model {
         foreach ($reports as $report){
             $data = json_decode($report->cloud_storage_data, true);
             $links []= [
+                'upload_date' => $report->created_at,
                 'link' => $data['gdrive_link'],
                 'name' => $data['gdrive_filename']
             ];
