@@ -3813,7 +3813,7 @@
             "source": {
                 "type": "git",
                 "url": "https://net7.codebasehq.com/nautica/net7documents.git",
-                "reference": "936b64ef02cfd17fd1829bcde5ce5c722294760a"
+                "reference": "3492f5c0bcde5cce2873d6a31c91ea01c1847007"
             },
             "require": {
                 "cloudcreativity/laravel-json-api": "^1.1",
@@ -3851,7 +3851,7 @@
                 }
             ],
             "description": "Add documents to an object of your application",
-            "time": "2019-11-20T10:44:53+00:00"
+            "time": "2019-11-22T09:02:42+00:00"
         },
         {
             "name": "net7/env-measure",
@@ -3859,7 +3859,7 @@
             "source": {
                 "type": "git",
                 "url": "https://net7.codebasehq.com/nautica/net7env-measure.git",
-                "reference": "aad7705d740dd1026989694d39665475db46731f"
+                "reference": "b146cbe9b78028b70723e002749d41d70cad1ba7"
             },
             "require": {
                 "mckenziearts/laravel-notify": "dev-master",
@@ -3892,7 +3892,7 @@
                 }
             ],
             "description": "Handle any kind of environmental measurement associated to a Model",
-            "time": "2019-11-21T16:02:25+00:00"
+            "time": "2019-11-22T09:07:27+00:00"
         },
         {
             "name": "net7/logging",

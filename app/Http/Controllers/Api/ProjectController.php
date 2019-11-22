@@ -231,7 +231,7 @@ class ProjectController extends Controller
         try {
             $document = $dg->startProcess();
         } catch (\Exception $e) {
-            $msg = __("Error generatig report (':e_msg')!", ['e_msg' => $e->getMessage()]);
+            $msg = __("Error generating report (':e_msg')!", ['e_msg' => $e->getMessage()]);
             throw new \Exception($msg);
         }
 
