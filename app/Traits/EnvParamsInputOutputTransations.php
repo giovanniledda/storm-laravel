@@ -44,10 +44,10 @@ trait EnvParamsInputOutputTransations
      * ],
      * ...
      * @param null $source
+     * @param null $document
      * @param array $min_thresholds
-     * @throws Exception
      */
-    public function translateMeasurementsInputForTempDPHumSensor($measurements, $source = null, $document=null  , $min_thresholds = [])
+    public function translateMeasurementsInputForTempDPHumSensor($measurements, $source = null, $document = null  , $min_thresholds = [])
     {
         $array_ok = false;
         foreach ($measurements as $measurement_array) {
