@@ -331,7 +331,7 @@ class Task extends Model
     {
         $task = $this;
         ini_set('memory_limit', '-1');
-       
+
                 $map_dir = storage_path() . DIRECTORY_SEPARATOR . '/tasks/';
                 if (!is_dir($map_dir)) {
                     mkdir($map_dir);
@@ -361,7 +361,7 @@ class Task extends Model
             $bridgeImageInfo = getimagesize($bridgeImagePath);
             $image = imagecreate($bridgeImageInfo[0] * 2 , $bridgeImageInfo[1] * 2);
             imagecolorallocate($image, 255, 255, 255);
-            
+
             if (exif_imagetype($bridgeImagePath) === IMAGETYPE_PNG) {
                 // il ponte e' un'immagine png
                 $dest = imagecreatefrompng($bridgeImagePath);
@@ -371,33 +371,33 @@ class Task extends Model
                 // il ponte e' un'immagine jpg
                 $dest = imagecreatefromjpeg($bridgeImagePath);
             }
-            
+
             imagecopy($image, $dest, $bridgeImageInfo[0] / 2, $bridgeImageInfo[1] / 2,  0, 0, $bridgeImageInfo[0], $bridgeImageInfo[1]);
-            
-              
+
+
             try {
                 $pinPath = $this->getIcon($status, $isOpen);
                 $iconInfo = getimagesize($pinPath);
                 $src = imagecreatefrompng($pinPath);
-                
+
                 // ridimensiono l'immagine del ponte e la fisso ad una larghezza fissa
                 $sizeW =  5000;
                 $sizeH =  $sizeW * ( $bridgeImageInfo[1] * 2 ) / ($bridgeImageInfo[0] * 2  ) ;
-                
+
                 $x = $bridgeImageInfo[0]/2 + $task['y_coord'] ;
                 $y = ( $bridgeImageInfo[1] - $task['x_coord'] )  +  $bridgeImageInfo[1]/2;
-                 
+
                 $xx = ($x * $sizeW ) / ($bridgeImageInfo[0]*2) ;
                 $yy = ($y * $sizeH ) / ($bridgeImageInfo[1]*2) ;
-                
-                imagepng($image, $map);  
+
+                imagepng($image, $map);
                 $el = $this->resize_image($map, $sizeW, $sizeH);
                 unlink($map);
-                imagecopymerge($el, $src, $xx- $iconInfo[0]/2, $yy - $iconInfo[1] , 0, 0, $iconInfo[0], $iconInfo[1], 100); 
-               
+                imagecopymerge($el, $src, $xx- $iconInfo[0]/2, $yy - $iconInfo[1] , 0, 0, $iconInfo[0], $iconInfo[1], 100);
+
                 $crop_w = 728;
                 $crop_h = 360;
-                
+
                 $im2 = imagecrop($el, ['x' => $xx - ($crop_w/2), 'y' => $yy - ($crop_h/2), 'width' => $crop_w, 'height' => $crop_h]);
                 if ($im2 !== FALSE) {
                     imagepng($im2, $map);
@@ -464,7 +464,7 @@ class Task extends Model
         return $path . DIRECTORY_SEPARATOR . $status . DIRECTORY_SEPARATOR . $icon;
     }
 
-    
+
     /**
      * Ridimensiona un'immagine da un path
      * @param type $file
@@ -510,7 +510,7 @@ class Task extends Model
         $corrosionMapHTML = '';
         if ($corrosionMapFilePath = $this->getCorrosionMapFilePath()) {
             $corrosionMapHTML = <<<EOF
-                <img width="728" src="file://$corrosionMapFilePath" alt="Corrosion Map">
+                <img width="928" style="height: auto; margin: 0 0 32px;" src="file://$corrosionMapFilePath" alt="Corrosion Map">
 EOF;
         }
 
@@ -524,45 +524,45 @@ EOF;
 
         $html = <<<EOF
             <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Point #$point_id</p>
-    
+
                 $corrosionMapHTML
                 
-                <table width="728" style="margin-bottom: 32px;font-family: Raleway, sans-serif;">
+                <table width="728" style="margin: 0 0 16px; color: #1f519b; font-family: Raleway, sans-serif;">
                     <tr width="728">
-                        <td width="360"><span style="font-weight: bold">Location: </span>$task_location</td>
-                        <td width="360"><span style="font-weight: bold">Type: </span>$task_type</td>
-                    </tr>
+                        <td width="364" style="border-right: 16px solid white"><span style="font-weight: bold">Location: </span>$task_location</td>
+                        <td width="364"><span style="font-weight: bold">Type: </span>$task_type</td>
+                    </tr>                    
                 </table>
                 
-                
-                <table width="728" style="margin-bottom: 32px;font-family: Raleway, sans-serif;">
+                <table width="728" style="margin: 0 0 32px;font-family: Raleway, sans-serif;">
                     <tr width="728">
-                        <td width="360" rowspan="2" style="padding: 8px;color: #1f519b;vertical-align: top;background-color: #eff9fe;">
+                        <td width="364" rowspan="2" style="padding: 8px;color: #1f519b;vertical-align: top;background-color: #eff9fe; border-right: 16px solid white">
                         <span style="font-weight: bold;">Description: </span>$description</td>
-                            
-                        <td width="360" rowspan="1" style="padding: 8px;color: #1f519b;vertical-align: top;background-color: #eff9fe;">
+                        
+                        <td width="364" rowspan="1" style="padding: 8px;color: #1f519b;vertical-align: top;background-color: #eff9fe;">
                         <span style="font-weight: bold;">Created: </span>$created_at</td>
                     </tr>
                 
                     <tr width="728">
-                        <td width="360" rowspan="1" style="padding: 8px;color: #1f519b;vertical-align: top;background-color: #eff9fe;">
+                        <td width="364" rowspan="1" style="padding: 8px;color: #1f519b;vertical-align: top;background-color: #eff9fe;">
                         <span style="font-weight: bold;">Last edited: </span>$updated_at</td>
                     </tr>
                 </table>
+
 
 
 EOF;
         // creo la tabella a seconda delle immagini che ho
         if (!empty($photos_array) && count($photos_array) > 1) {
             $tds_1 = <<<EOF
-                    <td width="360" style="background-color: black;border: 4px solid white;padding: 0;">
-                      <img width="360" style="height: auto;" src="file://$photos_array[1]" alt="Corrosion img 1">
+                    <td width="353" style="background-color: black;padding: 0; border-right: 16px solid white">
+                      <img width="460" height="auto"  src="file://$photos_array[1]" alt="Corrosion img 1">
                     </td>
 EOF;
             if (isset($photos_array[2])) {
                 $tds_1 .= <<<EOF
-                    <td width="360" style="background-color: black;border: 4px solid white;padding: 0;">
-                      <img width="360" style="height: auto;" src="file://$photos_array[2]" alt="Corrosion img 2">
+                    <td width="353" style="background-color: black;padding: 0;">
+                      <img width="460" height="auto"  src="file://$photos_array[2]" alt="Corrosion img 2">
                     </td>
 EOF;
             }
@@ -571,24 +571,24 @@ EOF;
 
             if (isset($photos_array[3])) {
                 $tds_2 = <<<EOF
-                    <td width="360" style="background-color: black;border: 4px solid white;padding: 0;">
-                      <img width="360" style="height: auto;" src="file://$photos_array[3]" alt="Corrosion img 3">
+                    <td width="353" style="background-color: black;padding: 0; border-right: 16px solid white">
+                      <img width="460" height="auto"  src="file://$photos_array[3]" alt="Corrosion img 3">
                     </td>
 EOF;
 
                 if (isset($photos_array[4])) {
                     $tds_2 .= <<<EOF
-                    <td width="360" style="background-color: black;border: 4px solid white;padding: 0;">
-                      <img width="360" style="height: auto;" src="file://$photos_array[4]" alt="Corrosion img 4">
-                    </td>
+                        <td width="353" style="background-color: black;padding: 0;">
+                          <img width="460" height="auto"  src="file://$photos_array[4]" alt="Corrosion img 4">
+                        </td>
 EOF;
                 }
 
                 $trs .= '<tr width="728">'.$tds_2.'</tr>';
             }
 
-            $images_table =  '<p style="text-align: left;font-size: 16px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Detail photos</p>
-                                <table width="728" style="margin-bottom: 32px;font-family: Raleway, sans-serif;">'.$trs.'</table>';
+            $images_table =  '<p style="text-align: left;font-size: 16px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif; margin-bottom: 8px">Detail photos</p>
+                               <table width="728" style="margin-bottom: 32px;font-family: Raleway, sans-serif;">'.$trs.'</table>';
 
             $html .= $images_table;
         }
@@ -596,11 +596,11 @@ EOF;
         $img_dettaglioHTML = '';
         if ($img_dettaglio = $this->getAdditionalPhotoPath()) {
             $img_dettaglioHTML = <<<EOF
-                <p style="text-align: left;font-size: 16px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Overview photo</p>
+                <p style="text-align: left;font-size: 16px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif; margin-bottom: 8px">Overview photo</p>
                 <table width="728" style="margin-bottom: 32px;font-family: Raleway, sans-serif;">
                     <tr width="728">
-                        <td width="360" style="background-color: black;border: 4px solid white;padding: 0;">
-                          <img width="728" style="height: auto;" src="file://$img_dettaglio" alt="Detailed image">
+                        <td width="728" style="background-color: black; padding: 0;">
+                          <img width="928" height="auto" src="file://$img_dettaglio" alt="Overview image">
                         </td>
                     </tr>
                 </table>

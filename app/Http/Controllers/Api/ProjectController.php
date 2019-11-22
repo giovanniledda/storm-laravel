@@ -353,6 +353,7 @@ class ProjectController extends Controller
      */
     public function generateEnvironmentalReport(Request $request, $record)
     {
+        /** @var Project $project */
         $project = Project::findOrFail($record->id);
 
         $template = $request->input('template');
@@ -367,9 +368,6 @@ class ProjectController extends Controller
         $project->setCurrentDateStart($date_start);
         $project->setCurrentDateEnd($date_end);
         $project->setCurrentMinThresholds($min_thresholds);
-
-//        $arr = [$project, $template, $date_start, $date_end, $min_thresholds];
-//        return Utils::renderStandardJsonapiResponse($arr, 200);
 
         try {
             $document = $this->reportGenerationProcess($template, $project);

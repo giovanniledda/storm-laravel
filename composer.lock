@@ -3320,12 +3320,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/mckenziearts/laravel-notify.git",
-                "reference": "3b44652635effbe5c40172f99ce0043a149ce2fb"
+                "reference": "11723ba68def9da06090604e26e9c9c44fd13fed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mckenziearts/laravel-notify/zipball/3b44652635effbe5c40172f99ce0043a149ce2fb",
-                "reference": "3b44652635effbe5c40172f99ce0043a149ce2fb",
+                "url": "https://api.github.com/repos/mckenziearts/laravel-notify/zipball/11723ba68def9da06090604e26e9c9c44fd13fed",
+                "reference": "11723ba68def9da06090604e26e9c9c44fd13fed",
                 "shasum": ""
             },
             "require": {
@@ -3373,7 +3373,7 @@
                 "laravel",
                 "laravel-notify"
             ],
-            "time": "2019-11-15T05:47:13+00:00"
+            "time": "2019-11-22T10:42:47+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -3768,7 +3768,7 @@
             "source": {
                 "type": "git",
                 "url": "https://net7.codebasehq.com/nautica/net7docs-generator.git",
-                "reference": "5ba22b37fb998504556be9166afe7ab5bb296f01"
+                "reference": "4d6605c196bbba88e9436f68170677fee666955f"
             },
             "require": {
                 "mckenziearts/laravel-notify": "dev-master",
@@ -3805,7 +3805,7 @@
                 }
             ],
             "description": "Generate documents starting from custom templates.",
-            "time": "2019-11-22T08:29:12+00:00"
+            "time": "2019-11-22T12:35:13+00:00"
         },
         {
             "name": "net7/documents",
@@ -3859,7 +3859,7 @@
             "source": {
                 "type": "git",
                 "url": "https://net7.codebasehq.com/nautica/net7env-measure.git",
-                "reference": "b146cbe9b78028b70723e002749d41d70cad1ba7"
+                "reference": "9c0c737656ee7085c0aa0a2a21491383ea407129"
             },
             "require": {
                 "mckenziearts/laravel-notify": "dev-master",
@@ -3892,7 +3892,7 @@
                 }
             ],
             "description": "Handle any kind of environmental measurement associated to a Model",
-            "time": "2019-11-22T09:07:27+00:00"
+            "time": "2019-11-22T12:33:20+00:00"
         },
         {
             "name": "net7/logging",
