@@ -14,6 +14,7 @@ use function count;
 use function date;
 use function fclose;
 use function min;
+use function throw_if;
 use function time;
 use function unlink;
 
@@ -264,6 +265,7 @@ trait TemplateReplacementRules
      * @param string $param_key
      * @param string $legend
      * @param string $color
+     * @throws \Throwable
      */
     public function handleEnvironmentalParamChart(CreateDocxFromTemplate &$template_processor, string $chart_name, string $param_key, string $legend, string $color = '4')
     {
@@ -283,9 +285,16 @@ trait TemplateReplacementRules
             $hax_print_step = 10;
             if ($this->_current_date_start && $this->_current_date_end) {
                 $measurements = $env_param->getMeasurementsInRange($this->_current_date_start, $this->_current_date_end);
+                $maxScale = $env_param->getMaximumInRange($this->_current_date_start, $this->_current_date_end);
+                $minScale = $min_threshold ? min($min_threshold, $env_param->getMinimumInRange($this->_current_date_start, $this->_current_date_end)) : $env_param->getMinimumInRange($this->_current_date_start, $this->_current_date_end);
             } else {
                 $measurements = $env_param->measurements;
+                $maxScale = $env_param->getMaximum();
+                $minScale = $min_threshold ? min($min_threshold, $env_param->getMinimum()) : $env_param->getMinimum();
             }
+
+            throw_if(!count($measurements), \Exception::class, "No data in this date range!");
+
             foreach ($measurements as $measurement) {
                 $step = ++$i % $hax_print_step;
                 $data['data'][] =
@@ -312,8 +321,8 @@ trait TemplateReplacementRules
                 'vaxLabelDisplay' => 0,
                 'hgrid' => '1',
                 'vgrid' => '1',
-                'scalingMax' => $env_param->getMaximum(),
-                'scalingMin' => $min_threshold ? min($min_threshold, $env_param->getMinimum()) : $env_param->getMinimum(),
+                'scalingMax' => $maxScale,
+                'scalingMin' => $minScale,
                 'horizontalOffset' => 360,
                 'formatDataLabels' => [
                     'rotation' => 45,

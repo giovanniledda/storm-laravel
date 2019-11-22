@@ -199,6 +199,7 @@ class Project extends Model {
         foreach ($reports as $report){
             $data = json_decode($report->cloud_storage_data, true);
             $links []= [
+                'upload_date' => $report->created_at,
                 'link' => $data['gdrive_link'],
                 'name' => $data['gdrive_filename']
             ];
@@ -916,8 +917,9 @@ return [
                 $minmax  = $this->getMeasurementLogsFullInfo($measurementLogs[$i]);
                 $res [] = [
                     'id' => $measurementLogs[$i]->id,
-                    'min' => $minmax['min'],
-                    'max' => $minmax['max']
+                    'upload_date' => $measurementLogs[$i]->created_at,
+                    'start_date' => gmdate('Y-m-d\TH:i:s\.000000\Z', strtotime($minmax['min'])),
+                    'end_date' =>  gmdate('Y-m-d\TH:i:s\.000000\Z', strtotime($minmax['max']))
                 ];
             }
         }

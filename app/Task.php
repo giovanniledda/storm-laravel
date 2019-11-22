@@ -332,17 +332,23 @@ class Task extends Model
         $task = $this;
         ini_set('memory_limit', '-1');
 
-                $map_dir = storage_path() . DIRECTORY_SEPARATOR . '/tasks/';
-                if (!is_dir($map_dir)) {
-                    mkdir($map_dir);
-                }
+        $map_dir = storage_path() . DIRECTORY_SEPARATOR . '/tasks/';
+        if (!is_dir($map_dir)) {
+            mkdir($map_dir);
+        }
 
-                $tmpfilePath = storage_path() . DIRECTORY_SEPARATOR . '/tasks/' . DIRECTORY_SEPARATOR . $task->id . '_map.png';
-                if (is_file($tmpfilePath)) {
-                    unlink($tmpfilePath);
-                }
+        $tmpfilePath = storage_path() . DIRECTORY_SEPARATOR . '/tasks/' . DIRECTORY_SEPARATOR . $task->id . '_map.png';
+        if (is_file($tmpfilePath)) {
+            unlink($tmpfilePath);
+        }
 
-        $map = $map_dir.'map_'.$task->id.'.png';
+        // $map = $map_dir.'map_'.$task->id.'.png';
+
+
+        $mapfileHandle =  tmpfile();
+        $mapfilePath = stream_get_meta_data($mapfileHandle)['uri'];
+
+
 
         $tmpfileHandle = tmpfile();
         $tmpfilePath = stream_get_meta_data($tmpfileHandle)['uri'];
@@ -365,6 +371,8 @@ class Task extends Model
             if (exif_imagetype($bridgeImagePath) === IMAGETYPE_PNG) {
                 // il ponte e' un'immagine png
                 $dest = imagecreatefrompng($bridgeImagePath);
+                imagealphablending($dest, false);
+                imagesavealpha($dest, true);
             }
 
             if (exif_imagetype($bridgeImagePath) === IMAGETYPE_JPEG) {
@@ -379,7 +387,8 @@ class Task extends Model
                 $pinPath = $this->getIcon($status, $isOpen);
                 $iconInfo = getimagesize($pinPath);
                 $src = imagecreatefrompng($pinPath);
-
+                imagealphablending($src, false);
+                imagesavealpha($src, true);
                 // ridimensiono l'immagine del ponte e la fisso ad una larghezza fissa
                 $sizeW =  5000;
                 $sizeH =  $sizeW * ( $bridgeImageInfo[1] * 2 ) / ($bridgeImageInfo[0] * 2  ) ;
@@ -390,17 +399,32 @@ class Task extends Model
                 $xx = ($x * $sizeW ) / ($bridgeImageInfo[0]*2) ;
                 $yy = ($y * $sizeH ) / ($bridgeImageInfo[1]*2) ;
 
-                imagepng($image, $map);
-                $el = $this->resize_image($map, $sizeW, $sizeH);
-                unlink($map);
+                // imagepng($image, $map);
+                imagepng($image, $mapfilePath);
+
+
+                // $el = $this->resize_image($map, $sizeW, $sizeH);
+                $el = $this->resize_image($mapfilePath, $sizeW, $sizeH);
+
+                imagealphablending($el, false);
+                imagesavealpha($el, true);
+
+                fclose($mapfileHandle);
                 imagecopymerge($el, $src, $xx- $iconInfo[0]/2, $yy - $iconInfo[1] , 0, 0, $iconInfo[0], $iconInfo[1], 100);
+
+
+                imagealphablending($el, false);
+                imagesavealpha($el, true);
 
                 $crop_w = 728;
                 $crop_h = 360;
 
                 $im2 = imagecrop($el, ['x' => $xx - ($crop_w/2), 'y' => $yy - ($crop_h/2), 'width' => $crop_w, 'height' => $crop_h]);
                 if ($im2 !== FALSE) {
-                    imagepng($im2, $map);
+
+                    imagealphablending($im2, false);
+                    imagesavealpha($im2, true);
+                    // imagepng($im2, $map);
                     imagepng($im2, $tmpfilePath);
                     imagedestroy($im2);
                 }
@@ -448,7 +472,6 @@ class Task extends Model
             }
         }
     }
-
 
     private function getIcon($status, $isOpen, $icon = 'Active')
     {
@@ -540,9 +563,10 @@ EOF;
                         <span style="font-weight: bold;">Description: </span>$description</td>
                         
                         <td width="364" rowspan="1" style="padding: 8px;color: #1f519b;vertical-align: top;background-color: #eff9fe;">
+
                         <span style="font-weight: bold;">Created: </span>$created_at</td>
                     </tr>
-                
+
                     <tr width="728">
                         <td width="364" rowspan="1" style="padding: 8px;color: #1f519b;vertical-align: top;background-color: #eff9fe;">
                         <span style="font-weight: bold;">Last edited: </span>$updated_at</td>
