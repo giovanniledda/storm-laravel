@@ -29,9 +29,10 @@ class TaskObserver
      */
     public function updating(Task $task)
     {
-       $task->updateMap();
+    //   $task->updateMap();
+        
         $original = $task->getOriginal();
-
+       
         if (isset($original['is_open']) && $original['is_open'] != $task->is_open && $task->is_open == 0) {
             // metto nella history del progetto
             Project::find($task->project_id)
@@ -155,7 +156,7 @@ class TaskObserver
             }
             $task_author = $auth_user;
         }
-        $task->updateMap();
+        \App\Jobs\UpdateTaskMap::dispatch($task); 
 
 
         // mette in coda il job
@@ -180,6 +181,7 @@ class TaskObserver
 
         // mette in coda il job
 //        NotifyTaskUpdates::dispatch(new TaskUpdated($task))->onConnection('redis')->onQueue(QUEUE_TASK_UPDATED);  // default queue
+        \App\Jobs\UpdateTaskMap::dispatch($task); 
         NotifyTaskUpdates::dispatch(new TaskUpdated($task));  // default queue
     }
 

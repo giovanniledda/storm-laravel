@@ -330,8 +330,8 @@ class Task extends Model
     public function updateMap()
     {
         $task = $this;
-
-        /*
+        ini_set('memory_limit', '-1');
+       
                 $map_dir = storage_path() . DIRECTORY_SEPARATOR . '/tasks/';
                 if (!is_dir($map_dir)) {
                     mkdir($map_dir);
@@ -341,8 +341,8 @@ class Task extends Model
                 if (is_file($tmpfilePath)) {
                     unlink($tmpfilePath);
                 }
-        */
 
+        $map = $map_dir.'map_'.$task->id.'.png';
 
         $tmpfileHandle = tmpfile();
         $tmpfilePath = stream_get_meta_data($tmpfileHandle)['uri'];
@@ -359,9 +359,9 @@ class Task extends Model
 
             $bridgeImagePath = $bridgeMedia->getPathBySize('');
             $bridgeImageInfo = getimagesize($bridgeImagePath);
-            $image = imagecreate($bridgeImageInfo[0], $bridgeImageInfo[1]);
+            $image = imagecreate($bridgeImageInfo[0] * 2 , $bridgeImageInfo[1] * 2);
             imagecolorallocate($image, 255, 255, 255);
-
+            
             if (exif_imagetype($bridgeImagePath) === IMAGETYPE_PNG) {
                 // il ponte e' un'immagine png
                 $dest = imagecreatefrompng($bridgeImagePath);
@@ -371,30 +371,36 @@ class Task extends Model
                 // il ponte e' un'immagine jpg
                 $dest = imagecreatefromjpeg($bridgeImagePath);
             }
-            imagecopy($image, $dest, 0, 0, 0, 0, $bridgeImageInfo[0], $bridgeImageInfo[1]);
-
+            
+            imagecopy($image, $dest, $bridgeImageInfo[0] / 2, $bridgeImageInfo[1] / 2,  0, 0, $bridgeImageInfo[0], $bridgeImageInfo[1]);
+            
+              
             try {
                 $pinPath = $this->getIcon($status, $isOpen);
                 $iconInfo = getimagesize($pinPath);
                 $src = imagecreatefrompng($pinPath);
-                imagecopymerge($image, $src, $task['y_coord'] - $iconInfo[0] / 2, $bridgeImageInfo[1] - $task['x_coord'] - $iconInfo[1], 0, 0, $iconInfo[0], $iconInfo[1], 100);
-                $sfondo = imagecreate($bridgeImageInfo[0] * 2, $bridgeImageInfo[1] * 2);
-                imagecolorallocate($image, 255, 255, 255);
-
-                imagecopy($sfondo, $image, $bridgeImageInfo[0] / 2, $bridgeImageInfo[1] / 2, 0, 0, $bridgeImageInfo[0], $bridgeImageInfo[1]);
-
-                // $path = storage_path() . DIRECTORY_SEPARATOR . 'tasks';
-                // imagepng($sfondo, $path . DIRECTORY_SEPARATOR . 'map2.png');
-
-                $sizeW = 1000;
-                $sizeH = 500;
-
-                $cropX = ($task['y_coord']) - $sizeW / 2;
-                $cropY = ($bridgeImageInfo[1] - $task['x_coord'] + $iconInfo[1] / 2) - $sizeH / 2;
-
-                $im2 = imagecrop($image, ['x' => $cropX, 'y' => $cropY, 'width' => $sizeW, 'height' => $sizeH]);
+                
+                // ridimensiono l'immagine del ponte e la fisso ad una larghezza fissa
+                $sizeW =  5000;
+                $sizeH =  $sizeW * ( $bridgeImageInfo[1] * 2 ) / ($bridgeImageInfo[0] * 2  ) ;
+                
+                $x = $bridgeImageInfo[0]/2 + $task['y_coord'] ;
+                $y = ( $bridgeImageInfo[1] - $task['x_coord'] )  +  $bridgeImageInfo[1]/2;
+                 
+                $xx = ($x * $sizeW ) / ($bridgeImageInfo[0]*2) ;
+                $yy = ($y * $sizeH ) / ($bridgeImageInfo[1]*2) ;
+                
+                imagepng($image, $map);  
+                $el = $this->resize_image($map, $sizeW, $sizeH);
+                unlink($map);
+                imagecopymerge($el, $src, $xx- $iconInfo[0]/2, $yy - $iconInfo[1] , 0, 0, $iconInfo[0], $iconInfo[1], 100); 
+               
+                $crop_w = 728;
+                $crop_h = 360;
+                
+                $im2 = imagecrop($el, ['x' => $xx - ($crop_w/2), 'y' => $yy - ($crop_h/2), 'width' => $crop_w, 'height' => $crop_h]);
                 if ($im2 !== FALSE) {
-                    // imagepng($im2, $map);
+                    imagepng($im2, $map);
                     imagepng($im2, $tmpfilePath);
                     imagedestroy($im2);
                 }
@@ -406,7 +412,7 @@ class Task extends Model
                 $this->addFileOrUpdateDocumentWithType($tmpfilePath, $this::CORROSION_MAP_DOCUMENT_TYPE, 'corrosion_map');
                 fclose($tmpfileHandle); //this removes the tempfile
 
-                return ['success' => true, 'Y' => $cropY, 'X' => $cropX, 'H' => $sizeH, 'W' => $sizeW];
+                return ['success' => true,  'H' => $sizeH, 'W' => $sizeW];
 
                 //   imagealphablending($src, false);
                 // imagesavealpha($src, true);
@@ -458,6 +464,15 @@ class Task extends Model
         return $path . DIRECTORY_SEPARATOR . $status . DIRECTORY_SEPARATOR . $icon;
     }
 
+    
+    /**
+     * Ridimensiona un'immagine da un path
+     * @param type $file
+     * @param type $w
+     * @param type $h
+     * @param type $crop
+     * @return type
+     */
     private function resize_image($file, $w, $h, $crop = FALSE)
     {
         list($width, $height) = getimagesize($file);

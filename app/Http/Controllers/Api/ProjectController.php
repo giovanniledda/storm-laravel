@@ -71,6 +71,17 @@ class ProjectController extends Controller
         //  exit();
     }
 
+    public function envMeasurementsLogs(Request $request, $project){
+
+        // TODO get page & number from api
+        $data = $project->getMeasurementLogsData(1, 5);
+
+        $resp = Response(["data" => $data], 200);
+        $resp->header('Content-Type', 'application/vnd.api+json');
+
+        return $resp;
+    }
+
     public function close(Request $request, $related)
     {
         $data = json_decode($related, true);
@@ -296,13 +307,13 @@ class ProjectController extends Controller
             $filename = $request->data['attributes']['filename'];
             $file = Document::createUploadedFileFromBase64($base64File, $filename);
             if ($file) {
-                $project->addDocumentFileDirectly($file, $filename, MEASUREMENT_FILE_TYPE);
+                $document = $project->addDocumentFileDirectly($file, $filename, MEASUREMENT_FILE_TYPE);
             }
-            $document = $project->getDocument(MEASUREMENT_FILE_TYPE);
+            // $document = $project->getDocument(MEASUREMENT_FILE_TYPE);
             if ($document) {
                 $file_path = $project->getDocumentMediaFilePath(MEASUREMENT_FILE_TYPE);
                 $array = \Net7\EnvironmentalMeasurement\Utils::convertCsvInAssociativeArray($file_path);
-                $project->translateMeasurementsInputForTempDPHumSensor($array, 'STORM - Web App Frontend');
+                $project->translateMeasurementsInputForTempDPHumSensor($array, 'STORM - Web App Frontend', $document);
 
                 $ret = ['data' => [
                     'type' => 'documents',
@@ -322,6 +333,11 @@ class ProjectController extends Controller
         }
     }
 
+
+
+    public function getListOfMeasurement(){
+
+    }
 
     /**
      * API used to generate a report from the project

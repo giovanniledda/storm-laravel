@@ -47,7 +47,7 @@ trait EnvParamsInputOutputTransations
      * @param array $min_thresholds
      * @throws Exception
      */
-    public function translateMeasurementsInputForTempDPHumSensor($measurements, $source = null, $min_thresholds = [])
+    public function translateMeasurementsInputForTempDPHumSensor($measurements, $source = null, $document=null  , $min_thresholds = [])
     {
         $array_ok = false;
         foreach ($measurements as $measurement_array) {
@@ -64,7 +64,7 @@ trait EnvParamsInputOutputTransations
                 $param_name = Str::before($param_name_uom, '(');
                 $uom = Str::before(Str::after($param_name_uom, '('), ')');
                 $min_threshold = isset($min_thresholds[$param_name]) ? $min_thresholds[$param_name] : null;
-                $this->addMeasurement($param_name, $value, $time, $uom, $source, $min_threshold);
+                $this->addMeasurement($param_name, $value, $time, $uom, $source, $min_threshold, $document);
             }
         }
     }
