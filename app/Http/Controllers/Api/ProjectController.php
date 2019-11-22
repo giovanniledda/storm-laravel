@@ -372,7 +372,7 @@ class ProjectController extends Controller
         try {
             $document = $this->reportGenerationProcess($template, $project);
         } catch (\Exception $e) {
-            return Utils::jsonAbortWithInternalError(422, 402, "Error generating report", $e->getMessage());
+            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error generating report", $e->getMessage());
         }
 
         // $filepath = $dg->getRealFinalFilePath();
