@@ -10,7 +10,7 @@ use Seeds\SeederUtils;
 
 // TODO: copiami nel package alla fine!!!!!!!!!!!!!!!!!
 
-class N7DGExamplePhpdocxSeeder extends Seeder
+class N7DGPhpdocxSeeder extends Seeder
 {
     protected $utils;
     protected $faker;
@@ -31,10 +31,10 @@ class N7DGExamplePhpdocxSeeder extends Seeder
 
         $category = $project->persistAndAssignTemplateCategory('corrosion_map');
         $placeholders = [
-            '$date$' => 'currentDate()',
+            '$break_n1$' => null,  // riconosciuto dal sistema
+            '$html_bloccoTask$' => 'getBlockHtml()',
             '$boat_type$' => 'getBoatType()',
-            '$boat_name$' => 'getBoatName()',
-            '$html_bloccoTask$' => 'getCorrosionMapHtmlBlock()',
+            '$boat_name$' => 'getBoatName()'
         ];
         $project->insertPlaceholders('corrosion_map', $placeholders, true);
 

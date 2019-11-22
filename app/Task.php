@@ -495,7 +495,7 @@ class Task extends Model
         $corrosionMapHTML = '';
         if ($corrosionMapFilePath = $this->getCorrosionMapFilePath()) {
             $corrosionMapHTML = <<<EOF
-                <img src="file://$corrosionMapFilePath" alt="Corrosion Map">
+                <img width="728" src="file://$corrosionMapFilePath" alt="Corrosion Map">
 EOF;
         }
 
@@ -514,13 +514,13 @@ EOF;
                 
                 <table width="728" style="margin-bottom: 32px;font-family: Raleway, sans-serif;">
                     <tr width="728">
-                        <td width="360" style="width: 50%;"><span style="font-weight: bold">Location: </span>$task_location</td>
-                        <td width="360" style="width: 50%;"><span style="font-weight: bold">Type: </span>$task_type</td>
+                        <td width="360"><span style="font-weight: bold">Location: </span>$task_location</td>
+                        <td width="360"><span style="font-weight: bold">Type: </span>$task_type</td>
                     </tr>
                 </table>
                 
                 
-                <table width="728" style="width: 100%;margin-bottom: 32px;font-family: Raleway, sans-serif;">
+                <table width="728" style="margin-bottom: 32px;font-family: Raleway, sans-serif;">
                     <tr width="728">
                         <td width="360" rowspan="2" style="padding: 8px;color: #1f519b;vertical-align: top;background-color: #eff9fe;">
                         <span style="font-weight: bold;">Description: </span>$description</td>
@@ -540,14 +540,14 @@ EOF;
         // creo la tabella a seconda delle immagini che ho
         if (!empty($photos_array) && count($photos_array) > 1) {
             $tds_1 = <<<EOF
-                    <td width="360" style="width: 50%;background-color: black;border: 4px solid white;padding: 0;">
-                      <img style="width: 100%;height: auto;" src="file://$photos_array[1]" alt="Corrosion img 1">
+                    <td width="360" style="background-color: black;border: 4px solid white;padding: 0;">
+                      <img width="360" style="height: auto;" src="file://$photos_array[1]" alt="Corrosion img 1">
                     </td>
 EOF;
             if (isset($photos_array[2])) {
                 $tds_1 .= <<<EOF
-                    <td width="360" style="width: 50%;background-color: black;border: 4px solid white;padding: 0;">
-                      <img style="width: 100%;height: auto;" src="file://$photos_array[2]" alt="Corrosion img 2">
+                    <td width="360" style="background-color: black;border: 4px solid white;padding: 0;">
+                      <img width="360" style="height: auto;" src="file://$photos_array[2]" alt="Corrosion img 2">
                     </td>
 EOF;
             }
@@ -556,15 +556,15 @@ EOF;
 
             if (isset($photos_array[3])) {
                 $tds_2 = <<<EOF
-                    <td width="360" style="width: 50%;background-color: black;border: 4px solid white;padding: 0;">
-                      <img style="width: 100%;height: auto;" src="file://$photos_array[3]" alt="Corrosion img 3">
+                    <td width="360" style="background-color: black;border: 4px solid white;padding: 0;">
+                      <img width="360" style="height: auto;" src="file://$photos_array[3]" alt="Corrosion img 3">
                     </td>
 EOF;
 
                 if (isset($photos_array[4])) {
                     $tds_2 .= <<<EOF
-                    <td width="360" style="width: 50%;background-color: black;border: 4px solid white;padding: 0;">
-                      <img style="width: 100%;height: auto;" src="file://$photos_array[4]" alt="Corrosion img 4">
+                    <td width="360" style="background-color: black;border: 4px solid white;padding: 0;">
+                      <img width="360" style="height: auto;" src="file://$photos_array[4]" alt="Corrosion img 4">
                     </td>
 EOF;
                 }
@@ -573,7 +573,7 @@ EOF;
             }
 
             $images_table =  '<p style="text-align: left;font-size: 16px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Detail photos</p>
-                                <table width="728" style="width: 100%;margin-bottom: 32px;font-family: Raleway, sans-serif;">'.$trs.'</table>';
+                                <table width="728" style="margin-bottom: 32px;font-family: Raleway, sans-serif;">'.$trs.'</table>';
 
             $html .= $images_table;
         }
@@ -582,10 +582,10 @@ EOF;
         if ($img_dettaglio = $this->getAdditionalPhotoPath()) {
             $img_dettaglioHTML = <<<EOF
                 <p style="text-align: left;font-size: 16px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Overview photo</p>
-                <table width="728" style="width: 100%;margin-bottom: 32px;font-family: Raleway, sans-serif;">
+                <table width="728" style="margin-bottom: 32px;font-family: Raleway, sans-serif;">
                     <tr width="728">
-                        <td width="360" style="width: 50%;background-color: black;border: 4px solid white;padding: 0;">
-                          <img style="width: 100%;height: auto;" src="file://$img_dettaglio" alt="Detailed image">
+                        <td width="360" style="background-color: black;border: 4px solid white;padding: 0;">
+                          <img width="728" style="height: auto;" src="file://$img_dettaglio" alt="Detailed image">
                         </td>
                     </tr>
                 </table>

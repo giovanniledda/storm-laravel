@@ -214,17 +214,18 @@ trait TemplateReplacementRules
         return $html;
     }
 
-
-    public function setupTemplate()
+    /**
+     * Associate the "corrosion_map" Template and its Placeholders to an object
+     */
+    public function setupCorrosionMapTemplate()
     {
         $category = $this->persistAndAssignTemplateCategory('corrosion_map');
         $placeholders = [
-            '$pageBreak$' => 'getPageBreak()',
+            '$break_n1$' => null,  // riconosciuto dal sistema
             '$html_bloccoTask$' => 'getBlockHtml()',
             '$boat_type$' => 'getBoatType()',
             '$boat_name$' => 'getBoatName()'
         ];
-
         $this->insertPlaceholders('corrosion_map', $placeholders, true);
     }
 

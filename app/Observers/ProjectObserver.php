@@ -85,7 +85,7 @@ class ProjectObserver
         }
 
         // Doc Generator from template
-        $project->setupTemplate();
+        $project->setupCorrosionMapTemplate();
     }
 
     /**
