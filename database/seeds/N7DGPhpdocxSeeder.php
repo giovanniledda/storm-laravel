@@ -31,10 +31,11 @@ class N7DGPhpdocxSeeder extends Seeder
 
         $category = $project->persistAndAssignTemplateCategory('corrosion_map');
         $placeholders = [
-            '$break_n1$' => null,  // riconosciuto dal sistema
-            '$html_bloccoTask$' => 'getBlockHtml()',
+            '$date$' => 'currentDate()',
             '$boat_type$' => 'getBoatType()',
-            '$boat_name$' => 'getBoatName()'
+            '$boat_name$' => 'getBoatName()',
+            '$break_n1$' => null,  // riconosciuto dal sistema
+            '$html_bloccoTask$' => 'getCorrosionMapHtmlBlock()'
         ];
         $project->insertPlaceholders('corrosion_map', $placeholders, true);
 
