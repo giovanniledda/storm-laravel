@@ -106,7 +106,7 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
 
         $api->resource('projects')->only('env-measurements-logs')->controller('ProjectController')//uses the App\Http\Controllers\Api\ProjectController
         ->routes(function ($project) {
-            $project->post('{record}/env-measurements-logs', 'envMeasurementsLogs')->name('env-measurements-logs');
+            $project->get('{record}/env-measurements-logs', 'envMeasurementsLogs')->name('env-measurements-logs');
         });
 
 

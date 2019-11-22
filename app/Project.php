@@ -916,8 +916,9 @@ return [
                 $minmax  = $this->getMeasurementLogsFullInfo($measurementLogs[$i]);
                 $res [] = [
                     'id' => $measurementLogs[$i]->id,
-                    'min' => $minmax['min'],
-                    'max' => $minmax['max']
+                    'upload_date' => $measurementLogs[$i]->created_at,
+                    'start_date' => gmdate('Y-m-d\TH:i:s\.000000\Z', strtotime($minmax['min'])),
+                    'end_date' =>  gmdate('Y-m-d\TH:i:s\.000000\Z', strtotime($minmax['max']))
                 ];
             }
         }

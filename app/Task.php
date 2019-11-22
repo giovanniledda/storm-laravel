@@ -331,7 +331,7 @@ class Task extends Model
     {
         $task = $this;
         ini_set('memory_limit', '-1');
-       
+
                 $map_dir = storage_path() . DIRECTORY_SEPARATOR . '/tasks/';
                 if (!is_dir($map_dir)) {
                     mkdir($map_dir);
@@ -342,7 +342,13 @@ class Task extends Model
                     unlink($tmpfilePath);
                 }
 
-        $map = $map_dir.'map_'.$task->id.'.png';
+        // $map = $map_dir.'map_'.$task->id.'.png';
+
+
+        $mapfileHandle =  tmpfile();
+        $mapfilePath = stream_get_meta_data($mapfileHandle)['uri'];
+
+
 
         $tmpfileHandle = tmpfile();
         $tmpfilePath = stream_get_meta_data($tmpfileHandle)['uri'];
@@ -361,46 +367,64 @@ class Task extends Model
             $bridgeImageInfo = getimagesize($bridgeImagePath);
             $image = imagecreate($bridgeImageInfo[0] * 2 , $bridgeImageInfo[1] * 2);
             imagecolorallocate($image, 255, 255, 255);
-            
+
             if (exif_imagetype($bridgeImagePath) === IMAGETYPE_PNG) {
                 // il ponte e' un'immagine png
                 $dest = imagecreatefrompng($bridgeImagePath);
+                imagealphablending($dest, false);
+                imagesavealpha($dest, true);
             }
 
             if (exif_imagetype($bridgeImagePath) === IMAGETYPE_JPEG) {
                 // il ponte e' un'immagine jpg
                 $dest = imagecreatefromjpeg($bridgeImagePath);
             }
-            
+
             imagecopy($image, $dest, $bridgeImageInfo[0] / 2, $bridgeImageInfo[1] / 2,  0, 0, $bridgeImageInfo[0], $bridgeImageInfo[1]);
-            
-              
+
+
             try {
                 $pinPath = $this->getIcon($status, $isOpen);
                 $iconInfo = getimagesize($pinPath);
                 $src = imagecreatefrompng($pinPath);
-                
+                imagealphablending($src, false);
+                imagesavealpha($src, true);
                 // ridimensiono l'immagine del ponte e la fisso ad una larghezza fissa
                 $sizeW =  5000;
                 $sizeH =  $sizeW * ( $bridgeImageInfo[1] * 2 ) / ($bridgeImageInfo[0] * 2  ) ;
-                
+
                 $x = $bridgeImageInfo[0]/2 + $task['y_coord'] ;
                 $y = ( $bridgeImageInfo[1] - $task['x_coord'] )  +  $bridgeImageInfo[1]/2;
-                 
+
                 $xx = ($x * $sizeW ) / ($bridgeImageInfo[0]*2) ;
                 $yy = ($y * $sizeH ) / ($bridgeImageInfo[1]*2) ;
-                
-                imagepng($image, $map);  
-                $el = $this->resize_image($map, $sizeW, $sizeH);
-                unlink($map);
-                imagecopymerge($el, $src, $xx- $iconInfo[0]/2, $yy - $iconInfo[1] , 0, 0, $iconInfo[0], $iconInfo[1], 100); 
-               
+
+                // imagepng($image, $map);
+                imagepng($image, $mapfilePath);
+
+
+                // $el = $this->resize_image($map, $sizeW, $sizeH);
+                $el = $this->resize_image($mapfilePath, $sizeW, $sizeH);
+
+                imagealphablending($el, false);
+                imagesavealpha($el, true);
+
+                fclose($mapfileHandle);
+                imagecopymerge($el, $src, $xx- $iconInfo[0]/2, $yy - $iconInfo[1] , 0, 0, $iconInfo[0], $iconInfo[1], 100);
+
+
+                imagealphablending($el, false);
+                imagesavealpha($el, true);
+
                 $crop_w = 728;
                 $crop_h = 360;
-                
+
                 $im2 = imagecrop($el, ['x' => $xx - ($crop_w/2), 'y' => $yy - ($crop_h/2), 'width' => $crop_w, 'height' => $crop_h]);
                 if ($im2 !== FALSE) {
-                    imagepng($im2, $map);
+
+                    imagealphablending($im2, false);
+                    imagesavealpha($im2, true);
+                    // imagepng($im2, $map);
                     imagepng($im2, $tmpfilePath);
                     imagedestroy($im2);
                 }
@@ -464,7 +488,7 @@ class Task extends Model
         return $path . DIRECTORY_SEPARATOR . $status . DIRECTORY_SEPARATOR . $icon;
     }
 
-    
+
     /**
      * Ridimensiona un'immagine da un path
      * @param type $file
@@ -524,26 +548,26 @@ EOF;
 
         $html = <<<EOF
             <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Point #$point_id</p>
-    
+
                 $corrosionMapHTML
-                
+
                 <table width="728" style="margin-bottom: 32px;font-family: Raleway, sans-serif;">
                     <tr width="728">
                         <td width="360"><span style="font-weight: bold">Location: </span>$task_location</td>
                         <td width="360"><span style="font-weight: bold">Type: </span>$task_type</td>
                     </tr>
                 </table>
-                
-                
+
+
                 <table width="728" style="margin-bottom: 32px;font-family: Raleway, sans-serif;">
                     <tr width="728">
                         <td width="360" rowspan="2" style="padding: 8px;color: #1f519b;vertical-align: top;background-color: #eff9fe;">
                         <span style="font-weight: bold;">Description: </span>$description</td>
-                            
+
                         <td width="360" rowspan="1" style="padding: 8px;color: #1f519b;vertical-align: top;background-color: #eff9fe;">
                         <span style="font-weight: bold;">Created: </span>$created_at</td>
                     </tr>
-                
+
                     <tr width="728">
                         <td width="360" rowspan="1" style="padding: 8px;color: #1f519b;vertical-align: top;background-color: #eff9fe;">
                         <span style="font-weight: bold;">Last edited: </span>$updated_at</td>
