@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Jobs\NotifyTaskUpdates;
+use App\Jobs\ProjectLoadEnvironmentalData;
+use App\Notifications\TaskCreated;
 use function __;
 use function explode;
 use function json_decode;
@@ -308,24 +311,25 @@ class ProjectController extends Controller
             $file = Document::createUploadedFileFromBase64($base64File, $filename);
             if ($file) {
                 $document = $project->addDocumentFileDirectly($file, $filename, MEASUREMENT_FILE_TYPE);
-            }
-            // $document = $project->getDocument(MEASUREMENT_FILE_TYPE);
-            if ($document) {
-                $file_path = $project->getDocumentMediaFilePath(MEASUREMENT_FILE_TYPE);
-                $array = \Net7\EnvironmentalMeasurement\Utils::convertCsvInAssociativeArray($file_path);
-                $project->translateMeasurementsInputForTempDPHumSensor($array, 'STORM - Web App Frontend', $document);
+                // $document = $project->getDocument(MEASUREMENT_FILE_TYPE);
+                if ($document) {
 
-                $ret = ['data' => [
-                    'type' => 'documents',
-                    'id' => $document->id,
-                    'attributes' => [
-                        'name' => $document->title,
-                        'created-at' => $document->created_at,
-                        'updated-at' => $document->updated_at
-                    ]
-                ]];
+                    ProjectLoadEnvironmentalData::dispatch($project, $document);   // default queue
 
-                return Utils::renderStandardJsonapiResponse($ret, 200);
+                    $ret = ['data' => [
+                        'type' => 'documents',
+                        'id' => $document->id,
+                        'attributes' => [
+                            'name' => $document->title,
+                            'created-at' => $document->created_at,
+                            'updated-at' => $document->updated_at
+                        ]
+                    ]];
+
+                    return Utils::renderStandardJsonapiResponse($ret, 200);
+                }
+            } else {
+                throw new \Exception("Cannot upload the file $filename!");
             }
         } catch (\Exception $e) {
             $msg = __("Error: ':e_msg'!", ['e_msg' => $e->getMessage()]);
