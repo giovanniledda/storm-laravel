@@ -917,11 +917,11 @@ return [
 
     public function getMeasurementLogsData($page, $size){
         $measurementLogs = $this->measurementLogs;
-        $start = ($page - 1) * $size + 1;
+        $start = ($page - 1) * $size ;
         $end = $start + $size;
 
         $res = [];
-        for ($i = $start; $i <= $end; $i++){
+        for ($i = $start; $i < $end; $i++){
             if (isset($measurementLogs[$i])){
                 $minmax  = $this->getMeasurementLogsFullInfo($measurementLogs[$i]);
                 $res [] = [
