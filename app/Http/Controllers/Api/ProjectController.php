@@ -77,7 +77,7 @@ class ProjectController extends Controller
     public function envMeasurementsLogs(Request $request, $project){
 
         // TODO get page & number from api
-        $data = $project->getMeasurementLogsData(1, 5);
+        $data = $project->getMeasurementLogsData(1, 10);
 
         $resp = Response(["data" => $data], 200);
         $resp->header('Content-Type', 'application/vnd.api+json');
