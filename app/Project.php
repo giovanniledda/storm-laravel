@@ -219,19 +219,26 @@ class Project extends Model {
 
         $this->traitUpdateDocument( $document, $file);
 
-        if ($useCloud){
-            if (env('USE_DROPBOX')) {
-                $this->sendDocumentToDropbox($document);
-            }
 
-            if (env('USE_GOOGLE_DRIVE')){
-                SendDocumentsToGoogleDrive::dispatch($this, $document);
+        $this->save();
+        $document->refresh();
+
+        if ($type != MEASUREMENT_FILE_TYPE) {
+            if ($useCloud){
+                if (env('USE_DROPBOX')) {
+                    $this->sendDocumentToDropbox($document);
+                }
+
+                if (env('USE_GOOGLE_DRIVE')){
+                    SendDocumentsToGoogleDrive::dispatch($this, $document);
 
 
-                // $this->sendDocumentToGoogleDrive($document);
+                    // $this->sendDocumentToGoogleDrive($document);
 
+                }
             }
         }
+        return $document;
     }
 
     /**
@@ -247,17 +254,19 @@ class Project extends Model {
         $this->save();
         $document->refresh();
 
-        if ($useCloud){
-            if (env('USE_DROPBOX')) {
-                $this->sendDocumentToDropbox($document);
-            }
+        if ($type != MEASUREMENT_FILE_TYPE) {
+            if ($useCloud){
+                if (env('USE_DROPBOX')) {
+                    $this->sendDocumentToDropbox($document);
+                }
 
-            if (env('USE_GOOGLE_DRIVE')){
+                if (env('USE_GOOGLE_DRIVE')){
 
-                SendDocumentsToGoogleDrive::dispatch($this, $document);
+                    SendDocumentsToGoogleDrive::dispatch($this, $document);
 
-                // $this->sendDocumentToGoogleDrive($document);
+                    // $this->sendDocumentToGoogleDrive($document);
 
+                }
             }
         }
         return $document;
