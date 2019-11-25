@@ -225,6 +225,42 @@ trait TemplateReplacementRules
         $this->insertPlaceholders('corrosion_map', $placeholders, true);
     }
 
+    /**
+     * Associate the "corrosion_map" Template and its Placeholders to an object
+     */
+    public function setupEnvironmentalReportTemplate()
+    {
+        $category = $this->persistAndAssignTemplateCategory('environmental_report');
+        $placeholders = [
+            '$date$' => 'currentDate()',
+            '$temp_start_date$' => 'getEnvironmentalParamFirstMeasureDate()-celsius__app\_project',
+            '$temp_end_date$' => 'getEnvironmentalParamLastMeasureDate()-celsius__app\_project',
+            '$temp_max$' => 'getEnvironmentalParamMax()-celsius__app\_project',
+            '$temp_min$' => 'getEnvironmentalParamMin()-celsius__app\_project',
+            '$temp_avg$' => 'getEnvironmentalParamAvg()-celsius__app\_project',
+            '$temp_std$' => 'getEnvironmentalParamStd()-celsius__app\_project',
+            '$chart_temperatureChart$' => null, // entra in gioco la funzione handlePhpdocxCharts che andrà implementata nel model User
+
+            '$dp_start_date$' => 'getEnvironmentalParamFirstMeasureDate()-dew_point__app\_project',
+            '$dp_end_date$' => 'getEnvironmentalParamLastMeasureDate()-dew_point__app\_project',
+            '$dp_max$' => 'getEnvironmentalParamMax()-dew_point__app\_project',
+            '$dp_min$' => 'getEnvironmentalParamMin()-dew_point__app\_project',
+            '$dp_avg$' => 'getEnvironmentalParamAvg()-dew_point__app\_project',
+            '$dp_std$' => 'getEnvironmentalParamStd()-dew_point__app\_project',
+            '$chart_dewpointChart$' => null, // entra in gioco la funzione handlePhpdocxCharts che andrà implementata nel model User
+
+            '$hum_start_date$' => 'getEnvironmentalParamFirstMeasureDate()-humidity__app\_project',
+            '$hum_end_date$' => 'getEnvironmentalParamLastMeasureDate()-humidity__app\_project',
+            '$hum_max$' => 'getEnvironmentalParamMax()-humidity__app\_project',
+            '$hum_min$' => 'getEnvironmentalParamMin()-humidity__app\_project',
+            '$hum_avg$' => 'getEnvironmentalParamAvg()-humidity__app\_project',
+            '$hum_std$' => 'getEnvironmentalParamStd()-humidity__app\_project',
+            '$chart_humidityChart$' => null, // entra in gioco la funzione handlePhpdocxCharts che andrà implementata nel model User
+
+        ];
+        $this->insertPlaceholders('environmental_report', $placeholders, true);
+    }
+
 
     /**
      * *****************************

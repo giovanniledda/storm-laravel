@@ -86,6 +86,7 @@ class ProjectObserver
 
         // Doc Generator from template
         $project->setupCorrosionMapTemplate();
+        $project->setupEnvironmentalReportTemplate();
     }
 
     /**
