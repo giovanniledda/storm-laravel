@@ -48,7 +48,7 @@
         "nao-pon/flysystem-google-drive": "~1.1",
         "net7/documents": "dev-master",
         "net7/logging": "dev-master",
-        "net7/docs-generator": "dev-master",
+        "net7/docs-generator": "dev-develop",
         "net7/env-measure": "dev-master",
         "norse-blue/parentity": "dev-master",
         "predis/predis": "^1.1",
