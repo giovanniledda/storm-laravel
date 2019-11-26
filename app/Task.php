@@ -3,7 +3,6 @@
 namespace App;
 
 use Net7\DocsGenerator\Utils;
-use function explode;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
@@ -14,6 +13,7 @@ use Net7\Documents\Document;
 use Net7\Documents\DocumentableTrait;
 use Faker\Generator as Faker;
 use App\Section;
+use function explode;
 use function in_array;
 use function is_object;
 use const PROJECT_STATUS_CLOSED;
