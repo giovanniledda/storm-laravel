@@ -201,7 +201,9 @@ class Project extends Model {
             $links []= [
                 'upload_date' => $report->created_at,
                 'link' => $data['gdrive_link'],
-                'name' => $data['gdrive_filename']
+                'name' => $data['gdrive_filename'],
+                'title' => $report->title,
+                'id' => $report->media->first()->id
             ];
         }
 
@@ -391,7 +393,7 @@ class Project extends Model {
 
 
         if ($document->type == self::REPORT_DOCUMENT_TYPE){
-            $basename .= date('Y_m_d__h_i', time());
+            $basename .= '__' . date('Y_m_d__h_i', time());
         }
         return $basename . '__' . $media->id . '.' . $extension;
     }
