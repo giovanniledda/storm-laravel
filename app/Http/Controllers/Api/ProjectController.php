@@ -79,6 +79,17 @@ class ProjectController extends Controller
         // TODO get page & number from api
         $data = $project->getMeasurementLogsData(1, 10);
 
+        $dataArray = [];
+
+        foreach ($data as $log) {
+            $tmp = [];
+            $tmp ['id'] = $log['id'];
+            $tmp ['type'] = 'log';
+            $tmp ['attributes'] = $log;
+            $dataArray []= $tmp;
+        }
+
+        // $resp = Response(["data" => $dataArray], 200);
         $resp = Response(["data" => $data], 200);
         $resp->header('Content-Type', 'application/vnd.api+json');
 
@@ -206,13 +217,23 @@ class ProjectController extends Controller
     public function reportsList(Request $request, $project)
     {
 
-        // $project = Project::findOrFail($record->id);
-
         $data = $project->getReportsLinks();
 
-        $resp = Response(['data' => [
-            $data
-        ]], 200);
+        $dataArray = [];
+
+        foreach ($data as $report) {
+
+            $tmp = [];
+            $tmp ['type'] = 'report';
+            $tmp ['id'] = $report['id'];
+            $tmp ['attributes'] = $report;
+
+
+            $dataArray []= $tmp;
+        }
+
+        // $resp = Response(['data' => $dataArray], 200);
+        $resp = Response(['data' => $data], 200);
 
         $resp->header('Content-Type', 'application/vnd.api+json');
 

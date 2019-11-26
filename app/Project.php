@@ -203,7 +203,7 @@ class Project extends Model {
                 'link' => $data['gdrive_link'],
                 'name' => $data['gdrive_filename'],
                 'title' => $report->title,
-                'id' => $report->media->first()->id
+                'id' => $report->id
             ];
         }
 
