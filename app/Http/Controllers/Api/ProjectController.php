@@ -90,7 +90,7 @@ class ProjectController extends Controller
         }
 
         // $resp = Response(["data" => $dataArray], 200);
-        $resp = Response(["data" => $data], 200);
+        $resp = Response(["data" => [$data]], 200);
         $resp->header('Content-Type', 'application/vnd.api+json');
 
         return $resp;
@@ -233,7 +233,7 @@ class ProjectController extends Controller
         }
 
         // $resp = Response(['data' => $dataArray], 200);
-        $resp = Response(['data' => $data], 200);
+        $resp = Response(['data' => [$data]], 200);
 
         $resp->header('Content-Type', 'application/vnd.api+json');
 
