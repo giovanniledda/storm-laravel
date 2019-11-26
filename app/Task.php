@@ -533,7 +533,7 @@ class Task extends Model
         $corrosionMapHTML = '';
         if ($corrosionMapFilePath = $this->getCorrosionMapFilePath()) {
             $corrosionMapHTML = <<<EOF
-                <img width="720" height="auto" src="file://$corrosionMapFilePath" alt="Corrosion Map"><br>
+                <img width="760" height="auto" src="file://$corrosionMapFilePath" alt="Corrosion Map"><br>
 EOF;
         }
 
@@ -547,7 +547,6 @@ EOF;
 
         $html = <<<EOF
             <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Point #$point_id</p>
-
                 $corrosionMapHTML
 
                 <table width="700" style="color: #1f519b; font-family: Raleway, sans-serif;">
@@ -561,15 +560,15 @@ EOF;
                 
                 <table width="700" style="font-family: Raleway, sans-serif; color: #1f519b;">
                     <tr width="700">
-                        <td width="345" rowspan="2" style="border-right: 10px solid white; vertical-align: top ;background-color: #eff9fe;">
+                        <td width="345" rowspan="2" style="border-right: 10px solid white; vertical-align: top ;background-color: #eff9fe; padding: 8px">
                         <span style="font-weight: bold;">Description: </span>$description</td>
                         
-                        <td width="345" rowspan="1" style="vertical-align: top;background-color: #eff9fe;">
+                        <td width="345" rowspan="1" style="vertical-align: top;background-color: #eff9fe; padding: 8px">
                         <span style="font-weight: bold;">Created: </span>$created_at</td>
                     </tr>
 
                     <tr width="700">
-                        <td width="345" rowspan="1" style="vertical-align: top;background-color: #eff9fe;">
+                        <td width="345" rowspan="1" style="vertical-align: top;background-color: #eff9fe; padding: 8px">
                         <span style="font-weight: bold;">Last edited: </span>$updated_at</td>
                     </tr>
                 </table>
@@ -581,13 +580,13 @@ EOF;
         if (!empty($photos_array) && count($photos_array) > 1) {
             $tds_1 = <<<EOF
                     <td width="345" align="center" style="border-right: 10px solid white; background-color: black; padding: 0;">
-                      <img width="355" height="auto"  src="file://$photos_array[1]" alt="Corrosion img 1">
+                      <img width="360" height="auto"  src="file://$photos_array[1]" alt="Corrosion img 1">
                     </td>
 EOF;
             if (isset($photos_array[2])) {
                 $tds_1 .= <<<EOF
                     <td width="345" align="center" style="background-color: black; padding: 0;">
-                      <img width="355" height="auto"  src="file://$photos_array[2]" alt="Corrosion img 2">
+                      <img width="360" height="auto"  src="file://$photos_array[2]" alt="Corrosion img 2">
                     </td>
 EOF;
             }
@@ -597,14 +596,14 @@ EOF;
             if (isset($photos_array[3])) {
                 $tds_2 = <<<EOF
                     <td width="345" align="center" style="border-right: 10px solid white; background-color: black;padding: 0">
-                      <img width="355" height="auto"  src="file://$photos_array[3]" alt="Corrosion img 3">
+                      <img width="360" height="auto"  src="file://$photos_array[3]" alt="Corrosion img 3">
                     </td>
 EOF;
 
                 if (isset($photos_array[4])) {
                     $tds_2 .= <<<EOF
                         <td width="345" align="center" style="background-color: black;padding: 0;">
-                          <img width="355" height="auto"  src="file://$photos_array[4]" alt="Corrosion img 4">
+                          <img width="360" height="auto"  src="file://$photos_array[4]" alt="Corrosion img 4">
                         </td>
 EOF;
                 }
@@ -613,7 +612,7 @@ EOF;
             }
 
             $images_table =  '<p style="text-align: left;font-size: 16px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Detail photos</p>
-                               <table width="792">'.$trs.'</table><br>';
+                               <table width="792">'.$trs.'</table>';
 
             $html .= $images_table;
         }
@@ -622,7 +621,7 @@ EOF;
         if ($img_dettaglio = $this->getAdditionalPhotoPath()) {
             $img_dettaglioHTML = <<<EOF
                 <p style="text-align: left;font-size: 16px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Overview photo</p>
-                <img width="720" height="auto" src="file://$img_dettaglio" alt="Overview image">
+                <img width="760" height="auto" src="file://$img_dettaglio" alt="Overview image">
   
 EOF;
         }
