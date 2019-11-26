@@ -233,6 +233,8 @@ trait TemplateReplacementRules
         $category = $this->persistAndAssignTemplateCategory('environmental_report');
         $placeholders = [
             '$date$' => 'currentDate()',
+            '$boat_type$' => 'getBoatType()',
+            '$boat_name$' => 'getBoatName()',
             '$temp_start_date$' => 'getEnvironmentalParamFirstMeasureDate()-celsius__app\_project',
             '$temp_end_date$' => 'getEnvironmentalParamLastMeasureDate()-celsius__app\_project',
             '$temp_max$' => 'getEnvironmentalParamMax()-celsius__app\_project',
