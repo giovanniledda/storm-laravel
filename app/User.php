@@ -6,17 +6,16 @@ use App\Notifications\StormResetPasswordNotification;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use function is_object;
+use Illuminate\Support\Str;
 use Laravel\Passport\HasApiTokens;
 use Net7\Documents\Document;
 use Net7\Documents\DocumentableTrait;
-use const PERMISSION_ADMIN;
-use const PROJECT_STATUS_CLOSED;
-use function snake_case;
 use Spatie\Permission\Traits\HasRoles;
 use Lecturize\Addresses\Traits\HasAddresses;
 use StormUtils;
-use Illuminate\Support\Str;
+use function is_object;
+use const PERMISSION_ADMIN;
+use const PROJECT_STATUS_CLOSED;
 
 
 class User extends Authenticatable
