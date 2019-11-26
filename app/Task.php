@@ -612,7 +612,7 @@ EOF;
             }
 
             $images_table =  '<p style="text-align: left;font-size: 16px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Detail photos</p>
-                               <table width="792">'.$trs.'</table>';
+                               <table width="792">'.$trs.'</table><br>';
 
             $html .= $images_table;
         }
