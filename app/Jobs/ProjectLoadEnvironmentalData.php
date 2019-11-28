@@ -18,16 +18,20 @@ class ProjectLoadEnvironmentalData implements ShouldQueue
 
     private $project;
     private $document;
+    private $data_source;
 
     /**
      * Create a new job instance.
      *
-     * @return void
+     * @param Project $project
+     * @param Document $document
+     * @param string $data_source
      */
-    public function __construct(Project $project, Document $document)
+    public function __construct(Project $project, Document $document, string $data_source = null)
     {
         $this->project = $project;
         $this->document = $document;
+        $this->data_source = $data_source;
     }
 
     /**
@@ -41,6 +45,6 @@ class ProjectLoadEnvironmentalData implements ShouldQueue
         $project = $this->project;
         $file_path = $project->getDocumentMediaFilePath(MEASUREMENT_FILE_TYPE);
         $array = Utils::convertCsvInAssociativeArray($file_path);
-        $project->translateMeasurementsInputForTempDPHumSensor($array, 'STORM - Web App Frontend', $this->document);
+        $project->translateMeasurementsInputForTempDPHumSensor($array, $this->data_source ? $this->data_source : 'STORM - Web App Frontend', $this->document);
     }
 }
