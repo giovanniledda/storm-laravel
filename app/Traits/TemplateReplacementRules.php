@@ -233,7 +233,7 @@ trait TemplateReplacementRules
      *
      */
 
-    
+
     /**
      * Associate the "environmental_report" Template and its Placeholders to an object
      */

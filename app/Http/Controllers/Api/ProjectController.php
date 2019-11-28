@@ -10,6 +10,7 @@ use function explode;
 use function json_decode;
 use function notify;
 use function response;
+use function trim;
 use function view;
 use const MEASUREMENT_FILE_TYPE;
 use const PROJECT_STATUS_CLOSED;
@@ -335,11 +336,13 @@ class ProjectController extends Controller
                 // $document = $project->getDocument(MEASUREMENT_FILE_TYPE);
                 if ($document) {
 
+                    $data_source = isset($request->data['attributes']['data_source']) ? utf8_encode(trim($request->data['attributes']['data_source'])) : null;
                     ProjectLoadEnvironmentalData::dispatch(
                         $project,
                         $document,
-                        isset($request->data['attributes']['data_source']) ? $request->data['attributes']['data_source'] : null
-                    );   // default queue
+                        $data_source
+                    );
+                    // default queue
 
                     $ret = ['data' => [
                         'type' => 'documents',
