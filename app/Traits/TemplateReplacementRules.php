@@ -225,8 +225,17 @@ trait TemplateReplacementRules
         $this->insertPlaceholders('corrosion_map', $placeholders, true);
     }
 
+
     /**
-     * Associate the "corrosion_map" Template and its Placeholders to an object
+     * *****************************
+     * *****************************  TEMPLATE: environmental_report
+     * *****************************
+     *
+     */
+
+    
+    /**
+     * Associate the "environmental_report" Template and its Placeholders to an object
      */
     public function setupEnvironmentalReportTemplate()
     {
@@ -263,13 +272,10 @@ trait TemplateReplacementRules
         $this->insertPlaceholders('environmental_report', $placeholders, true);
     }
 
+    public function handlePhpdocxBlockCloning()
+    {
 
-    /**
-     * *****************************
-     * *****************************  TEMPLATE: environmental_report
-     * *****************************
-     *
-     */
+    }
 
     /**
      * @param $date_start

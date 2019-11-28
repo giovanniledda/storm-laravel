@@ -335,7 +335,11 @@ class ProjectController extends Controller
                 // $document = $project->getDocument(MEASUREMENT_FILE_TYPE);
                 if ($document) {
 
-                    ProjectLoadEnvironmentalData::dispatch($project, $document);   // default queue
+                    ProjectLoadEnvironmentalData::dispatch(
+                        $project,
+                        $document,
+                        isset($request->data['attributes']['data_source']) ? $request->data['attributes']['data_source'] : null
+                    );   // default queue
 
                     $ret = ['data' => [
                         'type' => 'documents',
