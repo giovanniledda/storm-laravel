@@ -30,6 +30,9 @@ trait TemplateReplacementRules
     // Usate con il DocsGenerator: per environmental_report
     protected $_current_date_start;
     protected $_current_date_end;
+//    protected $_current_date_start = '2017-12-29';
+//    protected $_current_date_end = '2018-01-08';
+    protected $_current_data_source;
     protected $_current_min_tresholds;
 
     /**
@@ -244,6 +247,7 @@ trait TemplateReplacementRules
             '$date$' => 'currentDate()',
             '$boat_type$' => 'getBoatType()',
             '$boat_name$' => 'getBoatName()',
+            '$data_source$' => 'getCurrentDataSource()',
             '$temp_start_date$' => 'getEnvironmentalParamFirstMeasureDate()-celsius__app\_project',
             '$temp_end_date$' => 'getEnvironmentalParamLastMeasureDate()-celsius__app\_project',
             '$temp_max$' => 'getEnvironmentalParamMax()-celsius__app\_project',
@@ -302,6 +306,22 @@ trait TemplateReplacementRules
     }
 
     /**
+     * @param $data_source
+     */
+    public function setCurrentDataSource($data_source)
+    {
+        $this->_current_data_source = $data_source;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrentDataSource()
+    {
+        return $this->_current_data_source;
+    }
+
+    /**
      * Insert a chart with measurement values for a specific param
      *
      * @param CreateDocxFromTemplate $template_processor
@@ -324,7 +344,6 @@ trait TemplateReplacementRules
                 'legend' => $min_threshold ? ["Min Threshold - ($min_threshold $uom)", "$legend ($uom)"] : ["$legend ($uom)"],
             ];
 
-            /** @var Measurement $measurement */
             $i = 0;
             $hax_print_step = 10;
             if ($this->_current_date_start && $this->_current_date_end) {
@@ -339,6 +358,7 @@ trait TemplateReplacementRules
 
             throw_if(!count($measurements), new \Exception("No data in this date range!", 403));
 
+            /** @var Measurement $measurement */
             foreach ($measurements as $measurement) {
                 $step = ++$i % $hax_print_step;
                 $data['data'][] =
@@ -384,6 +404,7 @@ trait TemplateReplacementRules
     /**
      * @param CreateDocxFromTemplate $template_processor
      * @param string $chart_name
+     * @throws \Throwable
      */
     public function handlePhpdocxCharts(CreateDocxFromTemplate &$template_processor, string $chart_name)
     {
@@ -408,81 +429,104 @@ trait TemplateReplacementRules
         $this->handleEnvironmentalParamChart($template_processor, $chart_name, $param_key, $legend, $color);
     }
 
-
+    /**
+     * @param $param_key
+     * @return mixed
+     */
     public function getEnvironmentalParamFirstMeasureDate($param_key)
     {
         /** @var EnvironmentalParameter $env_param */
         $env_param = $this->retrieveEnvironmentalParameterByKey($param_key);
         if ($env_param) {
             if ($this->_current_date_start && $this->_current_date_end) {
-                return $env_param->getMinTimeInRange($this->_current_date_start, $this->_current_date_end);
+                return $env_param->getMinTimeInRange($this->_current_date_start, $this->_current_date_end, $this->_current_data_source);
             } else {
-                return $env_param->getMinTime();
+                return $env_param->getMinTime($this->_current_data_source);
             }
         }
     }
 
+    /**
+     * @param $param_key
+     * @return mixed
+     */
     public function getEnvironmentalParamLastMeasureDate($param_key)
     {
         /** @var EnvironmentalParameter $env_param */
         $env_param = $this->retrieveEnvironmentalParameterByKey($param_key);
         if ($env_param) {
             if ($this->_current_date_start && $this->_current_date_end) {
-                return $env_param->getMaxTimeInRange($this->_current_date_start, $this->_current_date_end);
+                return $env_param->getMaxTimeInRange($this->_current_date_start, $this->_current_date_end, $this->_current_data_source);
             } else {
-                return $env_param->getMaxTime();
+                return $env_param->getMaxTime($this->_current_data_source);
             }
         }
     }
 
+    /**
+     * @param $param_key
+     * @return mixed
+     */
     public function getEnvironmentalParamMax($param_key)
     {
         /** @var EnvironmentalParameter $env_param */
         $env_param = $this->retrieveEnvironmentalParameterByKey($param_key);
         if ($env_param) {
             if ($this->_current_date_start && $this->_current_date_end) {
-                return $env_param->getMaximumInRange($this->_current_date_start, $this->_current_date_end);
+                return $env_param->getMaximumInRange($this->_current_date_start, $this->_current_date_end, $this->_current_data_source);
             } else {
-                return $env_param->getMaximum();
+                return $env_param->getMaximum($this->_current_data_source);
             }
         }
     }
 
+    /**
+     * @param $param_key
+     * @return mixed
+     */
     public function getEnvironmentalParamMin($param_key)
     {
         /** @var EnvironmentalParameter $env_param */
         $env_param = $this->retrieveEnvironmentalParameterByKey($param_key);
         if ($env_param) {
             if ($this->_current_date_start && $this->_current_date_end) {
-                return $env_param->getMinimumInRange($this->_current_date_start, $this->_current_date_end);
+                return $env_param->getMinimumInRange($this->_current_date_start, $this->_current_date_end, $this->_current_data_source);
             } else {
-                return $env_param->getMinimum();
+                return $env_param->getMinimum($this->_current_data_source);
             }
         }
     }
 
+    /**
+     * @param $param_key
+     * @return mixed
+     */
     public function getEnvironmentalParamAvg($param_key)
     {
         /** @var EnvironmentalParameter $env_param */
         $env_param = $this->retrieveEnvironmentalParameterByKey($param_key);
         if ($env_param) {
             if ($this->_current_date_start && $this->_current_date_end) {
-                return $env_param->getAverageInRange($this->_current_date_start, $this->_current_date_end);
+                return $env_param->getAverageInRange($this->_current_date_start, $this->_current_date_end, $this->_current_data_source);
             } else {
-                return $env_param->getAverage();
+                return $env_param->getAverage($this->_current_data_source);
             }
         }
     }
 
+    /**
+     * @param $param_key
+     * @return mixed
+     */
     public function getEnvironmentalParamStd($param_key)
     {
         /** @var EnvironmentalParameter $env_param */
         $env_param = $this->retrieveEnvironmentalParameterByKey($param_key);
         if ($env_param) {
             if ($this->_current_date_start && $this->_current_date_end) {
-               return $env_param->getStandardDeviationInRange($this->_current_date_start, $this->_current_date_end);
+                return $env_param->getStandardDeviationInRange($this->_current_date_start, $this->_current_date_end, $this->_current_data_source);
             } else {
-               return $env_param->getStandardDeviation();
+                return $env_param->getStandardDeviation($this->_current_data_source);
             }
         }
     }

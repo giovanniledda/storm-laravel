@@ -381,10 +381,15 @@ class ProjectController extends Controller
      */
     public function generateEnvironmentalReport(Request $request, $record)
     {
+        if (!$request->has('data_source')) {
+            return Utils::jsonAbortWithInternalError(422, 402, "Error generating report", "Mandatory parameter 'data_source' is missing!");
+        }
+
         /** @var Project $project */
         $project = Project::findOrFail($record->id);
 
         $template = $request->input('template');
+        $data_source = $request->input('data_source');
         $date_start = $request->input('date_start');
         $date_end = $request->input('date_end');
         $min_thresholds = [
@@ -396,6 +401,7 @@ class ProjectController extends Controller
         $project->setCurrentDateStart($date_start);
         $project->setCurrentDateEnd($date_end);
         $project->setCurrentMinThresholds($min_thresholds);
+        $project->setCurrentDataSource($data_source);
 
         try {
             $document = $this->reportGenerationProcess($template, $project);
