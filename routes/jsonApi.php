@@ -109,6 +109,11 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
             $project->get('{record}/env-measurements-logs', 'envMeasurementsLogs')->name('env-measurements-logs');
         });
 
+        $api->resource('projects')->only('env-measurements-datasources')->controller('ProjectController')//uses the App\Http\Controllers\Api\ProjectController
+        ->routes(function ($project) {
+            $project->get('{record}/env-measurements-datasources', 'getDataSources')->name('env-measurements-datasources');
+        });
+
 
         $api->resource('projects')->relationships(function ($relations) {
             $relations->hasOne('boat'); // punta al methodo dell'adapter /app/jsonApi/Projects/Adapter non al modello
