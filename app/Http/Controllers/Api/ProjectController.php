@@ -79,7 +79,7 @@ class ProjectController extends Controller
     public function envMeasurementsLogs(Request $request, $project){
 
         // TODO get page & number from api
-        $data = $project->getMeasurementLogsData(1, 10);
+        $data = $project->getMeasurementLogsData(1, 1000);
 
         $dataArray = [];
 
@@ -91,8 +91,8 @@ class ProjectController extends Controller
             $dataArray []= $tmp;
         }
 
-        // $resp = Response(["data" => $dataArray], 200);
-        $resp = Response(["data" => $data], 200);
+        $resp = Response(["data" => $dataArray], 200);
+        // $resp = Response(["data" => $data], 200);
         $resp->header('Content-Type', 'application/vnd.api+json');
 
         return $resp;
@@ -265,6 +265,8 @@ class ProjectController extends Controller
             throw new \Exception($msg);
         }
 
+        $document->subtype = REPORT_CORROSION_MAP_SUBTYPE;
+
         return $document;
     }
 
@@ -343,11 +345,18 @@ class ProjectController extends Controller
             $filename = $request->data['attributes']['filename'];
             $file = Document::createUploadedFileFromBase64($base64File, $filename);
             if ($file) {
-                $document = $project->addDocumentFileDirectly($file, $filename, MEASUREMENT_FILE_TYPE,$filename);
+                $data_source = isset($request->data['attributes']['data_source']) ? utf8_encode(trim($request->data['attributes']['data_source'])) : null;
+
+                $arr = [
+                    'data_source' => $data_source
+                ];
+
+                $additional_data = json_encode($arr);
+                $document = $project->addDocumentFileDirectly($file, $filename, MEASUREMENT_FILE_TYPE, REPORT_ENVIRONMENTAL_SUBTYPE, $additional_data);
                 // $document = $project->getDocument(MEASUREMENT_FILE_TYPE);
                 if ($document) {
 
-                    $data_source = isset($request->data['attributes']['data_source']) ? utf8_encode(trim($request->data['attributes']['data_source'])) : null;
+                
                     ProjectLoadEnvironmentalData::dispatch(
                         $project,
                         $document,
