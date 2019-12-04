@@ -8,8 +8,10 @@ use App\Notifications\TaskCreated;
 use function __;
 use function explode;
 use function json_decode;
+use function md5;
 use function notify;
 use function response;
+use function trim;
 use function view;
 use const MEASUREMENT_FILE_TYPE;
 use const PROJECT_STATUS_CLOSED;
@@ -274,6 +276,34 @@ class ProjectController extends Controller
     }
 
     /**
+     * @param Request $request
+     * @param Document $document
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|Response|\Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    protected function renderJsonOrDownloadFile(Request $request, Document $document)
+    {
+        if ($document) {
+            // if &download=true in request, the file will be downloaded in the response body
+            if ($request->has('download') && $request->input('download')) {
+                $document->refresh();
+                $filepath = $document->getPathBySize('');
+                $filename = $document->file_name;
+
+                $headers = ['Cache-Control' => 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0', "Content-Type" => "application/octet-stream"];
+                return response()->download($filepath, $filename, $headers);
+            } else {
+                $ret = ['data' => [
+                    'type' => 'documents',
+                    'id' => $document->id,
+                    'attributes' => $document
+                ]];
+
+                return Utils::renderStandardJsonapiResponse($ret, 200);
+            }
+        }
+    }
+
+    /**
      * API used to generate a report from the project
      *
      * @param Request $request
@@ -298,18 +328,7 @@ class ProjectController extends Controller
 
         $project->closeAllTasksTemporaryFiles();
 
-        // $filepath = $dg->getRealFinalFilePath();
-        // $filename = $dg->getFinalFileName()
-        if ($document) {
-            $document->refresh();
-            $filepath = $document->getPathBySize('');
-            $filename = $document->file_name;
-
-            $headers = ['Cache-Control' => 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0', "Content-Type" => "application/octet-stream"];
-            return response()
-                ->download($filepath, $filename, $headers);
-
-        }
+        return $this->renderJsonOrDownloadFile($request, $document);
     }
 
     /**
@@ -335,23 +354,15 @@ class ProjectController extends Controller
                 // $document = $project->getDocument(MEASUREMENT_FILE_TYPE);
                 if ($document) {
 
+                    $data_source = isset($request->data['attributes']['data_source']) ? utf8_encode(trim($request->data['attributes']['data_source'])) : null;
                     ProjectLoadEnvironmentalData::dispatch(
                         $project,
                         $document,
-                        isset($request->data['attributes']['data_source']) ? $request->data['attributes']['data_source'] : null
-                    );   // default queue
+                        $data_source
+                    ); // default queue
 
-                    $ret = ['data' => [
-                        'type' => 'documents',
-                        'id' => $document->id,
-                        'attributes' => [
-                            'name' => $document->title,
-                            'created-at' => $document->created_at,
-                            'updated-at' => $document->updated_at
-                        ]
-                    ]];
 
-                    return Utils::renderStandardJsonapiResponse($ret, 200);
+                    return $this->renderJsonOrDownloadFile($request, $document);
                 }
             } else {
                 throw new \Exception("Cannot upload the file $filename!");
@@ -360,12 +371,6 @@ class ProjectController extends Controller
             $msg = __("Error: ':e_msg'!", ['e_msg' => $e->getMessage()]);
             return Utils::jsonAbortWithInternalError(422, 402, "Error uploading CSV log file", $msg);
         }
-    }
-
-
-
-    public function getListOfMeasurement(){
-
     }
 
     /**
@@ -378,10 +383,15 @@ class ProjectController extends Controller
      */
     public function generateEnvironmentalReport(Request $request, $record)
     {
+        if (!$request->has('data_source')) {
+            return Utils::jsonAbortWithInternalError(422, 402, "Error generating report", "Mandatory parameter 'data_source' is missing!");
+        }
+
         /** @var Project $project */
         $project = Project::findOrFail($record->id);
 
         $template = $request->input('template');
+        $data_source = $request->input('data_source');
         $date_start = $request->input('date_start');
         $date_end = $request->input('date_end');
         $min_thresholds = [
@@ -393,6 +403,7 @@ class ProjectController extends Controller
         $project->setCurrentDateStart($date_start);
         $project->setCurrentDateEnd($date_end);
         $project->setCurrentMinThresholds($min_thresholds);
+        $project->setCurrentDataSource($data_source);
 
         try {
             $document = $this->reportGenerationProcess($template, $project);
@@ -402,15 +413,40 @@ class ProjectController extends Controller
 
         // $filepath = $dg->getRealFinalFilePath();
         // $filename = $dg->getFinalFileName()
-        if ($document) {
-            $document->refresh();
-            $filepath = $document->getPathBySize('');
-            $filename = $document->file_name;
+        return $this->renderJsonOrDownloadFile($request, $document);
+    }
 
-            $headers = ['Cache-Control' => 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0', "Content-Type" => "application/octet-stream"];
-            return response()
-                ->download($filepath, $filename, $headers);
+    /**
+     *
+     * Route: {record}/env-measurements-datasources
+     *
+     * Get all the sources of environmental data
+     *
+     * @param Request $request
+     * @param $record
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
+     */
+    public function getDataSources(Request $request, $record)
+    {
+        try {
+            /** @var Project $project */
+            $project = Project::findOrFail($record->id);
+            $sources = $project->getAllDataSources();
+            $data_array = [];
+            foreach ($sources as $source) {
+                $tmp = [];
+                $tmp['type'] = 'data_source';
+                $tmp['id'] = md5($source);
+                $tmp['attributes'] = [
+                    'name' => $source
+                ];
 
+                $data_array[] = $tmp;
+            }
+            return Utils::renderStandardJsonapiResponse($data_array, 200);
+
+        } catch (\Exception $e) {
+            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error generating report", $e->getMessage());
         }
     }
 
