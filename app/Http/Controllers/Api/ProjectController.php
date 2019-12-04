@@ -361,7 +361,6 @@ class ProjectController extends Controller
                         $data_source
                     ); // default queue
 
-
                     return $this->renderJsonOrDownloadFile($request, $document);
                 }
             } else {
@@ -443,8 +442,9 @@ class ProjectController extends Controller
 
                 $data_array[] = $tmp;
             }
-            return Utils::renderStandardJsonapiResponse($data_array, 200);
-
+            $ret = ['data' => $data_array];
+            return Utils::renderStandardJsonapiResponse($ret, 200);
+            
         } catch (\Exception $e) {
             return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error generating report", $e->getMessage());
         }
