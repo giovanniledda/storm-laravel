@@ -58,14 +58,17 @@ class Project extends Model {
     }
 
 
-    public function addTemplateResultDocument($temporary_final_file_path, $final_file_name, $template_object_id, $type=self::REPORT_DOCUMENT_TYPE) {
+    public function addTemplateResultDocument($temporary_final_file_path, $final_file_name, $template_object_id, $type=self::REPORT_DOCUMENT_TYPE, $subtype='') {
 
         // $document = $this->traitAddTemplateResultDocument($temporary_final_file_path, $final_file_name, $template_object_id, $type);
 
+        if (!$type) {
+            $type=self::REPORT_DOCUMENT_TYPE;
+        }
 
         // $this->addDocumentFile will call the $this->addDocumentWithType method, which in turn will
         //  take care of google and/or dropbox sync
-        $document = $this->addDocumentFile($temporary_final_file_path, $final_file_name, $type);
+        $document = $this->addDocumentFile($temporary_final_file_path, $final_file_name, $type, $subtype);
         unlink($temporary_final_file_path);
 
 
@@ -193,7 +196,36 @@ class Project extends Model {
 
     public function getReportsLinks(){
 
+
+/**
+ * 
+TODO:
+
+  "meta": {
+    "page": {
+      "current-page": 2,
+      "per-page": 15,
+      "from": 16,
+      "to": 30,
+      "total": 50,
+      "last-page": 4
+    }
+  },
+  "links": {
+    "first": "http://localhost/api/v1/posts?page[number]=1&page[size]=15",
+    "prev": "http://localhost/api/v1/posts?page[number]=1&page[size]=15",
+    "next": "http://localhost/api/v1/posts?page[number]=3&page[size]=15",
+    "last": "http://localhost/api/v1/posts?page[number]=4&page[size]=15"
+  },
+uploadEnvMeasurementLog
+ */
+
+
         $reports = $this->documents->where('type', self::REPORT_DOCUMENT_TYPE);
+
+
+
+
 
         $links = [];
         foreach ($reports as $report){
@@ -919,6 +951,7 @@ return [
 
     public function getMeasurementLogsData($page, $size){
         $measurementLogs = $this->measurementLogs;
+
         $start = ($page - 1) * $size ;
         $end = $start + $size;
 
@@ -926,9 +959,11 @@ return [
         for ($i = $start; $i < $end; $i++){
             if (isset($measurementLogs[$i])){
                 $minmax  = $this->getMeasurementLogsFullInfo($measurementLogs[$i]);
+                $additional_data = @json_decode($measurementLogs[$i]->additional_data, true);
                 $res [] = [
                     'id' => $measurementLogs[$i]->id,
                     'upload_date' => $measurementLogs[$i]->created_at,
+                    'data_source' => @$additional_data['data_source'],
                     'start_date' => gmdate('Y-m-d\TH:i:s\.000000\Z', strtotime($minmax['min'])),
                     'end_date' =>  gmdate('Y-m-d\TH:i:s\.000000\Z', strtotime($minmax['max']))
                 ];

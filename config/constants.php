@@ -224,3 +224,11 @@ defined('PROJECT_TYPE_API_PROJECT_CLOSED_MSG') or define('PROJECT_TYPE_API_PROJE
 defined('USER_PHOTO_API_NO_DOC_TITLE') or define('USER_PHOTO_API_NO_DOC_TITLE', 'Internal error.');
 defined('USER_PHOTO_API_NO_DOC_MSG') or define('USER_PHOTO_API_NO_DOC_MSG', 'Something went wrong. The profile photo was not uploaded.');
 
+
+/*
+ * 
+ */
+
+
+defined('REPORT_CORROSION_MAP_SUBTYPE') or define('REPORT_CORROSION_MAP_SUBTYPE', 'corrosion_map');
+defined('REPORT_ENVIRONMENTAL_SUBTYPE') or define('REPORT_ENVIRONMENTAL_SUBTYPE', 'environmental_report');
