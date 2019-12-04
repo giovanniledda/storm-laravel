@@ -1,5 +1,7 @@
 <?php
 
+
+
 namespace App\Traits;
 
 use App\Task;
@@ -17,6 +19,8 @@ use function min;
 use function throw_if;
 use function time;
 use function unlink;
+
+defined('MEASUREMENT_DEFAULT_DATA_SOURCE') or define('MEASUREMENT_DEFAULT_DATA_SOURCE', 'STORM - Web App Frontend');
 
 trait TemplateReplacementRules
 {
@@ -337,6 +341,9 @@ trait TemplateReplacementRules
         $env_param = $this->retrieveEnvironmentalParameterByKey($param_key);
         if ($env_param) {
 
+            $data_source = $this->_current_data_source;
+            throw_if(!$data_source, new \Exception("Mandatory parameter 'data_source' is missing!", 403));
+
             $uom = $env_param->unity_of_measure;
             $min_threshold = isset($this->_current_min_tresholds[$env_param->name]) ? $this->_current_min_tresholds[$env_param->name] : null;
 
@@ -346,14 +353,17 @@ trait TemplateReplacementRules
 
             $i = 0;
             $hax_print_step = 10;
+
             if ($this->_current_date_start && $this->_current_date_end) {
-                $measurements = $env_param->getMeasurementsInRange($this->_current_date_start, $this->_current_date_end);
-                $maxScale = $env_param->getMaximumInRange($this->_current_date_start, $this->_current_date_end);
-                $minScale = $min_threshold ? min($min_threshold, $env_param->getMinimumInRange($this->_current_date_start, $this->_current_date_end)) : $env_param->getMinimumInRange($this->_current_date_start, $this->_current_date_end);
+                $measurements = $env_param->getMeasurementsInRange($this->_current_date_start, $this->_current_date_end, $data_source);
+                $max_scale = $env_param->getMaximumInRange($this->_current_date_start, $this->_current_date_end, $data_source);
+                $min_scale = $min_threshold ? min($min_threshold, $env_param->getMinimumInRange($this->_current_date_start, $this->_current_date_end, $data_source)) :
+                    $env_param->getMinimumInRange($this->_current_date_start, $this->_current_date_end, $data_source);
+
             } else {
                 $measurements = $env_param->measurements;
-                $maxScale = $env_param->getMaximum();
-                $minScale = $min_threshold ? min($min_threshold, $env_param->getMinimum()) : $env_param->getMinimum();
+                $max_scale = $env_param->getMaximum();
+                $min_scale = $min_threshold ? min($min_threshold, $env_param->getMinimum()) : $env_param->getMinimum();
             }
 
             throw_if(!count($measurements), new \Exception("No data in this date range!", 403));
@@ -385,8 +395,8 @@ trait TemplateReplacementRules
                 'vaxLabelDisplay' => 0,
                 'hgrid' => '1',
                 'vgrid' => '1',
-                'scalingMax' => $maxScale,
-                'scalingMin' => $minScale,
+                'scalingMax' => $max_scale,
+                'scalingMin' => $min_scale,
                 'horizontalOffset' => 360,
                 'formatDataLabels' => [
                     'rotation' => 45,
@@ -400,6 +410,7 @@ trait TemplateReplacementRules
             $template_processor->replaceVariableByWordFragment(array($chart_name => $chart), array('type' => 'block'));
         }
     }
+
 
     /**
      * @param CreateDocxFromTemplate $template_processor

@@ -365,12 +365,6 @@ class ProjectController extends Controller
         }
     }
 
-
-
-    public function getListOfMeasurement(){
-
-    }
-
     /**
      * API used to generate a report from the project
      *
@@ -421,6 +415,19 @@ class ProjectController extends Controller
                 ->download($filepath, $filename, $headers);
 
         }
+    }
+
+    /**
+     * Get all the sources of environmental data
+     *
+     * @param Request $request
+     * @param $record
+     */
+    public function getDataSources(Request $request, $record)
+    {
+        /** @var Project $project */
+        $project = Project::findOrFail($record->id);
+//        $sources = $project->getAllDataSources();
     }
 
 }

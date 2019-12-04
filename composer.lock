@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "4f3878e9ec6b157a4771920d352e0c01",
+    "content-hash": "8c06955d9ef2378519d00eccaa0eb8e4",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -3853,11 +3853,11 @@
         },
         {
             "name": "net7/env-measure",
-            "version": "dev-master",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://net7.codebasehq.com/nautica/net7env-measure.git",
-                "reference": "a9febdab32ebbaea4fc04d6052a948f26efcec02"
+                "reference": "43e76aec9ebf78dadba2fad1aef85d292314db0a"
             },
             "require": {
                 "mckenziearts/laravel-notify": "dev-master",
@@ -3890,7 +3890,7 @@
                 }
             ],
             "description": "Handle any kind of environmental measurement associated to a Model",
-            "time": "2019-11-25T10:51:58+00:00"
+            "time": "2019-12-03T15:19:37+00:00"
         },
         {
             "name": "net7/logging",
