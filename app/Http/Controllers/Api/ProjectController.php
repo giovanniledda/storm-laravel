@@ -343,7 +343,7 @@ class ProjectController extends Controller
             $filename = $request->data['attributes']['filename'];
             $file = Document::createUploadedFileFromBase64($base64File, $filename);
             if ($file) {
-                $document = $project->addDocumentFileDirectly($file, $filename, MEASUREMENT_FILE_TYPE);
+                $document = $project->addDocumentFileDirectly($file, $filename, MEASUREMENT_FILE_TYPE,$filename);
                 // $document = $project->getDocument(MEASUREMENT_FILE_TYPE);
                 if ($document) {
 
