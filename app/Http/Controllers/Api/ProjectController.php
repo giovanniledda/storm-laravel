@@ -234,8 +234,8 @@ class ProjectController extends Controller
             $dataArray []= $tmp;
         }
 
-        // $resp = Response(['data' => $dataArray], 200);
-        $resp = Response(['data' => [$data]], 200);
+         $resp = Response(['data' => $dataArray], 200);
+//        $resp = Response(['data' => [$data]], 200);
 
         $resp->header('Content-Type', 'application/vnd.api+json');
 
@@ -444,7 +444,7 @@ class ProjectController extends Controller
             }
             $ret = ['data' => $data_array];
             return Utils::renderStandardJsonapiResponse($ret, 200);
-            
+
         } catch (\Exception $e) {
             return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error generating report", $e->getMessage());
         }
