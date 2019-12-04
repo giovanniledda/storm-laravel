@@ -220,25 +220,18 @@ class ProjectController extends Controller
     {
 
         $data = $project->getReportsLinks();
-
         $dataArray = [];
-
         foreach ($data as $report) {
-
             $tmp = [];
-            $tmp ['type'] = 'report';
-            $tmp ['id'] = $report['id'];
-            $tmp ['attributes'] = $report;
-
-
-            $dataArray []= $tmp;
+            $tmp['type'] = 'report';
+            $tmp['id'] = $report['id'];
+            $tmp['attributes'] = $report;
+            $dataArray[] = $tmp;
         }
-
-         $resp = Response(['data' => $dataArray], 200);
+        $resp = Response(['data' => $dataArray], 200);
 //        $resp = Response(['data' => [$data]], 200);
 
         $resp->header('Content-Type', 'application/vnd.api+json');
-
         return $resp;
     }
 
