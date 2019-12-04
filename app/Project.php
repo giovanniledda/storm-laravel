@@ -235,6 +235,7 @@ uploadEnvMeasurementLog
                 'link' => $data['gdrive_link'],
                 'name' => $data['gdrive_filename'],
                 'title' => $report->title,
+                'subtype' => $report->subtype,
                 'id' => $report->id
             ];
         }
