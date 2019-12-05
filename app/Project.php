@@ -932,10 +932,16 @@ class Project extends Model {
         if ($page_param) {
             $page = $page_param['number'];
             $per_page = $page_param['size'];
-            $reports = $this->documents()->where('type', self::REPORT_DOCUMENT_TYPE)->paginate($per_page, ['*'], 'page', $page);
+            $reports = $this->documents()
+                ->where('type', self::REPORT_DOCUMENT_TYPE)
+                ->orderBy('created_at', 'desc')
+                ->paginate($per_page, ['*'], 'page', $page);
             $ret = self::getPaginationResponseTags($reports, $page_param);
         } else {
-            $reports = $this->documents->where('type', self::REPORT_DOCUMENT_TYPE);
+            $reports = $this->documents()
+                ->orderBy('created_at', 'desc')
+                ->where('type', self::REPORT_DOCUMENT_TYPE)
+                ->get();
         }
 
         $gdrive_links = [];
@@ -963,10 +969,13 @@ class Project extends Model {
     public function getMeasurementLogsData($page_param = null)
     {
         if ($page_param) {
-            $measurement_logs = $this->documents()->where('type', MEASUREMENT_FILE_TYPE)->paginate($page_param['size'], ['*'], 'page', $page_param['number']);
+            $measurement_logs = $this->documents()
+                ->where('type', MEASUREMENT_FILE_TYPE)
+                ->orderBy('created_at', 'desc')
+                ->paginate($page_param['size'], ['*'], 'page', $page_param['number']);
             $ret = self::getPaginationResponseTags($measurement_logs, $page_param);
         } else {
-            $measurement_logs = $this->documents->where('type', MEASUREMENT_FILE_TYPE);
+            $measurement_logs = $this->documents()->where('type', MEASUREMENT_FILE_TYPE)->orderBy('created_at', 'desc')->get();
         }
 
         $measurement_logs_data = [];
