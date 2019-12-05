@@ -206,7 +206,7 @@ class Project extends Model {
         $this->save();
         $document->refresh();
 
-        if ($type != MEASUREMENT_FILE_TYPE) {
+        if ($document->type != MEASUREMENT_FILE_TYPE) {
             if ($useCloud){
                 if (env('USE_DROPBOX')) {
                     $this->sendDocumentToDropbox($document);
