@@ -939,8 +939,8 @@ class Project extends Model {
             $ret = self::getPaginationResponseTags($reports, $page_param);
         } else {
             $reports = $this->documents()
-                ->orderBy('created_at', 'desc')
                 ->where('type', self::REPORT_DOCUMENT_TYPE)
+                ->orderBy('created_at', 'desc')
                 ->get();
         }
 
@@ -975,7 +975,10 @@ class Project extends Model {
                 ->paginate($page_param['size'], ['*'], 'page', $page_param['number']);
             $ret = self::getPaginationResponseTags($measurement_logs, $page_param);
         } else {
-            $measurement_logs = $this->documents()->where('type', MEASUREMENT_FILE_TYPE)->orderBy('created_at', 'desc')->get();
+            $measurement_logs = $this->documents()
+                ->where('type', MEASUREMENT_FILE_TYPE)
+                ->orderBy('created_at', 'desc')
+                ->get();
         }
 
         $measurement_logs_data = [];
