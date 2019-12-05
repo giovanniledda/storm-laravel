@@ -280,9 +280,10 @@ class ProjectController extends Controller
 
     public function reportsList(Request $request, $project)
     {
-        /** @var Project $project */
-        $data = $project->getReportsLinks();
         $data_array = [];
+        /** @var Project $project */
+        $reports_data = $project->getReportsLinks(1, 1);
+        $data = $reports_data['data'];
         foreach ($data as $report) {
             $tmp = [];
             $tmp['type'] = 'report';
@@ -290,8 +291,15 @@ class ProjectController extends Controller
             $tmp['attributes'] = $report;
             $data_array[] = $tmp;
         }
-        return Utils::renderStandardJsonapiResponse(['data' => $data_array], 200);
 
+        $ret = ['data' => $data_array];
+        if (isset($reports_data['meta'])) {
+            $ret['meta'] = $reports_data['meta'];
+        }
+        if (isset($reports_data['links'])) {
+            $ret['links'] = $reports_data['links'];
+        }
+        return Utils::renderStandardJsonapiResponse($ret, 200);
     }
 
     /**
@@ -325,7 +333,6 @@ class ProjectController extends Controller
                 $document = $project->addDocumentFileDirectly($file, $filename, MEASUREMENT_FILE_TYPE, REPORT_ENVIRONMENTAL_SUBTYPE, $additional_data);
                 // $document = $project->getDocument(MEASUREMENT_FILE_TYPE);
                 if ($document) {
-
 
                     ProjectLoadEnvironmentalData::dispatch(
                         $project,

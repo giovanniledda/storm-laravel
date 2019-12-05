@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Queue\SerializesModels;
 use App\Jobs\SendDocumentsToGoogleDrive;
 use Illuminate\Support\Facades\DB;
+use function json_decode;
 use const MEASUREMENT_FILE_TYPE;
 
 // use Illuminate\Support\Facades\Queue;
@@ -193,37 +194,38 @@ class Project extends Model {
 
     }
 
+    /**
+     * @param null $page
+     * @param null $per_page
+     * @return array
+     */
+    public function getReportsLinks($page = null, $per_page = null)
+    {
+        $reports = $this->documents()->where('type', self::REPORT_DOCUMENT_TYPE)->paginate($per_page);
+        $json_reports_array = json_decode($reports->toJson(), 1);
+        $ret = [
+            'meta' => [
+                'page' => [
+                    'current-page' => $reports->currentPage(),
+                    'per-page' => $per_page,
+                    'from' => $reports->firstItem(),
+                    'to' => $reports->lastItem(),
+                    'total' => $reports->total(),
+                    'last-page' => $reports->lastPage(),
+                ]
+            ],
+            'links' => [
+                'first' => $json_reports_array['first_page_url'],
+                'prev' => $json_reports_array['prev_page_url'],
+                'next' => $json_reports_array['next_page_url'],
+                'last' => $json_reports_array['last_page_url']
+            ]
+        ];
 
-    public function getReportsLinks(){
-
-        /**
-         *
-        TODO:
-          "meta": {
-            "page": {
-              "current-page": 2,
-              "per-page": 15,
-              "from": 16,
-              "to": 30,
-              "total": 50,
-              "last-page": 4
-            }
-          },
-          "links": {
-            "first": "http://localhost/api/v1/posts?page[number]=1&page[size]=15",
-            "prev": "http://localhost/api/v1/posts?page[number]=1&page[size]=15",
-            "next": "http://localhost/api/v1/posts?page[number]=3&page[size]=15",
-            "last": "http://localhost/api/v1/posts?page[number]=4&page[size]=15"
-          },
-        uploadEnvMeasurementLog
-         */
-
-        $reports = $this->documents->where('type', self::REPORT_DOCUMENT_TYPE);
-
-        $links = [];
-        foreach ($reports as $report){
+        $gdrive_links = [];
+        foreach ($reports as $report) {
             $data = json_decode($report->cloud_storage_data, true);
-            $links []= [
+            $gdrive_links[] = [
                 'upload_date' => $report->created_at,
                 'link' => $data['gdrive_link'],
                 'name' => $data['gdrive_filename'],
@@ -232,7 +234,9 @@ class Project extends Model {
                 'id' => $report->id
             ];
         }
-        return $links;
+
+        $ret['data'] = $gdrive_links;
+        return $ret;
 //        return $this->getListOfReportsFromGoogle();
     }
 
