@@ -195,57 +195,6 @@ class Project extends Model {
     }
 
     /**
-     * @param null $page_param
-     * @return array
-     */
-    public function getReportsLinks($page_param = null)
-    {
-        if ($page_param) {
-            $page = $page_param['number'];
-            $per_page = $page_param['size'];
-            $reports = $this->documents()->where('type', self::REPORT_DOCUMENT_TYPE)->paginate($per_page, ['*'], 'page', $page);
-            $json_reports_array = json_decode($reports->toJson(), 1);
-            $ret = [
-                'meta' => [
-                    'page' => [
-                        'current-page' => $reports->currentPage(),
-                        'per-page' => $per_page,
-                        'from' => $reports->firstItem(),
-                        'to' => $reports->lastItem(),
-                        'total' => $reports->total(),
-                        'last-page' => $reports->lastPage(),
-                    ]
-                ],
-                'links' => [
-                    'first' => $json_reports_array['first_page_url'],
-                    'prev' => $json_reports_array['prev_page_url'],
-                    'next' => $json_reports_array['next_page_url'],
-                    'last' => $json_reports_array['last_page_url']
-                ]
-            ];
-        } else {
-            $reports = $this->documents->where('type', self::REPORT_DOCUMENT_TYPE);
-        }
-
-        $gdrive_links = [];
-        foreach ($reports as $report) {
-            $data = json_decode($report->cloud_storage_data, true);
-            $gdrive_links[] = [
-                'upload_date' => $report->created_at,
-                'link' => $data['gdrive_link'],
-                'name' => $data['gdrive_filename'],
-                'title' => $report->title,
-                'subtype' => $report->subtype,
-                'id' => $report->id
-            ];
-        }
-
-        $ret['data'] = $gdrive_links;
-        return $ret;
-//        return $this->getListOfReportsFromGoogle();
-    }
-
-    /**
      *
      * @Override the base method to send the updated files to dropbox
      */
@@ -307,18 +256,12 @@ class Project extends Model {
     }
 
     public function getDocumentFromDropbox(\Net7\Documents\Document $document){
-
-
         $media = $document->getRelatedMedia();
         $filename = $media->file_name;
         $dropboxFolder =  $this->getDropboxFolderPath($document);
         $dropboxFilepath =  $this->getDropboxFilePath($document, $filename);
-
-
         $client = new \Spatie\Dropbox\Client(env('DROPBOX_TOKEN'));
-
         $link = $client->getTemporaryLink($dropboxFilepath );
-
         return $link;
     }
 
@@ -912,68 +855,142 @@ class Project extends Model {
         return str_replace($malevolentCharacters, '', $path);
     }
 
-    public function getGoogleSyncQueueName(){
-
+    public function getGoogleSyncQueueName()
+    {
         return 'project-google-sync-'.$this->id;
     }
 
-    public function getGoogleSyncQueueSize(){
+    public function getGoogleSyncQueueSize()
+    {
 
         // $queue = App::make('queue.connection');
         // $size = $queue->size($this->getGoogleSyncQueueName());
 
-//TODO: fix
+        //TODO: fix
         $size = Queue::size($this->getGoogleSyncQueueName());
         return $size;
-
     }
 
 
-    public function getMeasurementLogsFullInfo($measurementLogDocument){
+    public function getMeasurementLogsFullInfo($measurementLogDocument)
+    {
         // select min(measurement_time), max(measurement_time) from net7em_measurements where document_id = 28 ;
 
         $measurement = new \Net7\EnvironmentalMeasurement\Models\Measurement();
 
         $min = DB::table($measurement->getTable())
-        ->where('document_id', '=', $measurementLogDocument->id)
-        ->min('measurement_time');
+            ->where('document_id', '=', $measurementLogDocument->id)
+            ->min('measurement_time');
 
         $max = DB::table($measurement->getTable())
-        ->where('document_id', '=', $measurementLogDocument->id)
-        ->max('measurement_time');
-return [
-    'min' => $min,
-    'max' => $max
-];
+            ->where('document_id', '=', $measurementLogDocument->id)
+            ->max('measurement_time');
 
-
+        return [
+            'min' => $min,
+            'max' => $max
+        ];
     }
 
-    public function getMeasurementLogsData($page, $size){
-        $measurementLogs = $this->measurementLogs;
+    /**
+     * @param $collection
+     * @param $page_param
+     * @return array
+     */
+    protected static function getPaginationResponseTags($collection, $page_param)
+    {
+        $page = $page_param['number'];
+        $per_page = $page_param['size'];
+        $json_reports_array = json_decode($collection->toJson(), 1);
+        $ret = [
+            'meta' => [
+                'page' => [
+                    'current-page' => $collection->currentPage(),
+                    'per-page' => $per_page,
+                    'from' => $collection->firstItem(),
+                    'to' => $collection->lastItem(),
+                    'total' => $collection->total(),
+                    'last-page' => $collection->lastPage(),
+                ]
+            ],
+            'links' => [
+                'first' => $json_reports_array['first_page_url'],
+                'prev' => $json_reports_array['prev_page_url'],
+                'next' => $json_reports_array['next_page_url'],
+                'last' => $json_reports_array['last_page_url']
+            ]
+        ];
+        return $ret;
+    }
 
-        $start = ($page - 1) * $size ;
-        $end = $start + $size;
-
-        $res = [];
-        for ($i = $start; $i < $end; $i++){
-            if (isset($measurementLogs[$i])){
-                $minmax  = $this->getMeasurementLogsFullInfo($measurementLogs[$i]);
-                $additional_data = @json_decode($measurementLogs[$i]->additional_data, true);
-                $res [] = [
-                    'id' => $measurementLogs[$i]->id,
-                    'upload_date' => $measurementLogs[$i]->created_at,
-                    'data_source' => @$additional_data['data_source'],
-                    'start_date' => gmdate('Y-m-d\TH:i:s\.000000\Z', strtotime($minmax['min'])),
-                    'end_date' =>  gmdate('Y-m-d\TH:i:s\.000000\Z', strtotime($minmax['max']))
-                ];
-            }
+    /**
+     * @param null $page_param
+     * @return array
+     */
+    public function getReportsLinks($page_param = null)
+    {
+        if ($page_param) {
+            $page = $page_param['number'];
+            $per_page = $page_param['size'];
+            $reports = $this->documents()->where('type', self::REPORT_DOCUMENT_TYPE)->paginate($per_page, ['*'], 'page', $page);
+            $ret = self::getPaginationResponseTags($reports, $page_param);
+        } else {
+            $reports = $this->documents->where('type', self::REPORT_DOCUMENT_TYPE);
         }
 
-        return $res;
+        $gdrive_links = [];
+        foreach ($reports as $report) {
+            $data = json_decode($report->cloud_storage_data, true);
+            $gdrive_links[] = [
+                'upload_date' => $report->created_at,
+                'link' => $data['gdrive_link'],
+                'name' => $data['gdrive_filename'],
+                'title' => $report->title,
+                'subtype' => $report->subtype,
+                'id' => $report->id
+            ];
+        }
+
+        $ret['data'] = $gdrive_links;
+        return $ret;
+//        return $this->getListOfReportsFromGoogle();
     }
 
-    public function measurementLogs(){
+    /**
+     * @param null $page_param
+     * @return array
+     */
+    public function getMeasurementLogsData($page_param = null)
+    {
+        if ($page_param) {
+            $measurement_logs = $this->documents()->where('type', MEASUREMENT_FILE_TYPE)->paginate($page_param['size'], ['*'], 'page', $page_param['number']);
+            $ret = self::getPaginationResponseTags($measurement_logs, $page_param);
+        } else {
+            $measurement_logs = $this->documents->where('type', MEASUREMENT_FILE_TYPE);
+        }
+
+        $measurement_logs_data = [];
+        foreach ($measurement_logs as $measurement_log) {
+            $minmax = $this->getMeasurementLogsFullInfo($measurement_log);
+            $additional_data = @json_decode($measurement_log->additional_data, true);
+            $measurement_logs_data[] = [
+                'id' => $measurement_log->id,
+                'upload_date' => $measurement_log->created_at,
+                'data_source' => @$additional_data['data_source'],
+                'start_date' => gmdate('Y-m-d\TH:i:s\.000000\Z', strtotime($minmax['min'])),
+                'end_date' => gmdate('Y-m-d\TH:i:s\.000000\Z', strtotime($minmax['max']))
+            ];
+        }
+
+        $ret['data'] = $measurement_logs_data;
+        return $ret;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function measurementLogs()
+    {
         return $this->documents()->where('type', MEASUREMENT_FILE_TYPE);
     }
 }

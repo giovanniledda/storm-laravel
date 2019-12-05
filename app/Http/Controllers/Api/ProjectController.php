@@ -277,7 +277,6 @@ class ProjectController extends Controller
      *
      * @return mixed
      */
-
     public function reportsList(Request $request, $project)
     {
         $data_array = [];
@@ -405,21 +404,30 @@ class ProjectController extends Controller
      * @param $project
      * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
      */
-    public function envMeasurementsLogs(Request $request, $project){
+    public function envMeasurementsLogs(Request $request, $project)
+    {
 
-        // TODO get page & number from api
-        $data = $project->getMeasurementLogsData(1, 1000);
+        /** @var Project $project */
+        $reports_data = $project->getMeasurementLogsData($request->input('page'));
+        $data = $reports_data['data'];
 
         $data_array = [];
         foreach ($data as $log) {
             $tmp = [];
-            $tmp ['id'] = $log['id'];
-            $tmp ['type'] = 'log';
-            $tmp ['attributes'] = $log;
-            $data_array []= $tmp;
+            $tmp['id'] = $log['id'];
+            $tmp['type'] = 'log';
+            $tmp['attributes'] = $log;
+            $data_array[] = $tmp;
         }
 
-        return Utils::renderStandardJsonapiResponse(['data' => $data_array], 200);
+        $ret = ['data' => $data_array];
+        if (isset($reports_data['meta'])) {
+            $ret['meta'] = $reports_data['meta'];
+        }
+        if (isset($reports_data['links'])) {
+            $ret['links'] = $reports_data['links'];
+        }
+        return Utils::renderStandardJsonapiResponse($ret, 200);
     }
 
     /**
