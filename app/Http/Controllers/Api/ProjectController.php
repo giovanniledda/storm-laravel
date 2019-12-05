@@ -282,7 +282,7 @@ class ProjectController extends Controller
     {
         $data_array = [];
         /** @var Project $project */
-        $reports_data = $project->getReportsLinks(1, 1);
+        $reports_data = $project->getReportsLinks(2, 1);
         $data = $reports_data['data'];
         foreach ($data as $report) {
             $tmp = [];

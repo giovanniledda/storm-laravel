@@ -195,13 +195,13 @@ class Project extends Model {
     }
 
     /**
-     * @param null $page
      * @param null $per_page
+     * @param null $page
      * @return array
      */
-    public function getReportsLinks($page = null, $per_page = null)
+    public function getReportsLinks($per_page = null, $page = null)
     {
-        $reports = $this->documents()->where('type', self::REPORT_DOCUMENT_TYPE)->paginate($per_page);
+        $reports = $this->documents()->where('type', self::REPORT_DOCUMENT_TYPE)->paginate($per_page, ['*'], 'page', $page);
         $json_reports_array = json_decode($reports->toJson(), 1);
         $ret = [
             'meta' => [
