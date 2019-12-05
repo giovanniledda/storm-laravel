@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "8c06955d9ef2378519d00eccaa0eb8e4",
+    "content-hash": "452d91f8da99fc2759bee114e4d6140a",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -3763,11 +3763,11 @@
         },
         {
             "name": "net7/docs-generator",
-            "version": "dev-develop",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://net7.codebasehq.com/nautica/net7docs-generator.git",
-                "reference": "fa0a9e9b66c09e6be56182a7da30573e5ade4f83"
+                "reference": "8dfa214e7ad50e9aa8409351b89393298866d0fe"
             },
             "require": {
                 "mckenziearts/laravel-notify": "dev-master",
@@ -3803,7 +3803,7 @@
                 }
             ],
             "description": "Generate documents starting from custom templates.",
-            "time": "2019-12-05T08:41:35+00:00"
+            "time": "2019-11-27T11:35:50+00:00"
         },
         {
             "name": "net7/documents",
@@ -3811,7 +3811,7 @@
             "source": {
                 "type": "git",
                 "url": "https://net7.codebasehq.com/nautica/net7documents.git",
-                "reference": "5d6e6b62fbc37e777e1ee0a98d96b1066aa26f3b"
+                "reference": "ef4e57fb8eeb70972a431563fd9544f37588e647"
             },
             "require": {
                 "cloudcreativity/laravel-json-api": "^1.1",
@@ -3849,15 +3849,15 @@
                 }
             ],
             "description": "Add documents to an object of your application",
-            "time": "2019-12-04T16:01:46+00:00"
+            "time": "2019-12-05T16:42:45+00:00"
         },
         {
             "name": "net7/env-measure",
-            "version": "dev-develop",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://net7.codebasehq.com/nautica/net7env-measure.git",
-                "reference": "5f3f634b3f7e361ef2e249a807bfba51b7d908b7"
+                "reference": "a9febdab32ebbaea4fc04d6052a948f26efcec02"
             },
             "require": {
                 "mckenziearts/laravel-notify": "dev-master",
@@ -3890,7 +3890,7 @@
                 }
             ],
             "description": "Handle any kind of environmental measurement associated to a Model",
-            "time": "2019-12-04T10:50:16+00:00"
+            "time": "2019-11-25T10:51:58+00:00"
         },
         {
             "name": "net7/logging",
@@ -9411,7 +9411,8 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.1.3"
+        "php": "^7.1.3",
+        "ext-json": "*"
     },
     "platform-dev": []
 }
