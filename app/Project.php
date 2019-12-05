@@ -195,32 +195,37 @@ class Project extends Model {
     }
 
     /**
-     * @param null $per_page
-     * @param null $page
+     * @param null $page_param
      * @return array
      */
-    public function getReportsLinks($per_page = null, $page = null)
+    public function getReportsLinks($page_param = null)
     {
-        $reports = $this->documents()->where('type', self::REPORT_DOCUMENT_TYPE)->paginate($per_page, ['*'], 'page', $page);
-        $json_reports_array = json_decode($reports->toJson(), 1);
-        $ret = [
-            'meta' => [
-                'page' => [
-                    'current-page' => $reports->currentPage(),
-                    'per-page' => $per_page,
-                    'from' => $reports->firstItem(),
-                    'to' => $reports->lastItem(),
-                    'total' => $reports->total(),
-                    'last-page' => $reports->lastPage(),
+        if ($page_param) {
+            $page = $page_param['number'];
+            $per_page = $page_param['size'];
+            $reports = $this->documents()->where('type', self::REPORT_DOCUMENT_TYPE)->paginate($per_page, ['*'], 'page', $page);
+            $json_reports_array = json_decode($reports->toJson(), 1);
+            $ret = [
+                'meta' => [
+                    'page' => [
+                        'current-page' => $reports->currentPage(),
+                        'per-page' => $per_page,
+                        'from' => $reports->firstItem(),
+                        'to' => $reports->lastItem(),
+                        'total' => $reports->total(),
+                        'last-page' => $reports->lastPage(),
+                    ]
+                ],
+                'links' => [
+                    'first' => $json_reports_array['first_page_url'],
+                    'prev' => $json_reports_array['prev_page_url'],
+                    'next' => $json_reports_array['next_page_url'],
+                    'last' => $json_reports_array['last_page_url']
                 ]
-            ],
-            'links' => [
-                'first' => $json_reports_array['first_page_url'],
-                'prev' => $json_reports_array['prev_page_url'],
-                'next' => $json_reports_array['next_page_url'],
-                'last' => $json_reports_array['last_page_url']
-            ]
-        ];
+            ];
+        } else {
+            $reports = $this->documents->where('type', self::REPORT_DOCUMENT_TYPE);
+        }
 
         $gdrive_links = [];
         foreach ($reports as $report) {

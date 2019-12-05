@@ -281,8 +281,9 @@ class ProjectController extends Controller
     public function reportsList(Request $request, $project)
     {
         $data_array = [];
+
         /** @var Project $project */
-        $reports_data = $project->getReportsLinks(2, 1);
+        $reports_data = $project->getReportsLinks($request->input('page'));
         $data = $reports_data['data'];
         foreach ($data as $report) {
             $tmp = [];
