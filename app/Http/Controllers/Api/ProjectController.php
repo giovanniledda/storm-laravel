@@ -220,15 +220,15 @@ class ProjectController extends Controller
     {
 
         $data = $project->getReportsLinks();
-        $dataArray = [];
+        $data_array = [];
         foreach ($data as $report) {
             $tmp = [];
             $tmp['type'] = 'report';
             $tmp['id'] = $report['id'];
             $tmp['attributes'] = $report;
-            $dataArray[] = $tmp;
+            $data_array[] = $tmp;
         }
-        $resp = Response(['data' => $dataArray], 200);
+        $resp = Response(['data' => $data_array], 200);
 //        $resp = Response(['data' => [$data]], 200);
 
         $resp->header('Content-Type', 'application/vnd.api+json');
@@ -356,7 +356,7 @@ class ProjectController extends Controller
                 // $document = $project->getDocument(MEASUREMENT_FILE_TYPE);
                 if ($document) {
 
-                
+
                     ProjectLoadEnvironmentalData::dispatch(
                         $project,
                         $document,

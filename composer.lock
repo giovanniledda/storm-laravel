@@ -3767,7 +3767,7 @@
             "source": {
                 "type": "git",
                 "url": "https://net7.codebasehq.com/nautica/net7docs-generator.git",
-                "reference": "382a24c62ce47e5eac4e491a24208d0926663f46"
+                "reference": "fa0a9e9b66c09e6be56182a7da30573e5ade4f83"
             },
             "require": {
                 "mckenziearts/laravel-notify": "dev-master",
@@ -3803,7 +3803,7 @@
                 }
             ],
             "description": "Generate documents starting from custom templates.",
-            "time": "2019-11-28T13:40:27+00:00"
+            "time": "2019-12-05T08:41:35+00:00"
         },
         {
             "name": "net7/documents",
@@ -3811,7 +3811,7 @@
             "source": {
                 "type": "git",
                 "url": "https://net7.codebasehq.com/nautica/net7documents.git",
-                "reference": "3492f5c0bcde5cce2873d6a31c91ea01c1847007"
+                "reference": "5d6e6b62fbc37e777e1ee0a98d96b1066aa26f3b"
             },
             "require": {
                 "cloudcreativity/laravel-json-api": "^1.1",
@@ -3849,7 +3849,7 @@
                 }
             ],
             "description": "Add documents to an object of your application",
-            "time": "2019-11-22T09:02:42+00:00"
+            "time": "2019-12-04T16:01:46+00:00"
         },
         {
             "name": "net7/env-measure",
