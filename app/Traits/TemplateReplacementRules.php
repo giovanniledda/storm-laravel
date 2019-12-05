@@ -366,7 +366,7 @@ trait TemplateReplacementRules
                 $min_scale = $min_threshold ? min($min_threshold, $env_param->getMinimum()) : $env_param->getMinimum();
             }
 
-            throw_if(!count($measurements), new \Exception("No data in this date range!", 403));
+            throw_if(!count($measurements), new \Exception("No data in this date range, for this data source!", 403));
 
             /** @var Measurement $measurement */
             foreach ($measurements as $measurement) {

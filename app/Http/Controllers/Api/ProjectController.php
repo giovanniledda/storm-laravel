@@ -30,6 +30,7 @@ use App\Utils\Utils;
 use App\Jobs\ProjectGoogleSync;
 use Net7\DocsGenerator\DocsGenerator;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
+use const PROJECT_STATUSES;
 
 class ProjectController extends Controller
 {
@@ -42,14 +43,10 @@ class ProjectController extends Controller
      */
     public function statuses(Request $request)
     {
-        $resp = Response(["data" => [
+        return Utils::renderStandardJsonapiResponse(['data' => [
             "type" => "projects",
             "attributes" => ["statuses" => PROJECT_STATUSES]
         ]], 200);
-
-        $resp->header('Content-Type', 'application/vnd.api+json');
-
-        return $resp;
     }
 
     /**
@@ -68,34 +65,8 @@ class ProjectController extends Controller
                 "type" => "projects",
                 "attributes" => ['event' => $history['event_body']]]);
         }
-        $resp = Response(["data" => $data], 200);
-        $resp->header('Content-Type', 'application/vnd.api+json');
-
-        return $resp;
-
+        return Utils::renderStandardJsonapiResponse(['data' => $data], 200);
         //  exit();
-    }
-
-    public function envMeasurementsLogs(Request $request, $project){
-
-        // TODO get page & number from api
-        $data = $project->getMeasurementLogsData(1, 1000);
-
-        $dataArray = [];
-
-        foreach ($data as $log) {
-            $tmp = [];
-            $tmp ['id'] = $log['id'];
-            $tmp ['type'] = 'log';
-            $tmp ['attributes'] = $log;
-            $dataArray []= $tmp;
-        }
-
-        $resp = Response(["data" => $dataArray], 200);
-        // $resp = Response(["data" => $data], 200);
-        $resp->header('Content-Type', 'application/vnd.api+json');
-
-        return $resp;
     }
 
     public function close(Request $request, $related)
@@ -206,35 +177,6 @@ class ProjectController extends Controller
         return $resp;
     }
 
-
-    /**
-     * API used to get the list of reports name and links from google drive
-     *
-     * @param Request $request
-     * @param $record
-     *
-     * @return mixed
-     */
-
-    public function reportsList(Request $request, $project)
-    {
-
-        $data = $project->getReportsLinks();
-        $data_array = [];
-        foreach ($data as $report) {
-            $tmp = [];
-            $tmp['type'] = 'report';
-            $tmp['id'] = $report['id'];
-            $tmp['attributes'] = $report;
-            $data_array[] = $tmp;
-        }
-        $resp = Response(['data' => $data_array], 200);
-//        $resp = Response(['data' => [$data]], 200);
-
-        $resp->header('Content-Type', 'application/vnd.api+json');
-        return $resp;
-    }
-
     /**
      * @param string $template
      * @param Project $project
@@ -327,6 +269,34 @@ class ProjectController extends Controller
     }
 
     /**
+     * #PR17 /api/v1/project/{project_id}/reports-list
+     * API used to get the list of reports name and links from google drive
+     *
+     * @param Request $request
+     * @param $record
+     *
+     * @return mixed
+     */
+
+    public function reportsList(Request $request, $project)
+    {
+        /** @var Project $project */
+        $data = $project->getReportsLinks();
+        $data_array = [];
+        foreach ($data as $report) {
+            $tmp = [];
+            $tmp['type'] = 'report';
+            $tmp['id'] = $report['id'];
+            $tmp['attributes'] = $report;
+            $data_array[] = $tmp;
+        }
+        return Utils::renderStandardJsonapiResponse(['data' => $data_array], 200);
+
+    }
+
+    /**
+     * #PR18  api/v1/projects/{record_id}/upload-env-measurement-log
+     *
      * API used to upload and parse a sensor log for the environment.
      * A docx report will be also generated and downloaded by the API.
      *
@@ -375,6 +345,8 @@ class ProjectController extends Controller
     }
 
     /**
+     *
+     * #PR19  api/v1/projects/{record_id}/generate-environmental-report
      * API used to generate a report from the project
      *
      * @param Request $request
@@ -417,9 +389,34 @@ class ProjectController extends Controller
         return $this->renderJsonOrDownloadFile($request, $document);
     }
 
+
+    /**
+     * #PR20  api/v1/projects/{record_id}/env-measurements-logs
+     *
+     * @param Request $request
+     * @param $project
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
+     */
+    public function envMeasurementsLogs(Request $request, $project){
+
+        // TODO get page & number from api
+        $data = $project->getMeasurementLogsData(1, 1000);
+
+        $data_array = [];
+        foreach ($data as $log) {
+            $tmp = [];
+            $tmp ['id'] = $log['id'];
+            $tmp ['type'] = 'log';
+            $tmp ['attributes'] = $log;
+            $data_array []= $tmp;
+        }
+
+        return Utils::renderStandardJsonapiResponse(['data' => $data_array], 200);
+    }
+
     /**
      *
-     * Route: {record}/env-measurements-datasources
+     * #PR21  api/v1/projects/{record_id}/env-measurements-datasources
      *
      * Get all the sources of environmental data
      *

@@ -196,36 +196,29 @@ class Project extends Model {
 
     public function getReportsLinks(){
 
-
-/**
- * 
-TODO:
-
-  "meta": {
-    "page": {
-      "current-page": 2,
-      "per-page": 15,
-      "from": 16,
-      "to": 30,
-      "total": 50,
-      "last-page": 4
-    }
-  },
-  "links": {
-    "first": "http://localhost/api/v1/posts?page[number]=1&page[size]=15",
-    "prev": "http://localhost/api/v1/posts?page[number]=1&page[size]=15",
-    "next": "http://localhost/api/v1/posts?page[number]=3&page[size]=15",
-    "last": "http://localhost/api/v1/posts?page[number]=4&page[size]=15"
-  },
-uploadEnvMeasurementLog
- */
-
+        /**
+         *
+        TODO:
+          "meta": {
+            "page": {
+              "current-page": 2,
+              "per-page": 15,
+              "from": 16,
+              "to": 30,
+              "total": 50,
+              "last-page": 4
+            }
+          },
+          "links": {
+            "first": "http://localhost/api/v1/posts?page[number]=1&page[size]=15",
+            "prev": "http://localhost/api/v1/posts?page[number]=1&page[size]=15",
+            "next": "http://localhost/api/v1/posts?page[number]=3&page[size]=15",
+            "last": "http://localhost/api/v1/posts?page[number]=4&page[size]=15"
+          },
+        uploadEnvMeasurementLog
+         */
 
         $reports = $this->documents->where('type', self::REPORT_DOCUMENT_TYPE);
-
-
-
-
 
         $links = [];
         foreach ($reports as $report){
@@ -239,11 +232,8 @@ uploadEnvMeasurementLog
                 'id' => $report->id
             ];
         }
-
         return $links;
-
 //        return $this->getListOfReportsFromGoogle();
-
     }
 
     /**
