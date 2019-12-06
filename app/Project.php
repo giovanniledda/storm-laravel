@@ -909,9 +909,9 @@ class Project extends Model
         // io già la usavo su /api/v1/tasks?page[number]=3&page[size]=1
         $json_reports_array = json_decode($collection->toJson(), 1);
 
-//        "http://storm.zoba/api/v1/projects/1/reports-list?page=2"
-        $pattern = "/([a-zA-Z0-9-.%:/]*[?][a-zA-Z0-9-.%:=/&]*)(page=)([0-9]+)/g";
-        $replace = "$1page[number]=($3)";
+//      trasforma  "http://storm.zoba/api/v1/projects/1/reports-list?page=2" in "http://storm.zoba/api/v1/projects/1/reports-list?page[number]=2"
+        $pattern = "/([a-zA-Z0-9-.%:\/]*[?][a-zA-Z0-9-.%:=\/&]*)(page=)([0-9]+)/i";
+        $replace = "$1page[number]=$3";
 
         $ret = [
             'meta' => [
@@ -925,10 +925,10 @@ class Project extends Model
                 ]
             ],
             'links' => [
-//                'first' => $json_reports_array['first_page_url'] ? preg_replace($pattern, $replace, $json_reports_array['first_page_url']).$page_size_param : null,
-//                'prev' => $json_reports_array['prev_page_url'] ? preg_replace($pattern, $replace, $json_reports_array['prev_page_url']).$page_size_param : null,
-//                'next' => $json_reports_array['next_page_url'] ? preg_replace($pattern, $replace, $json_reports_array['next_page_url']).$page_size_param : null,
-//                'last' => $json_reports_array['last_page_url'] ? preg_replace($pattern, $replace, $json_reports_array['last_page_url']).$page_size_param : null,
+                'first' => $json_reports_array['first_page_url'] ? preg_replace($pattern, $replace, $json_reports_array['first_page_url']).$page_size_param : null,
+                'prev' => $json_reports_array['prev_page_url'] ? preg_replace($pattern, $replace, $json_reports_array['prev_page_url']).$page_size_param : null,
+                'next' => $json_reports_array['next_page_url'] ? preg_replace($pattern, $replace, $json_reports_array['next_page_url']).$page_size_param : null,
+                'last' => $json_reports_array['last_page_url'] ? preg_replace($pattern, $replace, $json_reports_array['last_page_url']).$page_size_param : null,
             ]
         ];
         return $ret;
