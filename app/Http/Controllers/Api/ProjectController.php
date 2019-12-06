@@ -485,11 +485,18 @@ class ProjectController extends Controller
             $project = Project::findOrFail($record->id);
             $document_id = $request->input('document_id');
             if ($project->countMeasurementsByDocument($document_id)) {
+                // ..prima rimuovo le misurazioni associate ad un documento...
                 $project->deleteMeasurementsByDocument($document_id);
-                return Utils::renderStandardJsonapiResponse([], 204);
             } else {
                 return Utils::jsonAbortWithInternalError(422, 100, 'Error removing data', 'No measurements for this document!');
             }
+
+            // ...poi rimuovo il documento stesso
+            /** @var Document $document */
+            $document = Document::findOrFail($document_id);
+            $document->destroyMe();
+
+            return Utils::renderStandardJsonapiResponse([], 204);
 
         } catch (\Exception $e) {
             return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error generating report", $e->getMessage());

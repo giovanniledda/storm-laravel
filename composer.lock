@@ -3811,7 +3811,7 @@
             "source": {
                 "type": "git",
                 "url": "https://net7.codebasehq.com/nautica/net7documents.git",
-                "reference": "ef4e57fb8eeb70972a431563fd9544f37588e647"
+                "reference": "f708a1cb32a439c68d33a871a618787f387c95c7"
             },
             "require": {
                 "cloudcreativity/laravel-json-api": "^1.1",
@@ -3849,7 +3849,7 @@
                 }
             ],
             "description": "Add documents to an object of your application",
-            "time": "2019-12-05T16:42:45+00:00"
+            "time": "2019-12-06T16:59:08+00:00"
         },
         {
             "name": "net7/env-measure",
