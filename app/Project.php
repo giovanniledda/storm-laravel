@@ -944,12 +944,12 @@ class Project extends Model
             $page = $page_param['number'];
             $per_page = $page_param['size'];
             $reports = $this
-                ->getDocumentsByTypeQuery(MEASUREMENT_FILE_TYPE, 'created_at', 'desc')
+                ->getDocumentsByTypeQuery(self::REPORT_DOCUMENT_TYPE, 'created_at', 'desc')
                 ->paginate($per_page, ['*'], 'page', $page);
             $ret = self::getPaginationResponseTags($reports, $page_param);
         } else {
             $reports = $this
-                ->getDocumentsByTypeQuery(MEASUREMENT_FILE_TYPE, 'created_at', 'desc')
+                ->getDocumentsByTypeQuery(self::REPORT_DOCUMENT_TYPE, 'created_at', 'desc')
                 ->get();
         }
 
