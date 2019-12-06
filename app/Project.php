@@ -18,6 +18,7 @@ use Illuminate\Queue\SerializesModels;
 use App\Jobs\SendDocumentsToGoogleDrive;
 use Illuminate\Support\Facades\DB;
 use function json_decode;
+use function preg_replace;
 use const MEASUREMENT_FILE_TYPE;
 
 // use Illuminate\Support\Facades\Queue;
@@ -904,7 +905,14 @@ class Project extends Model
     {
         $page = $page_param['number'];
         $per_page = $page_param['size'];
+        $page_size_param = '&page[size]='.$per_page;
+        // io già la usavo su /api/v1/tasks?page[number]=3&page[size]=1
         $json_reports_array = json_decode($collection->toJson(), 1);
+
+//        "http://storm.zoba/api/v1/projects/1/reports-list?page=2"
+        $pattern = "/([a-zA-Z0-9-.%:/]*[?][a-zA-Z0-9-.%:=/&]*)(page=)([0-9]+)/g";
+        $replace = "$1page[number]=($3)";
+
         $ret = [
             'meta' => [
                 'page' => [
@@ -917,10 +925,10 @@ class Project extends Model
                 ]
             ],
             'links' => [
-                'first' => $json_reports_array['first_page_url'],
-                'prev' => $json_reports_array['prev_page_url'],
-                'next' => $json_reports_array['next_page_url'],
-                'last' => $json_reports_array['last_page_url']
+//                'first' => $json_reports_array['first_page_url'] ? preg_replace($pattern, $replace, $json_reports_array['first_page_url']).$page_size_param : null,
+//                'prev' => $json_reports_array['prev_page_url'] ? preg_replace($pattern, $replace, $json_reports_array['prev_page_url']).$page_size_param : null,
+//                'next' => $json_reports_array['next_page_url'] ? preg_replace($pattern, $replace, $json_reports_array['next_page_url']).$page_size_param : null,
+//                'last' => $json_reports_array['last_page_url'] ? preg_replace($pattern, $replace, $json_reports_array['last_page_url']).$page_size_param : null,
             ]
         ];
         return $ret;

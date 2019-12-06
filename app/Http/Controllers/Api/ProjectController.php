@@ -31,6 +31,7 @@ use App\Jobs\ProjectGoogleSync;
 use Net7\DocsGenerator\DocsGenerator;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use const PROJECT_STATUSES;
+use const REPORT_ENVIRONMENTAL_SUBTYPE;
 
 class ProjectController extends Controller
 {
@@ -180,10 +181,11 @@ class ProjectController extends Controller
     /**
      * @param string $template
      * @param Project $project
+     * @param null $subtype
      * @return Response|mixed
      * @throws \Exception
      */
-    private function reportGenerationProcess(string $template, Project $project)
+    private function reportGenerationProcess(string $template, Project $project, $subtype = null)
     {
         $dg = new DocsGenerator($template, $project);
 
@@ -207,7 +209,7 @@ class ProjectController extends Controller
             throw new \Exception($msg);
         }
 
-        $document->subtype = REPORT_CORROSION_MAP_SUBTYPE;
+        $document->subtype = $subtype;
 
         return $document;
     }
@@ -258,7 +260,7 @@ class ProjectController extends Controller
         $template = $request->template;
 
         try {
-            $document = $this->reportGenerationProcess($template, $project);
+            $document = $this->reportGenerationProcess($template, $project, REPORT_CORROSION_MAP_SUBTYPE);
         } catch (\Exception $e) {
             return Utils::jsonAbortWithInternalError(422, 402, "Error generating report", $e->getMessage());
         }
@@ -386,7 +388,7 @@ class ProjectController extends Controller
         $project->setCurrentDataSource($data_source);
 
         try {
-            $document = $this->reportGenerationProcess($template, $project);
+            $document = $this->reportGenerationProcess($template, $project, REPORT_ENVIRONMENTAL_SUBTYPE);
         } catch (\Exception $e) {
             return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error generating report", $e->getMessage());
         }
