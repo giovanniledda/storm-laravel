@@ -467,4 +467,33 @@ class ProjectController extends Controller
         }
     }
 
+
+    /**
+     *
+     * #PR22  api/v1/projects/1/env-log-delete
+     *
+     * Remove allameasurements associated to a specific log file
+     *
+     * @param Request $request
+     * @param $record
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
+     */
+    public function removeDocumentMeasurements(Request $request, $record)
+    {
+        try {
+            /** @var Project $project */
+            $project = Project::findOrFail($record->id);
+            $document_id = $request->input('document_id');
+            if ($project->countMeasurementsByDocument($document_id)) {
+                $project->deleteMeasurementsByDocument($document_id);
+                return Utils::renderStandardJsonapiResponse([], 204);
+            } else {
+                return Utils::jsonAbortWithInternalError(422, 100, 'Error removing data', 'No measurements for this document!');
+            }
+
+        } catch (\Exception $e) {
+            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error generating report", $e->getMessage());
+        }
+    }
+
 }

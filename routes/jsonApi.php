@@ -70,7 +70,7 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
             'statuses',
             'close',
             'history',
-            'change-type')->controller('ProjectController')//uses the App\Http\Controllers\Api\ProjectsController
+            'change-type')->controller('ProjectController') //uses the App\Http\Controllers\Api\ProjectsController
         ->routes(function ($projects) {
             $projects->get('/statuses', 'statuses')->name('statuses');
             $projects->post('/{record}/close', 'close')->name('close');
@@ -79,39 +79,44 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
         });
 
 
-        $api->resource('projects')->only('cloud-sync')->controller('ProjectController')//uses the App\Http\Controllers\Api\ProjectController
+        $api->resource('projects')->only('cloud-sync')->controller('ProjectController') //uses the App\Http\Controllers\Api\ProjectController
         ->routes(function ($project) {
             $project->get('{record}/cloud-sync', 'cloudSync')->name('cloud-sync');
         });
 
-        $api->resource('projects')->only('reports-list')->controller('ProjectController')//uses the App\Http\Controllers\Api\ProjectController
+        $api->resource('projects')->only('reports-list')->controller('ProjectController') //uses the App\Http\Controllers\Api\ProjectController
         ->routes(function ($project) {
             $project->get('{record}/reports-list', 'reportsList')->name('reports-list');
         });
 
-        $api->resource('projects')->only('generate-report')->controller('ProjectController')//uses the App\Http\Controllers\Api\ProjectController
+        $api->resource('projects')->only('generate-report')->controller('ProjectController') //uses the App\Http\Controllers\Api\ProjectController
         ->routes(function ($project) {
             $project->post('{record}/generate-report', 'generateReport')->name('generate-report');
         });
 
-        $api->resource('projects')->only('upload-env-measurement-log')->controller('ProjectController')//uses the App\Http\Controllers\Api\ProjectController
+        $api->resource('projects')->only('upload-env-measurement-log')->controller('ProjectController') //uses the App\Http\Controllers\Api\ProjectController
         ->routes(function ($project) {
             $project->post('{record}/upload-env-measurement-log', 'uploadEnvMeasurementLog')->name('upload-env-measurement-log');
         });
 
-        $api->resource('projects')->only('generate-environmental-report')->controller('ProjectController')//uses the App\Http\Controllers\Api\ProjectController
+        $api->resource('projects')->only('generate-environmental-report')->controller('ProjectController') //uses the App\Http\Controllers\Api\ProjectController
         ->routes(function ($project) {
             $project->post('{record}/generate-environmental-report', 'generateEnvironmentalReport')->name('generate-environmental-report');
         });
 
-        $api->resource('projects')->only('env-measurements-logs')->controller('ProjectController')//uses the App\Http\Controllers\Api\ProjectController
+        $api->resource('projects')->only('env-measurements-logs')->controller('ProjectController') //uses the App\Http\Controllers\Api\ProjectController
         ->routes(function ($project) {
             $project->get('{record}/env-measurements-logs', 'envMeasurementsLogs')->name('env-measurements-logs');
         });
 
-        $api->resource('projects')->only('env-measurements-datasources')->controller('ProjectController')//uses the App\Http\Controllers\Api\ProjectController
+        $api->resource('projects')->only('env-measurements-datasources')->controller('ProjectController') //uses the App\Http\Controllers\Api\ProjectController
         ->routes(function ($project) {
             $project->get('{record}/env-measurements-datasources', 'getDataSources')->name('env-measurements-datasources');
+        });
+
+        $api->resource('projects')->only('env-log-delete')->controller('ProjectController') //uses the App\Http\Controllers\Api\ProjectController
+        ->routes(function ($project) {
+            $project->post('{record}/env-log-delete', 'removeDocumentMeasurements')->name('env-log-delete');
         });
 
 

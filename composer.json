@@ -45,7 +45,7 @@
         "net7/documents": "dev-master",
         "net7/logging": "dev-master",
         "net7/docs-generator": "dev-master",
-        "net7/env-measure": "dev-master",
+        "net7/env-measure": "dev-develop",
         "norse-blue/parentity": "dev-master",
         "predis/predis": "^1.1",
         "propaganistas/laravel-phone": "^4.2",
