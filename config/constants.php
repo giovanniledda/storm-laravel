@@ -226,9 +226,13 @@ defined('USER_PHOTO_API_NO_DOC_MSG') or define('USER_PHOTO_API_NO_DOC_MSG', 'Som
 
 
 /*
- * 
+ * REPORTS
  */
-
-
 defined('REPORT_CORROSION_MAP_SUBTYPE') or define('REPORT_CORROSION_MAP_SUBTYPE', 'corrosion_map');
 defined('REPORT_ENVIRONMENTAL_SUBTYPE') or define('REPORT_ENVIRONMENTAL_SUBTYPE', 'environmental_report');
+
+
+/*
+ * APPLICATION LOG - PRODUCTS
+ */
+defined('PRODUCT_TYPE_PAINTING') or define('PRODUCT_TYPE_PAINTING', 'painting');
