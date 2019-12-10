@@ -26,6 +26,12 @@ class CreateApplicationLogSectionsTable extends Migration
             $table->dateTime('date_hour')->nullable();
 
             $table->timestamps();
+
+            // Relations:
+
+            // application log
+            $table->unsignedBigInteger('application_log_id')->nullable();
+            $table->foreign('application_log_id')->references('id')->on('application_logs')->onDelete('set null');
         });
     }
 
