@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "691881ce3f198bc6d04403470d386757",
+    "content-hash": "452d91f8da99fc2759bee114e4d6140a",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -3811,7 +3811,7 @@
             "source": {
                 "type": "git",
                 "url": "https://net7.codebasehq.com/nautica/net7documents.git",
-                "reference": "f708a1cb32a439c68d33a871a618787f387c95c7"
+                "reference": "274849d8294c879fdd0d627835810c6d188dcde3"
             },
             "require": {
                 "cloudcreativity/laravel-json-api": "^1.1",
@@ -3849,15 +3849,15 @@
                 }
             ],
             "description": "Add documents to an object of your application",
-            "time": "2019-12-06T16:59:08+00:00"
+            "time": "2019-12-06T17:17:02+00:00"
         },
         {
             "name": "net7/env-measure",
-            "version": "dev-develop",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://net7.codebasehq.com/nautica/net7env-measure.git",
-                "reference": "f0a128512af3582489bd18d11ab2cb40d51ec6ad"
+                "reference": "35f2c39eed96177a563251995e965e8158a2b18d"
             },
             "require": {
                 "mckenziearts/laravel-notify": "dev-master",
@@ -3890,7 +3890,7 @@
                 }
             ],
             "description": "Handle any kind of environmental measurement associated to a Model",
-            "time": "2019-12-06T16:39:57+00:00"
+            "time": "2019-12-06T17:17:39+00:00"
         },
         {
             "name": "net7/logging",
