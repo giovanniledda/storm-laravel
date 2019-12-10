@@ -30,4 +30,13 @@ class ProductUseInfoBlock extends Model
         return $this->belongsTo('App\Product', 'product_id');
     }
 
+    /**
+     * The application log section
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function application_log_section()
+    {
+        return $this->belongsTo('App\ApplicationLogSection', 'application_log_section_id');
+    }
 }

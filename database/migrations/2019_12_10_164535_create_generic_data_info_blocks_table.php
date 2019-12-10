@@ -20,6 +20,12 @@ class CreateGenericDataInfoBlocksTable extends Migration
             $table->json('key_value_infos')->nullable();
 
             $table->timestamps();
+
+            // Relations:
+
+            // application log section
+            $table->unsignedBigInteger('application_log_section_id')->nullable();
+            $table->foreign('application_log_section_id')->references('id')->on('application_log_sections')->onDelete('set null');
         });
     }
 
