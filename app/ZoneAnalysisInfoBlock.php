@@ -32,4 +32,6 @@ class ZoneAnalysisInfoBlock extends Model
     {
         return $this->belongsTo('App\Zone', 'zone_id');
     }
+
+    // TODO: functions to manage 1..N Photos
 }

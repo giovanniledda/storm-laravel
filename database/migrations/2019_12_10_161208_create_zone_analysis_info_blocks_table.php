@@ -16,6 +16,7 @@ class CreateZoneAnalysisInfoBlocksTable extends Migration
         Schema::create('zone_analysis_info_blocks', function (Blueprint $table) {
             $table->bigIncrements('id');
 
+            $table->string('name');
             $table->string('description')->nullable();
             $table->integer('percentage_in_work')->nullable();
 

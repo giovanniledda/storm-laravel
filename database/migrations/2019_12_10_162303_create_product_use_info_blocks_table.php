@@ -16,6 +16,7 @@ class CreateProductUseInfoBlocksTable extends Migration
         Schema::create('product_use_info_blocks', function (Blueprint $table) {
             $table->bigIncrements('id');
 
+            $table->string('name');
             $table->decimal('viscosity', 5, 2)->nullable();
             $table->json('components')->nullable();
             $table->timestamps();
