@@ -494,7 +494,8 @@ class ProjectController extends Controller
             // ...poi rimuovo il documento stesso
             /** @var Document $document */
             $document = Document::findOrFail($document_id);
-            $document->destroyMe();
+            $project->deleteDocument($document);
+            // $document->destroyMe();
 
             return Utils::renderStandardJsonapiResponse([], 204);
 

@@ -280,4 +280,73 @@ class ModelDocumentTest extends TestCase
 
     }
 
+    public function test_delete_document(){
+
+        $this->disableExceptionHandling();
+
+
+        $filename = 'testDocument.txt';
+        $filepath = __DIR__ . '/'.  $filename;
+        $tempFilepath = '/tmp/'.$filename;
+        copy ($filepath, $tempFilepath);
+
+        // we create an UploadedFile and use it to create the document
+
+        $file = new \Symfony\Component\HttpFoundation\File\UploadedFile( $tempFilepath, $filename, null ,null, true);
+        $doc = new Document([
+            'title' => 'a document',
+            'file' => $file,
+            'document_number' => 'ISO_9921'
+
+        ]);
+
+        $doc->save();
+
+        $firstMedia = $doc->getRelatedMedia();
+
+
+        $first_expected_media_id = 1;
+
+        $this->assertEquals($first_expected_media_id, $firstMedia->id);
+        $this->assertEquals($first_expected_media_id, $doc->current_media_id);
+
+
+        $this->assertEquals(1, $doc->media()->count() );
+
+        $filename = 'testDocument2.txt';
+        $filepath = __DIR__ . '/'.  $filename;
+        $tempFilepath = '/tmp/'.$filename;
+        copy ($filepath, $tempFilepath);
+
+        $file = new \Symfony\Component\HttpFoundation\File\UploadedFile( $tempFilepath, $filename, null ,null, true);
+
+        $doc->addUploadedFile($file);
+        $doc->refresh(); // much important!
+
+        $second_expected_media_id = 2;
+        $doc->save();
+
+        $secondMedia = $doc->getRelatedMedia();
+
+        $this->assertEquals($second_expected_media_id, $secondMedia->id);
+        $this->assertEquals($second_expected_media_id, $doc->current_media_id);
+        $this->assertEquals(2, $doc->media()->count() );
+
+
+        // test deleting
+
+        $firstMedia = \Spatie\MediaLibrary\Models\Media::Find($first_expected_media_id);
+        $this->assertEquals($first_expected_media_id, $firstMedia->id);
+        $secondMedia = \Spatie\MediaLibrary\Models\Media::Find($second_expected_media_id);
+        $this->assertEquals($second_expected_media_id, $secondMedia->id);
+
+        $doc->delete();
+
+        $firstMedia = \Spatie\MediaLibrary\Models\Media::Find($first_expected_media_id);
+        $this->assertEquals(null, $firstMedia);
+        $secondMedia = \Spatie\MediaLibrary\Models\Media::Find($second_expected_media_id);
+        $this->assertEquals(null, $secondMedia);
+
+    }
+
 }

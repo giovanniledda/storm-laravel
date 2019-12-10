@@ -29,6 +29,7 @@ class Project extends Model
     use DocumentableTrait {
         addDocumentWithType as traitAddDocumentWithType;
         updateDocument as traitUpdateDocument;
+        deleteDocument as traitDeleteDocument;
     }
 
     use HasDocsGenerator {
@@ -57,6 +58,36 @@ class Project extends Model
         parent::boot();
 
         Project::observe(ProjectObserver::class);
+    }
+
+
+
+    public function deleteDocument(Document $document){
+
+        $this->deleteFromCloud($document);
+        return $this->traitDeleteDocument($document);
+       
+    }
+
+
+    private function deleteFromCloud(Document $document){
+
+        if ($this->shouldUseCloud($document) ){
+
+            if (env('USE_DROPBOX')) {
+                //TODO
+            }
+
+            if (env('USE_GOOGLE_DRIVE')) {
+
+                // TODO: delete document from google
+
+                $this->deleteDocumentFromGoogleDrive($document);
+
+                // SendDocumentsToGoogleDrive::dispatch($this, $document);
+                // $this->sendDocumentToGoogleDrive($document);
+            }
+        }
     }
 
 
@@ -165,6 +196,50 @@ class Project extends Model
 
     }
 
+
+    public function deleteDocumentFromGoogleDrive(Document $document){
+
+
+
+
+        $media = $document->getRelatedMedia();
+        $filename = $media->file_name;
+
+        $cloudStorageData = json_decode($document->cloud_storage_data, true);
+
+        if (isset($cloudStorageData['path'])) {
+            $googleFolder = $cloudStorageData['path'];
+        } else {
+            $googleFolder = $this->getGoogleFolderPath($document);
+        }
+        if (isset($cloudStorageData['filename'])) {
+            $filename = $cloudStorageData['filename'];
+        } else {
+            $filename = $this->getGoogleFilename($document, $filename);
+        }
+
+        $path = $this->getGooglePathFromHumanPath($googleFolder);
+
+        $recursive = false; // Get subdirectories also?
+        $contents = collect(Storage::cloud()->listContents($path, $recursive));
+
+        // Get file details...
+        $file = $contents
+            ->where('type', '=', 'file')
+            ->where('filename', '=', pathinfo($filename, PATHINFO_FILENAME))
+            ->where('extension', '=', pathinfo($filename, PATHINFO_EXTENSION))
+            ->first(); // there can be duplicate file names!
+
+
+
+            // $readStream = Storage::cloud()->getDriver()->readStream($file['path']);
+
+       $resp =   Storage::cloud()->delete($file['path']);
+
+        return $resp;
+        //'File was deleted from Google Drive';
+    }
+
     public function sendDocumentToGoogleDrive(Document $document)
     {
 
@@ -209,7 +284,8 @@ class Project extends Model
         $this->traitUpdateDocument($document, $file);
         $this->save();
         $document->refresh();
-        if ($document->type != MEASUREMENT_FILE_TYPE) {
+        // if ($document->type != MEASUREMENT_FILE_TYPE) {
+        if ($this->shouldUseCloud($document)) {    
             if ($useCloud) {
                 if (env('USE_DROPBOX')) {
                     $this->sendDocumentToDropbox($document);
@@ -236,7 +312,8 @@ class Project extends Model
         $this->save();
         $document->refresh();
 
-        if ($type != MEASUREMENT_FILE_TYPE) {
+        // if ($type != MEASUREMENT_FILE_TYPE) {
+        if ($this->shouldUseCloud($document)) {
             if ($useCloud) {
                 if (env('USE_DROPBOX')) {
                     $this->sendDocumentToDropbox($document);
@@ -249,6 +326,14 @@ class Project extends Model
             }
         }
         return $document;
+    }
+
+
+    private function shouldUseCloud(Document $document){
+        if ($document->type == MEASUREMENT_FILE_TYPE){
+            return false;
+        }
+        return true;
     }
 
     public function getDocumentFromDropbox(Document $document)
