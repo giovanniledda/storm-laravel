@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Net7\Documents\DocumentableTrait;
 
-class ZoneAnalysisDataInfo extends Model
+class ZoneAnalysisInfoBlock extends Model
 {
     use DocumentableTrait;
 
@@ -14,7 +14,7 @@ class ZoneAnalysisDataInfo extends Model
      *
      * @var string
      */
-    protected $table = 'zone_analysis_data_infos';
+    protected $table = 'zone_analysis_info_blocks';
 
     /**
      * The attributes that aren't mass assignable.

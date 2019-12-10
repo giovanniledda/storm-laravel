@@ -4,14 +4,14 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ProductUse extends Model
+class ProductUseInfoBlock extends Model
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'product_uses';
+    protected $table = 'product_use_info_blocks';
 
     /**
      * The attributes that aren't mass assignable.
