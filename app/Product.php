@@ -31,6 +31,16 @@ class Product extends Model
     ];
 
     /**
+     * The attributes that should be cast to native types.
+     * See: https://laravel.com/docs/5.8/eloquent-mutators#array-and-json-casting
+     *
+     * @var array
+     */
+    protected $casts = [
+        'components' => 'array',
+    ];
+
+    /**
      * Returns an array of data with values for each field
      *
      * @param Faker $faker
@@ -47,5 +57,20 @@ class Product extends Model
         ];
 
         return $data;
+    }
+
+    /**
+     *
+     * Creates a Product using some fake data and some others that have sense
+     * @param Faker $faker
+     * @return Product
+     */
+    public static function createSemiFake(Faker $faker)
+    {
+        $data = self::getSemiFakeData($faker);
+        $t = new Product($data);
+        $t->save();
+
+        return $t;
     }
 }
