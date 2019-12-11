@@ -42,6 +42,16 @@ class Zone extends Model
     }
 
     /**
+     * The zone analysis info block which the zone belongs
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function zone_analysis_info_block()
+    {
+        return $this->belongsTo('App\ZoneAnalysisInfoBlock', 'zone_analysis_info_block_id');
+    }
+
+    /**
      * Returns an array of data with values for each field
      *
      * @param Faker $faker

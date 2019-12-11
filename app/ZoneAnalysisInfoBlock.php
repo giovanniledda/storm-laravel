@@ -25,13 +25,13 @@ class ZoneAnalysisInfoBlock extends Model
     protected $guarded = [];
 
     /**
-     * The parent zone for the "leaf" zones
+     * The zone which analysis block is referred
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function zone()
     {
-        return $this->belongsTo('App\Zone', 'zone_id');
+        return $this->hasOne('App\Zone', 'zone_analysis_info_block_id');
     }
 
     /**
