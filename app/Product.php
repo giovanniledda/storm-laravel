@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Faker\Generator as Faker;
 
 class Product extends Model
 {
@@ -29,4 +30,22 @@ class Product extends Model
         'p_type' => PRODUCT_TYPE_PAINTING,
     ];
 
+    /**
+     * Returns an array of data with values for each field
+     *
+     * @param Faker $faker
+     * @return array
+     */
+    public static function getSemiFakeData(Faker $faker)
+    {
+
+        $data = [
+            'name' => $faker->word,
+            'producer' => $faker->company,
+            'sv_percentage' => $faker->randomFloat(3),
+            'components' => $faker->words(3),
+        ];
+
+        return $data;
+    }
 }
