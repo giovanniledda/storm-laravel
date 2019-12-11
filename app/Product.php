@@ -44,11 +44,11 @@ class Product extends Model
     /**
      * The product use info block which the product belongs
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function product_use_info_block()
+    public function product_use_info_blocks()
     {
-        return $this->belongsTo('App\ProductUseInfoBlock', 'product_use_info_block_id');
+        return $this->hasMany('App\ProductUseInfoBlock', 'product_id');
     }
 
     /**

@@ -23,12 +23,6 @@ class CreateProductsTable extends Migration
             $table->json('components')->nullable();
 
             $table->timestamps();
-
-            // Relations:
-
-            // product_use_info_blocks
-            $table->unsignedBigInteger('product_use_info_block_id')->nullable();
-            $table->foreign('product_use_info_block_id')->references('id')->on('product_use_info_blocks')->onDelete('set null');
         });
     }
 

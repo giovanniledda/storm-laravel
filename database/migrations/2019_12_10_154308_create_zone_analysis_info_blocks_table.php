@@ -28,6 +28,9 @@ class CreateZoneAnalysisInfoBlocksTable extends Migration
             $table->unsignedBigInteger('application_log_section_id')->nullable();
             $table->foreign('application_log_section_id')->references('id')->on('application_log_sections')->onDelete('set null');
 
+            // zone
+            $table->unsignedBigInteger('zone_id')->nullable();
+            $table->foreign('zone_id')->references('id')->on('zones')->onDelete('set null');
         });
     }
 

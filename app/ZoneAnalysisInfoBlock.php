@@ -26,12 +26,11 @@ class ZoneAnalysisInfoBlock extends Model
 
     /**
      * The zone which analysis block is referred
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function zone()
     {
-        return $this->hasOne('App\Zone', 'zone_analysis_info_block_id');
+        return $this->belongsTo('App\Zone', 'zone_id');
     }
 
     /**

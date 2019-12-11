@@ -42,13 +42,13 @@ class Zone extends Model
     }
 
     /**
-     * The zone analysis info block which the zone belongs
+     * The zone analysis info blocks which the zone belongs
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function zone_analysis_info_block()
+    public function zone_analysis_info_blocks()
     {
-        return $this->belongsTo('App\ZoneAnalysisInfoBlock', 'zone_analysis_info_block_id');
+        return $this->hasMany('App\ZoneAnalysisInfoBlock', 'zone_id');
     }
 
     /**

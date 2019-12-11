@@ -15,8 +15,11 @@ class ModelZoneTest extends TestCase
      */
     public function testBasicRelationships()
     {
+        /** @var Zone $zone_parent */
         $zone_parent = factory(Zone::class)->create();
+        /** @var Zone $zone_child1 */
         $zone_child1 = factory(Zone::class)->create();
+        /** @var Zone $zone_child2 */
         $zone_child2 = factory(Zone::class)->create();
 
         /** parent_zone (Zone) */
@@ -42,15 +45,16 @@ class ModelZoneTest extends TestCase
 
         /** @var ZoneAnalysisInfoBlock $zone_analysis_info_block */
         foreach ($zone_analysis_info_blocks as $zone_analysis_info_block) {
-            // salvo sia dalla zone che dalla zone analysis info block a seconda del bool
-            if (1) {
-                $zone_analysis_info_block->zone()->save($zone_child1);
+
+            if ($this->faker->boolean) {
+                $zone_analysis_info_block->zone()->associate($zone_child1);
+                $zone_analysis_info_block->save();
             } else {
-                $zone_child1->zone_analysis_info_block()->associate($zone_analysis_info_block);
-                $zone_child1->save();
+                $zone_child1->zone_analysis_info_blocks()->save($zone_analysis_info_block);
             }
+
             $this->assertEquals($zone_analysis_info_block->zone->id, $zone_child1->id); // testo la relazione inversa
-            $this->assertEquals($zone_child1->zone_analysis_info_block->id, $zone_analysis_info_block->id); // testo la relazione inversa
+            $this->assertContains($zone_analysis_info_block->id, $zone_child1->zone_analysis_info_blocks()->pluck('id')) ;
         }
     }
 }
