@@ -28,6 +28,14 @@ class ApplicationLogSection extends Model
     /**
      * Get the zone analysis info blocks for the app log section
      */
+    public function application_log()
+    {
+        return $this->belongsTo('App\ApplicationLog');
+    }
+
+    /**
+     * Get the zone analysis info blocks for the app log section
+     */
     public function zone_analysis_info_blocks()
     {
         return $this->hasMany('App\ZoneAnalysisInfoBlock', 'application_log_section_id');
