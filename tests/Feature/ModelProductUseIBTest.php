@@ -28,23 +28,24 @@ class ModelProductUseIBTest extends TestCase
 
         $this->assertEquals($product_use_info_blocks_num, $app_log_section->product_use_info_blocks()->count());
 
+        /** @var ProductUseInfoBlock $product_use_info_block */
         foreach ($product_use_info_blocks as $product_use_info_block) {
 
             $this->assertEquals($product_use_info_block->application_log_section->id, $app_log_section->id);
 
-            /** products **/
+            /** @var Product $product */
             $product = factory(Product::class)->create();
 
             // salvo sia dai product che dal product use info block a seconda del bool
             if ($this->faker->boolean) {
-                $product_use_info_block->product()->save($product);
+                $product_use_info_block->product()->associate($product);
+                $product_use_info_block->save();
             } else {
-                $product->product_use_info_block()->associate($product_use_info_block);
-                $product->save();
+                $product->product_use_info_blocks()->save($product_use_info_block);
             }
 
             $this->assertEquals($product_use_info_block->product->id, $product->id); // testo la relazione inversa
-            $this->assertEquals($product->product_use_info_block->id, $product_use_info_block->id); // testo la relazione inversa
+            $this->assertContains($product_use_info_block->id, $product->product_use_info_blocks()->pluck('id')) ;
         }
 
 

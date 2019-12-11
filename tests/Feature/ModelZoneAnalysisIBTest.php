@@ -28,25 +28,24 @@ class ModelZoneAnalysisIBTest extends TestCase
 
         $this->assertEquals($zone_analysis_info_blocks_num, $app_log_section->zone_analysis_info_blocks()->count());
 
+        /** @var ZoneAnalysisInfoBlock $zone_analysis_info_block */
         foreach ($zone_analysis_info_blocks as $zone_analysis_info_block) {
 
             $this->assertEquals($zone_analysis_info_block->application_log_section->id, $app_log_section->id);
 
-            /** zone **/
+            /** @var Zone $zone */
             $zone = factory(Zone::class)->create();
 
             // salvo sia dalla zone che dalla zone analysis info block a seconda del bool
             if ($this->faker->boolean) {
-                $zone_analysis_info_block->zone()->save($zone);
+                $zone_analysis_info_block->zone()->associate($zone);
+                $zone_analysis_info_block->save();
             } else {
-                $zone->zone_analysis_info_block()->associate($zone_analysis_info_block);
-                $zone->save();
+                $zone->zone_analysis_info_blocks()->save($zone_analysis_info_block);
             }
 
             $this->assertEquals($zone_analysis_info_block->zone->id, $zone->id); // testo la relazione inversa
-            $this->assertEquals($zone->zone_analysis_info_block->id, $zone_analysis_info_block->id); // testo la relazione inversa
+            $this->assertContains($zone_analysis_info_block->id, $zone->zone_analysis_info_blocks()->pluck('id')) ;
         }
-
-
     }
 }
