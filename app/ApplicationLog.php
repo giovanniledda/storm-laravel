@@ -2,7 +2,13 @@
 
 namespace App;
 
+use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Model;
+use const APPLICATION_TYPE_COATING;
+use const APPLICATION_TYPE_FILLER;
+use const APPLICATION_TYPE_HIGHBUILD;
+use const APPLICATION_TYPE_PRIMER;
+use const APPLICATION_TYPE_UNDERCOAT;
 
 class ApplicationLog extends Model
 {
@@ -28,4 +34,38 @@ class ApplicationLog extends Model
         return $this->hasMany('App\ApplicationLogSection', 'application_log_id');
     }
 
+
+    /**
+     * Returns an array of data with values for each field
+     *
+     * @param Faker $faker
+     * @return array
+     */
+    public static function getSemiFakeData(Faker $faker)
+    {
+        return [
+            'name' => $faker->word,
+            'application_type' => $faker->randomElement([
+                APPLICATION_TYPE_PRIMER,
+                APPLICATION_TYPE_FILLER,
+                APPLICATION_TYPE_HIGHBUILD,
+                APPLICATION_TYPE_UNDERCOAT,
+                APPLICATION_TYPE_COATING
+            ])
+        ];
+    }
+
+    /**
+     *
+     * Creates a Application Log using some fake data and some others that have sense
+     * @param Faker $faker
+     * @return ApplicationLog
+     */
+    public static function createSemiFake(Faker $faker)
+    {
+        $data = self::getSemiFakeData($faker);
+        $t = new ApplicationLog($data);
+        $t->save();
+        return $t;
+    }
 }

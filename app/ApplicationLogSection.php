@@ -72,7 +72,7 @@ class ApplicationLogSection extends Model
 
     /**
      *
-     * Creates a Generic Data IB using some fake data and some others that have sense
+     * Creates a Application Log Section using some fake data and some others that have sense
      * @param Faker $faker
      * @return ApplicationLogSection
      */
