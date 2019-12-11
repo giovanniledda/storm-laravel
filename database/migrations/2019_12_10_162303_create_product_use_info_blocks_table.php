@@ -23,10 +23,6 @@ class CreateProductUseInfoBlocksTable extends Migration
 
             // Relations:
 
-            // product
-            $table->unsignedBigInteger('product_id')->nullable();
-            $table->foreign('product_id')->references('id')->on('products')->onDelete('set null');
-
             // application log section
             $table->unsignedBigInteger('application_log_section_id')->nullable();
             $table->foreign('application_log_section_id')->references('id')->on('application_log_sections')->onDelete('set null');

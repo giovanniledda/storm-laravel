@@ -42,9 +42,9 @@ class ApplicationLogSection extends Model
     }
 
     /**
-     * Get the product uses info blocks for the app log section
+     * Get the product use info blocks for the app log section
      */
-    public function product_uses_info_blocks()
+    public function product_use_info_blocks()
     {
         return $this->hasMany('App\ProductUseInfoBlock', 'application_log_section_id');
     }

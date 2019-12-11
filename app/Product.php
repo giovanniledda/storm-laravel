@@ -40,6 +40,17 @@ class Product extends Model
         'components' => 'array',
     ];
 
+
+    /**
+     * The product use info block which the product belongs
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function product_use_info_block()
+    {
+        return $this->belongsTo('App\ProductUseInfoBlock', 'product_use_info_block_id');
+    }
+
     /**
      * Returns an array of data with values for each field
      *
