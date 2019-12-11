@@ -3858,7 +3858,7 @@
             "source": {
                 "type": "git",
                 "url": "https://net7.codebasehq.com/nautica/net7env-measure.git",
-                "reference": "35f2c39eed96177a563251995e965e8158a2b18d"
+                "reference": "073bd942fba1018658cde89e92045d6fc56ec16f"
             },
             "require": {
                 "mckenziearts/laravel-notify": "dev-master",
@@ -3891,7 +3891,7 @@
                 }
             ],
             "description": "Handle any kind of environmental measurement associated to a Model",
-            "time": "2019-12-06T17:17:39+00:00"
+            "time": "2019-12-11T09:48:04+00:00"
         },
         {
             "name": "net7/logging",
@@ -5327,16 +5327,16 @@
         },
         {
             "name": "spatie/laravel-medialibrary",
-            "version": "7.16.0",
+            "version": "7.16.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-medialibrary.git",
-                "reference": "9fa2989f826da065d098f6f865cc7ad755c35d33"
+                "reference": "1a882349f216855a37583dff81ff44bd1ec4ea63"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-medialibrary/zipball/9fa2989f826da065d098f6f865cc7ad755c35d33",
-                "reference": "9fa2989f826da065d098f6f865cc7ad755c35d33",
+                "url": "https://api.github.com/repos/spatie/laravel-medialibrary/zipball/1a882349f216855a37583dff81ff44bd1ec4ea63",
+                "reference": "1a882349f216855a37583dff81ff44bd1ec4ea63",
                 "shasum": ""
             },
             "require": {
@@ -5407,7 +5407,7 @@
                 "media",
                 "spatie"
             ],
-            "time": "2019-12-02T20:15:48+00:00"
+            "time": "2019-12-11T07:58:06+00:00"
         },
         {
             "name": "spatie/laravel-model-status",

@@ -70,7 +70,6 @@ class Product extends Model
         $data = self::getSemiFakeData($faker);
         $t = new Product($data);
         $t->save();
-
         return $t;
     }
 }
