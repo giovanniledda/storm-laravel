@@ -32,6 +32,16 @@ class Zone extends Model
     }
 
     /**
+     * The children zones for the "parent" zone
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function children_zones()
+    {
+        return $this->hasMany('App\Zone', 'parent_zone_id');
+    }
+
+    /**
      * Returns an array of data with values for each field
      *
      * @param Faker $faker
