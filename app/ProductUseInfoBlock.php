@@ -32,8 +32,6 @@ class ProductUseInfoBlock extends Model
     ];
 
     /**
-     * The parent zone for the "leaf" zones
-     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function product()
@@ -69,7 +67,7 @@ class ProductUseInfoBlock extends Model
 
     /**
      *
-     * Creates a Product using some fake data and some others that have sense
+     * Creates a Product Use IB using some fake data and some others that have sense
      * @param Faker $faker
      * @return ProductUseInfoBlock
      */
