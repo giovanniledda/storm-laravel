@@ -52,7 +52,7 @@ class ApplicationLogSection extends Model
     /**
      * Get the generic info blocks for the app log section
      */
-    public function generic_info_blocks()
+    public function generic_data_info_blocks()
     {
         return $this->hasMany('App\GenericDataInfoBlock', 'application_log_section_id');
     }

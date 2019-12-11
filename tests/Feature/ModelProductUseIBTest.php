@@ -29,6 +29,9 @@ class ModelProductUseIBTest extends TestCase
         $this->assertEquals($product_use_info_blocks_num, $app_log_section->product_use_info_blocks()->count());
 
         foreach ($product_use_info_blocks as $product_use_info_block) {
+
+            $this->assertEquals($product_use_info_block->application_log_section->id, $app_log_section->id);
+
             /** products **/
             $product = factory(Product::class)->create();
 
