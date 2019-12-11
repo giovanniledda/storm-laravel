@@ -30,7 +30,6 @@ class ModelProductUseIBTest extends TestCase
 
         foreach ($product_use_info_blocks as $product_use_info_block) {
             /** products **/
-            /** $table->foreign('product_id')->references('id')->on('products')->onDelete('set null') **/
             $product = factory(Product::class)->create();
 
             // salvo sia dai product che dal product use info block a seconda del bool

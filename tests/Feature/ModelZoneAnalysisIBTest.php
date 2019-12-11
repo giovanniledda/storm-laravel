@@ -30,7 +30,6 @@ class ModelZoneAnalysisIBTest extends TestCase
 
         foreach ($zone_analysis_info_blocks as $zone_analysis_info_block) {
             /** zone **/
-            /** $table->foreign('zone_id')->references('id')->on('zones')->onDelete('set null'); **/
             $zone = factory(Zone::class)->create();
 
             // salvo sia dalla zone che dalla zone analysis info block a seconda del bool
