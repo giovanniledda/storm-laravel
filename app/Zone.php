@@ -39,19 +39,16 @@ class Zone extends Model
      */
     public static function getSemiFakeData(Faker $faker)
     {
-
-        $data = [
+        return [
             'code' => $faker->regexify('[A-Z|0-9]{3}'),
             'description' => $faker->sentence(3),
             'extension' => $faker->randomFloat(2),
         ];
-
-        return $data;
     }
 
     /**
      *
-     * Creates a Product using some fake data and some others that have sense
+     * Creates a Zone using some fake data and some others that have sense
      * @param Faker $faker
      * @return Zone
      */

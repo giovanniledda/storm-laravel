@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Model;
 
 class ProductUseInfoBlock extends Model
@@ -21,6 +22,16 @@ class ProductUseInfoBlock extends Model
     protected $guarded = [];
 
     /**
+     * The attributes that should be cast to native types.
+     * See: https://laravel.com/docs/5.8/eloquent-mutators#array-and-json-casting
+     *
+     * @var array
+     */
+    protected $casts = [
+        'components' => 'array',
+    ];
+
+    /**
      * The parent zone for the "leaf" zones
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -38,5 +49,35 @@ class ProductUseInfoBlock extends Model
     public function application_log_section()
     {
         return $this->belongsTo('App\ApplicationLogSection', 'application_log_section_id');
+    }
+
+
+    /**
+     * Returns an array of data with values for each field
+     *
+     * @param Faker $faker
+     * @return array
+     */
+    public static function getSemiFakeData(Faker $faker)
+    {
+        return [
+            'name' => $faker->word,
+            'viscosity' => $faker->randomFloat(2),
+            'components' => $faker->words(30),
+        ];
+    }
+
+    /**
+     *
+     * Creates a Product using some fake data and some others that have sense
+     * @param Faker $faker
+     * @return ProductUseInfoBlock
+     */
+    public static function createSemiFake(Faker $faker)
+    {
+        $data = self::getSemiFakeData($faker);
+        $t = new ProductUseInfoBlock($data);
+        $t->save();
+        return $t;
     }
 }
