@@ -26,7 +26,11 @@ class CreateZonesTable extends Migration
 
             // If this is null, the zone is a "root" (or parent) zone
             $table->unsignedBigInteger('parent_zone_id')->nullable();
-            $table->foreign('parent_zone_id')->references('id')->on('zones')->onDelete('set null');
+            $table->foreign('parent_zone_id')->references('id')->on('zones')->onDelete('cascade');
+
+            // project
+            $table->unsignedBigInteger('project_id')->nullable();
+            $table->foreign('project_id')->references('id')->on('projects')->onDelete('set null');
         });
     }
 

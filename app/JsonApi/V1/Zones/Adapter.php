@@ -42,6 +42,10 @@ class Adapter extends AbstractAdapter
     protected function filter($query, Collection $filters)
     {
         $this->filterWithScopes($query, $filters);
+        // ricerca per project_id
+//        if ($project_id = $filters->get('project_id')) {
+//            $query->where('project_id', '=', "{$project_id}");
+//        }
     }
 
 
@@ -49,11 +53,11 @@ class Adapter extends AbstractAdapter
 
     protected function parent_zone()
     {
-        return $this->belongsTo('parent_zone_id');
+        return $this->belongsTo('parent_zone');
     }
 
     public function children_zones()
     {
-        return $this->hasMany('parent_zone_id');
+        return $this->hasMany('children_zones');
     }
 }
