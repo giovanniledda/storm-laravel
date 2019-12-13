@@ -66,7 +66,7 @@ class Project extends Model
 
         $this->deleteFromCloud($document);
         return $this->traitDeleteDocument($document);
-       
+
     }
 
 
@@ -285,7 +285,7 @@ class Project extends Model
         $this->save();
         $document->refresh();
         // if ($document->type != MEASUREMENT_FILE_TYPE) {
-        if ($this->shouldUseCloud($document)) {    
+        if ($this->shouldUseCloud($document)) {
             if ($useCloud) {
                 if (env('USE_DROPBOX')) {
                     $this->sendDocumentToDropbox($document);
@@ -629,6 +629,14 @@ class Project extends Model
     public function tasks()
     {
         return $this->hasMany(Task::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function zones()
+    {
+        return $this->hasMany(Zone::class);
     }
 
     public function history()

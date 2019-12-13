@@ -145,5 +145,11 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
         });
 
 
+        /** APPLICATION LOG STUFF */
+
+        $api->resource('zones');
+
+        /** APPLICATION LOG STUFF - END */
+
     });
 });
