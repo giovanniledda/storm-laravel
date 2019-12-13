@@ -222,14 +222,19 @@ class SeederUtils
     public function addFakeZonesToProject(Project $project, int $fathers, int $children)
     {
         if ($project->zones()->count() == 0) {
-            for ($i = 0; $i < $fathers; $i++) {
+            for ($i = 1; $i <= $fathers; $i++) {
                 $father_zone = factory(Zone::class)->create([
                     'project_id' => $project->id,
+                    'code' => $i,
                 ]);
-                factory(Zone::class, $children)->create([
-                    'project_id' => $project->id,
-                    'parent_zone_id' => $father_zone->id,
-                ]);
+                $alhpabet = range('A', 'Z');
+                for ($c = 1; $c <= $children; $c++) {
+                    $child_zone = factory(Zone::class)->create([
+                        'code' => $this->faker->regexify("[$i][{$alhpabet[$c - 1]}]{1}"),
+                        'project_id' => $project->id,
+                        'parent_zone_id' => $father_zone->id,
+                    ]);
+                }
             }
         }
     }
