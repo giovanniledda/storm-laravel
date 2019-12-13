@@ -41,11 +41,24 @@ class Adapter extends AbstractAdapter
      */
     protected function filter($query, Collection $filters)
     {
-        $this->filterWithScopes($query, $filters);
+//        $this->filterWithScopes($query, $filters);
+
         // ricerca per project_id
-//        if ($project_id = $filters->get('project_id')) {
-//            $query->where('project_id', '=', "{$project_id}");
-//        }
+        if ($project_id = $filters->get('project_id')) {
+            $query->where('project_id', '=', "{$project_id}");
+        }
+
+        // cerco i padri o i figli
+        if ($level = $filters->get('level')) {
+            switch ($level) {
+                case 'f':
+                    $query->whereNull('parent_zone_id');
+                    break;
+                case 'c':
+                    $query->whereNotNull('parent_zone_id');
+                    break;
+            }
+        }
     }
 
 

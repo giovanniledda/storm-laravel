@@ -5,6 +5,7 @@ namespace App\JsonApi\V1\Zones;
 use CloudCreativity\LaravelJsonApi\Validation\AbstractValidators;
 use const BOAT_TYPE_MOTOR;
 use const BOAT_TYPE_SAIL;
+use const VALIDATOR_EXIST;
 use const VALIDATOR_IN;
 use const VALIDATOR_NUMERIC;
 use const VALIDATOR_REQUIRED;
@@ -35,7 +36,7 @@ class Validators extends AbstractValidators
      * @var string[]|null
      *      the allowed filters, an empty array for none allowed, or null to allow all.
      */
-    protected $allowedFilteringParameters = ['project_id'];
+    protected $allowedFilteringParameters = ['project_id', 'level'];
 
     /**
      * The messages variable.
@@ -47,6 +48,9 @@ class Validators extends AbstractValidators
         'description.string' => 'description '.VALIDATOR_STRING,
         'extension.required' => 'extension '.VALIDATOR_REQUIRED,
         'extension.numeric' => 'extension '.VALIDATOR_NUMERIC,
+        'project_id.required' => 'project_id '.VALIDATOR_REQUIRED,
+        'project_id.numeric' => 'project_id '.VALIDATOR_NUMERIC,
+        'project_id.exists'=> 'The Project with that project_id '.VALIDATOR_EXIST,
     ];
 
     /**
@@ -62,8 +66,15 @@ class Validators extends AbstractValidators
             'code' => 'required|string|min:1|max:10',
             'description' => 'string|min:1|max:255',
             'extension' => 'required|numeric',
+            'project_id' => 'required|numeric|exists:projects,id',
         ];
     }
+
+
+    protected $queryMessages = [
+        'filter.project_id.exists' => 'The Project with this project_id does not exist.',
+        'filter.level.in' => 'The level filter must be a value between: [f,c].',
+    ];
 
     /**
      * Get query parameter validation rules.
@@ -73,7 +84,8 @@ class Validators extends AbstractValidators
     protected function queryRules(): array
     {
         return [
-            //
+            'filter.project_id' => 'numeric|exists:projects,id',
+            'filter.level' => 'in:f,c',
         ];
     }
 
