@@ -6,6 +6,23 @@ use App\Zone;
 
 class ZoneObserver
 {
+
+    /**
+     * @param Zone $zone
+     */
+    private function allignProjectIdChangesOnChildren(Zone &$zone)
+    {
+        // Check this only for parent zones
+        if (!$zone->parent_zone_id && $zone->isDirty('project_id')) {
+            if ($zone->children_zones()->count()) {
+                // if project_id is changed for father, then change it for children too
+                Zone::where('parent_zone_id', $zone->id)->update([
+                    'project_id' => $zone->project_id
+                ]);
+            }
+        }
+    }
+
     /**
      * Handle the zone "created" event.
      *
@@ -14,7 +31,7 @@ class ZoneObserver
      */
     public function created(Zone $zone)
     {
-        //
+        $this->allignProjectIdChangesOnChildren($zone);
     }
 
     /**
@@ -25,20 +42,7 @@ class ZoneObserver
      */
     public function updated(Zone $zone)
     {
-        // Check this only for parent zones
-        if (!$zone->parent_zone && $zone->isDirty('project_id')) {
-            if ($zone->children_zones()->count()) {
-                Zone::where('parent_zone_id', $zone->id)->update([
-                    'project_id' => $zone->project_id
-                ]);
-
-//                foreach ($zone->children_zones as $children_zone) {
-//                    $children_zone->project()->associate($zone->project);
-//                    $children_zone->save();
-//                    dd($children_zone);
-//                }
-            }
-        }
+        $this->allignProjectIdChangesOnChildren($zone);
     }
 
     /**

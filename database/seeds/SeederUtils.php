@@ -240,7 +240,7 @@ class SeederUtils
     }
 
     /**
-     * Shows how many meory the script is using
+     * Shows how many memory the script is using
      */
     public function print_mem()
     {
