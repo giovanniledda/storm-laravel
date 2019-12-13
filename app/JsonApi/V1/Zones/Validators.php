@@ -52,6 +52,7 @@ class Validators extends AbstractValidators
         'project_id.numeric' => 'project_id '.VALIDATOR_NUMERIC,
         'project_id.exists'=> 'The Project with ID :input '.VALIDATOR_EXIST,
         'description.unique'=> 'The description :input has already been taken!',
+        'code.unique'=> 'The code :input has already been taken!',
     ];
 
     /**
@@ -73,14 +74,27 @@ class Validators extends AbstractValidators
         });
 
         // Questa regola si legge così:
-        // - la descrizione dev'essere univoca tra zone figlie sotto la stessa zona padre
+        // - la coppia [codice+descrizione] dev'essere univoca tra zone figlie sotto la stessa zona padre (controllo su description)
         $validator->sometimes('description', 'unique:zones,description', function ($input) {
             $data = [
                 'description' => $input->description,
                 'parent_zone_id' => $input->parent_zone_id,
+                'code' => $input->code,
             ];
             return isset($input->parent_zone_id) && Zone::countWithAttributesAndValues($data);
         });
+
+        // Questa regola si legge così:
+        // - come sopra, la coppia [codice+descrizione] dev'essere univoca tra zone figlie sotto la stessa zona padre (controllo su code)
+        $validator->sometimes('code', 'unique:zones,code', function ($input) {
+            $data = [
+                'description' => $input->description,
+                'parent_zone_id' => $input->parent_zone_id,
+                'code' => $input->code,
+            ];
+            return isset($input->parent_zone_id) && Zone::countWithAttributesAndValues($data);
+        });
+
         return $validator;
     }
 
