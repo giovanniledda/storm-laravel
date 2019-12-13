@@ -113,4 +113,14 @@ class Zone extends Model
         $t->save();
         return $t;
     }
+
+    /**
+     * Just an alias for the count
+     * @param array $data (key - values)
+     * @return int
+     */
+    public static function countWithAttributesAndValues($data = [])
+    {
+        return self::where($data)->count();
+    }
 }
