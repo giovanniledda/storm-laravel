@@ -20,6 +20,7 @@ class Schema extends SchemaProvider
     protected $relationships = [
         'parent_zone',
         'children_zones',
+        'project',
     ];
 
     /**
@@ -49,6 +50,7 @@ class Schema extends SchemaProvider
             // relazioni
             'parent_zone' => $resource->parent_zone,  // parent_zone - zones
             'children_zones' => $resource->children_zones,  // children_zones - zones
+            'project' => $resource->project_for_api,  // children_zones - zones
         ];
     }
 
@@ -75,6 +77,14 @@ class Schema extends SchemaProvider
                 self::SHOW_DATA => isset($includedRelationships['children_zones']),
                 self::DATA => function () use ($zone) {
                     return $zone->children_zones;
+                },
+            ],
+            'project' => [
+                self::SHOW_SELF => true,
+                self::SHOW_RELATED => true,
+                self::SHOW_DATA => isset($includedRelationships['project']),
+                self::DATA => function () use ($zone) {
+                    return $zone->project_for_api;
                 },
             ]
         ];

@@ -51,6 +51,11 @@ class Adapter extends AbstractAdapter
 
     // Relationships (https://laravel-json-api.readthedocs.io/en/latest/basics/adapters/)
 
+    protected function project()
+    {
+        return $this->belongsTo('project');
+    }
+
     protected function parent_zone()
     {
         return $this->belongsTo('parent_zone');

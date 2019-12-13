@@ -63,6 +63,16 @@ class Zone extends Model
     }
 
     /**
+     * Restricted versione of the project wich the zone belongs
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function project_for_api()
+    {
+        return $this->project()->select(['id', 'name', 'acronym', 'project_type', 'project_status']);
+    }
+
+    /**
      * The zone analysis info blocks which the zone belongs
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
