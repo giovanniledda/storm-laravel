@@ -154,7 +154,7 @@ defined('VALIDATOR_NUMERIC') or define('VALIDATOR_NUMERIC', 'is not a numeric va
 defined('VALIDATOR_IN') or define('VALIDATOR_IN', 'is not a valid value, valid values are : ');
 defined('VALIDATOR_EMAIL') or define('VALIDATOR_EMAIL', 'is not a valid email address');
 defined('VALIDATOR_EMAIL_UNIQUE') or define('VALIDATOR_EMAIL_UNIQUE', 'this email address is already used in the system, please choose another one.');
-defined('VALIDATOR_EXIST') or define('VALIDATOR_EXIST', 'do not exist in the database');
+defined('VALIDATOR_EXIST') or define('VALIDATOR_EXIST', 'does not exist in the database');
 /*
  * RESET PASSWORD MESSAGES
  */
@@ -224,3 +224,24 @@ defined('PROJECT_TYPE_API_PROJECT_CLOSED_MSG') or define('PROJECT_TYPE_API_PROJE
 defined('USER_PHOTO_API_NO_DOC_TITLE') or define('USER_PHOTO_API_NO_DOC_TITLE', 'Internal error.');
 defined('USER_PHOTO_API_NO_DOC_MSG') or define('USER_PHOTO_API_NO_DOC_MSG', 'Something went wrong. The profile photo was not uploaded.');
 
+
+/*
+ * REPORTS
+ */
+defined('REPORT_CORROSION_MAP_SUBTYPE') or define('REPORT_CORROSION_MAP_SUBTYPE', 'corrosion_map');
+defined('REPORT_ENVIRONMENTAL_SUBTYPE') or define('REPORT_ENVIRONMENTAL_SUBTYPE', 'environmental_report');
+
+
+/*
+ * APPLICATION LOG - PRODUCTS
+ */
+defined('PRODUCT_TYPE_PAINTING') or define('PRODUCT_TYPE_PAINTING', 'painting');
+defined('APPLICATION_LOG_SECTION_TYPE_ZONES') or define('APPLICATION_LOG_SECTION_TYPE_ZONES', 'zones');
+defined('APPLICATION_LOG_SECTION_TYPE_PREPARATION') or define('APPLICATION_LOG_SECTION_TYPE_PREPARATION', 'preparation');
+defined('APPLICATION_LOG_SECTION_TYPE_APPLICATION') or define('APPLICATION_LOG_SECTION_TYPE_APPLICATION', 'application');
+defined('APPLICATION_LOG_SECTION_TYPE_INSPECTION') or define('APPLICATION_LOG_SECTION_TYPE_INSPECTION', 'inspection');
+defined('APPLICATION_TYPE_PRIMER') or define('APPLICATION_TYPE_PRIMER', 'primer');
+defined('APPLICATION_TYPE_FILLER') or define('APPLICATION_TYPE_FILLER', 'filler');
+defined('APPLICATION_TYPE_HIGHBUILD') or define('APPLICATION_TYPE_HIGHBUILD', 'highbuild');
+defined('APPLICATION_TYPE_UNDERCOAT') or define('APPLICATION_TYPE_UNDERCOAT', 'undercoat');
+defined('APPLICATION_TYPE_COATING') or define('APPLICATION_TYPE_COATING', 'coating');

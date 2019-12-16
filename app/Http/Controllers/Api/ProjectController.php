@@ -8,8 +8,10 @@ use App\Notifications\TaskCreated;
 use function __;
 use function explode;
 use function json_decode;
+use function md5;
 use function notify;
 use function response;
+use function trim;
 use function view;
 use const MEASUREMENT_FILE_TYPE;
 use const PROJECT_STATUS_CLOSED;
@@ -28,6 +30,8 @@ use App\Utils\Utils;
 use App\Jobs\ProjectGoogleSync;
 use Net7\DocsGenerator\DocsGenerator;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
+use const PROJECT_STATUSES;
+use const REPORT_ENVIRONMENTAL_SUBTYPE;
 
 class ProjectController extends Controller
 {
@@ -40,14 +44,10 @@ class ProjectController extends Controller
      */
     public function statuses(Request $request)
     {
-        $resp = Response(["data" => [
+        return Utils::renderStandardJsonapiResponse(['data' => [
             "type" => "projects",
             "attributes" => ["statuses" => PROJECT_STATUSES]
         ]], 200);
-
-        $resp->header('Content-Type', 'application/vnd.api+json');
-
-        return $resp;
     }
 
     /**
@@ -66,34 +66,8 @@ class ProjectController extends Controller
                 "type" => "projects",
                 "attributes" => ['event' => $history['event_body']]]);
         }
-        $resp = Response(["data" => $data], 200);
-        $resp->header('Content-Type', 'application/vnd.api+json');
-
-        return $resp;
-
+        return Utils::renderStandardJsonapiResponse(['data' => $data], 200);
         //  exit();
-    }
-
-    public function envMeasurementsLogs(Request $request, $project){
-
-        // TODO get page & number from api
-        $data = $project->getMeasurementLogsData(1, 10);
-
-        $dataArray = [];
-
-        foreach ($data as $log) {
-            $tmp = [];
-            $tmp ['id'] = $log['id'];
-            $tmp ['type'] = 'log';
-            $tmp ['attributes'] = $log;
-            $dataArray []= $tmp;
-        }
-
-        // $resp = Response(["data" => $dataArray], 200);
-        $resp = Response(["data" => $data], 200);
-        $resp->header('Content-Type', 'application/vnd.api+json');
-
-        return $resp;
     }
 
     public function close(Request $request, $related)
@@ -204,49 +178,14 @@ class ProjectController extends Controller
         return $resp;
     }
 
-
-    /**
-     * API used to get the list of reports name and links from google drive
-     *
-     * @param Request $request
-     * @param $record
-     *
-     * @return mixed
-     */
-
-    public function reportsList(Request $request, $project)
-    {
-
-        $data = $project->getReportsLinks();
-
-        $dataArray = [];
-
-        foreach ($data as $report) {
-
-            $tmp = [];
-            $tmp ['type'] = 'report';
-            $tmp ['id'] = $report['id'];
-            $tmp ['attributes'] = $report;
-
-
-            $dataArray []= $tmp;
-        }
-
-        // $resp = Response(['data' => $dataArray], 200);
-        $resp = Response(['data' => [$data]], 200);
-
-        $resp->header('Content-Type', 'application/vnd.api+json');
-
-        return $resp;
-    }
-
     /**
      * @param string $template
      * @param Project $project
+     * @param null $subtype
      * @return Response|mixed
      * @throws \Exception
      */
-    private function reportGenerationProcess(string $template, Project $project)
+    private function reportGenerationProcess(string $template, Project $project, $subtype = null)
     {
         $dg = new DocsGenerator($template, $project);
 
@@ -270,7 +209,37 @@ class ProjectController extends Controller
             throw new \Exception($msg);
         }
 
+        $document->subtype = $subtype;
+
         return $document;
+    }
+
+    /**
+     * @param Request $request
+     * @param Document $document
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|Response|\Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    protected function renderJsonOrDownloadFile(Request $request, Document $document)
+    {
+        if ($document) {
+            // if &download=true in request, the file will be downloaded in the response body
+            if ($request->has('download') && $request->input('download')) {
+                $document->refresh();
+                $filepath = $document->getPathBySize('');
+                $filename = $document->file_name;
+
+                $headers = ['Cache-Control' => 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0', "Content-Type" => "application/octet-stream"];
+                return response()->download($filepath, $filename, $headers);
+            } else {
+                $ret = ['data' => [
+                    'type' => 'documents',
+                    'id' => $document->id,
+                    'attributes' => $document
+                ]];
+
+                return Utils::renderStandardJsonapiResponse($ret, 200);
+            }
+        }
     }
 
     /**
@@ -291,28 +260,53 @@ class ProjectController extends Controller
         $template = $request->template;
 
         try {
-            $document = $this->reportGenerationProcess($template, $project);
+            $document = $this->reportGenerationProcess($template, $project, REPORT_CORROSION_MAP_SUBTYPE);
         } catch (\Exception $e) {
             return Utils::jsonAbortWithInternalError(422, 402, "Error generating report", $e->getMessage());
         }
 
         $project->closeAllTasksTemporaryFiles();
 
-        // $filepath = $dg->getRealFinalFilePath();
-        // $filename = $dg->getFinalFileName()
-        if ($document) {
-            $document->refresh();
-            $filepath = $document->getPathBySize('');
-            $filename = $document->file_name;
-
-            $headers = ['Cache-Control' => 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0', "Content-Type" => "application/octet-stream"];
-            return response()
-                ->download($filepath, $filename, $headers);
-
-        }
+        return $this->renderJsonOrDownloadFile($request, $document);
     }
 
     /**
+     * #PR17 /api/v1/project/{project_id}/reports-list
+     * API used to get the list of reports name and links from google drive
+     *
+     * @param Request $request
+     * @param $record
+     *
+     * @return mixed
+     */
+    public function reportsList(Request $request, $project)
+    {
+        $data_array = [];
+
+        /** @var Project $project */
+        $reports_data = $project->getReportsLinks($request->input('page'));
+        $data = $reports_data['data'];
+        foreach ($data as $report) {
+            $tmp = [];
+            $tmp['type'] = 'report';
+            $tmp['id'] = $report['id'];
+            $tmp['attributes'] = $report;
+            $data_array[] = $tmp;
+        }
+
+        $ret = ['data' => $data_array];
+        if (isset($reports_data['meta'])) {
+            $ret['meta'] = $reports_data['meta'];
+        }
+        if (isset($reports_data['links'])) {
+            $ret['links'] = $reports_data['links'];
+        }
+        return Utils::renderStandardJsonapiResponse($ret, 200);
+    }
+
+    /**
+     * #PR18  api/v1/projects/{record_id}/upload-env-measurement-log
+     *
      * API used to upload and parse a sensor log for the environment.
      * A docx report will be also generated and downloaded by the API.
      *
@@ -331,27 +325,24 @@ class ProjectController extends Controller
             $filename = $request->data['attributes']['filename'];
             $file = Document::createUploadedFileFromBase64($base64File, $filename);
             if ($file) {
-                $document = $project->addDocumentFileDirectly($file, $filename, MEASUREMENT_FILE_TYPE);
+                $data_source = isset($request->data['attributes']['data_source']) ? utf8_encode(trim($request->data['attributes']['data_source'])) : null;
+
+                $arr = [
+                    'data_source' => $data_source
+                ];
+
+                $additional_data = json_encode($arr);
+                $document = $project->addDocumentFileDirectly($file, $filename, MEASUREMENT_FILE_TYPE, REPORT_ENVIRONMENTAL_SUBTYPE, $additional_data);
                 // $document = $project->getDocument(MEASUREMENT_FILE_TYPE);
                 if ($document) {
 
                     ProjectLoadEnvironmentalData::dispatch(
                         $project,
                         $document,
-                        isset($request->data['attributes']['data_source']) ? $request->data['attributes']['data_source'] : null
-                    );   // default queue
+                        $data_source
+                    ); // default queue
 
-                    $ret = ['data' => [
-                        'type' => 'documents',
-                        'id' => $document->id,
-                        'attributes' => [
-                            'name' => $document->title,
-                            'created-at' => $document->created_at,
-                            'updated-at' => $document->updated_at
-                        ]
-                    ]];
-
-                    return Utils::renderStandardJsonapiResponse($ret, 200);
+                    return $this->renderJsonOrDownloadFile($request, $document);
                 }
             } else {
                 throw new \Exception("Cannot upload the file $filename!");
@@ -362,13 +353,9 @@ class ProjectController extends Controller
         }
     }
 
-
-
-    public function getListOfMeasurement(){
-
-    }
-
     /**
+     *
+     * #PR19  api/v1/projects/{record_id}/generate-environmental-report
      * API used to generate a report from the project
      *
      * @param Request $request
@@ -378,10 +365,15 @@ class ProjectController extends Controller
      */
     public function generateEnvironmentalReport(Request $request, $record)
     {
+        if (!$request->has('data_source')) {
+            return Utils::jsonAbortWithInternalError(422, 402, "Error generating report", "Mandatory parameter 'data_source' is missing!");
+        }
+
         /** @var Project $project */
         $project = Project::findOrFail($record->id);
 
         $template = $request->input('template');
+        $data_source = $request->input('data_source');
         $date_start = $request->input('date_start');
         $date_end = $request->input('date_end');
         $min_thresholds = [
@@ -393,24 +385,122 @@ class ProjectController extends Controller
         $project->setCurrentDateStart($date_start);
         $project->setCurrentDateEnd($date_end);
         $project->setCurrentMinThresholds($min_thresholds);
+        $project->setCurrentDataSource($data_source);
 
         try {
-            $document = $this->reportGenerationProcess($template, $project);
+            $document = $this->reportGenerationProcess($template, $project, REPORT_ENVIRONMENTAL_SUBTYPE);
         } catch (\Exception $e) {
             return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error generating report", $e->getMessage());
         }
 
         // $filepath = $dg->getRealFinalFilePath();
         // $filename = $dg->getFinalFileName()
-        if ($document) {
-            $document->refresh();
-            $filepath = $document->getPathBySize('');
-            $filename = $document->file_name;
+        return $this->renderJsonOrDownloadFile($request, $document);
+    }
 
-            $headers = ['Cache-Control' => 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0', "Content-Type" => "application/octet-stream"];
-            return response()
-                ->download($filepath, $filename, $headers);
 
+    /**
+     * #PR20  api/v1/projects/{record_id}/env-measurements-logs
+     *
+     * @param Request $request
+     * @param $project
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
+     */
+    public function envMeasurementsLogs(Request $request, $project)
+    {
+
+        /** @var Project $project */
+        $reports_data = $project->getMeasurementLogsData($request->input('page'));
+        $data = $reports_data['data'];
+
+        $data_array = [];
+        foreach ($data as $log) {
+            $tmp = [];
+            $tmp['id'] = $log['id'];
+            $tmp['type'] = 'log';
+            $tmp['attributes'] = $log;
+            $data_array[] = $tmp;
+        }
+
+        $ret = ['data' => $data_array];
+        if (isset($reports_data['meta'])) {
+            $ret['meta'] = $reports_data['meta'];
+        }
+        if (isset($reports_data['links'])) {
+            $ret['links'] = $reports_data['links'];
+        }
+        return Utils::renderStandardJsonapiResponse($ret, 200);
+    }
+
+    /**
+     *
+     * #PR21  api/v1/projects/{record_id}/env-measurements-datasources
+     *
+     * Get all the sources of environmental data
+     *
+     * @param Request $request
+     * @param $record
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
+     */
+    public function getDataSources(Request $request, $record)
+    {
+        try {
+            /** @var Project $project */
+            $project = Project::findOrFail($record->id);
+            $sources = $project->getAllDataSources();
+            $data_array = [];
+            foreach ($sources as $source) {
+                $tmp = [];
+                $tmp['type'] = 'data_source';
+                $tmp['id'] = md5($source);
+                $tmp['attributes'] = [
+                    'name' => $source
+                ];
+
+                $data_array[] = $tmp;
+            }
+            $ret = ['data' => $data_array];
+            return Utils::renderStandardJsonapiResponse($ret, 200);
+
+        } catch (\Exception $e) {
+            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error generating report", $e->getMessage());
+        }
+    }
+
+
+    /**
+     *
+     * #PR22  api/v1/projects/1/env-log-delete
+     *
+     * Remove allameasurements associated to a specific log file
+     *
+     * @param Request $request
+     * @param $record
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
+     */
+    public function removeDocumentMeasurements(Request $request, $record)
+    {
+        try {
+            /** @var Project $project */
+            $project = Project::findOrFail($record->id);
+            $document_id = $request->input('document_id');
+            if ($project->countMeasurementsByDocument($document_id)) {
+                // ..prima rimuovo le misurazioni associate ad un documento...
+                $project->deleteMeasurementsByDocument($document_id);
+            } else {
+                return Utils::jsonAbortWithInternalError(422, 100, 'Error removing data', 'No measurements for this document!');
+            }
+
+            // ...poi rimuovo il documento stesso
+            /** @var Document $document */
+            $document = Document::findOrFail($document_id);
+            $project->deleteDocument($document);
+            // $document->destroyMe();
+
+            return Utils::renderStandardJsonapiResponse([], 204);
+
+        } catch (\Exception $e) {
+            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error generating report", $e->getMessage());
         }
     }
 

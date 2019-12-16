@@ -177,6 +177,10 @@ class LightSeeder extends Seeder
                 $this->command->info("Project {$project->name} for Boat {$boat->name}, created");
                 $projects[] = $project;
 
+                // ...con N zone associate
+//                $this->command->warn(" ------ ZONES FOR PROJECT {$project->name} --------");
+//                $this->utils->addFakeZonesToProject($project, 4, 5);
+
                 // ...con N task associati
                 $this->command->warn(" ------ TASKS FOR PROJECT {$project->name} --------");
 

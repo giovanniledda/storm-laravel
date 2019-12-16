@@ -1,0 +1,31 @@
+<?php
+
+namespace Tests\Unit;
+
+use Tests\TestCase;
+use App\Zone;
+
+class ModelZoneTest extends TestCase
+{
+    /**
+     *
+     * @return void
+     */
+    public function testSimpleCreation()
+    {
+
+        $data = Zone::getSemiFakeData($this->faker);
+        $except = [];
+
+        $zone1 = factory(Zone::class)->create();
+        $this->checkAllFields($zone1, $data, $except);
+
+        $zone2 = Zone::create($data);
+        $this->checkAllFields($zone2, $data, $except);
+
+        $zone3 = Zone::createSemiFake($this->faker);
+        $this->checkAllFields($zone3, $data, $except);
+
+        $this->assertCount(3, Zone::all());
+    }
+}

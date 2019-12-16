@@ -13,15 +13,17 @@ use App\Site;
 use App\Subsection;
 use App\Task;
 use App\TaskInterventType;
+use App\Zone;
 use Faker\Factory as Faker;
 use Illuminate\Support\Facades\Storage;
 use StormUtils;
 use User;
+use function factory;
 
 class SeederUtils
 {
     protected $faker;
-    
+
     public function __construct(Faker $faker = null)
     {
         $this->faker = $faker ? $faker : Faker::create();
@@ -212,7 +214,34 @@ class SeederUtils
         }
     }
 
+    /**
+     * @param Project $project
+     * @param int $fathers
+     * @param int $children
+     */
+    public function addFakeZonesToProject(Project $project, int $fathers, int $children)
+    {
+        if ($project->zones()->count() == 0) {
+            for ($i = 1; $i <= $fathers; $i++) {
+                $father_zone = factory(Zone::class)->create([
+                    'project_id' => $project->id,
+                    'code' => $i,
+                ]);
+                $alhpabet = range('A', 'Z');
+                for ($c = 1; $c <= $children; $c++) {
+                    $child_zone = factory(Zone::class)->create([
+                        'code' => $this->faker->regexify("[$i][{$alhpabet[$c - 1]}]{1}"),
+                        'project_id' => $project->id,
+                        'parent_zone_id' => $father_zone->id,
+                    ]);
+                }
+            }
+        }
+    }
 
+    /**
+     * Shows how many memory the script is using
+     */
     public function print_mem()
     {
         /* Currently used memory */

@@ -6,28 +6,30 @@ use App\Observers\ProjectObserver;
 use App\Traits\EnvParamsInputOutputTransations;
 use App\Traits\TemplateReplacementRules;
 use Net7\EnvironmentalMeasurement\Traits\HasMeasurements;
-use function array_merge;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\ModelStatus\HasStatuses;
 use Faker\Generator as Faker;
 use Net7\DocsGenerator\Traits\HasDocsGenerator;
-use Net7\DocsGenerator\Utils;
-use \Net7\Documents\DocumentableTrait;
-use \Net7\Documents\Document;
+use Net7\Documents\DocumentableTrait;
+use Net7\Documents\Document;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Queue\SerializesModels;
 use App\Jobs\SendDocumentsToGoogleDrive;
 use Illuminate\Support\Facades\DB;
+use function json_decode;
+use function preg_replace;
 use const MEASUREMENT_FILE_TYPE;
 
 // use Illuminate\Support\Facades\Queue;
 
-class Project extends Model {
+class Project extends Model
+{
 
     use DocumentableTrait {
-         addDocumentWithType as traitAddDocumentWithType;
-         updateDocument as traitUpdateDocument;
+        addDocumentWithType as traitAddDocumentWithType;
+        updateDocument as traitUpdateDocument;
+        deleteDocument as traitDeleteDocument;
     }
 
     use HasDocsGenerator {
@@ -48,35 +50,72 @@ class Project extends Model {
     ];
 
     public const REPORT_FOLDER = 'reports';
-    public const DOCUMENTS_FOLDER  = 'documents';
+    public const DOCUMENTS_FOLDER = 'documents';
     public const REPORT_DOCUMENT_TYPE = 'report';
 
-    protected static function boot() {
+    protected static function boot()
+    {
         parent::boot();
 
         Project::observe(ProjectObserver::class);
     }
 
 
-    public function addTemplateResultDocument($temporary_final_file_path, $final_file_name, $template_object_id, $type=self::REPORT_DOCUMENT_TYPE) {
+
+    public function deleteDocument(Document $document){
+
+        $this->deleteFromCloud($document);
+        return $this->traitDeleteDocument($document);
+
+    }
+
+
+    private function deleteFromCloud(Document $document){
+
+        if ($this->shouldUseCloud($document) ){
+
+            if (env('USE_DROPBOX')) {
+                //TODO
+            }
+
+            if (env('USE_GOOGLE_DRIVE')) {
+
+                // TODO: delete document from google
+
+                $this->deleteDocumentFromGoogleDrive($document);
+
+                // SendDocumentsToGoogleDrive::dispatch($this, $document);
+                // $this->sendDocumentToGoogleDrive($document);
+            }
+        }
+    }
+
+
+    public function addTemplateResultDocument($temporary_final_file_path, $final_file_name, $template_object_id, $type = self::REPORT_DOCUMENT_TYPE, $subtype = '')
+    {
 
         // $document = $this->traitAddTemplateResultDocument($temporary_final_file_path, $final_file_name, $template_object_id, $type);
 
+        if (!$type) {
+            $type = self::REPORT_DOCUMENT_TYPE;
+        }
 
         // $this->addDocumentFile will call the $this->addDocumentWithType method, which in turn will
         //  take care of google and/or dropbox sync
-        $document = $this->addDocumentFile($temporary_final_file_path, $final_file_name, $type);
+        $document = $this->addDocumentFile($temporary_final_file_path, $final_file_name, $type, $subtype);
         unlink($temporary_final_file_path);
 
 
         return $document;
     }
 
-    public function getTemplateResultDocument($template_object_id) {
-         return $this->traitGetTemplateResultDocument($template_object_id);
+    public function getTemplateResultDocument($template_object_id)
+    {
+        return $this->traitGetTemplateResultDocument($template_object_id);
     }
 
-    public function sendDocumentToDropbox(\Net7\Documents\Document $document){
+    public function sendDocumentToDropbox(Document $document)
+    {
 
         $document = Document::find($document->id);
         $media = $document->getRelatedMedia();
@@ -85,17 +124,17 @@ class Project extends Model {
 
         $fh = fopen($filepath, 'r');
         $content = fread($fh, filesize($filepath));
-        fclose ($fh);
+        fclose($fh);
 
         $filename = $media->file_name;
-        $dropboxFolder =  $this->getDropboxFolderPath($document);
-        $dropboxFilepath =  $this->getDropboxFilePath($document, $filename);
+        $dropboxFolder = $this->getDropboxFolderPath($document);
+        $dropboxFilepath = $this->getDropboxFilePath($document, $filename);
 
 
         $client = new \Spatie\Dropbox\Client(env('DROPBOX_TOKEN'));
         try {
             $client->listFolder($dropboxFolder);
-        } catch ( \Spatie\Dropbox\Exceptions\BadRequest  $e) {
+        } catch (\Spatie\Dropbox\Exceptions\BadRequest  $e) {
             $client->createFolder($dropboxFolder);
         }
 
@@ -111,13 +150,14 @@ class Project extends Model {
         // TODO: finish it up
     }
 
-    public function getGooglePathFromHumanPath($path){
+    public function getGooglePathFromHumanPath($path)
+    {
         $lastPath = '';
         $contents = collect(Storage::cloud()->listContents($lastPath, false));
 
         $lastDir = false;
         $folderSteps = explode(DIRECTORY_SEPARATOR, $path);
-        foreach ($folderSteps as $step){
+        foreach ($folderSteps as $step) {
 
             // apparently we can't just ask google drive for subdirectories, like
             // '/boats/Pinta/3'
@@ -130,9 +170,9 @@ class Project extends Model {
 
             $dir = $contents->where('type', '=', 'dir')->where('filename', '=', $step)->first();
 
-            if (!$dir){
+            if (!$dir) {
                 // we need to create it
-                $path ='';
+                $path = '';
                 if ($lastDir) {
                     $path .= $lastPath . '/';
                 }
@@ -156,166 +196,26 @@ class Project extends Model {
 
     }
 
-    public function sendDocumentToGoogleDrive(\Net7\Documents\Document $document){
 
-        $document = Document::find($document->id);
-        $media = $document->getRelatedMedia();
-
-        $filepath = $media->getPath();
-
-        $fh = fopen($filepath, 'r');
-        $content = fread($fh, filesize($filepath));
-        fclose ($fh);
-
-        $filename = $media->file_name;
-        $googleFolder =  $this->getGoogleFolderPath($document);
-        $filename =  $this->getGoogleFilename($document, $filename);
-
-        $path = $this->getGooglePathFromHumanPath($googleFolder);
-
-        // now we have the full path made of directory Ids, we can upload our file there.
-        $path .=  '/'. $filename;
-        Storage::cloud()->put($path, $content);
-
-        //TODO: check errors?
+    public function deleteDocumentFromGoogleDrive(Document $document){
 
 
-        $link = $this->getDocumentLinkFromGoogle($document);
-        $document_cloud_storage_data = json_decode($document['cloud_storage_data'], true);
-
-        $document_cloud_storage_data['gdrive_link'] = $link;
-        $document_cloud_storage_data['gdrive_filename'] = $filename;
-        $document['cloud_storage_data'] = json_encode($document_cloud_storage_data);
-        $document->save();
-
-    }
-
-
-    public function getReportsLinks(){
-
-        $reports = $this->documents->where('type', self::REPORT_DOCUMENT_TYPE);
-
-        $links = [];
-        foreach ($reports as $report){
-            $data = json_decode($report->cloud_storage_data, true);
-            $links []= [
-                'upload_date' => $report->created_at,
-                'link' => $data['gdrive_link'],
-                'name' => $data['gdrive_filename'],
-                'title' => $report->title,
-                'id' => $report->id
-            ];
-        }
-
-        return $links;
-
-//        return $this->getListOfReportsFromGoogle();
-
-    }
-
-    /**
-     *
-     * @Override the base method to send the updated files to dropbox
-     */
-    public function updateDocument(\Net7\Documents\Document $document, $file, $useCloud = true){
-
-        $this->traitUpdateDocument( $document, $file);
-
-
-        $this->save();
-        $document->refresh();
-
-        if ($type != MEASUREMENT_FILE_TYPE) {
-            if ($useCloud){
-                if (env('USE_DROPBOX')) {
-                    $this->sendDocumentToDropbox($document);
-                }
-
-                if (env('USE_GOOGLE_DRIVE')){
-                    SendDocumentsToGoogleDrive::dispatch($this, $document);
-
-
-                    // $this->sendDocumentToGoogleDrive($document);
-
-                }
-            }
-        }
-        return $document;
-    }
-
-    /**
-     *
-     * @Override the base method to send files to dropbox
-     */
-
-
-    public function addDocumentWithType(\Net7\Documents\Document $document, $type, $useCloud = true) {
-
-        $this->traitAddDocumentWithType($document, $type);
-
-        $this->save();
-        $document->refresh();
-
-        if ($type != MEASUREMENT_FILE_TYPE) {
-            if ($useCloud){
-                if (env('USE_DROPBOX')) {
-                    $this->sendDocumentToDropbox($document);
-                }
-
-                if (env('USE_GOOGLE_DRIVE')){
-
-                    SendDocumentsToGoogleDrive::dispatch($this, $document);
-
-                    // $this->sendDocumentToGoogleDrive($document);
-
-                }
-            }
-        }
-        return $document;
-    }
-
-    public function getDocumentFromDropbox(\Net7\Documents\Document $document){
 
 
         $media = $document->getRelatedMedia();
         $filename = $media->file_name;
-        $dropboxFolder =  $this->getDropboxFolderPath($document);
-        $dropboxFilepath =  $this->getDropboxFilePath($document, $filename);
-
-
-        $client = new \Spatie\Dropbox\Client(env('DROPBOX_TOKEN'));
-
-        $link = $client->getTemporaryLink($dropboxFilepath );
-
-        return $link;
-    }
-
-
-    public function getDocumentLinkFromGoogle(\Net7\Documents\Document $document){
-
-        return $this->getDocumentFromGoogle($document, true);
-
-    }
-
-    public function getDocumentFromGoogle(\Net7\Documents\Document $document, $justALink = false){
-
-
-        $media = $document->getRelatedMedia();
-        $filename = $media->file_name;
-
 
         $cloudStorageData = json_decode($document->cloud_storage_data, true);
 
         if (isset($cloudStorageData['path'])) {
             $googleFolder = $cloudStorageData['path'];
         } else {
-            $googleFolder =  $this->getGoogleFolderPath($document);
+            $googleFolder = $this->getGoogleFolderPath($document);
         }
         if (isset($cloudStorageData['filename'])) {
             $filename = $cloudStorageData['filename'];
         } else {
-            $filename =  $this->getGoogleFilename($document, $filename);
-
+            $filename = $this->getGoogleFilename($document, $filename);
         }
 
         $path = $this->getGooglePathFromHumanPath($googleFolder);
@@ -331,8 +231,160 @@ class Project extends Model {
             ->first(); // there can be duplicate file names!
 
 
-        if ($justALink) {
 
+            // $readStream = Storage::cloud()->getDriver()->readStream($file['path']);
+
+       $resp =   Storage::cloud()->delete($file['path']);
+
+        return $resp;
+        //'File was deleted from Google Drive';
+    }
+
+    public function sendDocumentToGoogleDrive(Document $document)
+    {
+
+        $document = Document::find($document->id);
+        $media = $document->getRelatedMedia();
+
+        $filepath = $media->getPath();
+
+        $fh = fopen($filepath, 'r');
+        $content = fread($fh, filesize($filepath));
+        fclose($fh);
+
+        $filename = $media->file_name;
+        $googleFolder = $this->getGoogleFolderPath($document);
+        $filename = $this->getGoogleFilename($document, $filename);
+
+        $path = $this->getGooglePathFromHumanPath($googleFolder);
+
+        // now we have the full path made of directory Ids, we can upload our file there.
+        $path .= '/' . $filename;
+        Storage::cloud()->put($path, $content);
+
+        //TODO: check errors?
+
+
+        $link = $this->getDocumentLinkFromGoogle($document);
+        $document_cloud_storage_data = json_decode($document['cloud_storage_data'], true);
+
+        $document_cloud_storage_data['gdrive_link'] = $link;
+        $document_cloud_storage_data['gdrive_filename'] = $filename;
+        $document['cloud_storage_data'] = json_encode($document_cloud_storage_data);
+        $document->save();
+
+    }
+
+    /**
+     *
+     * @Override the base method to send the updated files to dropbox
+     */
+    public function updateDocument(Document $document, $file, $useCloud = true)
+    {
+        $this->traitUpdateDocument($document, $file);
+        $this->save();
+        $document->refresh();
+        // if ($document->type != MEASUREMENT_FILE_TYPE) {
+        if ($this->shouldUseCloud($document)) {
+            if ($useCloud) {
+                if (env('USE_DROPBOX')) {
+                    $this->sendDocumentToDropbox($document);
+                }
+
+                if (env('USE_GOOGLE_DRIVE')) {
+                    SendDocumentsToGoogleDrive::dispatch($this, $document);
+                    // $this->sendDocumentToGoogleDrive($document);
+                }
+            }
+        }
+        return $document;
+    }
+
+    /**
+     *
+     * @Override the base method to send files to dropbox
+     */
+    public function addDocumentWithType(Document $document, $type, $useCloud = true)
+    {
+
+        $this->traitAddDocumentWithType($document, $type);
+
+        $this->save();
+        $document->refresh();
+
+        // if ($type != MEASUREMENT_FILE_TYPE) {
+        if ($this->shouldUseCloud($document)) {
+            if ($useCloud) {
+                if (env('USE_DROPBOX')) {
+                    $this->sendDocumentToDropbox($document);
+                }
+
+                if (env('USE_GOOGLE_DRIVE')) {
+                    SendDocumentsToGoogleDrive::dispatch($this, $document);
+                    // $this->sendDocumentToGoogleDrive($document);
+                }
+            }
+        }
+        return $document;
+    }
+
+
+    private function shouldUseCloud(Document $document){
+        if ($document->type == MEASUREMENT_FILE_TYPE){
+            return false;
+        }
+        return true;
+    }
+
+    public function getDocumentFromDropbox(Document $document)
+    {
+        $media = $document->getRelatedMedia();
+        $filename = $media->file_name;
+        $dropboxFolder = $this->getDropboxFolderPath($document);
+        $dropboxFilepath = $this->getDropboxFilePath($document, $filename);
+        $client = new \Spatie\Dropbox\Client(env('DROPBOX_TOKEN'));
+        $link = $client->getTemporaryLink($dropboxFilepath);
+        return $link;
+    }
+
+
+    public function getDocumentLinkFromGoogle(Document $document)
+    {
+        return $this->getDocumentFromGoogle($document, true);
+    }
+
+    public function getDocumentFromGoogle(Document $document, $justALink = false)
+    {
+
+        $media = $document->getRelatedMedia();
+        $filename = $media->file_name;
+
+        $cloudStorageData = json_decode($document->cloud_storage_data, true);
+
+        if (isset($cloudStorageData['path'])) {
+            $googleFolder = $cloudStorageData['path'];
+        } else {
+            $googleFolder = $this->getGoogleFolderPath($document);
+        }
+        if (isset($cloudStorageData['filename'])) {
+            $filename = $cloudStorageData['filename'];
+        } else {
+            $filename = $this->getGoogleFilename($document, $filename);
+        }
+
+        $path = $this->getGooglePathFromHumanPath($googleFolder);
+
+        $recursive = false; // Get subdirectories also?
+        $contents = collect(Storage::cloud()->listContents($path, $recursive));
+
+        // Get file details...
+        $file = $contents
+            ->where('type', '=', 'file')
+            ->where('filename', '=', pathinfo($filename, PATHINFO_FILENAME))
+            ->where('extension', '=', pathinfo($filename, PATHINFO_EXTENSION))
+            ->first(); // there can be duplicate file names!
+
+        if ($justALink) {
             $service = Storage::cloud()->getAdapter()->getService();
             $permission = new \Google_Service_Drive_Permission();
             $permission->setRole('reader');
@@ -340,14 +392,12 @@ class Project extends Model {
             $permission->setAllowFileDiscovery(false);
             $permissions = $service->permissions->create($file['basename'], $permission);
 
-
             // I couldn't find a method to create this, I guess it's alright doing it this way...
-            $link  = 'https://docs.google.com/document/d/'.$file['basename'].'/edit';
+            $link = 'https://docs.google.com/document/d/' . $file['basename'] . '/edit';
             return $link;
 
             // if we want the downloadable file link
             return Storage::cloud()->url($file['path']);
-
         }
 
         $readStream = Storage::cloud()->getDriver()->readStream($file['path']);
@@ -356,34 +406,30 @@ class Project extends Model {
             fpassthru($readStream);
         }, 200, [
             'Content-Type' => $media->mime_type,
-            'Content-disposition' => 'attachment; filename="'.$filename.'"', // force download?
+            'Content-disposition' => 'attachment; filename="' . $filename . '"', // force download?
         ]);
 
+        /*
+         $readStream = Storage::cloud()->getDriver()->readStream($file['path']);
 
-
-/*
- $readStream = Storage::cloud()->getDriver()->readStream($file['path']);
-
-    return response()->stream(function () use ($readStream) {
-        fpassthru($readStream);
-    }, 200, [
-        'Content-Type' => $file['mimetype'],
-        //'Content-disposition' => 'attachment; filename="'.$filename.'"', // force download?
-    ]);
-*/
-
-
-        return $link;
-
+            return response()->stream(function () use ($readStream) {
+                fpassthru($readStream);
+            }, 200, [
+                'Content-Type' => $file['mimetype'],
+                //'Content-disposition' => 'attachment; filename="'.$filename.'"', // force download?
+            ]);
+                return $link;
+        */
     }
 
 
-
-    public function getRelatedMedia(){
+    public function getRelatedMedia()
+    {
         // return $this->media;
     }
 
-    public function getDropboxFilename($document, $filename){
+    public function getDropboxFilename($document, $filename)
+    {
         $media = $document->getRelatedMedia();
 
         $path_parts = pathinfo($this->getMediaPath($media) . $filename);
@@ -391,20 +437,20 @@ class Project extends Model {
         $basename = $path_parts['filename'];
         $extension = $path_parts['extension'];
 
-
-        if ($document->type == self::REPORT_DOCUMENT_TYPE){
+        if ($document->type == self::REPORT_DOCUMENT_TYPE) {
             $basename .= '__' . date('Y_m_d__h_i', time());
         }
         return $basename . '__' . $media->id . '.' . $extension;
     }
 
-    public function getDropboxFilePath ($document, $filename){
-        $path = $this->getDropboxFolderPath($document) .$this->getDropboxFilename($document, $filename);
+    public function getDropboxFilePath($document, $filename)
+    {
+        $path = $this->getDropboxFolderPath($document) . $this->getDropboxFilename($document, $filename);
         return $this->sanitizePathForCloudStorages($path);
     }
 
-    public function getDropboxFolderPath($document = false){
-
+    public function getDropboxFolderPath($document = false)
+    {
         $boat = $this->boat;
         $project_id = $this->id;
         $boat_name = $boat->name;
@@ -414,14 +460,14 @@ class Project extends Model {
             $path .= DIRECTORY_SEPARATOR . env('CLOUD_BASE_DIR');
         }
 
-        $path .= DIRECTORY_SEPARATOR .'boats' . DIRECTORY_SEPARATOR .$boat_name . '_'. sprintf("%07d", $project_id)   . '_' .
-        $this->project_type. '_' . date ('Y-m-d', strtotime($this->created_at)). DIRECTORY_SEPARATOR;
+        $path .= DIRECTORY_SEPARATOR . 'boats' . DIRECTORY_SEPARATOR . $boat_name . '_' . sprintf("%07d", $project_id) . '_' .
+            $this->project_type . '_' . date('Y-m-d', strtotime($this->created_at)) . DIRECTORY_SEPARATOR;
 
-        if ( $document && $document->document_number) {
+        if ($document && $document->document_number) {
             $path .= $document->document_number . DIRECTORY_SEPARATOR;
         }
 
-        if ( $document && $document->type == self::REPORT_DOCUMENT_TYPE) {
+        if ($document && $document->type == self::REPORT_DOCUMENT_TYPE) {
             $path .= $this::REPORT_FOLDER . DIRECTORY_SEPARATOR;
 
         }
@@ -429,7 +475,8 @@ class Project extends Model {
 
     }
 
-    public function getGoogleFilename($document, $filename){
+    public function getGoogleFilename($document, $filename)
+    {
         return $this->getDropboxFilename($document, $filename);
     }
 
@@ -437,20 +484,24 @@ class Project extends Model {
     //     return $this->getDropboxFilePath ($document, $filename);
     // }
 
-    public function getGoogleFolderPath($document){
+    public function getGoogleFolderPath($document)
+    {
         return $this->getDropboxFolderPath($document);
     }
 
-    public function getGoogleProjectReportsFolderPath(){
+    public function getGoogleProjectReportsFolderPath()
+    {
         return $this->getDropboxFolderPath() . $this::REPORT_FOLDER . DIRECTORY_SEPARATOR;
     }
 
-    public function getGoogleProjectDocumentsFolderPath(){
+    public function getGoogleProjectDocumentsFolderPath()
+    {
         return $this->getDropboxFolderPath() . $this::DOCUMENTS_FOLDER . DIRECTORY_SEPARATOR;
     }
 
 
-    public function getListOfReportsFromGoogle(){
+    public function getListOfReportsFromGoogle()
+    {
 
         $projectReportsPath = $this->getGoogleProjectReportsFolderPath();
 
@@ -461,7 +512,7 @@ class Project extends Model {
 
         $files = [];
 
-        foreach ($contents as $file){
+        foreach ($contents as $file) {
 
             /*
                $file is something like:
@@ -531,10 +582,10 @@ class Project extends Model {
             //
 
             // I couldn't find a method to create this, I guess it's alright doing it this way...
-            $link = 'https://docs.google.com/document/d/'.$file['basename'].'/edit';
+            $link = 'https://docs.google.com/document/d/' . $file['basename'] . '/edit';
 
 
-            $files []= [
+            $files [] = [
                 'name' => $file['name'],
                 'link' => $link
 
@@ -546,48 +597,63 @@ class Project extends Model {
     }
 
 
-    public function getMediaPath($media){
+    public function getMediaPath($media)
+    {
 
         $document = $media->model;
         $media_id = $media->id;
 
         $project_id = $this->id;
-        $path = DIRECTORY_SEPARATOR .'projects' . DIRECTORY_SEPARATOR . $project_id . DIRECTORY_SEPARATOR . $document->type .
-                 DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
+        $path = DIRECTORY_SEPARATOR . 'projects' . DIRECTORY_SEPARATOR . $project_id . DIRECTORY_SEPARATOR . $document->type .
+            DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
 
         return $path;
 
     }
 
-    public function boat() {
+    public function boat()
+    {
         return $this->belongsTo('App\Boat');
     }
 
-    public function site() {
+    public function site()
+    {
         return $this->belongsTo('App\Site');
     }
 
-    public function siteLocation() {
+    public function siteLocation()
+    {
         return $this->site()->select('sites.name', 'sites.location')->first();
     }
 
-    public function tasks() {
+    public function tasks()
+    {
         return $this->hasMany(Task::class);
     }
 
-    public function history() {
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function zones()
+    {
+        return $this->hasMany(Zone::class);
+    }
+
+    public function history()
+    {
         return $this->morphMany('App\History', 'historyable');
     }
 
-    public function sections() {
+    public function sections()
+    {
         return $this->belongsToMany('App\Section')
-                        ->using('App\ProjectSection')
-                        ->withPivot([
-                            'project_id',
-                            'section_id',
-                            'created_at',
-                            'updated_at'
-        ]);
+            ->using('App\ProjectSection')
+            ->withPivot([
+                'project_id',
+                'section_id',
+                'created_at',
+                'updated_at'
+            ]);
     }
 
     /**
@@ -621,20 +687,22 @@ class Project extends Model {
     }
 
 
-    public function comments() {
+    public function comments()
+    {
         return $this->morphMany('App\Comment', 'commentable');
     }
 
 
-    public function users() {
+    public function users()
+    {
         return $this->belongsToMany('App\User', 'project_user')
 //                        ->using('App\ProjectUser')
-                        ->withPivot([
-                            // 'role',
-                            'profession_id',
-                            'created_at',
-                            'updated_at'
-        ]);
+            ->withPivot([
+                // 'role',
+                'profession_id',
+                'created_at',
+                'updated_at'
+            ]);
     }
 
     /**
@@ -673,51 +741,53 @@ class Project extends Model {
      * @param int $force
      * @return array
      */
-    public function close($force = 0) {
+    public function close($force = 0)
+    {
 
         /** controllo se il progetto ha task che si trovano in
          *  TASKS_STATUS_DRAFT, TASKS_STATUS_IN_PROGRESS,
          *  TASKS_STATUS_REMARKED, TASKS_STATUS_ACCEPTED
          * * */
         $foundTasks = $this->tasks()
-                        ->where('is_open', '=', 1)
-                        ->whereIn('task_status',
-                          [
-                            TASKS_STATUS_DRAFT,
-                            TASKS_STATUS_SUBMITTED,
-                            TASKS_STATUS_ACCEPTED,
-                            TASKS_STATUS_IN_PROGRESS,
-                            TASKS_STATUS_REMARKED
-                           ]);
+            ->where('is_open', '=', 1)
+            ->whereIn('task_status',
+                [
+                    TASKS_STATUS_DRAFT,
+                    TASKS_STATUS_SUBMITTED,
+                    TASKS_STATUS_ACCEPTED,
+                    TASKS_STATUS_IN_PROGRESS,
+                    TASKS_STATUS_REMARKED
+                ]);
 
 
         if ($foundTasks->count() && !$force) {
             // non posso chiudere il progetto ritorno false
-            return ['success'=>false, 'tasks'=>$foundTasks->count()];
+            return ['success' => false, 'tasks' => $foundTasks->count()];
         }
 
         if ($foundTasks->count() && $force) {
             // chiudo tutti i ticket che trovo e metto il progetto in stato closed
-            $n =  $foundTasks->count();
+            $n = $foundTasks->count();
             foreach ($foundTasks->get() as $task) {
-                $task->update(['is_open'=>0]);
+                $task->update(['is_open' => 0]);
             }
             $this->_closeProject();
-           return ['success'=>true, 'tasks'=>$n];
+            return ['success' => true, 'tasks' => $n];
         }
 
         if ($foundTasks->count() == 0) {
             // chiudo il progetto e ritorno true
             $this->_closeProject();
-            return ['success'=>true, 'tasks'=>$foundTasks->count()];
+            return ['success' => true, 'tasks' => $foundTasks->count()];
         }
     }
 
     /**
      * Setta lo stato del progetto a PROJECT_STATUS_CLOSED
      */
-    private function _closeProject() {
-        $this->update(['project_status'=>PROJECT_STATUS_CLOSED]);
+    private function _closeProject()
+    {
+        $this->update(['project_status' => PROJECT_STATUS_CLOSED]);
     }
 
     /**
@@ -760,7 +830,8 @@ class Project extends Model {
         }
     }
 
-    public function checkForUpdatedFilesOnGoogleDrive(){
+    public function checkForUpdatedFilesOnGoogleDrive()
+    {
 
         $projectDocumentsPath = $this->getGoogleProjectDocumentsFolderPath();
         // this will create the directory in the google drive account
@@ -770,12 +841,12 @@ class Project extends Model {
 
         $filenamesOnGoogle = [];
 
-        foreach ($contents as $file){
+        foreach ($contents as $file) {
 
-            $filenamesOnGoogle []= $file['name'];
+            $filenamesOnGoogle [] = $file['name'];
 
             $found = false;
-            foreach ($this->generic_documents as $d){
+            foreach ($this->generic_documents as $d) {
                 if ($found) {
                     continue;
                 }
@@ -783,7 +854,7 @@ class Project extends Model {
                 $media = $d->getRelatedMedia();
                 if ($file['name'] == $media->file_name) {
                     $found = true;
-                    if ($timestamp > strtotime($media->updated_at)){
+                    if ($timestamp > strtotime($media->updated_at)) {
                         // update file on disk and media updated_at in db
                         $rawData = Storage::cloud()->get($file['path']);
                         $base64FileContent = base64_encode($rawData);
@@ -794,58 +865,58 @@ class Project extends Model {
                     }
                 }
             }
-            if (!$found){
-                    // we didn't know about this file, so create the file in the DB
+            if (!$found) {
+                // we didn't know about this file, so create the file in the DB
 
-                    if ($file['mimetype'] == 'application/vnd.google-apps.document'){
-                        // use export for docs
+                if ($file['mimetype'] == 'application/vnd.google-apps.document') {
+                    // use export for docs
 
-                        $url = Storage::cloud()->url($file['path']);
-                        $rawData =
+                    $url = Storage::cloud()->url($file['path']);
+                    $rawData =
 
-                        $ch = curl_init($url);
-                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    $ch = curl_init($url);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-                        $rawData = curl_exec($ch);
+                    $rawData = curl_exec($ch);
 
-                        curl_close($ch);
-                    } else {
-                       $rawData = Storage::cloud()->get($file['path']);
+                    curl_close($ch);
+                } else {
+                    $rawData = Storage::cloud()->get($file['path']);
 
-                    }
-                    $base64FileContent = base64_encode($rawData);
-                    $uploadedFile = Document::createUploadedFileFromBase64($base64FileContent,  $file['name']);
-                    $cloudStorageData = [
-                        'storage' => 'gDrive',
-                        'path' =>  $projectDocumentsPath,
-                        'filename' =>  $file['name']
-                    ];
-                    $doc = new Document([
-                        'title' => $file['name'],
-                        'file' => $uploadedFile,
-                        'cloud_storage_data' => json_encode($cloudStorageData)
-                    ]);
-                    // we received the file from google drive, so we don't want to update it there as well
-                    $this->addDocumentWithType($doc, Document::GENERIC_DOCUMENT_TYPE, false);
+                }
+                $base64FileContent = base64_encode($rawData);
+                $uploadedFile = Document::createUploadedFileFromBase64($base64FileContent, $file['name']);
+                $cloudStorageData = [
+                    'storage' => 'gDrive',
+                    'path' => $projectDocumentsPath,
+                    'filename' => $file['name']
+                ];
+                $doc = new Document([
+                    'title' => $file['name'],
+                    'file' => $uploadedFile,
+                    'cloud_storage_data' => json_encode($cloudStorageData)
+                ]);
+                // we received the file from google drive, so we don't want to update it there as well
+                $this->addDocumentWithType($doc, Document::GENERIC_DOCUMENT_TYPE, false);
             }
 
         }
 
         // we remove entries from DB if the file doesn't exist anymore on google drive
 
-        foreach ($this->generic_documents as $document){
+        foreach ($this->generic_documents as $document) {
 
             $media = $document->getRelatedMedia();
             if ($media) {
                 $cloudStorageData = json_decode($document->cloud_storage_data, true);
-                if (isset($cloudStorageData) && isset($cloudStorageData['storage']) && $cloudStorageData['storage'] == 'gDrive' && !in_array( $media->file_name, $filenamesOnGoogle)) {
+                if (isset($cloudStorageData) && isset($cloudStorageData['storage']) && $cloudStorageData['storage'] == 'gDrive' && !in_array($media->file_name, $filenamesOnGoogle)) {
                     $document->delete();
                 }
             }
 
         }
 
-        $now =  date("Y-m-d H:i:s");
+        $now = date("Y-m-d H:i:s");
         $this->last_cloud_sync = $now;
         $this->save();
     }
@@ -871,7 +942,8 @@ class Project extends Model {
     /**
      * removes malevolent characters from path to be used on google drive, dropbox, etc.
      */
-    private function sanitizePathForCloudStorages($path){
+    private function sanitizePathForCloudStorages($path)
+    {
 
         $malevolentCharacters = [
             "'", "*", "\\", ".", "\""
@@ -880,65 +952,157 @@ class Project extends Model {
         return str_replace($malevolentCharacters, '', $path);
     }
 
-    public function getGoogleSyncQueueName(){
-
-        return 'project-google-sync-'.$this->id;
+    public function getGoogleSyncQueueName()
+    {
+        return 'project-google-sync-' . $this->id;
     }
 
-    public function getGoogleSyncQueueSize(){
+    public function getGoogleSyncQueueSize()
+    {
 
         // $queue = App::make('queue.connection');
         // $size = $queue->size($this->getGoogleSyncQueueName());
 
-//TODO: fix
+        //TODO: fix
         $size = Queue::size($this->getGoogleSyncQueueName());
         return $size;
-
     }
 
 
-    public function getMeasurementLogsFullInfo($measurementLogDocument){
+    public function getMeasurementLogsFullInfo($measurementLogDocument)
+    {
         // select min(measurement_time), max(measurement_time) from net7em_measurements where document_id = 28 ;
 
         $measurement = new \Net7\EnvironmentalMeasurement\Models\Measurement();
 
         $min = DB::table($measurement->getTable())
-        ->where('document_id', '=', $measurementLogDocument->id)
-        ->min('measurement_time');
+            ->where('document_id', '=', $measurementLogDocument->id)
+            ->min('measurement_time');
 
         $max = DB::table($measurement->getTable())
-        ->where('document_id', '=', $measurementLogDocument->id)
-        ->max('measurement_time');
-return [
-    'min' => $min,
-    'max' => $max
-];
+            ->where('document_id', '=', $measurementLogDocument->id)
+            ->max('measurement_time');
 
-
+        return [
+            'min' => $min,
+            'max' => $max
+        ];
     }
 
-    public function getMeasurementLogsData($page, $size){
-        $measurementLogs = $this->measurementLogs;
-        $start = ($page - 1) * $size ;
-        $end = $start + $size;
+    /**
+     * @param $collection
+     * @param $page_param
+     * @return array
+     */
+    protected static function getPaginationResponseTags($collection, $page_param)
+    {
+        $page = $page_param['number'];
+        $per_page = $page_param['size'];
+        $page_size_param = '&page[size]='.$per_page;
+        // io già la usavo su /api/v1/tasks?page[number]=3&page[size]=1
+        $json_reports_array = json_decode($collection->toJson(), 1);
 
-        $res = [];
-        for ($i = $start; $i < $end; $i++){
-            if (isset($measurementLogs[$i])){
-                $minmax  = $this->getMeasurementLogsFullInfo($measurementLogs[$i]);
-                $res [] = [
-                    'id' => $measurementLogs[$i]->id,
-                    'upload_date' => $measurementLogs[$i]->created_at,
-                    'start_date' => gmdate('Y-m-d\TH:i:s\.000000\Z', strtotime($minmax['min'])),
-                    'end_date' =>  gmdate('Y-m-d\TH:i:s\.000000\Z', strtotime($minmax['max']))
-                ];
-            }
+//      trasforma  "http://storm.zoba/api/v1/projects/1/reports-list?page=2" in "http://storm.zoba/api/v1/projects/1/reports-list?page[number]=2"
+        $pattern = "/([a-zA-Z0-9-.%:\/]*[?][a-zA-Z0-9-.%:=\/&]*)(page=)([0-9]+)/i";
+        $replace = "$1page[number]=$3";
+
+        $ret = [
+            'meta' => [
+                'page' => [
+                    'current-page' => $collection->currentPage(),
+                    'per-page' => $per_page,
+                    'from' => $collection->firstItem(),
+                    'to' => $collection->lastItem(),
+                    'total' => $collection->total(),
+                    'last-page' => $collection->lastPage(),
+                ]
+            ],
+            'links' => [
+                'first' => $json_reports_array['first_page_url'] ? preg_replace($pattern, $replace, $json_reports_array['first_page_url']).$page_size_param : null,
+                'prev' => $json_reports_array['prev_page_url'] ? preg_replace($pattern, $replace, $json_reports_array['prev_page_url']).$page_size_param : null,
+                'next' => $json_reports_array['next_page_url'] ? preg_replace($pattern, $replace, $json_reports_array['next_page_url']).$page_size_param : null,
+                'last' => $json_reports_array['last_page_url'] ? preg_replace($pattern, $replace, $json_reports_array['last_page_url']).$page_size_param : null,
+            ]
+        ];
+        return $ret;
+    }
+
+    /**
+     * @param null $page_param
+     * @return array
+     */
+    public function getReportsLinks($page_param = null)
+    {
+        if ($page_param) {
+            $page = $page_param['number'];
+            $per_page = $page_param['size'];
+            $reports = $this
+                ->getDocumentsByTypeQuery(self::REPORT_DOCUMENT_TYPE, 'created_at', 'desc')
+                ->paginate($per_page, ['*'], 'page', $page);
+            $ret = self::getPaginationResponseTags($reports, $page_param);
+        } else {
+            $reports = $this
+                ->getDocumentsByTypeQuery(self::REPORT_DOCUMENT_TYPE, 'created_at', 'desc')
+                ->get();
         }
 
-        return $res;
+        $gdrive_links = [];
+        foreach ($reports as $report) {
+            $data = json_decode($report->cloud_storage_data, true);
+            $gdrive_links[] = [
+                'upload_date' => $report->created_at,
+                'link' => $data['gdrive_link'],
+                'name' => $data['gdrive_filename'],
+                'title' => $report->title,
+                'subtype' => $report->subtype,
+                'id' => $report->id
+            ];
+        }
+
+        $ret['data'] = $gdrive_links;
+        return $ret;
+//        return $this->getListOfReportsFromGoogle();
     }
 
-    public function measurementLogs(){
+    /**
+     * @param null $page_param
+     * @return array
+     */
+    public function getMeasurementLogsData($page_param = null)
+    {
+        if ($page_param) {
+            $measurement_logs = $this
+                ->getDocumentsByTypeQuery(MEASUREMENT_FILE_TYPE, 'created_at', 'desc')
+                ->paginate($page_param['size'], ['*'], 'page', $page_param['number']);
+            $ret = self::getPaginationResponseTags($measurement_logs, $page_param);
+        } else {
+            $measurement_logs = $this
+                ->getDocumentsByTypeQuery(MEASUREMENT_FILE_TYPE, 'created_at', 'desc')
+                ->get();
+        }
+
+        $measurement_logs_data = [];
+        foreach ($measurement_logs as $measurement_log) {
+            $minmax = $this->getMeasurementLogsFullInfo($measurement_log);
+            $additional_data = @json_decode($measurement_log->additional_data, true);
+            $measurement_logs_data[] = [
+                'id' => $measurement_log->id,
+                'upload_date' => $measurement_log->created_at,
+                'data_source' => @$additional_data['data_source'],
+                'start_date' => gmdate('Y-m-d\TH:i:s\.000000\Z', strtotime($minmax['min'])),
+                'end_date' => gmdate('Y-m-d\TH:i:s\.000000\Z', strtotime($minmax['max']))
+            ];
+        }
+
+        $ret['data'] = $measurement_logs_data;
+        return $ret;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function measurementLogs()
+    {
         return $this->documents()->where('type', MEASUREMENT_FILE_TYPE);
     }
 }

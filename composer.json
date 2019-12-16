@@ -44,7 +44,7 @@
         "nao-pon/flysystem-google-drive": "~1.1",
         "net7/documents": "dev-master",
         "net7/logging": "dev-master",
-        "net7/docs-generator": "dev-develop",
+        "net7/docs-generator": "dev-master",
         "net7/env-measure": "dev-master",
         "norse-blue/parentity": "dev-master",
         "predis/predis": "^1.1",
@@ -52,7 +52,8 @@
         "spatie/flysystem-dropbox": "^1.1",
         "spatie/laravel-model-status": "^1.7",
         "spatie/laravel-permission": "^2.37",
-        "venturecraft/revisionable": "1.*"
+        "venturecraft/revisionable": "1.*",
+        "ext-json": "*"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",

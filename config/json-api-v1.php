@@ -53,7 +53,7 @@ return [
     | `'posts' => App\Post::class`
     */
     'resources' => [
-        
+
         'documents' => \Net7\Documents\Document::class,
         'projects' => \App\Project::class,
         'tasks' => \App\Task::class,
@@ -68,6 +68,7 @@ return [
         'comments' => \App\Comment::class,
         'project-sections' => \App\ProjectSection::class,
         'sites' => \App\Site::class,
+        'zones' => \App\Zone::class,
     ],
 
     /*

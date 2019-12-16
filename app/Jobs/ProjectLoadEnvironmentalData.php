@@ -45,6 +45,6 @@ class ProjectLoadEnvironmentalData implements ShouldQueue
         $project = $this->project;
         $file_path = $project->getDocumentMediaFilePath(MEASUREMENT_FILE_TYPE);
         $array = Utils::convertCsvInAssociativeArray($file_path);
-        $project->translateMeasurementsInputForTempDPHumSensor($array, $this->data_source ? $this->data_source : 'STORM - Web App Frontend', $this->document);
+        $project->translateMeasurementsInputForTempDPHumSensor($array, $this->data_source ? $this->data_source : MEASUREMENT_DEFAULT_DATA_SOURCE, $this->document);
     }
 }
