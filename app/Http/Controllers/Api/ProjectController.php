@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Jobs\NotifyTaskUpdates;
 use App\Jobs\ProjectLoadEnvironmentalData;
 use App\Notifications\TaskCreated;
+use App\Zone;
 use function __;
 use function explode;
+use function in_array;
 use function json_decode;
 use function md5;
 use function notify;
@@ -504,4 +506,61 @@ class ProjectController extends Controller
         }
     }
 
+    /**
+     * @param Request $request
+     * @param $record
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
+     */
+    public function bulkCreateZones(Request $request, $record)
+    {
+        try {
+            $zones = $request->data;
+            if (!empty($zones)) {
+                $to_be_created = [];
+                foreach ($zones as $parent_zone) {
+                    $code = $parent_zone['attributes']['code'];
+                    $description = $parent_zone['attributes']['description'];
+                    $data = [
+                      'code' => $code,
+                      'description' => $description
+                    ];
+                    /** @var Project $record */
+                    if ($record->countFatherZonesByData($data)) {
+                        return Utils::jsonAbortWithInternalError(
+                            422,
+                            110,
+                            'Error creating zones',
+                            "Impossible to create parent Zone [$code, $description]: code+description already taken!");
+                    }
+                    $children = $parent_zone['attributes']['children_zones'];
+                    unset($parent_zone['attributes']['children_zones']);
+                    $to_be_created[] = $parent_zone['attributes'];
+                    $used_code_descr = [];
+                    foreach ($children as $child) {
+                        $c_code = $child['code'];
+                        $c_description = $child['description'];
+                        $md5 = md5($c_code.$c_description);
+                        if (in_array($md5, $used_code_descr)) {
+                            return Utils::jsonAbortWithInternalError(
+                                422,
+                                110,
+                                'Error creating zones',
+                                "Impossible to create child Zone [$c_code, $c_description]: code+description already taken for parent Zone [$code, $description]!");
+                        }
+                        $used_code_descr[] = $md5;
+                        $to_be_created[] = $child;
+                    }
+                }
+            }
+
+            foreach ($to_be_created as $zone_data) {
+                Zone::create($zone_data);
+            }
+
+            return Utils::renderStandardJsonapiResponse([], 204);
+
+        } catch (\Exception $e) {
+            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error creating zones", $e->getMessage());
+        }
+    }
 }

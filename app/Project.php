@@ -1105,5 +1105,34 @@ class Project extends Model
     {
         return $this->documents()->where('type', MEASUREMENT_FILE_TYPE);
     }
+
+    /**
+     * @param $data
+     */
+    public function getFatherZonesByDataQuery($data)
+    {
+        return $this->zones()
+            ->whereNull('parent_zone_id')
+            ->where($data);
+    }
+
+    /**
+     * @param $data
+     * @return int
+     */
+    public function countFatherZonesByData($data)
+    {
+        return $this->getFatherZonesByDataQuery($data)->count();
+    }
+
+    /**
+     * @param $data
+     */
+    public function getChildrenZonesByDataQuery($data, $parent_zone_id)
+    {
+        return $this->zones()
+            ->where('parent_zone_id', '=', $parent_zone_id)
+            ->where($data);
+    }
 }
 

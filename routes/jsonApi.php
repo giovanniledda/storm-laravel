@@ -120,6 +120,11 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
         });
 
 
+        $api->resource('projects')->only('bulk-create-zones')->controller('ProjectController') // uses the App\Http\Controllers\Api\ZoneController
+        ->routes(function ($project) {
+            $project->post('{record}/bulk-create-zones', 'bulkCreateZones')->name('bulk-create-zones');
+        });
+
         $api->resource('projects')->relationships(function ($relations) {
             $relations->hasOne('boat'); // punta al methodo dell'adapter /app/jsonApi/Projects/Adapter non al modello
             $relations->hasMany('tasks');
@@ -128,7 +133,7 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
         });
 
         $api->resource('updates');
-        $api->resource('updates')->only('mark-read')->controller('UpdateController') //uses the App\Http\Controllers\Api\UpdateController
+        $api->resource('updates')->only('mark-read')->controller('UpdateController') // uses the App\Http\Controllers\Api\UpdateController
         ->routes(function ($boats) {
             $boats->get('{record}/mark-read', 'markAsRead')->name('mark-read');
         });
@@ -136,7 +141,7 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
         $api->resource('comments');
 
 
-        $api->resource('documents')->only('show')->controller('DocumentsController') //uses the App\Http\Controllers\Api\DocumentController
+        $api->resource('documents')->only('show')->controller('DocumentsController') // uses the App\Http\Controllers\Api\DocumentController
         ->routes(function ($docs) {
             $docs->get('{record}/show/{size}', 'show')->name('show_with_size');
             $docs->get('{record}/show', 'show')->name('show');
