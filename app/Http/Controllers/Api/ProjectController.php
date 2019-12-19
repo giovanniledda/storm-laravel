@@ -121,6 +121,7 @@ class ProjectController extends Controller
      */
     public function changeType(RequestProjectChangeType $request, $record)
     {
+        /** @var Project $project */
         $project = Project::findOrFail($record->id);
         if ($project->project_status == PROJECT_STATUS_CLOSED) {
             return Utils::jsonAbortWithInternalError(422, 130, PROJECT_TYPE_API_VALIDATION_TITLE, PROJECT_TYPE_API_PROJECT_CLOSED_MSG);
@@ -134,6 +135,11 @@ class ProjectController extends Controller
 
                 // copio gli utenti associati
                 $project->transferMyUsersToProject($newProject);
+
+                // copio le zone
+                if ($request->has('data.attributes.import_zones')) {
+                    $project->transferMyZonesToProject($newProject);
+                }
 
                 // archivio il vecchio
                 $project->close(1);
@@ -528,7 +534,7 @@ class ProjectController extends Controller
                     // verifico che non ci sia omonimia tra gli altri nodi parent per lo stesso progetto
                     $excluded_ids = isset($parent_zone['id']) ? [$parent_zone['id']] : [];
                     /** @var Project $record */
-                    if ($record->countFatherZonesByData($data, $excluded_ids)) {
+                    if ($record->countParentZonesByData($data, $excluded_ids)) {
                         return Utils::jsonAbortWithInternalError(
                             422,
                             110,

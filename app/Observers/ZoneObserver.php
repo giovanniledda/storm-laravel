@@ -15,10 +15,12 @@ class ZoneObserver
         // Check this only for parent zones
         if (!$zone->parent_zone_id && $zone->isDirty('project_id')) {
             if ($zone->children_zones()->count()) {
-                // if project_id is changed for father, then change it for children too
-                Zone::where('parent_zone_id', $zone->id)->update([
+                // if project_id is changed for parent, then change it for children too
+                $zone->children_zones()->update([
                     'project_id' => $zone->project_id
                 ]);
+//                $c = $zone->children_zones()->first();
+//                dd($c);
             }
         }
     }

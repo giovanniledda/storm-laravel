@@ -52,9 +52,51 @@ class ModelZoneTest extends TestCase
         $this->assertEquals($zone_parent->project->id, $project->id);
         $this->assertContains($zone_parent->id, $project->zones()->pluck('id')); // testo la relazione inversa
 
-        // i figli devono avere lo stesso project del padre
-//        $this->assertEquals($zone_child1->project->id, $project->id);
+        // test: countParentZones
+        $zone_parent2 = factory(Zone::class)->create();
+        $zone_parent2->project()->associate($project);
+        $zone_parent2->save();
 
+        $zone_parent3 = factory(Zone::class)->create();
+        $zone_parent3->project()->associate($project);
+        $zone_parent3->save();
+
+        $this->assertEquals(3, $project->countParentZones());
+
+        // test: countParentZonesByData
+        $this->assertEquals(1, $project->countParentZonesByData(
+            ['code' => $zone_parent3->code, 'description' => $zone_parent3->description]
+        ));
+
+        // testare: countChildrenZonesByData
+        $this->assertEquals(1, $project->countChildrenZonesByData(
+            $zone_parent->id,
+            ['code' => $zone_child1->code, 'description' => $zone_child1->description]
+        ));
+        $this->assertEquals(1, $project->countChildrenZonesByData(
+            $zone_parent->id,
+            ['code' => $zone_child2->code, 'description' => $zone_child2->description]
+        ));
+        $this->assertEquals(0, $project->countChildrenZonesByData(
+            $zone_parent3->id,
+            ['code' => $zone_child2->code, 'description' => $zone_child2->description]
+        ));
+
+        // testare: transferMyZonesToProject
+        /** @var Project $project2 */
+        $project2 = factory(Project::class)->create();
+        $project->transferMyZonesToProject($project2);
+
+        $this->assertEquals(3, $project2->countParentZones());
+        $this->assertEquals(1, $project2->countParentZonesByData(
+            ['code' => $zone_parent->code, 'description' => $zone_parent->description]
+        ));
+        $this->assertEquals(1, $project2->countParentZonesByData(
+            ['code' => $zone_parent2->code, 'description' => $zone_parent2->description]
+        ));
+        $this->assertEquals(1, $project2->countParentZonesByData(
+            ['code' => $zone_parent3->code, 'description' => $zone_parent3->description]
+        ));
 
         /** zone_analysis_info_block */
         /** $table->foreign('zone_analysis_info_block_id')->references('id')->on('zone_analysis_info_blocks')->onDelete('set null') */

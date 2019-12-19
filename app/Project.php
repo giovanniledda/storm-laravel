@@ -1107,15 +1107,37 @@ class Project extends Model
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function getParentZonesQuery()
+    {
+        return $this->zones()->whereNull('parent_zone_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getParentZones()
+    {
+        return $this->getParentZonesQuery()->get();
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function countParentZones()
+    {
+        return $this->getParentZonesQuery()->count();
+    }
+
+    /**
      * @param $data
      * @param array $excluded_ids
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function getFatherZonesByDataQuery($data, $excluded_ids = [])
+    public function getParentZonesByDataQuery($data, $excluded_ids = [])
     {
-        $ret = $this->zones()
-            ->whereNull('parent_zone_id')
-            ->where($data);
+        $ret = $this->getParentZonesQuery()->where($data);
         if ($excluded_ids) {
             $ret->whereNotIn('id', $excluded_ids);
         }
@@ -1127,9 +1149,18 @@ class Project extends Model
      * @param array $excluded_ids
      * @return int
      */
-    public function countFatherZonesByData($data, $excluded_ids = [])
+    public function countParentZonesByData($data, $excluded_ids = [])
     {
-        return $this->getFatherZonesByDataQuery($data, $excluded_ids)->count();
+        return $this->getParentZonesByDataQuery($data, $excluded_ids)->count();
+    }
+
+    /**
+     * @param $parent_zone_id
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function getChildrenZonesQuery($parent_zone_id)
+    {
+        return $this->zones()->where('parent_zone_id', '=', $parent_zone_id);
     }
 
     /**
@@ -1140,9 +1171,7 @@ class Project extends Model
      */
     public function getChildrenZonesByDataQuery($parent_zone_id, $data, $excluded_ids = [])
     {
-        $ret = $this->zones()
-            ->where('parent_zone_id', '=', $parent_zone_id)
-            ->where($data);
+        $ret = $this->getChildrenZonesQuery($parent_zone_id)->where($data);
         if ($excluded_ids) {
             $ret->whereNotIn('id', $excluded_ids);
         }
@@ -1158,6 +1187,39 @@ class Project extends Model
     public function countChildrenZonesByData($parent_zone_id, $data, $excluded_ids = [])
     {
         return $this->getChildrenZonesByDataQuery($parent_zone_id, $data, $excluded_ids)->count();
+    }
+
+    /**
+     * Copies Zones from project A to project B
+     *
+     * @param Project $project
+     */
+    public function transferMyZonesToProject(Project $project)
+    {
+        if ($this->zones()->count()) {
+            foreach ($this->getParentZones() as $p_zone) {
+                $new_p_zone = Zone::create(
+                    [
+                        'project_id' => $project->id,
+                        'code' => $p_zone->code,
+                        'description' => $p_zone->description,
+                        'extension' => $p_zone->extension,
+                    ]
+                );
+
+                foreach ($p_zone->children_zones as $c_zone) {
+                    Zone::create(
+                        [
+                            'parent_zone_id' => $p_zone->id,
+                            'project_id' => $project->id,
+                            'code' => $c_zone->code,
+                            'description' => $c_zone->description,
+                            'extension' => $c_zone->extension,
+                        ]
+                    );
+                }
+            }
+        }
     }
 }
 
