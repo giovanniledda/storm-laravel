@@ -7,6 +7,7 @@ use App\Jobs\ProjectLoadEnvironmentalData;
 use App\Notifications\TaskCreated;
 use App\Zone;
 use function __;
+use function array_key_exists;
 use function explode;
 use function in_array;
 use function json_decode;
@@ -525,15 +526,19 @@ class ProjectController extends Controller
         try {
             $zones = $request->data;
             if (!empty($zones)) {
-                $to_be_created = [];
+                $parent_to_be_created = [];
+                $children_to_be_created = [];  // key (code+desc del padre) => value (array dei figli)
                 $to_be_updated = [];
                 foreach ($zones as $parent_zone) {
+                    $children_for_this_parent = [];
                     $code = $parent_zone['attributes']['code'];
                     $description = $parent_zone['attributes']['description'];
                     $data = [
                       'code' => $code,
                       'description' => $description
                     ];
+                    $parent_key = md5($code.$description);
+
                     // verifico che non ci sia omonimia tra gli altri nodi parent per lo stesso progetto
                     $excluded_ids = isset($parent_zone['id']) ? [$parent_zone['id']] : [];
                     /** @var Project $record */
@@ -549,7 +554,7 @@ class ProjectController extends Controller
                     if (isset($parent_zone['id'])) {
                         $to_be_updated[$parent_zone['id']] = $parent_zone['attributes'];
                     } else {
-                        $to_be_created[] = $parent_zone['attributes'];
+                        $parent_to_be_created[] = $parent_zone['attributes'];
                     }
                     $used_code_descr = [];
                     foreach ($children as $child) {
@@ -570,23 +575,34 @@ class ProjectController extends Controller
                         if (isset($child['id'])) {
                             $to_be_updated[$child['id']] = $child;
                         } else {
-                            $to_be_created[] = $child;
+                            $children_for_this_parent[] = $child;
+                        }
+                    }
+                    $children_to_be_created[$parent_key] = $children_for_this_parent;
+                }
+
+                foreach ($to_be_updated as $id => $zone_data) {
+                    $zone = Zone::findOrFail($id);
+                    if (isset($zone_data['id'])) {
+                        unset($zone_data['id']);
+                    }
+                    $zone->update($zone_data);
+                }
+
+                foreach ($parent_to_be_created as $zone_data) {
+                    $p_zone = Zone::create($zone_data);
+                    $code = $p_zone->code;
+                    $description = $p_zone->description;
+                    $parent_key = md5($code.$description);
+                    if (array_key_exists($parent_key, $children_to_be_created)) {
+                        foreach ($children_to_be_created[$parent_key] as $child_data) {
+                            $child_data['parent_zone_id'] = $p_zone->id;
+                            Zone::create($child_data);
                         }
                     }
                 }
             }
 
-            foreach ($to_be_updated as $id => $zone_data) {
-                $zone = Zone::findOrFail($id);
-                if (isset($zone_data['id'])) {
-                    unset($zone_data['id']);
-                }
-                $zone->update($zone_data);
-            }
-
-            foreach ($to_be_created as $zone_data) {
-                Zone::create($zone_data);
-            }
 
             return Utils::renderStandardJsonapiResponse([], 204);
 
