@@ -614,6 +614,15 @@ class ProjectController extends Controller
                 if (!empty($new_children_for_existing_parent)) {
                     foreach ($new_children_for_existing_parent as $parent_id => $new_children_data) {
                         foreach ($new_children_data as $child_data) {
+                            if ($record->countChildrenZonesByData($parent_id, $child_data)) {
+                                $c_code = isset($child_data['code']) ? $child_data['code'] : null;
+                                $c_description = isset($child_data['description']) ? $child_data['description'] : null;
+                                return Utils::jsonAbortWithInternalError(
+                                    422,
+                                    110,
+                                    'Error creating zones',
+                                    "Impossible to create child Zone [$c_code, $c_description]: code+description already taken for parent Zone [ID: $parent_id]!");
+                            }
                             $child_data['parent_zone_id'] = $parent_id;
                             Zone::create($child_data);
                         }
