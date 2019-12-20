@@ -119,11 +119,17 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
             $project->post('{record}/env-log-delete', 'removeDocumentMeasurements')->name('env-log-delete');
         });
 
-
         $api->resource('projects')->only('bulk-create-zones')->controller('ProjectController') // uses the App\Http\Controllers\Api\ZoneController
         ->routes(function ($project) {
             $project->post('{record}/bulk-create-zones', 'bulkCreateZones')->name('bulk-create-zones');
         });
+
+        $api->resource('projects')->only('bulk-delete-zones')->controller('ProjectController') // uses the App\Http\Controllers\Api\ZoneController
+        ->routes(function ($project) {
+            $project->post('{record}/bulk-delete-zones', 'bulkDeleteZones')->name('bulk-delete-zones');
+        });
+
+
 
         $api->resource('projects')->relationships(function ($relations) {
             $relations->hasOne('boat'); // punta al methodo dell'adapter /app/jsonApi/Projects/Adapter non al modello

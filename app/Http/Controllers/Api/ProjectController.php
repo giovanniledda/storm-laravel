@@ -513,6 +513,9 @@ class ProjectController extends Controller
     }
 
     /**
+     *
+     * #PR23  api/v1/projects/{record_id}/bulk-create-zones
+     *
      * @param Request $request
      * @param $record
      * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
@@ -550,9 +553,9 @@ class ProjectController extends Controller
                     }
                     $used_code_descr = [];
                     foreach ($children as $child) {
-                        $c_code = $child['code'];
-                        $c_description = $child['description'];
-                        $parent_zone_id = $child['parent_zone_id'];
+                        $c_code = isset($child['code']) ? $child['code'] : null;
+                        $c_description = isset($child['description']) ? $child['description'] : null;
+                        $parent_zone_id = isset($child['parent_zone_id']) ? $child['parent_zone_id'] : null;
                         $md5 = md5($c_code.$c_description);
                         // verifico che non ci sia omonimia tra gli altri nodi children per lo stesso nodo parent
                         $excluded_ids = isset($child['id']) ? [$child['id']] : [];
@@ -589,6 +592,32 @@ class ProjectController extends Controller
 
         } catch (\Exception $e) {
             return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error creating zones", $e->getMessage());
+        }
+    }
+
+    /**
+     *
+     * #PR24  api/v1/projects/{record_id}/bulk-delete-zones
+     *
+     * @param Request $request
+     * @param $record
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
+     */
+    public function bulkDeleteZones(Request $request, $record)
+    {
+        try {
+            $zones = $request->data;
+            if (!empty($zones)) {
+                foreach ($zones as $zone_resource) {
+                    $zone = Zone::findOrFail($zone_resource['id']);
+                    $zone->delete();
+                }
+            }
+
+            return Utils::renderStandardJsonapiResponse([], 204);
+
+        } catch (\Exception $e) {
+            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error deleting zones", $e->getMessage());
         }
     }
 }
