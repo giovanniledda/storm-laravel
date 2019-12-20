@@ -528,7 +528,10 @@ class ProjectController extends Controller
             if (!empty($zones)) {
                 $parent_to_be_created = [];
                 $children_to_be_created = [];  // key (code+desc del padre) => value (array dei figli)
+                $new_children_for_existing_parent = [];  // key (id del padre) => value (array dei figli)
                 $to_be_updated = [];
+
+                $parent_used_code_descr = [];
                 foreach ($zones as $parent_zone) {
                     $children_for_this_parent = [];
                     $code = $parent_zone['attributes']['code'];
@@ -542,13 +545,15 @@ class ProjectController extends Controller
                     // verifico che non ci sia omonimia tra gli altri nodi parent per lo stesso progetto
                     $excluded_ids = isset($parent_zone['id']) ? [$parent_zone['id']] : [];
                     /** @var Project $record */
-                    if ($record->countParentZonesByData($data, $excluded_ids)) {
+                    if (in_array($parent_key, $parent_used_code_descr) || $record->countParentZonesByData($data, $excluded_ids)) {
                         return Utils::jsonAbortWithInternalError(
                             422,
                             110,
                             'Error creating zones',
                             "Impossible to create parent Zone [$code, $description]: code+description already taken!");
                     }
+                    $parent_used_code_descr[] = $parent_key;
+
                     $children = $parent_zone['attributes']['children_zones'];
                     unset($parent_zone['attributes']['children_zones']);
                     if (isset($parent_zone['id'])) {
@@ -556,7 +561,7 @@ class ProjectController extends Controller
                     } else {
                         $parent_to_be_created[] = $parent_zone['attributes'];
                     }
-                    $used_code_descr = [];
+                    $children_used_code_descr = [];
                     foreach ($children as $child) {
                         $c_code = isset($child['code']) ? $child['code'] : null;
                         $c_description = isset($child['description']) ? $child['description'] : null;
@@ -564,21 +569,25 @@ class ProjectController extends Controller
                         $md5 = md5($c_code.$c_description);
                         // verifico che non ci sia omonimia tra gli altri nodi children per lo stesso nodo parent
                         $excluded_ids = isset($child['id']) ? [$child['id']] : [];
-                        if (in_array($md5, $used_code_descr) || $record->countChildrenZonesByData($parent_zone_id, $child, $excluded_ids)) {
+                        if (in_array($md5, $children_used_code_descr) || $record->countChildrenZonesByData($parent_zone_id, $child, $excluded_ids)) {
                             return Utils::jsonAbortWithInternalError(
                                 422,
                                 110,
                                 'Error creating zones',
                                 "Impossible to create child Zone [$c_code, $c_description]: code+description already taken for parent Zone [$code, $description]!");
                         }
-                        $used_code_descr[] = $md5;
+                        $children_used_code_descr[] = $md5;
                         if (isset($child['id'])) {
                             $to_be_updated[$child['id']] = $child;
                         } else {
                             $children_for_this_parent[] = $child;
                         }
                     }
-                    $children_to_be_created[$parent_key] = $children_for_this_parent;
+                    if (isset($parent_zone['id'])) {
+                        $new_children_for_existing_parent[$parent_zone['id']] = $children_for_this_parent;
+                    } else {
+                        $children_to_be_created[$parent_key] = $children_for_this_parent;
+                    }
                 }
 
                 foreach ($to_be_updated as $id => $zone_data) {
@@ -601,8 +610,16 @@ class ProjectController extends Controller
                         }
                     }
                 }
-            }
 
+                if (!empty($new_children_for_existing_parent)) {
+                    foreach ($new_children_for_existing_parent as $parent_id => $new_children_data) {
+                        foreach ($new_children_data as $child_data) {
+                            $child_data['parent_zone_id'] = $parent_id;
+                            Zone::create($child_data);
+                        }
+                    }
+                }
+            }
 
             return Utils::renderStandardJsonapiResponse([], 204);
 
