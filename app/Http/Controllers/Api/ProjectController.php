@@ -261,14 +261,14 @@ class ProjectController extends Controller
      */
     public function generateReport(Request $request, $record)
     {
-        /** @var Project $project */
-        $project = Project::findOrFail($record->id);
-        $project->setTasksToIncludeInReport($request->has('tasks') ? explode(',', $request->tasks) : []);
-
-        // $template = 'corrosion_map';
-        $template = $request->template;
 
         try {
+            /** @var Project $project */
+            $project = Project::findOrFail($record->id);
+            $project->setTasksToIncludeInReport($request->has('tasks') ? explode(',', $request->tasks) : [], $request->input('only_public'));
+
+            // $template = 'corrosion_map';
+            $template = $request->template;
             $document = $this->reportGenerationProcess($template, $project, REPORT_CORROSION_MAP_SUBTYPE);
         } catch (\Exception $e) {
             return Utils::jsonAbortWithInternalError(422, 402, "Error generating report", $e->getMessage());

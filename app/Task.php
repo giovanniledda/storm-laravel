@@ -45,6 +45,7 @@ class Task extends Model
         'x_coord',
         'y_coord',
         'is_open',
+        'is_private',
         'bridge_position',
     ];
     private $min_x;
@@ -140,6 +141,15 @@ class Task extends Model
     public function scopePrivate($query)
     {
         return $query->where('is_private', '=', 1);
+    }
+
+    /**
+     * @param $id
+     * @return Task|null
+     */
+    public static function findPublic($id)
+    {
+        return Task::public()->where('id', '=', $id)->first();
     }
 
     protected static function boot()

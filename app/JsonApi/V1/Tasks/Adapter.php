@@ -16,6 +16,7 @@ class Adapter extends AbstractAdapter {
         'title',
         'status',
         'is_open',
+        'is_private',
         'description',
         'estimated_hours',
         'worked_hours',
