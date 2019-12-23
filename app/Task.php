@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Scopes\VisibilityScope;
 use Net7\DocsGenerator\Utils;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Illuminate\Database\Eloquent\Model;
@@ -111,21 +112,44 @@ class Task extends Model
     }
 
     /*
-
       $task = $model;
       $project = $task->project;
       $project_id = $project->id;
       $task_id = $task->id;
       $path .= 'projects' . DIRECTORY_SEPARATOR . $project_id . DIRECTORY_SEPARATOR . 'tasks' . DIRECTORY_SEPARATOR .
       $task_id . DIRECTORY_SEPARATOR . $document->type . DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
-
      */
+
+    /**
+     * Scope a query to only include not private tasks if current user is not storm.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopePublic($query)
+    {
+        return $query->where('is_private', '!=', 1);
+    }
+
+    /**
+     * Scope a query to only include not private tasks if current user is not storm.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopePrivate($query)
+    {
+        return $query->where('is_private', '=', 1);
+    }
 
     protected static function boot()
     {
         parent::boot();
 
         Task::observe(TaskObserver::class);
+
+        // se utente non è is_storm, non vede i task privati
+//        static::addGlobalScope(new VisibilityScope());
     }
 
     public function intervent_type()
@@ -209,6 +233,7 @@ class Task extends Model
      * @param Subsection $ssect
      * @param User $author
      * @param TaskInterventType $type
+     * @throws \Spatie\ModelStatus\Exceptions\InvalidStatus
      *
      * @return Task $t
      */

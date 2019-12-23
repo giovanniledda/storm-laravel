@@ -626,9 +626,25 @@ class Project extends Model
         return $this->site()->select('sites.name', 'sites.location')->first();
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function tasks()
     {
         return $this->hasMany(Task::class);
+    }
+
+    /**
+     * Se utente non è storm, non vedrà i task privati
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function tasksWithVisibility()
+    {
+        $user = \Auth::user();
+        if ($user && !$user->is_storm) {
+            return $this->tasks()->public();
+        }
+        return $this->tasks();
     }
 
     /**

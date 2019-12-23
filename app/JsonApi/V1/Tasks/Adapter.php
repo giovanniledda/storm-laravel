@@ -120,7 +120,7 @@ class Adapter extends AbstractAdapter {
         // ricerca is_open
         if ($filters->has('is_open')) {
             $isOpen = $filters->get('is_open');
-            $query->where('is_open', '=', "{$isOpen}");
+            $query->where('is_open', '=', $isOpen);
         }
 
         $user = \Auth::user();
@@ -128,13 +128,13 @@ class Adapter extends AbstractAdapter {
         // ricerca is_private
         if ($filters->has('is_private')) {
             $is_private = $filters->get('is_private');
-            if ($user->is_storm) {
-                $query->where('is_private', '=', "{$is_private}");
+            if ($user && $user->is_storm) {
+                $query->where('is_private', '=', $is_private);
             }
         }
 
         /** restringe il recordset in caso di mancanza di permessi */
-        if (!$user->can(PERMISSION_ADMIN)) {
+        if ($user && !$user->can(PERMISSION_ADMIN)) {
             // L'utente loggato non e' un admin
             if (!$user->is_storm) {
                 $query->where('is_private', '=', false);

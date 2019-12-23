@@ -113,7 +113,7 @@ class Adapter extends AbstractAdapter
     }
 
     protected function tasks() {
-        return $this->hasMany();
+        return $this->hasMany('tasksWithVisibility');
     }
 
     protected function sections() {
