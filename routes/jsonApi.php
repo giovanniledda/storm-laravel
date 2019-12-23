@@ -135,6 +135,7 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
             $relations->hasOne('boat'); // punta al methodo dell'adapter /app/jsonApi/Projects/Adapter non al modello
             $relations->hasMany('tasks');
             $relations->hasMany('users');
+            $relations->hasMany('products');
             $relations->hasMany('sections');
         });
 
@@ -160,6 +161,7 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
 
         $api->resource('zones');
         $api->resource('products');
+        $api->resource('project-products');
 
         /** APPLICATION LOG STUFF - END */
 

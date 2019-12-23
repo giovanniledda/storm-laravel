@@ -708,7 +708,6 @@ class Project extends Model
         return $this->morphMany('App\Comment', 'commentable');
     }
 
-
     public function users()
     {
         return $this->belongsToMany('App\User', 'project_user')
@@ -716,6 +715,18 @@ class Project extends Model
             ->withPivot([
                 // 'role',
                 'profession_id',
+                'created_at',
+                'updated_at'
+            ]);
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function products()
+    {
+        return $this->belongsToMany('App\Product', 'project_product')
+            ->withPivot([
                 'created_at',
                 'updated_at'
             ]);

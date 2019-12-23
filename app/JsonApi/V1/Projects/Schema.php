@@ -64,6 +64,10 @@ class Schema extends SchemaProvider
             'tasks' => [
              //   self::SHOW_SELF => true,
                 self::SHOW_RELATED => true,
+            ],
+            'products' => [
+             //   self::SHOW_SELF => true,
+                self::SHOW_RELATED => true,
             ]
         ];
     }
@@ -76,7 +80,7 @@ class Schema extends SchemaProvider
     public function getAttributes($resource)
     {
         $boat =  Boat::find($resource->boat_id);
-        $site =  Site::select('sites.name', 'sites.location') 
+        $site =  Site::select('sites.name', 'sites.location')
                      ->where('id', '=', $resource->site_id)
                      ->first();
         return [

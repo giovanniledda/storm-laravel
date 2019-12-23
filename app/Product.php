@@ -52,6 +52,14 @@ class Product extends Model
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function projects()
+    {
+        return $this->belongsToMany('App\Project', 'project_product');
+    }
+
+    /**
      * Returns an array of data with values for each field
      *
      * @param Faker $faker

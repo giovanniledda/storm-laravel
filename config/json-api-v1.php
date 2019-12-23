@@ -70,6 +70,7 @@ return [
         'sites' => \App\Site::class,
         'zones' => \App\Zone::class,
         'products' => \App\Product::class,
+        'project-products' => \App\ProjectProduct::class,
     ],
 
     /*

@@ -1,30 +1,14 @@
 <?php
 
-namespace App\JsonApi\V1\ProjectUsers;
+namespace App\JsonApi\V1\ProjectProducts;
 
 use CloudCreativity\LaravelJsonApi\Validation\AbstractValidators;
+use const VALIDATOR_EXIST;
+use const VALIDATOR_NUMERIC;
+use const VALIDATOR_REQUIRED;
 
 class Validators extends AbstractValidators
 {
-
-    /**
-     * The error messages.
-     *
-     * @var string[]|null
-     */
-    protected $messages = [
-        'user_id.required' => 'user_id '.VALIDATOR_REQUIRED,
-        'user_id.numeric' => 'user_id '.VALIDATOR_NUMERIC,
-        'user_id.exists' => 'user_id '.VALIDATOR_EXIST,
-
-        'profession_id.required' => 'profession_id '.VALIDATOR_REQUIRED,
-        'profession_id.numeric' => 'profession_id '.VALIDATOR_NUMERIC,
-        'profession_id.exists' => 'profession_id '.VALIDATOR_EXIST,
-
-        'project_id.required' => 'project_id '.VALIDATOR_REQUIRED,
-        'project_id.numeric' => 'project_id '.VALIDATOR_NUMERIC,
-        'project_id.exists' => 'project_id '.VALIDATOR_EXIST,
-    ];
 
     /**
      * The include paths a client is allowed to request.
@@ -43,6 +27,29 @@ class Validators extends AbstractValidators
     protected $allowedSortParameters = [];
 
     /**
+     * The filters a client is allowed send.
+     *
+     * @var string[]|null
+     *      the allowed filters, an empty array for none allowed, or null to allow all.
+     */
+    protected $allowedFilteringParameters = [];
+
+    /**
+     * The error messages.
+     *
+     * @var string[]|null
+     */
+    protected $messages = [
+        'product_id.required' => 'product_id '.VALIDATOR_REQUIRED,
+        'product_id.numeric' => 'product_id '.VALIDATOR_NUMERIC,
+        'product_id.exists' => 'Product with product_id :input '.VALIDATOR_EXIST,
+
+        'project_id.required' => 'project_id '.VALIDATOR_REQUIRED,
+        'project_id.numeric' => 'project_id '.VALIDATOR_NUMERIC,
+        'project_id.exists' => 'Project with project_id :input '.VALIDATOR_EXIST,
+    ];
+
+    /**
      * Get resource validation rules.
      *
      * @param mixed|null $record
@@ -51,13 +58,10 @@ class Validators extends AbstractValidators
      */
     protected function rules($record = null): array
     {
-
         return [
             'project_id'=> 'required|numeric|exists:projects,id',
-            'profession_id'=> 'required|numeric|exists:professions,id',
-            'user_id'=> 'required|numeric|exists:users,id'
-        ];
-
+            'product_id'=> 'required|numeric|exists:products,id',
+            ];
     }
 
     /**

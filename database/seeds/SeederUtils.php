@@ -4,6 +4,7 @@ namespace Seeds;
 
 use App\Boat;
 use App\BoatUser;
+use App\Product;
 use App\Profession;
 use App\Project;
 use App\ProjectSection;
@@ -235,6 +236,19 @@ class SeederUtils
                         'parent_zone_id' => $father_zone->id,
                     ]);
                 }
+            }
+        }
+    }
+
+    /**
+     * @param Project $project
+     * @param int $products
+     */
+    public function addFakeProductsToProject(Project $project, int $products)
+    {
+        if ($project->zones()->count() == 0) {
+            for ($i = 1; $i <= $products; $i++) {
+                factory(Product::class)->create();
             }
         }
     }
