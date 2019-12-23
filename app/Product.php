@@ -62,6 +62,7 @@ class Product extends Model
         return [
             'name' => $faker->word,
             'producer' => $faker->company,
+            'p_type' => PRODUCT_TYPE_PAINTING,
             'sv_percentage' => $faker->randomFloat(3),
             'components' => $faker->words(3),
         ];

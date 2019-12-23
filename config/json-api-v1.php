@@ -69,6 +69,7 @@ return [
         'project-sections' => \App\ProjectSection::class,
         'sites' => \App\Site::class,
         'zones' => \App\Zone::class,
+        'products' => \App\Product::class,
     ],
 
     /*

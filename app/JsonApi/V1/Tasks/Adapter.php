@@ -65,6 +65,7 @@ class Adapter extends AbstractAdapter {
                 }
             }
         }
+
         // ricerca per project_id
         if ($project_id = $filters->get('project_id')) {
             $query->where('project_id', '=', "{$project_id}");
