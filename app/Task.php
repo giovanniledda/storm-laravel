@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Scopes\VisibilityScope;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Net7\DocsGenerator\Utils;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Illuminate\Database\Eloquent\Model;
@@ -26,7 +27,8 @@ class Task extends Model
 
     use RevisionableTrait,
         HasStatuses,
-        DocumentableTrait;
+        DocumentableTrait,
+        SoftDeletes;
 
     protected $table = 'tasks';
     protected $fillable = [
