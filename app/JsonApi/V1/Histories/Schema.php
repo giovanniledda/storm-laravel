@@ -31,6 +31,7 @@ class Schema extends SchemaProvider
     {
         return [
             'photos' => $resource->getPhotosApi(),
+            'comments' => $resource->comments_for_api,
             'created-at' => $resource->created_at->toAtomString(),
             'updated-at' => $resource->updated_at->toAtomString(),
         ];

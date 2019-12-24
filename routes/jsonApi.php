@@ -169,10 +169,11 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
         $api->resource('histories');
 
         $api->resource('histories')
-            ->only('image-delete')
+            ->only('image-delete', 'add-comment')
             ->controller('HistoriesController') // uses the App\Http\Controllers\Api\HistoriesController
             ->routes(function ($histories) {
                 $histories->post('{record}/image-delete', 'removeImageDocument')->name('image-delete');
+                $histories->post('{record}/add-comment', 'addComment')->name('add-comment');
             });
     });
 });

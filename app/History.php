@@ -6,12 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 use Net7\Documents\Document;
 use Net7\Documents\DocumentableTrait;
 use function base64_encode;
+use function file_exists;
 use function file_get_contents;
 use const DIRECTORY_SEPARATOR;
 
 class History extends Model
 {
     use DocumentableTrait;
+
+    protected $_photo_documents_size = ''; // 'thumb'; TODO: a regime mettere thumb (in locale va solo se si azionano le code)
 
     protected $table = 'history';
 
@@ -30,6 +33,13 @@ class History extends Model
     public function comments()
     {
         return $this->morphMany('App\Comment', 'commentable');
+    }
+
+    public function comments_for_api()
+    {
+        return $this->comments()
+            ->select(['comments.id', 'comments.body', 'comments.created_at', 'users.name as author_name', 'users.surname  as author_surname'])
+            ->join('users', 'users.id', '=', 'comments.author_id');
     }
 
     public function getMediaPath($media)
@@ -80,6 +90,24 @@ class History extends Model
     }
 
     /**
+     * @param Document $photo_doc
+     * @return array
+     */
+    protected function extractJsonDocumentPhotoInfo(Document $photo_doc)
+    {
+        $media = $photo_doc->getRelatedMedia();
+        $file_path = $media->getPath($this->_photo_documents_size);
+        return !file_exists($file_path) ? [] : [
+            'type' => 'documents',
+            'id' => $photo_doc->id,
+            'attributes' => [
+                'doc_type' => $photo_doc->type,
+                'base64' => base64_encode(file_get_contents($file_path))
+            ]
+        ];
+    }
+
+    /**
      * Return an array of base64 media objects
      *
      * @return array
@@ -89,32 +117,12 @@ class History extends Model
         $photo_objects = [];
         $detailed_photo_docs = $this->getDetailedPhotoDocument();
         foreach ($detailed_photo_docs as $photo_doc) {
-            $media = $photo_doc->getRelatedMedia();
-            $file_path = $media->getPath(); // TODO: restituire la thumb
-            $file = file_get_contents($file_path);
-            $photo_objects[] = [
-                'type' => 'documents',
-                'id' => $photo_doc->id,
-                'attributes' => [
-                    'doc_type' => $photo_doc->type,
-                    'base64' => base64_encode($file)
-                ]
-            ];
+            $photo_objects[] = $this->extractJsonDocumentPhotoInfo($photo_doc);
         }
 
         $additional_photo_doc = $this->getAdditionalPhotoDocument();
         if ($additional_photo_doc) {
-            $media = $additional_photo_doc->getRelatedMedia();
-            $file_path = $media->getPath();  // TODO: restituire la thumb
-            $file = file_get_contents($file_path);
-            $photo_objects[] = [
-                'type' => 'documents',
-                'id' => $additional_photo_doc->id,
-                'attributes' => [
-                    'doc_type' => $additional_photo_doc->type,
-                    'base64' => base64_encode($file)
-                ]
-            ];
+            $photo_objects[] = $this->extractJsonDocumentPhotoInfo($additional_photo_doc);
         }
 
         return ['data' => $photo_objects];
