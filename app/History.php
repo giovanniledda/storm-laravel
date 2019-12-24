@@ -6,8 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 use Net7\Documents\Document;
 use Net7\Documents\DocumentableTrait;
 use function base64_encode;
+use function date;
 use function file_exists;
 use function file_get_contents;
+use function time;
 use const DIRECTORY_SEPARATOR;
 
 class History extends Model
@@ -22,7 +24,8 @@ class History extends Model
         'event_body',
         'event_date',
         'historyable_id',
-        'historyable_type'
+        'historyable_type',
+        'updated_at'
     ];
 
     public function historyable()
@@ -38,7 +41,12 @@ class History extends Model
     public function comments_for_api()
     {
         return $this->comments()
-            ->select(['comments.id', 'comments.body', 'comments.created_at', 'users.name as author_name', 'users.surname  as author_surname'])
+            ->select(['comments.id',
+                'comments.body',
+                'comments.created_at',
+                'comments.updated_at',
+                'users.name as author_name',
+                'users.surname  as author_surname'])
             ->join('users', 'users.id', '=', 'comments.author_id');
     }
 
@@ -126,5 +134,13 @@ class History extends Model
         }
 
         return ['data' => $photo_objects];
+    }
+
+    /**
+     * Updates updated_at field
+     */
+    public function updateLastEdit()
+    {
+        $this->update(['updated_at' => date('Y-m-d H:i:s', time())]);
     }
 }

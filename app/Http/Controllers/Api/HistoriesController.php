@@ -4,43 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Comment;
 use App\History;
-use App\Jobs\NotifyTaskUpdates;
-use App\Jobs\ProjectLoadEnvironmentalData;
-use App\Notifications\TaskCreated;
-use App\Zone;
-use function __;
-use function array_key_exists;
-use function explode;
-use function in_array;
-use function json_decode;
-use function md5;
-use function notify;
-use function response;
-use function trim;
-use function view;
-use const MEASUREMENT_FILE_TYPE;
-use const PROJECT_STATUS_CLOSED;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
-use App\User;
-use Validator;
 use Net7\Documents\Document;
-use Net7\Logging\models\Logs as Log;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\RequestProjectChangeType;
-use App\Project;
 use App\Utils\Utils;
-use App\Jobs\ProjectGoogleSync;
-use Net7\DocsGenerator\DocsGenerator;
-use Symfony\Component\Filesystem\Exception\FileNotFoundException;
-use const PROJECT_STATUSES;
-use const REPORT_ENVIRONMENTAL_SUBTYPE;
 
 class HistoriesController extends Controller
 {
-
     /**
      *
      * #H02  api/v1/histories/{record_id}/image-delete
@@ -62,6 +33,7 @@ class HistoriesController extends Controller
             /** @var Document $document */
             $document = Document::findOrFail($document_id);
             $history->deleteDocument($document);
+            $history->updateLastEdit();
 
             return Utils::renderStandardJsonapiResponse([], 204);
 
@@ -69,8 +41,6 @@ class HistoriesController extends Controller
             return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error removing image", $e->getMessage());
         }
     }
-
-
 
     /**
      *
@@ -94,6 +64,7 @@ class HistoriesController extends Controller
                     'author_id' => \Auth::user()->id
                 ]);
                 $history->comments()->save($c);
+                $history->updateLastEdit();
             }
 
             return Utils::renderStandardJsonapiResponse([], 204);
