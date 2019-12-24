@@ -481,7 +481,7 @@ class ProjectController extends Controller
      *
      * #PR22  api/v1/projects/1/env-log-delete
      *
-     * Remove allameasurements associated to a specific log file
+     * Remove all measurements associated to a specific log file
      *
      * @param Request $request
      * @param $record

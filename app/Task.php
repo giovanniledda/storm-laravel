@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Scopes\VisibilityScope;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Net7\DocsGenerator\Utils;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -14,7 +13,6 @@ use Venturecraft\Revisionable\RevisionableTrait;
 use Net7\Documents\Document;
 use Net7\Documents\DocumentableTrait;
 use Faker\Generator as Faker;
-use App\Section;
 use function explode;
 use function in_array;
 use function is_object;

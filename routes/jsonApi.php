@@ -165,5 +165,14 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
 
         /** APPLICATION LOG STUFF - END */
 
+
+        $api->resource('histories');
+
+        $api->resource('histories')
+            ->only('image-delete')
+            ->controller('HistoriesController') // uses the App\Http\Controllers\Api\HistoriesController
+            ->routes(function ($histories) {
+                $histories->post('{record}/image-delete', 'removeImageDocument')->name('image-delete');
+            });
     });
 });

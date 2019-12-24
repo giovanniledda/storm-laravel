@@ -14,18 +14,15 @@ class CreateHistoryTable extends Migration
     public function up()
     {
         Schema::create('history', function (Blueprint $table) {
-           $table->bigIncrements('id'); // 
+           $table->bigIncrements('id'); //
             $table->text('event_body');
-            $table->datetime('event_date'); 
-            
+            $table->datetime('event_date');
+
             // Polymorphic: commentable
-            $table->nullableMorphs('historyable'); 
+            $table->nullableMorphs('historyable');
             $table->timestamps();
-           
-           
-           
         });
-    } 
+    }
      /**
      * Reverse the migrations.
      *

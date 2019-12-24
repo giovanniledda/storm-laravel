@@ -71,6 +71,7 @@ return [
         'zones' => \App\Zone::class,
         'products' => \App\Product::class,
         'project-products' => \App\ProjectProduct::class,
+        'histories' => \App\History::class,
     ],
 
     /*

@@ -40,6 +40,7 @@ class TaskController extends Controller
 
             array_push($data, [
                 "type" => "history",
+                "id" => $history['id'],
                 "attributes" => $history_data]);
         }
         $resp = Response(["data" => $data], 200);
