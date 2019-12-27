@@ -2,11 +2,13 @@
 
 namespace Tests\Feature;
 
+use App\Product;
 use App\Profession;
 use App\ProjectUser;
 use App\Site;
 use App\Project;
 use App\Boat;
+use function array_map;
 use function factory;
 use Tests\TestCase;
 use Faker\Provider\Base as fakerBase;
@@ -124,5 +126,41 @@ class ModelProjectTest extends TestCase
         $this->assertEquals($newProject->users()->count(), $project->users()->count());
     }
 
+    function test_project_products() {
+
+        /** @var Project $project */
+        $project = Project::createSemiFake($this->faker);
+        $products = factory(Product::class, 10)->create();
+
+        $project->products()->attach(Product::pluck('id'));
+        /** @var Product $product */
+        foreach ($products as $product) {
+            $this->assertContains($project->id, $product->projects()->pluck('project_id'));
+        }
+
+        $prod_ids_for_project = array_map(function($el) {
+            return $el['id'];
+        }, $project->products->toArray());
+
+        $some_prods = $this->faker->randomElements($products);
+        /** @var Product $product */
+        foreach ($some_prods as $product) {
+            $this->assertContains($product->id, $prod_ids_for_project);
+        }
+
+        // faccio lo stesso con un secondo progetto e vedo che i prodotti siano distinti (differenzio per p_type)
+        /** @var Project $project */
+        $project2 = Project::createSemiFake($this->faker);
+        $products2 = factory(Product::class, 10)->create([
+            'p_type' => 'TEST'
+        ]);
+
+        $project2->products()->attach(Product::where('p_type', '=', 'TEST')->pluck('id'));
+        foreach ($products2 as $product) {
+            $this->assertContains($project2->id, $product->projects()->pluck('project_id'));
+            $this->assertNotContains($project->id, $product->projects()->pluck('project_id'));
+        }
+
+    }
 
 }

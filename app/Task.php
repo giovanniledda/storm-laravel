@@ -19,6 +19,7 @@ use function is_object;
 use const PROJECT_STATUS_CLOSED;
 use const TASKS_STATUS_COMPLETED;
 use const TASKS_STATUS_DENIED;
+use const TASKS_STATUSES;
 
 class Task extends Model
 {
@@ -234,6 +235,29 @@ class Task extends Model
         return $this->getProjectUsers();
     }
 
+    public static function getSemiFakeData(Faker $faker, Project $proj = null, Section $sect = null, Subsection $ssect = null, User $author = null, TaskInterventType $type = null)
+    {
+        $status = $faker->randomElement(TASKS_STATUSES);
+        $is_open = is_object($proj) ? ($proj->project_status != PROJECT_STATUS_CLOSED) : !in_array($status, [TASKS_STATUS_COMPLETED, TASKS_STATUS_DENIED]);
+
+        return [
+            'number' => $faker->randomDigitNotNull(),
+            'title' => $faker->sentence(),
+            'description' => $faker->text(),
+            'estimated_hours' => $faker->randomFloat(1, 0, 100),
+            'worked_hours' => $faker->randomFloat(1, 0, 100),
+            'x_coord' => $faker->randomFloat(2, 1119.29, 1159.29), // scostarsi del 5% dal punto 1139.29
+            'y_coord' => $faker->randomFloat(2, 267.95, 307.95), // scostarsi del 5% dal punto  287.95
+            'task_status' => $status, //$faker->randomElement(TASKS_STATUSES),
+            'is_open' => $is_open, //$faker->randomElement([1, 0]),
+            'project_id' => $proj ? $proj->id : null,
+            'section_id' => $sect ? $sect->id : null,
+            'subsection_id' => $ssect ? $ssect->id : null,
+            'author_id' => $author ? $author->id : null,
+            'intervent_type_id' => $type ? $type->id : null,
+        ];
+    }
+
     /**
      * Creates a Task using some fake data and some others that have sense
      *
@@ -249,29 +273,10 @@ class Task extends Model
      */
     public static function createSemiFake(Faker $faker, Project $proj = null, Section $sect = null, Subsection $ssect = null, User $author = null, TaskInterventType $type = null)
     {
-
         $status = $faker->randomElement(TASKS_STATUSES);
-        $is_open = is_object($proj) ? ($proj->project_status != PROJECT_STATUS_CLOSED) : !in_array($status, [TASKS_STATUS_COMPLETED, TASKS_STATUS_DENIED]);
-        $t = new Task([
-                'number' => $faker->randomDigitNotNull(),
-                'title' => $faker->sentence(),
-                'description' => $faker->text(),
-                'estimated_hours' => $faker->randomFloat(1, 0, 100),
-                'worked_hours' => $faker->randomFloat(1, 0, 100),
-                'x_coord' => $faker->randomFloat(2, 1119.29, 1159.29), // scostarsi del 5% dal punto 1139.29
-                'y_coord' => $faker->randomFloat(2, 267.95, 307.95), // scostarsi del 5% dal punto  287.95
-                'task_status' => $status, //$faker->randomElement(TASKS_STATUSES),
-                'is_open' => $is_open, //$faker->randomElement([1, 0]),
-                'project_id' => $proj ? $proj->id : null,
-                'section_id' => $sect ? $sect->id : null,
-                'subsection_id' => $ssect ? $ssect->id : null,
-                'author_id' => $author ? $author->id : null,
-                'intervent_type_id' => $type ? $type->id : null,
-            ]
-        );
+        $t = new Task(self::getSemiFakeData($faker, $proj, $sect, $ssect, $author, $type));
         $t->save();
         $t->setStatus($status);
-
         return $t;
     }
 
@@ -393,117 +398,119 @@ class Task extends Model
         $isOpen = $task['is_open'];
         $status = $task['task_status'];
 
-        $section = Section::find($task['section_id']);
-        $bridgeMedia = $section->generic_images->last();
+//        $section = Section::find($task['section_id']);
+        $section = $task->section;
+        if ($section) {
+            $bridgeMedia = $section->generic_images->last();
+            if ($bridgeMedia) {
 
-        if ($bridgeMedia) {
+                $bridgeImagePath = $bridgeMedia->getPathBySize('');
+                $bridgeImageInfo = getimagesize($bridgeImagePath);
+                $image = imagecreate($bridgeImageInfo[0] * 2 , $bridgeImageInfo[1] * 2);
+                imagecolorallocate($image, 255, 255, 255);
 
-            $bridgeImagePath = $bridgeMedia->getPathBySize('');
-            $bridgeImageInfo = getimagesize($bridgeImagePath);
-            $image = imagecreate($bridgeImageInfo[0] * 2 , $bridgeImageInfo[1] * 2);
-            imagecolorallocate($image, 255, 255, 255);
-
-            if (exif_imagetype($bridgeImagePath) === IMAGETYPE_PNG) {
-                // il ponte e' un'immagine png
-                $dest = imagecreatefrompng($bridgeImagePath);
-                imagealphablending($dest, false);
-                imagesavealpha($dest, true);
-            }
-
-            if (exif_imagetype($bridgeImagePath) === IMAGETYPE_JPEG) {
-                // il ponte e' un'immagine jpg
-                $dest = imagecreatefromjpeg($bridgeImagePath);
-            }
-
-            imagecopy($image, $dest, $bridgeImageInfo[0] / 2, $bridgeImageInfo[1] / 2,  0, 0, $bridgeImageInfo[0], $bridgeImageInfo[1]);
-
-
-            try {
-                $pinPath = $this->getIcon($status, $isOpen);
-                $iconInfo = getimagesize($pinPath);
-                $src = imagecreatefrompng($pinPath);
-                imagealphablending($src, false);
-                imagesavealpha($src, true);
-                // ridimensiono l'immagine del ponte e la fisso ad una larghezza fissa
-                $sizeW =  5000;
-                $sizeH =  $sizeW * ( $bridgeImageInfo[1] * 2 ) / ($bridgeImageInfo[0] * 2  ) ;
-
-                $x = $bridgeImageInfo[0]/2 + $task['y_coord'] ;
-                $y = ( $bridgeImageInfo[1] - $task['x_coord'] )  +  $bridgeImageInfo[1]/2;
-
-                $xx = ($x * $sizeW ) / ($bridgeImageInfo[0]*2) ;
-                $yy = ($y * $sizeH ) / ($bridgeImageInfo[1]*2) ;
-
-                // imagepng($image, $map);
-                imagepng($image, $mapfilePath);
-
-
-                // $el = $this->resize_image($map, $sizeW, $sizeH);
-                $el = $this->resize_image($mapfilePath, $sizeW, $sizeH);
-
-                imagealphablending($el, false);
-                imagesavealpha($el, true);
-
-                fclose($mapfileHandle);
-                imagecopymerge($el, $src, $xx- $iconInfo[0]/2, $yy - $iconInfo[1] , 0, 0, $iconInfo[0], $iconInfo[1], 100);
-
-
-                imagealphablending($el, false);
-                imagesavealpha($el, true);
-
-                $crop_w = 728;
-                $crop_h = 360;
-
-                $im2 = imagecrop($el, ['x' => $xx - ($crop_w/2), 'y' => $yy - ($crop_h/2), 'width' => $crop_w, 'height' => $crop_h]);
-                if ($im2 !== FALSE) {
-
-                    imagealphablending($im2, false);
-                    imagesavealpha($im2, true);
-                    // imagepng($im2, $map);
-                    imagepng($im2, $tmpfilePath);
-                    imagedestroy($im2);
+                if (exif_imagetype($bridgeImagePath) === IMAGETYPE_PNG) {
+                    // il ponte e' un'immagine png
+                    $dest = imagecreatefrompng($bridgeImagePath);
+                    imagealphablending($dest, false);
+                    imagesavealpha($dest, true);
                 }
 
-                imagedestroy($dest);
-                imagedestroy($src);
-                imagedestroy($image);
-
-                $this->addFileOrUpdateDocumentWithType($tmpfilePath, $this::CORROSION_MAP_DOCUMENT_TYPE, 'corrosion_map');
-                fclose($tmpfileHandle); //this removes the tempfile
-
-                return ['success' => true,  'H' => $sizeH, 'W' => $sizeW];
-
-                //   imagealphablending($src, false);
-                // imagesavealpha($src, true);
-                // resize non funziona la trasparenza del pin
-                //$iconInfo = [64, 96];
-                //$src = $this->resize_image($pinPath, 64, 96);
-
-                //       $sizeW =  $fixedSizeW;
-                //   $sizeH =  $fixedSizeW * ( $bridgeImageInfo[1] ) / ($bridgeImageInfo[0] ) ;
-
-                //     $cropY =  ( $sizeH - $task['x_coord'] + $iconInfo[1] ) +  $bridgeImageInfo[1];
-                // $cropX = ( ( $task['y_coord'] - $sizeW / 2 ) ) +  $bridgeImageInfo[0];
-
-                //imagealphablending($image, false);
-                //  imagesavealpha($image, true);
-                //$im2 = imagecrop($image, ['x' => $cropX, 'y' => $cropY, 'width' => $sizeW, 'height' => $sizeH]);
-                //imagepng($im2, $path.DIRECTORY_SEPARATOR.'map1.png');
-                //  imagealphablending($im2, false);
-                //  imagesavealpha($im2, true);
-                // imagecopymerge($im2, $src, $sizeW / 2 - ($iconInfo[0] / 2), $sizeH / 2 - ($iconInfo[1] ), 0, 0, $iconInfo[0], $iconInfo[1], 100);
-
-                /*if ($im2 !== FALSE) {
-                    imagepng($im2, $map);
-                    imagedestroy($im2);
+                if (exif_imagetype($bridgeImagePath) === IMAGETYPE_JPEG) {
+                    // il ponte e' un'immagine jpg
+                    $dest = imagecreatefromjpeg($bridgeImagePath);
                 }
 
-                imagedestroy($dest);
-                imagedestroy($src);
-                imagedestroy($image);*/
-                //  return ['success' => true, 'Y' => $cropY, 'X' => $cropX, 'H'=>$sizeH, 'W'=> $sizeW];
-            } catch (\Exception $exc) {
-                return ['success' => false, 'error' => $exc->getMessage()];
+                imagecopy($image, $dest, $bridgeImageInfo[0] / 2, $bridgeImageInfo[1] / 2,  0, 0, $bridgeImageInfo[0], $bridgeImageInfo[1]);
+
+
+                try {
+                    $pinPath = $this->getIcon($status, $isOpen);
+                    $iconInfo = getimagesize($pinPath);
+                    $src = imagecreatefrompng($pinPath);
+                    imagealphablending($src, false);
+                    imagesavealpha($src, true);
+                    // ridimensiono l'immagine del ponte e la fisso ad una larghezza fissa
+                    $sizeW =  5000;
+                    $sizeH =  $sizeW * ( $bridgeImageInfo[1] * 2 ) / ($bridgeImageInfo[0] * 2  ) ;
+
+                    $x = $bridgeImageInfo[0]/2 + $task['y_coord'] ;
+                    $y = ( $bridgeImageInfo[1] - $task['x_coord'] )  +  $bridgeImageInfo[1]/2;
+
+                    $xx = ($x * $sizeW ) / ($bridgeImageInfo[0]*2) ;
+                    $yy = ($y * $sizeH ) / ($bridgeImageInfo[1]*2) ;
+
+                    // imagepng($image, $map);
+                    imagepng($image, $mapfilePath);
+
+
+                    // $el = $this->resize_image($map, $sizeW, $sizeH);
+                    $el = $this->resize_image($mapfilePath, $sizeW, $sizeH);
+
+                    imagealphablending($el, false);
+                    imagesavealpha($el, true);
+
+                    fclose($mapfileHandle);
+                    imagecopymerge($el, $src, $xx- $iconInfo[0]/2, $yy - $iconInfo[1] , 0, 0, $iconInfo[0], $iconInfo[1], 100);
+
+
+                    imagealphablending($el, false);
+                    imagesavealpha($el, true);
+
+                    $crop_w = 728;
+                    $crop_h = 360;
+
+                    $im2 = imagecrop($el, ['x' => $xx - ($crop_w/2), 'y' => $yy - ($crop_h/2), 'width' => $crop_w, 'height' => $crop_h]);
+                    if ($im2 !== FALSE) {
+
+                        imagealphablending($im2, false);
+                        imagesavealpha($im2, true);
+                        // imagepng($im2, $map);
+                        imagepng($im2, $tmpfilePath);
+                        imagedestroy($im2);
+                    }
+
+                    imagedestroy($dest);
+                    imagedestroy($src);
+                    imagedestroy($image);
+
+                    $this->addFileOrUpdateDocumentWithType($tmpfilePath, $this::CORROSION_MAP_DOCUMENT_TYPE, 'corrosion_map');
+                    fclose($tmpfileHandle); //this removes the tempfile
+
+                    return ['success' => true,  'H' => $sizeH, 'W' => $sizeW];
+
+                    //   imagealphablending($src, false);
+                    // imagesavealpha($src, true);
+                    // resize non funziona la trasparenza del pin
+                    //$iconInfo = [64, 96];
+                    //$src = $this->resize_image($pinPath, 64, 96);
+
+                    //       $sizeW =  $fixedSizeW;
+                    //   $sizeH =  $fixedSizeW * ( $bridgeImageInfo[1] ) / ($bridgeImageInfo[0] ) ;
+
+                    //     $cropY =  ( $sizeH - $task['x_coord'] + $iconInfo[1] ) +  $bridgeImageInfo[1];
+                    // $cropX = ( ( $task['y_coord'] - $sizeW / 2 ) ) +  $bridgeImageInfo[0];
+
+                    //imagealphablending($image, false);
+                    //  imagesavealpha($image, true);
+                    //$im2 = imagecrop($image, ['x' => $cropX, 'y' => $cropY, 'width' => $sizeW, 'height' => $sizeH]);
+                    //imagepng($im2, $path.DIRECTORY_SEPARATOR.'map1.png');
+                    //  imagealphablending($im2, false);
+                    //  imagesavealpha($im2, true);
+                    // imagecopymerge($im2, $src, $sizeW / 2 - ($iconInfo[0] / 2), $sizeH / 2 - ($iconInfo[1] ), 0, 0, $iconInfo[0], $iconInfo[1], 100);
+
+                    /*if ($im2 !== FALSE) {
+                        imagepng($im2, $map);
+                        imagedestroy($im2);
+                    }
+
+                    imagedestroy($dest);
+                    imagedestroy($src);
+                    imagedestroy($image);*/
+                    //  return ['success' => true, 'Y' => $cropY, 'X' => $cropX, 'H'=>$sizeH, 'W'=> $sizeW];
+                } catch (\Exception $exc) {
+                    return ['success' => false, 'error' => $exc->getMessage()];
+                }
             }
         }
     }

@@ -84,8 +84,7 @@ class Product extends Model
      */
     public static function createSemiFake(Faker $faker)
     {
-        $data = self::getSemiFakeData($faker);
-        $t = new Product($data);
+        $t = new Product(self::getSemiFakeData($faker));
         $t->save();
         return $t;
     }
