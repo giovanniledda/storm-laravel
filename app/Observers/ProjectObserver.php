@@ -24,6 +24,7 @@ namespace App\Observers;
 use App\Jobs\ProjectGoogleDirSetup;
 use App\Project;
 use App\ProjectUser;
+use App\Task;
 use Log;
 
 class ProjectObserver
@@ -65,8 +66,9 @@ class ProjectObserver
     /**
      * Handle the project "created" event.
      *
-     * @param  \App\Project  $project
+     * @param \App\Project $project
      * @return void
+     * @throws \Spatie\ModelStatus\Exceptions\InvalidStatus
      */
     public function created(Project $project)
     {
@@ -81,19 +83,22 @@ class ProjectObserver
         if (env('USE_GOOGLE_DRIVE')) {
             // uses the queue
             ProjectGoogleDirSetup::dispatch($project);
-
         }
 
         // Doc Generator from template
         $project->setupCorrosionMapTemplate();
         $project->setupEnvironmentalReportTemplate();
+
+        // Setto l'id interno progressivo calcolato su base "per boat"
+        $project->updateInternalProgressiveNumber();
     }
 
     /**
      * Handle the project "updated" event.
      *
-     * @param  \App\Project  $project
+     * @param \App\Project $project
      * @return void
+     * @throws \Spatie\ModelStatus\Exceptions\InvalidStatus
      */
     public function updated(Project $project)
     {

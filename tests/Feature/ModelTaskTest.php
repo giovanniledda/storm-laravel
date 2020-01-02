@@ -8,6 +8,7 @@ use App\Subsection;
 use App\Task;
 use App\Project;
 use Tests\TestCase;
+use function factory;
 
 class ModelTaskTest extends TestCase
 {
@@ -78,4 +79,31 @@ class ModelTaskTest extends TestCase
 
     }
 
+
+    function test_internal_progressive_number() {
+
+        $boats = factory(Boat::class, 3)->create();
+        /** @var Boat $boat */
+        foreach ($boats as $boat) {
+            $projs_index_for_boat = 1;
+            $tasks_index_for_boat = 1;
+            $projects = factory(Project::class, 4)->create([
+                'boat_id' => $boat->id
+            ]);
+            /** @var Project $project */
+            foreach ($projects as $project) {
+                $this->assertEquals($boat->id, $project->boat->id);
+                $this->assertEquals($projs_index_for_boat++, $project->internal_progressive_number);
+
+                $tasks = factory(Task::class, 10)->create([
+                    'project_id' => $project->id
+                ]);
+                /** @var Task $task */
+                foreach ($tasks as $task) {
+                    $this->assertEquals($boat->id, $task->getProjectBoat()->id);
+                    $this->assertEquals($tasks_index_for_boat++, $task->internal_progressive_number);
+                }
+            }
+        }
+    }
 }

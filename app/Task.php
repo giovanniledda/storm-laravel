@@ -48,6 +48,7 @@ class Task extends Model
         'is_open',
         'is_private',
         'bridge_position',
+        'internal_progressive_number',
     ];
     private $min_x;
     private $max_x;
@@ -267,9 +268,9 @@ class Task extends Model
      * @param Subsection $ssect
      * @param User $author
      * @param TaskInterventType $type
+     * @return Task $t
      * @throws \Spatie\ModelStatus\Exceptions\InvalidStatus
      *
-     * @return Task $t
      */
     public static function createSemiFake(Faker $faker, Project $proj = null, Section $sect = null, Subsection $ssect = null, User $author = null, TaskInterventType $type = null)
     {
@@ -385,9 +386,8 @@ class Task extends Model
         // $map = $map_dir.'map_'.$task->id.'.png';
 
 
-        $mapfileHandle =  tmpfile();
+        $mapfileHandle = tmpfile();
         $mapfilePath = stream_get_meta_data($mapfileHandle)['uri'];
-
 
 
         $tmpfileHandle = tmpfile();
@@ -406,7 +406,7 @@ class Task extends Model
 
                 $bridgeImagePath = $bridgeMedia->getPathBySize('');
                 $bridgeImageInfo = getimagesize($bridgeImagePath);
-                $image = imagecreate($bridgeImageInfo[0] * 2 , $bridgeImageInfo[1] * 2);
+                $image = imagecreate($bridgeImageInfo[0] * 2, $bridgeImageInfo[1] * 2);
                 imagecolorallocate($image, 255, 255, 255);
 
                 if (exif_imagetype($bridgeImagePath) === IMAGETYPE_PNG) {
@@ -421,7 +421,7 @@ class Task extends Model
                     $dest = imagecreatefromjpeg($bridgeImagePath);
                 }
 
-                imagecopy($image, $dest, $bridgeImageInfo[0] / 2, $bridgeImageInfo[1] / 2,  0, 0, $bridgeImageInfo[0], $bridgeImageInfo[1]);
+                imagecopy($image, $dest, $bridgeImageInfo[0] / 2, $bridgeImageInfo[1] / 2, 0, 0, $bridgeImageInfo[0], $bridgeImageInfo[1]);
 
 
                 try {
@@ -431,14 +431,14 @@ class Task extends Model
                     imagealphablending($src, false);
                     imagesavealpha($src, true);
                     // ridimensiono l'immagine del ponte e la fisso ad una larghezza fissa
-                    $sizeW =  5000;
-                    $sizeH =  $sizeW * ( $bridgeImageInfo[1] * 2 ) / ($bridgeImageInfo[0] * 2  ) ;
+                    $sizeW = 5000;
+                    $sizeH = $sizeW * ($bridgeImageInfo[1] * 2) / ($bridgeImageInfo[0] * 2);
 
-                    $x = $bridgeImageInfo[0]/2 + $task['y_coord'] ;
-                    $y = ( $bridgeImageInfo[1] - $task['x_coord'] )  +  $bridgeImageInfo[1]/2;
+                    $x = $bridgeImageInfo[0] / 2 + $task['y_coord'];
+                    $y = ($bridgeImageInfo[1] - $task['x_coord']) + $bridgeImageInfo[1] / 2;
 
-                    $xx = ($x * $sizeW ) / ($bridgeImageInfo[0]*2) ;
-                    $yy = ($y * $sizeH ) / ($bridgeImageInfo[1]*2) ;
+                    $xx = ($x * $sizeW) / ($bridgeImageInfo[0] * 2);
+                    $yy = ($y * $sizeH) / ($bridgeImageInfo[1] * 2);
 
                     // imagepng($image, $map);
                     imagepng($image, $mapfilePath);
@@ -451,7 +451,7 @@ class Task extends Model
                     imagesavealpha($el, true);
 
                     fclose($mapfileHandle);
-                    imagecopymerge($el, $src, $xx- $iconInfo[0]/2, $yy - $iconInfo[1] , 0, 0, $iconInfo[0], $iconInfo[1], 100);
+                    imagecopymerge($el, $src, $xx - $iconInfo[0] / 2, $yy - $iconInfo[1], 0, 0, $iconInfo[0], $iconInfo[1], 100);
 
 
                     imagealphablending($el, false);
@@ -460,7 +460,7 @@ class Task extends Model
                     $crop_w = 728;
                     $crop_h = 360;
 
-                    $im2 = imagecrop($el, ['x' => $xx - ($crop_w/2), 'y' => $yy - ($crop_h/2), 'width' => $crop_w, 'height' => $crop_h]);
+                    $im2 = imagecrop($el, ['x' => $xx - ($crop_w / 2), 'y' => $yy - ($crop_h / 2), 'width' => $crop_w, 'height' => $crop_h]);
                     if ($im2 !== FALSE) {
 
                         imagealphablending($im2, false);
@@ -477,7 +477,7 @@ class Task extends Model
                     $this->addFileOrUpdateDocumentWithType($tmpfilePath, $this::CORROSION_MAP_DOCUMENT_TYPE, 'corrosion_map');
                     fclose($tmpfileHandle); //this removes the tempfile
 
-                    return ['success' => true,  'H' => $sizeH, 'W' => $sizeW];
+                    return ['success' => true, 'H' => $sizeH, 'W' => $sizeW];
 
                     //   imagealphablending($src, false);
                     // imagesavealpha($src, true);
@@ -595,16 +595,16 @@ EOF;
                     <tr width="700">
                         <td width="345"><span style="border-right: 10px solid white; font-weight: bold">Location: </span>$task_location</td>
                         <td width="345"><span style="font-weight: bold">Type: </span>$task_type</td>
-                    </tr>                    
+                    </tr>
                 </table>
 
                 <br>
-                
+
                 <table width="700" style="font-family: Raleway, sans-serif; color: #1f519b;">
                     <tr width="700">
                         <td width="345" rowspan="2" style="border-right: 10px solid white; vertical-align: top ;background-color: #eff9fe; padding: 8px">
                         <span style="font-weight: bold;">Description: </span>$description</td>
-                        
+
                         <td width="345" rowspan="1" style="vertical-align: top;background-color: #eff9fe; padding: 8px">
                         <span style="font-weight: bold;">Created: </span>$created_at</td>
                     </tr>
@@ -633,7 +633,7 @@ EOF;
 EOF;
             }
 
-            $trs = '<tr width="700">'.$tds_1.'</tr><br>';
+            $trs = '<tr width="700">' . $tds_1 . '</tr><br>';
 
             if (isset($photos_array[3])) {
                 $tds_2 = <<<EOF
@@ -650,11 +650,11 @@ EOF;
 EOF;
                 }
 
-                $trs .= '<tr width="700">'.$tds_2.'</tr>';
+                $trs .= '<tr width="700">' . $tds_2 . '</tr>';
             }
 
-            $images_table =  '<p style="text-align: left;font-size: 16px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Detail photos</p>
-                               <table width="792">'.$trs.'</table><br>';
+            $images_table = '<p style="text-align: left;font-size: 16px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Detail photos</p>
+                               <table width="792">' . $trs . '</table><br>';
 
             $html .= $images_table;
         }
@@ -664,7 +664,7 @@ EOF;
             $img_dettaglioHTML = <<<EOF
                 <p style="text-align: left;font-size: 16px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Overview photo</p>
                 <img width="760" height="auto" src="file://$img_dettaglio" alt="Overview image">
-  
+
 EOF;
         }
 
@@ -675,4 +675,42 @@ EOF;
         return $html;
     }
 
+
+    /**
+     * An internal ID calculated on a "per-boat" base
+     * @param $boat_id
+     * @return integer
+     */
+    public static function getLastInternalProgressiveIDByBoat($boat_id)
+    {
+        $max = Task::join('projects', 'projects.id', '=', 'tasks.project_id')
+            ->where('projects.boat_id', '=', $boat_id)
+            ->max('tasks.internal_progressive_number');
+        return $max ? $max : 0;
+    }
+
+    /**
+     * Goives total number of tasks calculated on a "per-boat" base
+     * @param $boat_id
+     * @return integer
+     */
+    public static function countTasksByBoat($boat_id)
+    {
+        return Task::join('projects', 'projects.id', '=', 'tasks.project_id')
+            ->where('projects.boat_id', '=', $boat_id)
+            ->withTrashed()
+            ->count();
+    }
+
+    /**
+     * @return void
+     */
+    public function updateInternalProgressiveNumber()
+    {
+        $p_boat = $this->getProjectBoat();
+        if ($p_boat) {
+            $highest_internal_pn = Task::getLastInternalProgressiveIDByBoat($p_boat->id);
+            $this->update(['internal_progressive_number' => ++$highest_internal_pn]);
+        }
+    }
 }

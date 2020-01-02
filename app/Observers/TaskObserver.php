@@ -21,12 +21,12 @@ class TaskObserver
     /**
      * Handle the project "updating" event.
      *
-     * @param  \App\Task $task
+     * @param \App\Task $task
      * @return void
      */
     public function updating(Task $task)
     {
-    //   $task->updateMap();
+        //   $task->updateMap();
 
         $original = $task->getOriginal();
 
@@ -81,7 +81,6 @@ class TaskObserver
         }
 
 
-
     }
 
 
@@ -126,7 +125,7 @@ class TaskObserver
             ]);
         }
 
-        if((isset($auth_user->id) && $auth_user->is_storm)) {
+        if ((isset($auth_user->id) && $auth_user->is_storm)) {
 
             Task::find($task->id)->history()->create([
                 'event_date' => date("Y-m-d H:i:s", time()),
@@ -156,11 +155,12 @@ class TaskObserver
         }
         UpdateTaskMap::dispatch($task);
 
+        // Setto l'id interno progressivo calcolato su base "per boat"
+        $task->updateInternalProgressiveNumber();
 
         // mette in coda il job
 //        NotifyTaskUpdates::dispatch(new TaskCreated($task))->onConnection('redis')->onQueue(QUEUE_TASK_CREATED);   // default queue
         NotifyTaskUpdates::dispatch(new TaskCreated($task, $task_author));   // default queue
-//        Log::info('foo');
     }
 
     /**
@@ -187,7 +187,7 @@ class TaskObserver
     /**
      * Handle the task "deleted" event.
      *
-     * @param  \App\Task $task
+     * @param \App\Task $task
      * @return void
      */
     public function deleted(Task $task)
@@ -198,7 +198,7 @@ class TaskObserver
     /**
      * Handle the task "restored" event.
      *
-     * @param  \App\Task $task
+     * @param \App\Task $task
      * @return void
      */
     public function restored(Task $task)
@@ -209,7 +209,7 @@ class TaskObserver
     /**
      * Handle the task "force deleted" event.
      *
-     * @param  \App\Task $task
+     * @param \App\Task $task
      * @return void
      */
     public function forceDeleted(Task $task)

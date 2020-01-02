@@ -46,7 +46,16 @@ class Project extends Model
 
     protected $table = 'projects';
     protected $fillable = [
-        'name', 'project_status', 'boat_id', 'project_type', 'project_progress', 'site_id', 'start_date', 'end_date', 'imported'
+        'name',
+        'project_status',
+        'boat_id',
+        'project_type',
+        'project_progress',
+        'site_id',
+        'start_date',
+        'end_date',
+        'imported',
+        'internal_progressive_number'
     ];
 
     public const REPORT_FOLDER = 'reports';
@@ -60,15 +69,10 @@ class Project extends Model
         Project::observe(ProjectObserver::class);
     }
 
-
-
     public function deleteDocument(Document $document){
-
         $this->deleteFromCloud($document);
         return $this->traitDeleteDocument($document);
-
     }
-
 
     private function deleteFromCloud(Document $document){
 
@@ -1253,6 +1257,41 @@ class Project extends Model
                     );
                 }
             }
+        }
+    }
+
+    /**
+     * An internal ID calculated on a "per-boat" base
+     *
+     * @param $boat_id
+     * @return integer
+     */
+    public static function getLastInternalProgressiveIDByBoat($boat_id)
+    {
+        $max = Project::where('projects.boat_id', '=', $boat_id)->max('projects.internal_progressive_number');
+        return $max ? $max : 0;
+    }
+
+    /**
+     * Gives total number of projects calculated on a "per-boat" base
+     *
+     * @param $boat_id
+     * @return integer
+     */
+    public static function countProjectsByBoat($boat_id)
+    {
+        return Project::where('projects.boat_id', '=', $boat_id)->count();
+    }
+
+    /**
+     * @return void
+     */
+    public function updateInternalProgressiveNumber()
+    {
+        $p_boat = $this->boat;
+        if ($p_boat) {
+            $highest_internal_pn = Project::getLastInternalProgressiveIDByBoat($p_boat->id);
+            $this->update(['internal_progressive_number' => ++$highest_internal_pn]);
         }
     }
 }

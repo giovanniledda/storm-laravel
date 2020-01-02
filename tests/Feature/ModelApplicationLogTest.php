@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
+use function factory;
 use App\Boat;
 use App\Project;
-use function factory;
 use Tests\TestCase;
 use App\ApplicationLog;
 

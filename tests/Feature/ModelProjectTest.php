@@ -188,7 +188,24 @@ class ModelProjectTest extends TestCase
         }
 
         $this->assertEquals(15, $project2->application_logs()->count());
-
     }
 
+
+    function test_internal_progressive_number() {
+
+        $boats = factory(Boat::class, 3)->create();
+        /** @var Boat $boat */
+        foreach ($boats as $boat) {
+            $projs_index_for_boat = 1;
+            $projects = factory(Project::class, 4)->create([
+                'boat_id' => $boat->id
+            ]);
+            /** @var Project $project */
+            foreach ($projects as $project) {
+//                $project->boat()->associate($boat)->save();
+                $this->assertEquals($boat->id, $project->boat->id);
+                $this->assertEquals($projs_index_for_boat++, $project->internal_progressive_number);
+            }
+        }
+    }
 }
