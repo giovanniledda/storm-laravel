@@ -34,6 +34,23 @@ class ApplicationLog extends Model
         return $this->hasMany('App\ApplicationLogSection', 'application_log_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function project()
+    {
+        return $this->belongsTo('App\Project');
+    }
+
+    /**
+     * Gives the project's boat
+     *
+     * @return Boat|null
+     */
+    public function boat()
+    {
+        return $this->project ? $this->project->boat : null;
+    }
 
     /**
      * Returns an array of data with values for each field

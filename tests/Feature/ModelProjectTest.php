@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\ApplicationLog;
 use App\Product;
 use App\Profession;
 use App\ProjectUser;
@@ -149,7 +150,7 @@ class ModelProjectTest extends TestCase
         }
 
         // faccio lo stesso con un secondo progetto e vedo che i prodotti siano distinti (differenzio per p_type)
-        /** @var Project $project */
+        /** @var Project $project2 */
         $project2 = Project::createSemiFake($this->faker);
         $products2 = factory(Product::class, 10)->create([
             'p_type' => 'TEST'
@@ -160,6 +161,33 @@ class ModelProjectTest extends TestCase
             $this->assertContains($project2->id, $product->projects()->pluck('project_id'));
             $this->assertNotContains($project->id, $product->projects()->pluck('project_id'));
         }
+    }
+
+    function test_project_application_logs() {
+
+        /** @var Project $project */
+        $project = Project::createSemiFake($this->faker);
+        $application_logs = factory(ApplicationLog::class, 10)->create();
+
+        $project->application_logs()->saveMany($application_logs);
+        /** @var ApplicationLog $application_log */
+        foreach ($application_logs as $application_log) {
+            $this->assertEquals($project->id, $application_log->project->id);
+        }
+
+        $this->assertEquals(10, $project->application_logs()->count());
+
+        // faccio lo stesso con un secondo progetto e vedo che gli app log siano distinti
+        /** @var Project $project2 */
+        $project2 = Project::createSemiFake($this->faker);
+        $application_logs2 = factory(ApplicationLog::class, 15)->create();
+
+        $project2->application_logs()->saveMany($application_logs2);
+        foreach ($application_logs2 as $application_log) {
+            $this->assertEquals($project2->id, $application_log->project->id);
+        }
+
+        $this->assertEquals(15, $project2->application_logs()->count());
 
     }
 

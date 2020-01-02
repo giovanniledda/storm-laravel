@@ -762,6 +762,13 @@ class Project extends Model
         return $this->getUserByIdBaseQuery($uid)->count() > 0;
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function application_logs()
+    {
+        return $this->hasMany(ApplicationLog::class);
+    }
 
     /**
      * Chiude un progetto o tenta di chiuderlo se trova i task tutti chiusi
