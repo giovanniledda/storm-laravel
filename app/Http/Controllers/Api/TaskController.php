@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\History;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -14,6 +15,8 @@ use Validator;
 use Illuminate\Http\UploadedFile;
 use App\Utils\Utils;
 use App\Section;
+use function is_null;
+use const TASKS_STATUSES;
 
 class TaskController extends Controller
 {
@@ -128,4 +131,28 @@ class TaskController extends Controller
         return $path . DIRECTORY_SEPARATOR . 'Accepted' . DIRECTORY_SEPARATOR . 'Active.png';
     }
 
+    /**
+     * Revert task status to previous one, based on history list
+     *
+     * #T11 /api/v1/tasks/{record_id}/undo-status-change
+     *
+     * @param Request $request
+     * @param Task $record
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
+     */
+    public function undoStatusChange(Request $request, $record)
+    {
+        /** @var History $last_history */
+        $last_history = $record->history()->latest('created_at')->first();
+        $original_task_status = $last_history->getBodyAttribute('original_task_status');
+        if (!is_null($original_task_status) && $record->task_status != $original_task_status) {
+            $record->update(['task_status' => $original_task_status]);
+        }
+        return Utils::renderStandardJsonapiResponse([
+            'data' => [
+                'type' => 'tasks',
+                'id' => $record->id,
+                'attributes' => ['task-status' => $record->task_status]
+            ]], 200);
+    }
 }

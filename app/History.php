@@ -9,6 +9,7 @@ use function base64_encode;
 use function date;
 use function file_exists;
 use function file_get_contents;
+use function json_decode;
 use function time;
 use const DIRECTORY_SEPARATOR;
 
@@ -48,6 +49,20 @@ class History extends Model
                 'users.name as author_name',
                 'users.surname  as author_surname'])
             ->join('users', 'users.id', '=', 'comments.author_id');
+    }
+
+    /**
+     * Extracts the attribute value from the "event_body" json field
+     *
+     * @param $attribute
+     * @return string|null
+     */
+    public function getBodyAttribute($attribute)
+    {
+        $event_body_arr = json_decode($this->event_body, 1);
+        if (!empty($event_body_arr)) {
+            return isset($event_body_arr[$attribute]) ? $event_body_arr[$attribute] : null;
+        }
     }
 
     public function getMediaPath($media)

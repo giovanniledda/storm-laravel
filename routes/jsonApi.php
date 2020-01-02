@@ -40,6 +40,11 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
             $task->post('{record}/generatemap', 'generateMap')->name('generateMap');
         });
 
+        $api->resource('tasks')->only('undo-status-change')->controller('TaskController')//uses the App\Http\Controllers\Api\TaskController
+            ->routes(function ($tasks) {
+                $tasks->get('{record}/undo-status-change', 'undoStatusChange')->name('undo-status-change');
+            });
+
         $api->resource('users');
 
         $api->resource('users')->only('closed-projects')->controller('UserController') //uses the App\Http\Controllers\Api\UserController
@@ -129,8 +134,6 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
             $project->post('{record}/bulk-delete-zones', 'bulkDeleteZones')->name('bulk-delete-zones');
         });
 
-
-
         $api->resource('projects')->relationships(function ($relations) {
             $relations->hasOne('boat'); // punta al methodo dell'adapter /app/jsonApi/Projects/Adapter non al modello
             $relations->hasMany('tasks');
@@ -164,7 +167,6 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
         $api->resource('project-products');
 
         /** APPLICATION LOG STUFF - END */
-
 
         $api->resource('histories');
 
