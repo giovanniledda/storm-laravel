@@ -1288,10 +1288,12 @@ class Project extends Model
      */
     public function updateInternalProgressiveNumber()
     {
-        $p_boat = $this->boat;
-        if ($p_boat) {
-            $highest_internal_pn = Project::getLastInternalProgressiveIDByBoat($p_boat->id);
-            $this->update(['internal_progressive_number' => ++$highest_internal_pn]);
+        if (env('INTERNAL_PROG_NUM_ACTIVE')) {
+            $p_boat = $this->boat;
+            if ($p_boat) {
+                $highest_internal_pn = Project::getLastInternalProgressiveIDByBoat($p_boat->id);
+                $this->update(['internal_progressive_number' => ++$highest_internal_pn]);
+            }
         }
     }
 }
