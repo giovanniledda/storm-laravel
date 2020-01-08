@@ -57,6 +57,14 @@ class ApplicationLogSection extends Model
         return $this->hasMany('App\GenericDataInfoBlock', 'application_log_section_id');
     }
 
+    /**
+     * Get the detections info blocks for the app log section
+     */
+    public function detections_info_blocks()
+    {
+        return $this->hasMany('App\DetectionsInfoBlock', 'application_log_section_id');
+    }
+
 
     /**
      * Returns an array of data with values for each field

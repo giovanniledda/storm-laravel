@@ -6,7 +6,6 @@ use function factory;
 use App\Product;
 use App\ProductUseInfoBlock;
 use Tests\TestCase;
-use App\Zone;
 
 class ModelProductTest extends TestCase
 {
@@ -16,9 +15,6 @@ class ModelProductTest extends TestCase
      */
     public function testBasicRelationships()
     {
-        /** product_use_info_block */
-        /** $table->foreign('product_use_info_block_id')->references('id')->on('product_use_info_blocks')->onDelete('set null') */
-
         /** @var Product $product */
         $product = factory(Product::class)->create();
 

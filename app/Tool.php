@@ -28,7 +28,7 @@ class Tool extends Model
      */
     public function detections_info_blocks()
     {
-        return $this->hasMany('App\DetectionsInfoBlock', 'product_id');
+        return $this->hasMany('App\DetectionsInfoBlock', 'tool_id');
     }
 
     /**

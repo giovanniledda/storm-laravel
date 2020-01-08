@@ -35,6 +35,14 @@ class DetectionsInfoBlock extends Model
     ];
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function tool()
+    {
+        return $this->belongsTo('App\Tool', 'tool_id');
+    }
+
+    /**
      * The application log section
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

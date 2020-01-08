@@ -14,6 +14,7 @@ use App\Site;
 use App\Subsection;
 use App\Task;
 use App\TaskInterventType;
+use App\Tool;
 use App\Zone;
 use Faker\Factory as Faker;
 use Illuminate\Support\Facades\Storage;
@@ -246,9 +247,22 @@ class SeederUtils
      */
     public function addFakeProductsToProject(Project $project, int $products)
     {
-        if ($project->zones()->count() == 0) {
+        if ($project->products()->count() == 0) {
             for ($i = 1; $i <= $products; $i++) {
                 factory(Product::class)->create();
+            }
+        }
+    }
+
+    /**
+     * @param Project $project
+     * @param int $tools
+     */
+    public function addFakeToolsToProject(Project $project, int $tools)
+    {
+        if ($project->tools()->count() == 0) {
+            for ($i = 1; $i <= $tools; $i++) {
+                factory(Tool::class)->create();
             }
         }
     }

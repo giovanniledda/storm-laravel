@@ -5,7 +5,7 @@ use Illuminate\Database\Seeder;
 use Seeds\SeederUtils as Utils;
 use Faker\Factory as Faker;
 
-class ZonesSeeder extends Seeder
+class ProductsSeeder extends Seeder
 {
     /**
      * @var Utils
@@ -28,11 +28,17 @@ class ZonesSeeder extends Seeder
         $this->utils = new Utils();
 //        $this->faker = Faker::create();
 
-        // Get all of the projects
         $projects = Project::all();
         /** @var Project $project */
         foreach ($projects as $project) {
+            // Add fake zones
             $this->utils->addFakeZonesToProject($project, 4, 5);
+
+            // Add fake products
+            $this->utils->addFakeProductsToProject($project, 4);
+
+            // Add fake tools
+            $this->utils->addFakeToolsToProject($project, 4);
         }
     }
 }
