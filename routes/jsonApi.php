@@ -165,6 +165,8 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
         $api->resource('zones');
         $api->resource('products');
         $api->resource('project-products');
+        $api->resource('tools');
+        $api->resource('project-tools');
 
         /** APPLICATION LOG STUFF - END */
 
