@@ -737,6 +737,18 @@ class Project extends Model
     }
 
     /**
+     * @return BelongsToMany
+     */
+    public function tools()
+    {
+        return $this->belongsToMany('App\Tool', 'project_tool')
+            ->withPivot([
+                'created_at',
+                'updated_at'
+            ]);
+    }
+
+    /**
      * @param int $uid
      *
      * @return BelongsToMany
@@ -1161,7 +1173,7 @@ class Project extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return int
      */
     public function countParentZones()
     {

@@ -5,14 +5,14 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Faker\Generator as Faker;
 
-class Product extends Model
+class Tool extends Model
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'products';
+    protected $table = 'tools';
 
     /**
      * The attributes that aren't mass assignable.
@@ -22,33 +22,13 @@ class Product extends Model
     protected $guarded = [];
 
     /**
-     * The model's default values for attributes.
-     *
-     * @var array
-     */
-    protected $attributes = [
-        'p_type' => PRODUCT_TYPE_PAINTING,
-    ];
-
-    /**
-     * The attributes that should be cast to native types.
-     * See: https://laravel.com/docs/5.8/eloquent-mutators#array-and-json-casting
-     *
-     * @var array
-     */
-    protected $casts = [
-        'components' => 'array',
-    ];
-
-
-    /**
-     * The product use info block which the product belongs
+     * The detections info block which the tool belongs
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function product_use_info_blocks()
+    public function detections_info_blocks()
     {
-        return $this->hasMany('App\ProductUseInfoBlock', 'product_id');
+        return $this->hasMany('App\DetectionsInfoBlock', 'product_id');
     }
 
     /**
@@ -56,7 +36,7 @@ class Product extends Model
      */
     public function projects()
     {
-        return $this->belongsToMany('App\Project', 'project_product');
+        return $this->belongsToMany('App\Project', 'project_tool');
     }
 
     /**
@@ -70,9 +50,8 @@ class Product extends Model
         return [
             'name' => $faker->word,
             'producer' => $faker->company,
-            'p_type' => PRODUCT_TYPE_PAINTING,
-            'sv_percentage' => $faker->randomFloat(3),
-            'components' => $faker->words(3),
+            'serial_number' => $faker->regexify('[a-z|0-9]{8}'),
+            'calibration_expiration_date' => $faker->dateTimeThisDecade(),
         ];
     }
 
@@ -80,13 +59,13 @@ class Product extends Model
      *
      * Creates a Product using some fake data and some others that have sense
      * @param Faker $faker
-     * @return Product
+     * @return Tool
      */
     public static function createSemiFake(Faker $faker)
     {
-        $p = new Product(self::getSemiFakeData($faker));
-        $p->save();
-        return $p;
+        $t = new Tool(self::getSemiFakeData($faker));
+        $t->save();
+        return $t;
     }
 
 }

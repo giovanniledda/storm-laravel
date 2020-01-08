@@ -4,15 +4,18 @@ namespace App;
 
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Model;
+use Net7\Documents\DocumentableTrait;
 
-class ProductUseInfoBlock extends Model
+class DetectionsInfoBlock extends Model
 {
+    use DocumentableTrait;
+
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'product_use_info_blocks';
+    protected $table = 'detections_info_blocks';
 
     /**
      * The attributes that aren't mass assignable.
@@ -28,17 +31,8 @@ class ProductUseInfoBlock extends Model
      * @var array
      */
     protected $casts = [
-        'components' => 'array',
-        'thinners' => 'array',
+        'detections' => 'array',
     ];
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function product()
-    {
-        return $this->belongsTo('App\Product', 'product_id');
-    }
 
     /**
      * The application log section
@@ -50,7 +44,6 @@ class ProductUseInfoBlock extends Model
         return $this->belongsTo('App\ApplicationLogSection', 'application_log_section_id');
     }
 
-
     /**
      * Returns an array of data with values for each field
      *
@@ -61,23 +54,23 @@ class ProductUseInfoBlock extends Model
     {
         return [
             'name' => $faker->word,
-            'viscosity' => $faker->randomFloat(2),
-            'components' => $faker->words(30),
-            'thinners' => $faker->words(30),
+            'detections' => $faker->words(30),
+            'short_description' => $faker->sentence(15)
         ];
     }
 
     /**
      *
-     * Creates a Product Use IB using some fake data and some others that have sense
+     * Creates a Generic Data IB using some fake data and some others that have sense
      * @param Faker $faker
-     * @return ProductUseInfoBlock
+     * @return DetectionsInfoBlock
      */
     public static function createSemiFake(Faker $faker)
     {
-        $data = self::getSemiFakeData($faker);
-        $t = new ProductUseInfoBlock($data);
+        $t = new DetectionsInfoBlock(self::getSemiFakeData($faker));
         $t->save();
         return $t;
     }
+
+    // TODO: functions to manage 1..N Photos and 1...N Files
 }
