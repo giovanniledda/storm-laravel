@@ -2,8 +2,11 @@
 
 namespace App;
 
+use App\Observers\ApplicationLogObserver;
+use App\Observers\TaskObserver;
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Model;
+use function env;
 use const APPLICATION_TYPE_COATING;
 use const APPLICATION_TYPE_FILLER;
 use const APPLICATION_TYPE_HIGHBUILD;
@@ -25,6 +28,13 @@ class ApplicationLog extends Model
      * @var array
      */
     protected $guarded = [];
+
+
+    protected static function boot()
+    {
+        parent::boot();
+        ApplicationLog::observe(ApplicationLogObserver::class);
+    }
 
     /**
      * Get the zone analysis info blocks for the app log section
@@ -84,5 +94,45 @@ class ApplicationLog extends Model
         $t = new ApplicationLog($data);
         $t->save();
         return $t;
+    }
+
+
+    /**
+     * An internal ID calculated on a "per-boat" base
+     * @param $boat_id
+     * @return integer
+     */
+    public static function getLastInternalProgressiveIDByBoat($boat_id)
+    {
+        $max = ApplicationLog::join('projects', 'projects.id', '=', 'application_logs.project_id')
+            ->where('projects.boat_id', '=', $boat_id)
+            ->max('application_logs.internal_progressive_number');
+        return $max ? $max : 0;
+    }
+
+    /**
+     * Goives total number of tasks calculated on a "per-boat" base
+     * @param $boat_id
+     * @return integer
+     */
+    public static function countApplicationLogsByBoat($boat_id)
+    {
+        return ApplicationLog::join('projects', 'projects.id', '=', 'application_logs.project_id')
+            ->where('projects.boat_id', '=', $boat_id)
+            ->count();
+    }
+
+    /**
+     * @return void
+     */
+    public function updateInternalProgressiveNumber()
+    {
+        if (env('INTERNAL_PROG_NUM_ACTIVE')) {
+            $p_boat = $this->boat();
+            if ($p_boat) {
+                $highest_internal_pn = ApplicationLog::getLastInternalProgressiveIDByBoat($p_boat->id);
+                $this->update(['internal_progressive_number' => ++$highest_internal_pn]);
+            }
+        }
     }
 }

@@ -675,7 +675,6 @@ EOF;
         return $html;
     }
 
-
     /**
      * An internal ID calculated on a "per-boat" base
      * @param $boat_id

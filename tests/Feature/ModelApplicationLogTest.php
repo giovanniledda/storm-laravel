@@ -36,4 +36,33 @@ class ModelApplicationLogTest extends TestCase
 
         $this->assertEquals($project->boat->id, $application_log->boat()->id);
     }
+
+
+
+    function test_internal_progressive_number() {
+
+        $boats = factory(Boat::class, 3)->create();
+        /** @var Boat $boat */
+        foreach ($boats as $boat) {
+            $projs_index_for_boat = 1;
+            $application_logs_index_for_boat = 1;
+            $projects = factory(Project::class, 4)->create([
+                'boat_id' => $boat->id
+            ]);
+            /** @var Project $project */
+            foreach ($projects as $project) {
+                $this->assertEquals($boat->id, $project->boat->id);
+                $this->assertEquals($projs_index_for_boat++, $project->internal_progressive_number);
+
+                $application_logs = factory(ApplicationLog::class, 10)->create([
+                    'project_id' => $project->id
+                ]);
+                /** @var ApplicationLog $application_log */
+                foreach ($application_logs as $application_log) {
+                    $this->assertEquals($boat->id, $application_log->boat()->id);
+                    $this->assertEquals($application_logs_index_for_boat++, $application_log->internal_progressive_number);
+                }
+            }
+        }
+    }
 }
