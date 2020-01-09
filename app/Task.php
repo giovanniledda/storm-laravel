@@ -734,4 +734,18 @@ EOF;
             return $last_history->getBodyAttribute('user_name');
         }
     }
+
+    /**
+     * Get user who did last edit
+     *
+     * @return string|null
+     */
+    public function getLastEditorId()
+    {
+        /** @var History $last_history */
+        $last_history = $this->getLastHistory();
+        if ($last_history) {
+            return $last_history->getBodyAttribute('user_id');
+        }
+    }
 }

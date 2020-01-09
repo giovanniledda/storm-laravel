@@ -102,6 +102,7 @@ class Schema extends SchemaProvider
             'author_id' => $resource->author ? $author->id : '',
             'author' => $resource->author ? $author->name . ' ' . $author->surname : '',
             'last_editor' => $resource->getLastEditor(),
+            'last_editor_id' => $resource->getLastEditorId(),
             'is_open' => $resource->is_open,
             'is_private' => $resource->is_private,
             'added_by_storm' => $resource->added_by_storm,
