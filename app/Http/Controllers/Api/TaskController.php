@@ -41,6 +41,10 @@ class TaskController extends Controller
         foreach ($histories as $history) {
             $history_data = array_merge(json_decode($history['event_body'], true), ['event_date' => $history['event_date']]);
 
+            $resource = History::find($history['id']);
+            $history_data['photos'] = $resource->getPhotosApi();
+            $history_data['comments'] = $resource->comments_for_api;
+
             array_push($data, [
                 "type" => "history",
                 "id" => $history['id'],
@@ -143,7 +147,7 @@ class TaskController extends Controller
     public function undoStatusChange(Request $request, $record)
     {
         /** @var History $last_history */
-        $last_history = $record->history()->latest('created_at')->first();
+        $last_history = $record->getLastHistory();
         $original_task_status = $last_history->getBodyAttribute('original_task_status');
         if (!is_null($original_task_status) && $record->task_status != $original_task_status) {
             $record->update(['task_status' => $original_task_status]);

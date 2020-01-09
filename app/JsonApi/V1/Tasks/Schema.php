@@ -22,11 +22,11 @@ class Schema extends SchemaProvider
      */
     public function getId($resource)
     {
-        return (string) $resource->getRouteKey();
+        return (string)$resource->getRouteKey();
     }
 
 
-     public function getPrimaryMeta($resource)
+    public function getPrimaryMeta($resource)
     {
 
         $detailed_images = $resource->detailed_images;
@@ -35,28 +35,28 @@ class Schema extends SchemaProvider
         $generic_documents = $resource->generic_documents;
 
         $diu = [];
-        foreach ($detailed_images as $i){
-            $diu []= $i->getShowApiUrl();
+        foreach ($detailed_images as $i) {
+            $diu [] = $i->getShowApiUrl();
         }
 
         $giu = [];
-        foreach ($generic_images as $i){
-             $giu []= $i->getShowApiUrl();
+        foreach ($generic_images as $i) {
+            $giu [] = $i->getShowApiUrl();
         }
 
         $aiu = [];
-        foreach ($additional_images as $i){
-            $aiu []= $i->getShowApiUrl();
+        foreach ($additional_images as $i) {
+            $aiu [] = $i->getShowApiUrl();
         }
 
         $gdu = [];
-        foreach ($generic_documents as $i){
-            $tmp =[
+        foreach ($generic_documents as $i) {
+            $tmp = [
                 'uri' => $i->getShowApiUrl(),
                 'title' => $i->title,
                 'mime_type' => $i->media->first()->mime_type // TODO: get MIME TYPE
             ];
-            $gdu []= $tmp;
+            $gdu [] = $tmp;
         }
 
         $image = $resource->generic_images->last();
@@ -78,6 +78,7 @@ class Schema extends SchemaProvider
 
         return $this->getPrimaryMeta($resource);
     }
+
     /**
      * @param $resource
      *      the domain record being serialized.
@@ -86,32 +87,33 @@ class Schema extends SchemaProvider
     public function getAttributes($resource)
     {
 //        $author = User::where('id', $resource->author_id)->first();
-       $author   = $resource->author;
-       $comments = $resource->comments()->get();
-       $section  = Section::select("name")->where('id', $resource->section_id)->first();
-       $intervent_types = TaskInterventType::select("name")->where('id', '=', $resource->intervent_type_id)->first();
+        $author = $resource->author;
+        $comments = $resource->comments()->get();
+        $section = Section::select("name")->where('id', $resource->section_id)->first();
+        $intervent_types = TaskInterventType::select("name")->where('id', '=', $resource->intervent_type_id)->first();
         return [
 
             'description' => $resource->description,
-            'number'=> $resource->number,
-            'internal_progressive_number'=> $resource->internal_progressive_number,
-            'worked_hours'=> $resource->worked_hours,
-            'estimated_hours'=> $resource->estimated_hours,
-            'status'=> $resource->task_status,
-            'author_id'=> $resource->author ? $author->id : '',
-            'author'=> $resource->author ? $author->name.' '.$author->surname: '',
+            'number' => $resource->number,
+            'internal_progressive_number' => $resource->internal_progressive_number,
+            'worked_hours' => $resource->worked_hours,
+            'estimated_hours' => $resource->estimated_hours,
+            'status' => $resource->task_status,
+            'author_id' => $resource->author ? $author->id : '',
+            'author' => $resource->author ? $author->name . ' ' . $author->surname : '',
+            'last_editor' => $resource->getLastEditor(),
             'is_open' => $resource->is_open,
             'is_private' => $resource->is_private,
             'added_by_storm' => $resource->added_by_storm,
             'project_id' => $resource->project_id,
             'section_id' => $resource->section_id,
-            'section_name' =>$section->name,
+            'section_name' => $section->name,
             'intervent_type_id' => $resource->intervent_type_id,
-            'intervent_type_name'=> $intervent_types->name,
+            'intervent_type_name' => $intervent_types->name,
             'subsection_id' => $resource->subsection_id,
             'x_coord' => $resource->x_coord,
             'y_coord' => $resource->y_coord,
-            'comments'=> $comments,
+            'comments' => $comments,
             'created-at' => $resource->created_at->toAtomString(),
             'updated-at' => $resource->updated_at->toAtomString(),
         ];
@@ -122,7 +124,7 @@ class Schema extends SchemaProvider
     public function getResourceLinks($resource)
     {
         $links = parent::getResourceLinks($resource);
-      //  $links['foo'] = $this->createLink('posts/foo');
+        //  $links['foo'] = $this->createLink('posts/foo');
 
         return $links;
     }

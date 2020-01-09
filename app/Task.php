@@ -205,6 +205,12 @@ class Task extends Model
         return $this->morphMany('App\History', 'historyable');
     }
 
+
+    public function getLastHistory()
+    {
+        return $this->history()->latest('created_at')->first();;
+    }
+
     public function taskIntervents()
     {
         return $this->hasOne('App\TaskInterventType');
@@ -712,6 +718,20 @@ EOF;
                 $highest_internal_pn = Task::getLastInternalProgressiveIDByBoat($p_boat->id);
                 $this->update(['internal_progressive_number' => ++$highest_internal_pn]);
             }
+        }
+    }
+
+    /**
+     * Get user who did last edit
+     *
+     * @return string|null
+     */
+    public function getLastEditor()
+    {
+        /** @var History $last_history */
+        $last_history = $this->getLastHistory();
+        if ($last_history) {
+            return $last_history->getBodyAttribute('user_name');
         }
     }
 }

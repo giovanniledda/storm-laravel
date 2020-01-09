@@ -42,13 +42,13 @@ class History extends Model
     public function comments_for_api()
     {
         return $this->comments()
+            ->join('users', 'users.id', '=', 'comments.author_id')
             ->select(['comments.id',
                 'comments.body',
                 'comments.created_at',
                 'comments.updated_at',
                 'users.name as author_name',
-                'users.surname  as author_surname'])
-            ->join('users', 'users.id', '=', 'comments.author_id');
+                'users.surname  as author_surname']);
     }
 
     /**
