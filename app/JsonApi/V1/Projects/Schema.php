@@ -84,6 +84,7 @@ class Schema extends SchemaProvider
                      ->where('id', '=', $resource->site_id)
                      ->first();
         return [
+            'internal_progressive_number' => $resource->internal_progressive_number,
             'name' => $resource->name,
             'boat_id' => $resource->boat_id,
             'project_id' => $resource->id,

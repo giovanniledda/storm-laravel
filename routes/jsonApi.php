@@ -134,6 +134,11 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
             $project->post('{record}/bulk-delete-zones', 'bulkDeleteZones')->name('bulk-delete-zones');
         });
 
+        $api->resource('projects')->only('get-app-log')->controller('ProjectController') // uses the App\Http\Controllers\Api\ZoneController
+        ->routes(function ($project) {
+            $project->post('{record}/get-app-log/{app_log_id}', 'getApplicationLog')->name('get-app-log');
+        });
+
         $api->resource('projects')->relationships(function ($relations) {
             $relations->hasOne('boat'); // punta al methodo dell'adapter /app/jsonApi/Projects/Adapter non al modello
             $relations->hasMany('tasks');

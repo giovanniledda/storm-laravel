@@ -94,6 +94,7 @@ class Schema extends SchemaProvider
 
             'description' => $resource->description,
             'number'=> $resource->number,
+            'internal_progressive_number'=> $resource->internal_progressive_number,
             'worked_hours'=> $resource->worked_hours,
             'estimated_hours'=> $resource->estimated_hours,
             'status'=> $resource->task_status,
