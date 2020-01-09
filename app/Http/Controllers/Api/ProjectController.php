@@ -662,4 +662,24 @@ class ProjectController extends Controller
             return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error deleting zones", $e->getMessage());
         }
     }
+
+    /**
+     *
+     * #PR27 /api/v1/projects/{record_id}/get-app-log/{app_log_id}
+     *
+     * @param Request $request
+     * @param $record
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
+     */
+    public function getApplicationLog(Request $request, $record, $app_log_id)
+    {
+        try {
+
+            $r=0;
+            return Utils::renderStandardJsonapiResponse([], 204);
+
+        } catch (\Exception $e) {
+            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error retrieving application log", $e->getMessage());
+        }
+    }
 }

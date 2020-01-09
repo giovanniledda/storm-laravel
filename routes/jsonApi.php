@@ -136,7 +136,7 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
 
         $api->resource('projects')->only('get-app-log')->controller('ProjectController') // uses the App\Http\Controllers\Api\ZoneController
         ->routes(function ($project) {
-            $project->post('{record}/get-app-log/{app_log_id}', 'getApplicationLog')->name('get-app-log');
+            $project->get('{record}/get-app-log/{app_log_id}', 'getApplicationLog')->name('get-app-log');
         });
 
         $api->resource('projects')->relationships(function ($relations) {
