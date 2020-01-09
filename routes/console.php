@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\InternalProgNumHandler;
 use Illuminate\Foundation\Inspiring;
 
 /*
@@ -16,3 +17,12 @@ use Illuminate\Foundation\Inspiring;
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->describe('Display an inspiring quote');
+
+// Aggiornamento ID interni di Task, Project e ApplicationLog su base "Boat"
+Artisan::command('update-internal-ids', function (InternalProgNumHandler $ipn_handler) {
+
+    $this->comment('Running internal IDS sync...');
+    $ipn_handler->run();
+    $this->comment('...done!');
+
+})->describe('Update (and sync) internal_progressive_number field for many Models');

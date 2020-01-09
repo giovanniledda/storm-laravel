@@ -5,7 +5,7 @@ use Illuminate\Database\Seeder;
 use Seeds\SeederUtils as Utils;
 use Faker\Factory as Faker;
 
-class ProductsSeeder extends Seeder
+class ApplicationLogSeeder extends Seeder
 {
     /**
      * @var Utils
