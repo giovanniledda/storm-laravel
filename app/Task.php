@@ -208,7 +208,12 @@ class Task extends Model
 
     public function getLastHistory()
     {
-        return $this->history()->latest('created_at')->first();;
+        return $this->history()->latest()->first();;
+    }
+
+    public function getFirstHistory()
+    {
+        return $this->history()->oldest()->first();;
     }
 
     public function taskIntervents()

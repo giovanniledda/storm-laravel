@@ -39,6 +39,11 @@ class History extends Model
         return $this->morphMany('App\Comment', 'commentable');
     }
 
+    public function getFirstcomment()
+    {
+        return $this->comments()->oldest()->first();
+    }
+
     public function comments_for_api()
     {
         return $this->comments()
@@ -70,10 +75,8 @@ class History extends Model
         $document = $media->model;
         $media_id = $media->id;
 
-        $task = $this->historyable;
-        $task_id = $task->id;
         $history_id = $this->id;
-        $path = 'tasks' . DIRECTORY_SEPARATOR . $task_id . DIRECTORY_SEPARATOR . 'histories' . DIRECTORY_SEPARATOR .
+        $path = 'histories' . DIRECTORY_SEPARATOR .
             $history_id . DIRECTORY_SEPARATOR . $document->type . DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
 
         return $path;
@@ -140,12 +143,12 @@ class History extends Model
         $photo_objects = [];
         $detailed_photo_docs = $this->getDetailedPhotoDocument();
         foreach ($detailed_photo_docs as $photo_doc) {
-            $photo_objects[] = $this->extractJsonDocumentPhotoInfo($photo_doc);
+            $photo_objects['detailed_images'][] = $this->extractJsonDocumentPhotoInfo($photo_doc);
         }
 
         $additional_photo_doc = $this->getAdditionalPhotoDocument();
         if ($additional_photo_doc) {
-            $photo_objects[] = $this->extractJsonDocumentPhotoInfo($additional_photo_doc);
+            $photo_objects['additional_images'] = $this->extractJsonDocumentPhotoInfo($additional_photo_doc);
         }
 
         return ['data' => $photo_objects];
