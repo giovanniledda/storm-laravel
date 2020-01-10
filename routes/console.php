@@ -139,7 +139,7 @@ Artisan::command('move-task-descriptions', function () {
                         $comment = $history->getFirstcomment();
                         $this->info("-- Comment [ID: {$comment->id}]");
                         $comment->body = $comment->body."\n".$description;
-                        $comment->save;
+                        $comment->save();
                         $this->info("--- ...updated!");
                     } else {
                         $comment = Comment::create([
