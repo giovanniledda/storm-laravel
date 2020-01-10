@@ -148,7 +148,7 @@ class History extends Model
 
         $additional_photo_doc = $this->getAdditionalPhotoDocument();
         if ($additional_photo_doc) {
-            $photo_objects['additional_images'] = $this->extractJsonDocumentPhotoInfo($additional_photo_doc);
+            $photo_objects['additional_images'][] = $this->extractJsonDocumentPhotoInfo($additional_photo_doc);
         }
 
         return ['data' => $photo_objects];
