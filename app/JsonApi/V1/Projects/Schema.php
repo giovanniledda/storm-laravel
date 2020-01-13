@@ -27,11 +27,7 @@ class Schema extends SchemaProvider
 
     public function getPrimaryMeta($resource)
     {
-
-
         $generic_documents = $resource->generic_documents;
-
-
         $gdu = [];
         foreach ($generic_documents as $i){
             $tmp =[
@@ -43,29 +39,27 @@ class Schema extends SchemaProvider
             $gdu []= $tmp;
         }
 
-        return [
-            'generic_documents' => $gdu,
-
-        ];
+        return ['generic_documents' => $gdu];
         // TODO : mettere sia il link documentale all'immagine della barca che il project_id
     }
 
     public function getInclusionMeta($resource)
     {
-
         return $this->getPrimaryMeta($resource);
     }
 
     public function getRelationships($project, $isPrimary, array $includeRelationships)
     {
-
-
         return [
             'tasks' => [
              //   self::SHOW_SELF => true,
                 self::SHOW_RELATED => true,
             ],
             'products' => [
+             //   self::SHOW_SELF => true,
+                self::SHOW_RELATED => true,
+            ],
+            'application_logs' => [
              //   self::SHOW_SELF => true,
                 self::SHOW_RELATED => true,
             ]

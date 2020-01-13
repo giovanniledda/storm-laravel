@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\ApplicationLog;
 use App\Jobs\NotifyTaskUpdates;
 use App\Jobs\ProjectLoadEnvironmentalData;
 use App\Notifications\TaskCreated;
@@ -665,18 +666,19 @@ class ProjectController extends Controller
 
     /**
      *
-     * #PR27 /api/v1/projects/{record_id}/get-app-log/{app_log_id}
+     * #PR28 /api/v1/projects/{record_id}/app-log-structure/{app_log_id}
      *
      * @param Request $request
      * @param $record
      * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
      */
-    public function getApplicationLog(Request $request, $record, $app_log_id)
+    public function getApplicationLogStructure(Request $request, $record, $app_log_id)
     {
         try {
 
-            $r=0;
-            return Utils::renderStandardJsonapiResponse([], 204);
+            /** @var ApplicationLog $app_log */
+            $app_log = $record->application_logs()->findOrFail($app_log_id);
+            return Utils::renderStandardJsonapiResponse(['data' => $app_log->toJsonApi()], 200);
 
         } catch (\Exception $e) {
             return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error retrieving application log", $e->getMessage());

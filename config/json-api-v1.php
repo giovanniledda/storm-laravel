@@ -74,6 +74,7 @@ return [
         'project-products' => \App\ProjectProduct::class,
         'tools' => \App\Tool::class,
         'project-tools' => \App\ProjectTool::class,
+        'application-logs' => \App\ApplicationLog::class,
     ],
 
     /*

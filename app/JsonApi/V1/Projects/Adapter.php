@@ -12,7 +12,8 @@ use Illuminate\Support\Collection;
 class Adapter extends AbstractAdapter
 {
 
-    protected $fillable = ['name',
+    protected $fillable = [
+        'name',
         'status',
         'boat_id',
         'project_type',
@@ -139,6 +140,11 @@ class Adapter extends AbstractAdapter
     protected function boat()
     {
         return $this->belongsTo();
+    }
+
+    protected function application_logs()
+    {
+        return $this->hasMany('application_logs');
     }
 
 //      /** @var Model $record */

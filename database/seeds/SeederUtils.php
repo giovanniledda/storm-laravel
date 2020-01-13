@@ -2,9 +2,14 @@
 
 namespace Seeds;
 
+use App\ApplicationLog;
+use App\ApplicationLogSection;
 use App\Boat;
 use App\BoatUser;
+use App\DetectionsInfoBlock;
+use App\GenericDataInfoBlock;
 use App\Product;
+use App\ProductUseInfoBlock;
 use App\Profession;
 use App\Project;
 use App\ProjectSection;
@@ -16,11 +21,19 @@ use App\Task;
 use App\TaskInterventType;
 use App\Tool;
 use App\Zone;
+use App\ZoneAnalysisInfoBlock;
 use Faker\Factory as Faker;
 use Illuminate\Support\Facades\Storage;
 use StormUtils;
 use User;
 use function factory;
+use function memory_get_peak_usage;
+use function memory_get_usage;
+use function round;
+use const APPLICATION_LOG_SECTION_TYPE_APPLICATION;
+use const APPLICATION_LOG_SECTION_TYPE_INSPECTION;
+use const APPLICATION_LOG_SECTION_TYPE_PREPARATION;
+use const APPLICATION_LOG_SECTION_TYPE_ZONES;
 
 class SeederUtils
 {
@@ -32,9 +45,25 @@ class SeederUtils
     }
 
     /**
+     * Shows how many memory the script is using
+     */
+    public function print_mem()
+    {
+        /* Currently used memory */
+        $mem_usage = memory_get_usage();
+
+        /* Peak memory usage */
+        $mem_peak = memory_get_peak_usage();
+
+        echo 'The script is now using: -' . round($mem_usage / 1024) . "KB- of memory. \n";
+        echo 'Peak usage: -' . round($mem_peak / 1024) . "KB- of memory.\n\n";
+    }
+
+    /**
      * Create a user with given role
      *
      * @param $role
+     * @return
      */
     public function createUser($role_name)
     {
@@ -268,17 +297,110 @@ class SeederUtils
     }
 
     /**
-     * Shows how many memory the script is using
+     * @param Project $project
+     * @param int $app_logs
+     * @return array
      */
-    public function print_mem()
+    public function addFakeApplicationLogsToProject(Project $project, int $app_logs)
     {
-        /* Currently used memory */
-        $mem_usage = memory_get_usage();
-
-        /* Peak memory usage */
-        $mem_peak = memory_get_peak_usage();
-
-        echo 'The script is now using: -' . round($mem_usage / 1024) . "KB- of memory. \n";
-        echo 'Peak usage: -' . round($mem_peak / 1024) . "KB- of memory.\n\n";
+        $application_logs_obj_array = [];
+        if ($project->application_logs()->count() == 0) {
+            for ($i = 1; $i <= $app_logs; $i++) {
+                $application_logs_obj_array[] = factory(ApplicationLog::class)->create(
+                    ['project_id' => $project->id]
+                );
+            }
+        }
+        return $application_logs_obj_array;
     }
+
+    /**
+     * @param ApplicationLog $application_log
+     */
+    public function addFakeStructureToApplicationLog(ApplicationLog &$application_log)
+    {
+        if ($application_log->application_log_sections()->count() == 0) {
+
+            //  ------------- ZONES --------------
+            $section_zone = factory(ApplicationLogSection::class)->create([
+                'section_type' => APPLICATION_LOG_SECTION_TYPE_ZONES
+            ]);
+
+            $za_ib_1 = factory(ZoneAnalysisInfoBlock::class)->create([
+                'application_log_section_id' => $section_zone->id
+            ]);
+            $za_ib_2 = factory(ZoneAnalysisInfoBlock::class)->create([
+                'application_log_section_id' => $section_zone->id
+            ]);
+
+            //  ------------- PREPARATION --------------
+            $section_preparation = factory(ApplicationLogSection::class)->create([
+                'section_type' => APPLICATION_LOG_SECTION_TYPE_PREPARATION
+            ]);
+
+            $pu_ib_1 = factory(ProductUseInfoBlock::class)->create([
+                'application_log_section_id' => $section_preparation->id
+            ]);
+
+            $gd_ib_1 = factory(GenericDataInfoBlock::class)->create([
+                'application_log_section_id' => $section_preparation->id
+            ]);
+
+            $d_ib_1 = factory(DetectionsInfoBlock::class)->create([
+                'application_log_section_id' => $section_preparation->id
+            ]);
+            $d_ib_2 = factory(DetectionsInfoBlock::class)->create([
+                'application_log_section_id' => $section_preparation->id
+            ]);
+
+
+            //  ------------- APPLICATION --------------
+            $section_application = factory(ApplicationLogSection::class)->create([
+                'section_type' => APPLICATION_LOG_SECTION_TYPE_APPLICATION
+            ]);
+
+            $pu_ib_1 = factory(ProductUseInfoBlock::class)->create([
+                'application_log_section_id' => $section_application->id
+            ]);
+
+            $gd_ib_1 = factory(GenericDataInfoBlock::class)->create([
+                'application_log_section_id' => $section_application->id
+            ]);
+
+            $d_ib_1 = factory(DetectionsInfoBlock::class)->create([
+                'application_log_section_id' => $section_application->id
+            ]);
+
+            //  ------------- INSPECTION --------------
+            $section_inspection = factory(ApplicationLogSection::class)->create([
+                'section_type' => APPLICATION_LOG_SECTION_TYPE_INSPECTION
+            ]);
+
+            $d_ib_1 = factory(DetectionsInfoBlock::class)->create([
+                'application_log_section_id' => $section_inspection->id
+            ]);
+            $d_ib_2 = factory(DetectionsInfoBlock::class)->create([
+                'application_log_section_id' => $section_inspection->id
+            ]);
+            $d_ib_3 = factory(DetectionsInfoBlock::class)->create([
+                'application_log_section_id' => $section_inspection->id
+            ]);
+            $d_ib_4 = factory(DetectionsInfoBlock::class)->create([
+                'application_log_section_id' => $section_inspection->id
+            ]);
+            $d_ib_5 = factory(DetectionsInfoBlock::class)->create([
+                'application_log_section_id' => $section_inspection->id
+            ]);
+            $d_ib_6 = factory(DetectionsInfoBlock::class)->create([
+                'application_log_section_id' => $section_inspection->id
+            ]);
+
+            $application_log->application_log_sections()->save($section_zone);
+            $application_log->application_log_sections()->save($section_preparation);
+            $application_log->application_log_sections()->save($section_application);
+            $application_log->application_log_sections()->save($section_inspection);
+        }
+    }
+
+
 }

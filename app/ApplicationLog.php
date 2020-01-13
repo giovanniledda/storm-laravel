@@ -6,6 +6,7 @@ use App\Observers\ApplicationLogObserver;
 use App\Observers\TaskObserver;
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Model;
+use function array_merge;
 use function env;
 use const APPLICATION_TYPE_COATING;
 use const APPLICATION_TYPE_FILLER;
@@ -134,5 +135,20 @@ class ApplicationLog extends Model
                 $this->update(['internal_progressive_number' => ++$highest_internal_pn]);
             }
         }
+    }
+
+    /**
+     * Convert object to an object JSON API compliant
+     * @return array
+     */
+    public function toJsonApi()
+    {
+        $this->application_log_sections;
+        $data = [
+            'type' => $this->table,
+            'id' => $this->id,
+            'attributes' => $this
+        ];
+        return $data;
     }
 }

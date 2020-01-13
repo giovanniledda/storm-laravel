@@ -134,9 +134,9 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
             $project->post('{record}/bulk-delete-zones', 'bulkDeleteZones')->name('bulk-delete-zones');
         });
 
-        $api->resource('projects')->only('get-app-log')->controller('ProjectController') // uses the App\Http\Controllers\Api\ZoneController
+        $api->resource('projects')->only('app-log-structure')->controller('ProjectController') // uses the App\Http\Controllers\Api\ZoneController
         ->routes(function ($project) {
-            $project->get('{record}/get-app-log/{app_log_id}', 'getApplicationLog')->name('get-app-log');
+            $project->get('{record}/app-log-structure/{app_log_id}', 'getApplicationLogStructure')->name('app-log-structure');
         });
 
         $api->resource('projects')->relationships(function ($relations) {
@@ -145,6 +145,7 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
             $relations->hasMany('users');
             $relations->hasMany('products');
             $relations->hasMany('sections');
+            $relations->hasMany('application_logs');
         });
 
         $api->resource('updates');

@@ -72,5 +72,27 @@ class ZoneAnalysisInfoBlock extends Model
         return $t;
     }
 
+    /**
+     * @return array
+     */
+    public function toJsonApi()
+    {
+        $data = [
+            'type' => $this->table,
+            'id' => $this->id,
+            'attributes' => parent::toArray()
+        ];
+        return $data;
+    }
+
+    /**
+     * Overrides parent function
+     * @return array|string
+     */
+    public function toArray()
+    {
+        return $this->toJsonApi();
+    }
+
     // TODO: functions to manage 1..N Photos
 }
