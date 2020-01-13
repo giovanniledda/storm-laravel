@@ -88,11 +88,11 @@ class GenericDataInfoBlock extends Model
                 /** @var Project $project */
                 $project = $app_log->project;
 
-                $path = DIRECTORY_SEPARATOR . 'projects' . DIRECTORY_SEPARATOR . $project->id .
+                return DIRECTORY_SEPARATOR . 'projects' . DIRECTORY_SEPARATOR . $project->id .
                         DIRECTORY_SEPARATOR . 'applications_logs' . DIRECTORY_SEPARATOR  . $app_log->application_type . DIRECTORY_SEPARATOR  . $app_log->id .
                         DIRECTORY_SEPARATOR . 'applications_log_sections' . DIRECTORY_SEPARATOR  . $app_log_section->section_type . DIRECTORY_SEPARATOR  . $app_log_section->id .
+                        DIRECTORY_SEPARATOR . 'generic_data_info_blocks' . DIRECTORY_SEPARATOR  . $this->id .
                         DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
-                return $path;
             }
         }
 

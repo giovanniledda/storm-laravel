@@ -6,6 +6,7 @@ use App\Traits\JsonAPIPhotos;
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Model;
 use Net7\Documents\DocumentableTrait;
+use const DIRECTORY_SEPARATOR;
 
 class DetectionsInfoBlock extends Model
 {
@@ -83,6 +84,30 @@ class DetectionsInfoBlock extends Model
         return $t;
     }
 
+    public function getMediaPath($media)
+    {
+        $media_id = $media->id;
+        /** @var ApplicationLogSection $app_log_section */
+        $app_log_section = $this->application_log_section;
+        if ($app_log_section) {
+            /** @var ApplicationLog $app_log */
+            $app_log = $app_log_section->application_log;
+            if ($app_log) {
+                /** @var Project $project */
+                $project = $app_log->project;
+
+                return DIRECTORY_SEPARATOR . 'projects' . DIRECTORY_SEPARATOR . $project->id .
+                    DIRECTORY_SEPARATOR . 'applications_logs' . DIRECTORY_SEPARATOR  . $app_log->application_type . DIRECTORY_SEPARATOR  . $app_log->id .
+                    DIRECTORY_SEPARATOR . 'applications_log_sections' . DIRECTORY_SEPARATOR  . $app_log_section->section_type . DIRECTORY_SEPARATOR  . $app_log_section->id .
+                    DIRECTORY_SEPARATOR . 'detections_info_blocks' . DIRECTORY_SEPARATOR  . $this->id .
+                    DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
+            }
+        }
+
+        return '/tmp/';
+    }
+
+
     /**
      * @return array
      */
@@ -93,6 +118,9 @@ class DetectionsInfoBlock extends Model
             'id' => $this->id,
             'attributes' => parent::toArray()
         ];
+        $data['attributes']['tool'] = $this->tool;
+        $data['attributes']['photos'] = $this->getPhotosApi();
+
         return $data;
     }
 
@@ -104,6 +132,4 @@ class DetectionsInfoBlock extends Model
     {
         return $this->toJsonApi();
     }
-
-    // TODO: functions to manage 1..N Photos and 1...N Files
 }
