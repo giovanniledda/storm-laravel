@@ -302,7 +302,9 @@ class Task extends Model
 
     /**
      * Adds an image as a generic_image Net7/Document
-     *
+     * @param string $filepath
+     * @param string|null $type
+     * @return Document
      */
     public function addDamageReportPhoto(string $filepath, string $type = null)
     {

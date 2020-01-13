@@ -138,7 +138,7 @@ Artisan::command('move-task-descriptions', function () {
                     if ($history->comments()->count()) {
                         $comment = $history->getFirstcomment();
                         $this->info("-- Comment [ID: {$comment->id}]");
-                        $comment->body = $comment->body.' '.$description;
+                        $comment->body = $comment->body.' - '.$description;
                         if (!$comment->author_id) {
                             $comment->author_id = $resource->author_id;
                         }

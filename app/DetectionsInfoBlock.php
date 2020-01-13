@@ -2,13 +2,16 @@
 
 namespace App;
 
+use App\Traits\JsonAPIPhotos;
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Model;
 use Net7\Documents\DocumentableTrait;
 
 class DetectionsInfoBlock extends Model
 {
-    use DocumentableTrait;
+    use DocumentableTrait, JsonAPIPhotos;
+
+    protected $_photo_documents_size = ''; // 'thumb'; TODO: a regime mettere thumb (in locale va solo se si azionano le code)
 
     /**
      * The table associated with the model.

@@ -24,6 +24,7 @@ use App\Zone;
 use App\ZoneAnalysisInfoBlock;
 use Faker\Factory as Faker;
 use Illuminate\Support\Facades\Storage;
+use Net7\Documents\Document;
 use StormUtils;
 use User;
 use function factory;
@@ -34,6 +35,7 @@ use const APPLICATION_LOG_SECTION_TYPE_APPLICATION;
 use const APPLICATION_LOG_SECTION_TYPE_INSPECTION;
 use const APPLICATION_LOG_SECTION_TYPE_PREPARATION;
 use const APPLICATION_LOG_SECTION_TYPE_ZONES;
+use const APPLICATION_TYPE_PRIMER;
 
 class SeederUtils
 {
@@ -246,6 +248,18 @@ class SeederUtils
     }
 
     /**
+     * @param $block
+     * @param string $filepath
+     * @param string|null $type
+     */
+    public function addImageToBlock(&$block, string $filepath, string $type = null)
+    {
+        if (Storage::disk('local-seeder')->exists($filepath)) {
+            $block->addPhoto($filepath, $type); // sta nel Trait JsonAPIPhotos, TODO: modificare per fargli prendere un'img qualsiasi (per ora prende quelle fake)
+        }
+    }
+
+    /**
      * @param Project $project
      * @param int $fathers
      * @param int $children
@@ -273,12 +287,14 @@ class SeederUtils
     /**
      * @param Project $project
      * @param int $products
+     * @param bool $force
      */
-    public function addFakeProductsToProject(Project $project, int $products)
+    public function addFakeProductsToProject(Project $project, int $products, bool $force = false)
     {
-        if ($project->products()->count() == 0) {
+        if ($project->products()->count() == 0 || $force) {
             for ($i = 1; $i <= $products; $i++) {
-                factory(Product::class)->create();
+                $p = factory(Product::class)->create();
+                $project->products()->attach($p->id);
             }
         }
     }
@@ -286,12 +302,14 @@ class SeederUtils
     /**
      * @param Project $project
      * @param int $tools
+     * @param bool $force
      */
-    public function addFakeToolsToProject(Project $project, int $tools)
+    public function addFakeToolsToProject(Project $project, int $tools, bool $force = false)
     {
-        if ($project->tools()->count() == 0) {
+        if ($project->tools()->count() == 0 || $force) {
             for ($i = 1; $i <= $tools; $i++) {
-                factory(Tool::class)->create();
+                $t = factory(Tool::class)->create();
+                $project->tools()->attach($t->id);
             }
         }
     }
@@ -306,9 +324,9 @@ class SeederUtils
         $application_logs_obj_array = [];
         if ($project->application_logs()->count() == 0) {
             for ($i = 1; $i <= $app_logs; $i++) {
-                $application_logs_obj_array[] = factory(ApplicationLog::class)->create(
-                    ['project_id' => $project->id]
-                );
+                $application_logs_obj_array[] = factory(ApplicationLog::class)->create([
+                    'project_id' => $project->id
+                ]);
             }
         }
         return $application_logs_obj_array;
@@ -323,39 +341,66 @@ class SeederUtils
 
             //  ------------- ZONES --------------
             $section_zone = factory(ApplicationLogSection::class)->create([
+                'application_log_id' => $application_log->id,
                 'section_type' => APPLICATION_LOG_SECTION_TYPE_ZONES
             ]);
 
             $za_ib_1 = factory(ZoneAnalysisInfoBlock::class)->create([
-                'application_log_section_id' => $section_zone->id
+                'application_log_section_id' => $section_zone->id,
+                'name' => 'Zone 1'
             ]);
             $za_ib_2 = factory(ZoneAnalysisInfoBlock::class)->create([
-                'application_log_section_id' => $section_zone->id
+                'application_log_section_id' => $section_zone->id,
+                'name' => 'Zone 2'
             ]);
 
             //  ------------- PREPARATION --------------
             $section_preparation = factory(ApplicationLogSection::class)->create([
+                'application_log_id' => $application_log->id,
                 'section_type' => APPLICATION_LOG_SECTION_TYPE_PREPARATION
             ]);
 
+            /** @var Project $project */
+            $project = $application_log->project;
+            $products = $project->products;
+            $p1 = $this->faker->randomElement($products);
             $pu_ib_1 = factory(ProductUseInfoBlock::class)->create([
-                'application_log_section_id' => $section_preparation->id
+                'name' => 'Substrate',
+                'application_log_section_id' => $section_preparation->id,
+                'product_id' => $p1->id,
+                'components' => [],
+                'thinners' => [],
             ]);
 
             $gd_ib_1 = factory(GenericDataInfoBlock::class)->create([
+                'name' => 'Surface preparation',
+                'application_log_section_id' => $section_preparation->id,
+                'key_value_infos' => [
+                    'paper_grain' => $this->faker->randomDigitNotNull,
+                    'short_description' => $this->faker->sentence(20)
+                ]
+            ]);
+            $this->addImageToBlock($gd_ib_1, './task/photo1.jpg', Document::DETAILED_IMAGE_TYPE);
+            $this->addImageToBlock($gd_ib_1, './task/photo2.jpg', Document::DETAILED_IMAGE_TYPE);
+            $this->addImageToBlock($gd_ib_1, './task/photo3.jpg', Document::DETAILED_IMAGE_TYPE);
+            $this->addImageToBlock($gd_ib_1, './task/photo4.jpg', Document::DETAILED_IMAGE_TYPE);
+
+            $d_ib_1 = factory(DetectionsInfoBlock::class)->create([
+                'name' => 'Surface inspection',
                 'application_log_section_id' => $section_preparation->id
             ]);
 
-            $d_ib_1 = factory(DetectionsInfoBlock::class)->create([
-                'application_log_section_id' => $section_preparation->id
-            ]);
-            $d_ib_2 = factory(DetectionsInfoBlock::class)->create([
-                'application_log_section_id' => $section_preparation->id
-            ]);
+            if ($application_log->application_type == APPLICATION_TYPE_PRIMER) {
+                $d_ib_2 = factory(DetectionsInfoBlock::class)->create([
+                    'name' => 'Sali',
+                    'application_log_section_id' => $section_preparation->id
+                ]);
+            }
 
 
             //  ------------- APPLICATION --------------
             $section_application = factory(ApplicationLogSection::class)->create([
+                'application_log_id' => $application_log->id,
                 'section_type' => APPLICATION_LOG_SECTION_TYPE_APPLICATION
             ]);
 
@@ -373,6 +418,7 @@ class SeederUtils
 
             //  ------------- INSPECTION --------------
             $section_inspection = factory(ApplicationLogSection::class)->create([
+                'application_log_id' => $application_log->id,
                 'section_type' => APPLICATION_LOG_SECTION_TYPE_INSPECTION
             ]);
 

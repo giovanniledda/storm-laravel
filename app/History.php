@@ -2,20 +2,17 @@
 
 namespace App;
 
+use App\Traits\JsonAPIPhotos;
 use Illuminate\Database\Eloquent\Model;
-use Net7\Documents\Document;
 use Net7\Documents\DocumentableTrait;
-use function base64_encode;
 use function date;
-use function file_exists;
-use function file_get_contents;
 use function json_decode;
 use function time;
 use const DIRECTORY_SEPARATOR;
 
 class History extends Model
 {
-    use DocumentableTrait;
+    use DocumentableTrait, JsonAPIPhotos;
 
     protected $_photo_documents_size = ''; // 'thumb'; TODO: a regime mettere thumb (in locale va solo se si azionano le code)
 
@@ -80,78 +77,6 @@ class History extends Model
             $history_id . DIRECTORY_SEPARATOR . $document->type . DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
 
         return $path;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getAdditionalPhotoMedia()
-    {
-        return $this->getDocumentMediaFile(Document::ADDITIONAL_IMAGE_TYPE);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getDetailedPhotoMedias()
-    {
-        return $this->getAllDocumentsMediaFileArray(Document::DETAILED_IMAGE_TYPE);
-    }
-
-
-    /**
-     * @return mixed
-     */
-    public function getAdditionalPhotoDocument()
-    {
-        return $this->getDocument(Document::ADDITIONAL_IMAGE_TYPE);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getDetailedPhotoDocument()
-    {
-        return $this->getAllDocumentsByType(Document::DETAILED_IMAGE_TYPE);
-    }
-
-    /**
-     * @param Document $photo_doc
-     * @return array
-     */
-    protected function extractJsonDocumentPhotoInfo(Document $photo_doc)
-    {
-        $media = $photo_doc->getRelatedMedia();
-        $file_path = $media->getPath($this->_photo_documents_size);
-        return !file_exists($file_path) ? [] : [
-            'type' => 'documents',
-            'id' => $photo_doc->id,
-            'attributes' => [
-                'doc_type' => $photo_doc->type,
-                'base64' => base64_encode(file_get_contents($file_path))
-            ]
-        ];
-    }
-
-    /**
-     * Return an array of base64 media objects
-     *
-     * @return array
-     */
-    public function getPhotosApi()
-    {
-        $photo_objects = [];
-        $detailed_photo_docs = $this->getDetailedPhotoDocument();
-        foreach ($detailed_photo_docs as $photo_doc) {
-            $photo_objects['detailed_images'][] = $this->extractJsonDocumentPhotoInfo($photo_doc);
-        }
-
-        $additional_photo_doc = $this->getAdditionalPhotoDocument();
-        if ($additional_photo_doc) {
-            $photo_objects['additional_images'][] = $this->extractJsonDocumentPhotoInfo($additional_photo_doc);
-        }
-
-        return ['data' => $photo_objects];
     }
 
     /**
