@@ -7,6 +7,7 @@ use CloudCreativity\LaravelJsonApi\Pagination\StandardStrategy;
 use Neomerx\JsonApi\Contracts\Encoder\Parameters\EncodingParametersInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use const ROLE_BOAT_MANAGER;
 
 class Adapter extends AbstractAdapter {
 
@@ -15,6 +16,7 @@ class Adapter extends AbstractAdapter {
         'title',
         'status',
         'is_open',
+        'is_private',
         'description',
         'estimated_hours',
         'worked_hours',
@@ -63,6 +65,7 @@ class Adapter extends AbstractAdapter {
                 }
             }
         }
+
         // ricerca per project_id
         if ($project_id = $filters->get('project_id')) {
             $query->where('project_id', '=', "{$project_id}");
@@ -117,13 +120,28 @@ class Adapter extends AbstractAdapter {
         }
 
         // ricerca is_open
-        if ($isOpen = $filters->get('is_open')) {
-            $query->where('is_open', '<=', "{$isOpen}");
+        if ($filters->has('is_open')) {
+            $isOpen = $filters->get('is_open');
+            $query->where('is_open', '=', $isOpen);
         }
+
         $user = \Auth::user();
+
+        // ricerca is_private
+        if ($filters->has('is_private')) {
+            $is_private = $filters->get('is_private');
+            if ($user && $user->is_storm) {
+                $query->where('is_private', '=', $is_private);
+            }
+        }
+
         /** restringe il recordset in caso di mancanza di permessi */
-        if (!$user->can(PERMISSION_ADMIN)) {
+        if ($user && !$user->can(PERMISSION_ADMIN)) {
             // L'utente loggato non e' un admin
+            if (!$user->is_storm) {
+                $query->where('is_private', '=', false);
+            }
+
             // SE SI TRATTA DI UN DIPENDENTE  ALLORA MOSTRO SOLO QUELLI LEGATI A project_user
             if ($user->hasRole(ROLE_WORKER)) {
                 $query->Join('projects', 'tasks.project_id', '=', 'projects.id')

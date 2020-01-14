@@ -29,6 +29,7 @@ trait TemplateReplacementRules
     protected $_currentTask;
     protected $_currentTaskPhotos;
     protected $_taskToIncludeInReport;
+    protected $_only_public_tasks;
     protected $_openFiles = [];
 
     // Usate con il DocsGenerator: per environmental_report
@@ -177,18 +178,27 @@ trait TemplateReplacementRules
         return '';
     }
 
-    public function setTasksToIncludeInReport($tasks)
+    public function setTasksToIncludeInReport($tasks, $only_public = null)
     {
         $this->_taskToIncludeInReport = $tasks ? $tasks : [];
+        $this->_only_public_tasks = $only_public;
     }
 
+    /**
+     * @return array
+     * @throws \Throwable
+     */
     public function getTasksToIncludeInReport()
     {
         if (!empty($this->_taskToIncludeInReport)) {
             $tasks = [];
             foreach ($this->_taskToIncludeInReport as $task_id) {
-                $tasks[] = Task::Find($task_id);
+                if ($task_obj = $this->_only_public_tasks ? Task::findPublic($task_id) : Task::find($task_id)) {
+                    $tasks[] = $task_obj;
+                }
             }
+
+            throw_if(empty($tasks), 'Exception', 'No data available in this range.');
             return $tasks;
         } else {
             return $this->tasks;  // è la chiamata alla relazione Eloquent. Si presuppone che il model abbia dei Task

@@ -29,6 +29,7 @@ class ProductUseInfoBlock extends Model
      */
     protected $casts = [
         'components' => 'array',
+        'thinners' => 'array',
     ];
 
     /**
@@ -62,6 +63,7 @@ class ProductUseInfoBlock extends Model
             'name' => $faker->word,
             'viscosity' => $faker->randomFloat(2),
             'components' => $faker->words(30),
+            'thinners' => $faker->words(30),
         ];
     }
 
@@ -77,5 +79,27 @@ class ProductUseInfoBlock extends Model
         $t = new ProductUseInfoBlock($data);
         $t->save();
         return $t;
+    }
+
+    /**
+     * @return array
+     */
+    public function toJsonApi()
+    {
+        $data = [
+            'type' => $this->table,
+            'id' => $this->id,
+            'attributes' => parent::toArray()
+        ];
+        return $data;
+    }
+
+    /**
+     * Overrides parent function
+     * @return array|string
+     */
+    public function toArray()
+    {
+        return $this->toJsonApi();
     }
 }

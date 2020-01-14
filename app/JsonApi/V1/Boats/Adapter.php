@@ -57,35 +57,27 @@ class Adapter extends AbstractAdapter
              // SE SI TRATTA DI UN DIPENDENTE  ALLORA MOSTRO SOLO QUELLI LEGATI A project_user
              if ($user->hasRole(ROLE_WORKER)) {
 
-//
-//
-//
 /**
  *  trovo solo le barche che hanno un progetto dove l'utente di sessione e' associato  in project_user
  *
  */
-                $query->select('boats.*')
-                ->leftJoin('projects', 'boats.id', '=', 'projects.boat_id')
-                ->leftJoin('project_user', 'projects.id', '=', 'project_user.project_id')
-
-                ->where('project_user.user_id', '=' , $user->id);
+                 $query->select('boats.*')
+                     ->distinct()
+                     ->leftJoin('projects', 'boats.id', '=', 'projects.boat_id')
+                     ->leftJoin('project_user', 'projects.id', '=', 'project_user.project_id')
+                     ->where('project_user.user_id', '=', $user->id);
 
 //                 ->where( function ($q){
 //                     $user = \Auth::user();
-//                     $q->where('project_user.user_id', '=' , $user->id)
-//                     ;
-//                 })
-//                 ->where('projects.project_status', '=', PROJECT_STATUS_IN_SITE)
-// ;
-
+//                     $q->where('project_user.user_id', '=' , $user->id);})
+//                 ->where('projects.project_status', '=', PROJECT_STATUS_IN_SITE);
             }
 
              // RUOLO BOOT MANAGER potrebbe essere questo il ruolo da assegnare all'equipaggio ? da discutere con Danilo
              if ($user->can(ROLE_BOAT_MANAGER)) {
-                $query->whereHas('users', function($q) use ($user)
-                     {
-                        $q->whereUser_id($user->id);
-                     });
+                 $query->whereHas('users', function ($q) use ($user) {
+                     $q->whereUser_id($user->id);
+                 });
              }
          }
 

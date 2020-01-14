@@ -12,7 +12,17 @@ use Illuminate\Support\Collection;
 class Adapter extends AbstractAdapter
 {
 
-    protected $fillable = ['name', 'status', 'boat_id', 'project_type', 'project_progress','site_id', 'start_date', 'end_date', 'imported', 'last_cloud_sync'  ];
+    protected $fillable = [
+        'name',
+        'status',
+        'boat_id',
+        'project_type',
+        'project_progress',
+        'site_id',
+        'start_date',
+        'end_date',
+        'imported',
+        'last_cloud_sync'];
 
     /**
      * Mapping of JSON API attribute field names to model keys.
@@ -21,13 +31,13 @@ class Adapter extends AbstractAdapter
      */
 
     // mappa il nome della proprieta della risorsa API con il nome del campo nel database
-     protected $attributes = ['status'=> 'project_status'];
+    protected $attributes = ['status' => 'project_status'];
 
-      /**
+    /**
      * @inheritdoc
      */
     protected $relationships = [
-        'tasks','boat'
+        'tasks', 'boat','products'
     ];
 
     /**
@@ -58,18 +68,17 @@ class Adapter extends AbstractAdapter
         $user = \Auth::user();
         if (!$user->can(PERMISSION_ADMIN) || !$user->can(PERMISSION_BACKEND_MANAGER)) {
             if ($user->hasRole(ROLE_WORKER)) {
-                 $query->select('projects.*')->Join('project_user', 'projects.id', '=', 'project_user.project_id')
-                         ->where('project_user.user_id', '=', $user->id)->groupBy('projects.id');
-             }
-              if ($user->can(PERMISSION_BOAT_MANAGER)) {
-               $e =  $query->select('projects.*')->Join('boat_user', 'projects.boat_id', '=', 'boat_user.boat_id')
-                        ->where('boat_user.user_id', '=', $user->id)->groupBy('projects.id') ;
-             /*   $query = str_replace(array('?'), array('\'%s\''), $e->toSql());
-                $query = vsprintf($query, $e->getBindings());
-                echo $query;*/
-             }
+                $query->select('projects.*')->Join('project_user', 'projects.id', '=', 'project_user.project_id')
+                    ->where('project_user.user_id', '=', $user->id)->groupBy('projects.id');
+            }
+            if ($user->can(PERMISSION_BOAT_MANAGER)) {
+                $e = $query->select('projects.*')->Join('boat_user', 'projects.boat_id', '=', 'boat_user.boat_id')
+                    ->where('boat_user.user_id', '=', $user->id)->groupBy('projects.id');
+                /*   $query = str_replace(array('?'), array('\'%s\''), $e->toSql());
+                   $query = vsprintf($query, $e->getBindings());
+                   echo $query;*/
+            }
         }
-
 
 
         /** implementa la ricerca per name non cancellare ma commentare */
@@ -108,21 +117,34 @@ class Adapter extends AbstractAdapter
 
     /**** RELAZIONI PER LE RISORSE **/
 
-      protected function users() {
+    protected function users()
+    {
         return $this->hasMany();
     }
 
-    protected function tasks() {
+    protected function tasks()
+    {
+        return $this->hasMany('tasksWithVisibility');
+    }
+
+    protected function products()
+    {
         return $this->hasMany();
     }
 
-    protected function sections() {
+    protected function sections()
+    {
         return $this->hasMany();
     }
 
     protected function boat()
     {
         return $this->belongsTo();
+    }
+
+    protected function application_logs()
+    {
+        return $this->hasMany('application_logs');
     }
 
 //      /** @var Model $record */

@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Jobs\UpdateTaskMap;
 use App\Jobs\NotifyTaskUpdates;
 use App\Notifications\TaskCreated;
 use App\Notifications\TaskUpdated;
@@ -9,10 +10,6 @@ use App\Task;
 use App\History;
 use App\Project;
 use function is_object;
-use Notification;
-use const QUEUE_TASK_UPDATED;
-use StormUtils;
-use Net7\Logging\models\Logs as Log;
 
 use const TASKS_STATUS_DRAFT;
 
@@ -24,22 +21,22 @@ class TaskObserver
     /**
      * Handle the project "updating" event.
      *
-     * @param  \App\Task $task
+     * @param \App\Task $task
      * @return void
      */
     public function updating(Task $task)
     {
-    //   $task->updateMap();
-        
+        //   $task->updateMap();
+
         $original = $task->getOriginal();
-       
+
         if (isset($original['is_open']) && $original['is_open'] != $task->is_open && $task->is_open == 0) {
             // metto nella history del progetto
             Project::find($task->project_id)
                 ->history()
                 ->create(
                     ['event_date' => date("Y-m-d H:i:s", time()),
-                        'event_body' => 'Task number #' . $task->number . ' marked to closed']); 
+                        'event_body' => 'Task number #' . $task->number . ' marked to closed']);
 
         }
 
@@ -84,15 +81,15 @@ class TaskObserver
         }
 
 
-        
     }
 
 
     /**
      * Handle the task "created" event.
      *
-     * @param  \App\Task $task
+     * @param \App\Task $task
      * @return void
+     * @throws \Spatie\ModelStatus\Exceptions\InvalidStatus
      */
     public function created(Task $task)
     {
@@ -128,7 +125,7 @@ class TaskObserver
             ]);
         }
 
-        if((isset($auth_user->id) && $auth_user->is_storm)) {
+        if ((isset($auth_user->id) && $auth_user->is_storm)) {
 
             Task::find($task->id)->history()->create([
                 'event_date' => date("Y-m-d H:i:s", time()),
@@ -156,20 +153,22 @@ class TaskObserver
             }
             $task_author = $auth_user;
         }
-        \App\Jobs\UpdateTaskMap::dispatch($task); 
+        UpdateTaskMap::dispatch($task);
 
+        // Setto l'id interno progressivo calcolato su base "per boat"
+        $task->updateInternalProgressiveNumber();
 
         // mette in coda il job
 //        NotifyTaskUpdates::dispatch(new TaskCreated($task))->onConnection('redis')->onQueue(QUEUE_TASK_CREATED);   // default queue
         NotifyTaskUpdates::dispatch(new TaskCreated($task, $task_author));   // default queue
-//        Log::info('foo');
     }
 
     /**
      * Handle the task "updated" event.
      *
-     * @param  \App\Task $task
+     * @param \App\Task $task
      * @return void
+     * @throws \Spatie\ModelStatus\Exceptions\InvalidStatus
      */
     public function updated(Task $task)
     {
@@ -181,14 +180,14 @@ class TaskObserver
 
         // mette in coda il job
 //        NotifyTaskUpdates::dispatch(new TaskUpdated($task))->onConnection('redis')->onQueue(QUEUE_TASK_UPDATED);  // default queue
-        \App\Jobs\UpdateTaskMap::dispatch($task); 
+        UpdateTaskMap::dispatch($task);
         NotifyTaskUpdates::dispatch(new TaskUpdated($task));  // default queue
     }
 
     /**
      * Handle the task "deleted" event.
      *
-     * @param  \App\Task $task
+     * @param \App\Task $task
      * @return void
      */
     public function deleted(Task $task)
@@ -199,7 +198,7 @@ class TaskObserver
     /**
      * Handle the task "restored" event.
      *
-     * @param  \App\Task $task
+     * @param \App\Task $task
      * @return void
      */
     public function restored(Task $task)
@@ -210,7 +209,7 @@ class TaskObserver
     /**
      * Handle the task "force deleted" event.
      *
-     * @param  \App\Task $task
+     * @param \App\Task $task
      * @return void
      */
     public function forceDeleted(Task $task)

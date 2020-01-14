@@ -2,11 +2,14 @@
 
 namespace Tests\Feature;
 
+use App\ApplicationLog;
+use App\Product;
 use App\Profession;
 use App\ProjectUser;
 use App\Site;
 use App\Project;
 use App\Boat;
+use function array_map;
 use function factory;
 use Tests\TestCase;
 use Faker\Provider\Base as fakerBase;
@@ -124,5 +127,91 @@ class ModelProjectTest extends TestCase
         $this->assertEquals($newProject->users()->count(), $project->users()->count());
     }
 
+    function test_project_products() {
 
+        /** @var Project $project */
+        $project = Project::createSemiFake($this->faker);
+        $products = factory(Product::class, 10)->create();
+
+        $project->products()->attach(Product::pluck('id'));
+        /** @var Product $product */
+        foreach ($products as $product) {
+            $this->assertContains($project->id, $product->projects()->pluck('project_id'));
+        }
+
+        $prod_ids_for_project = array_map(function($el) {
+            return $el['id'];
+        }, $project->products->toArray());
+
+        $some_prods = $this->faker->randomElements($products);
+        /** @var Product $product */
+        foreach ($some_prods as $product) {
+            $this->assertContains($product->id, $prod_ids_for_project);
+        }
+
+        // faccio lo stesso con un secondo progetto e vedo che i prodotti siano distinti (differenzio per p_type)
+        /** @var Project $project2 */
+        $project2 = Project::createSemiFake($this->faker);
+        $products2 = factory(Product::class, 10)->create([
+            'p_type' => 'TEST'
+        ]);
+
+        $project2->products()->attach(Product::where('p_type', '=', 'TEST')->pluck('id'));
+        foreach ($products2 as $product) {
+            $this->assertContains($project2->id, $product->projects()->pluck('project_id'));
+            $this->assertNotContains($project->id, $product->projects()->pluck('project_id'));
+        }
+    }
+
+    function test_project_application_logs() {
+
+        /** @var Project $project */
+        $project = Project::createSemiFake($this->faker);
+        $application_logs = factory(ApplicationLog::class, 10)->create([
+            'project_id' => $project->id
+        ]);
+
+//        $project->application_logs()->saveMany($application_logs); // non va, forse perché il campo projecT_id è stato aggiunto postumo (2020_01_02_121545_add_project_to_application_log) come index?
+        /** @var ApplicationLog $application_log */
+        foreach ($application_logs as $application_log) {
+//            $application_log->project()->associate($project);  // non va neanche così, vedi sopra
+//            $application_log->save();
+            $this->assertEquals($project->id, $application_log->project->id);
+        }
+
+        $this->assertEquals(10, $project->application_logs()->count());
+
+        // faccio lo stesso con un secondo progetto e vedo che gli app log siano distinti
+        /** @var Project $project2 */
+        $project2 = Project::createSemiFake($this->faker);
+        $application_logs2 = factory(ApplicationLog::class, 15)->create([
+            'project_id' => $project2->id
+        ]);
+
+//        $project2->application_logs()->saveMany($application_logs2); // non va, vedi sopra
+        foreach ($application_logs2 as $application_log) {
+            $this->assertEquals($project2->id, $application_log->project->id);
+        }
+
+        $this->assertEquals(15, $project2->application_logs()->count());
+    }
+
+
+    function test_internal_progressive_number() {
+
+        $boats = factory(Boat::class, 3)->create();
+        /** @var Boat $boat */
+        foreach ($boats as $boat) {
+            $projs_index_for_boat = 1;
+            $projects = factory(Project::class, 4)->create([
+                'boat_id' => $boat->id
+            ]);
+            /** @var Project $project */
+            foreach ($projects as $project) {
+//                $project->boat()->associate($boat)->save();
+                $this->assertEquals($boat->id, $project->boat->id);
+                $this->assertEquals($projs_index_for_boat++, $project->internal_progressive_number);
+            }
+        }
+    }
 }

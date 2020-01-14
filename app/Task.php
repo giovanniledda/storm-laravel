@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Net7\DocsGenerator\Utils;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Illuminate\Database\Eloquent\Model;
@@ -12,20 +13,21 @@ use Venturecraft\Revisionable\RevisionableTrait;
 use Net7\Documents\Document;
 use Net7\Documents\DocumentableTrait;
 use Faker\Generator as Faker;
-use App\Section;
 use function explode;
 use function in_array;
 use function is_object;
 use const PROJECT_STATUS_CLOSED;
 use const TASKS_STATUS_COMPLETED;
 use const TASKS_STATUS_DENIED;
+use const TASKS_STATUSES;
 
 class Task extends Model
 {
 
     use RevisionableTrait,
         HasStatuses,
-        DocumentableTrait;
+        DocumentableTrait,
+        SoftDeletes;
 
     protected $table = 'tasks';
     protected $fillable = [
@@ -44,7 +46,9 @@ class Task extends Model
         'x_coord',
         'y_coord',
         'is_open',
+        'is_private',
         'bridge_position',
+        'internal_progressive_number',
     ];
     private $min_x;
     private $max_x;
@@ -111,21 +115,53 @@ class Task extends Model
     }
 
     /*
-
       $task = $model;
       $project = $task->project;
       $project_id = $project->id;
       $task_id = $task->id;
       $path .= 'projects' . DIRECTORY_SEPARATOR . $project_id . DIRECTORY_SEPARATOR . 'tasks' . DIRECTORY_SEPARATOR .
       $task_id . DIRECTORY_SEPARATOR . $document->type . DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
-
      */
+
+    /**
+     * Scope a query to only include not private tasks if current user is not storm.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopePublic($query)
+    {
+        return $query->where('is_private', '!=', 1);
+    }
+
+    /**
+     * Scope a query to only include not private tasks if current user is not storm.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopePrivate($query)
+    {
+        return $query->where('is_private', '=', 1);
+    }
+
+    /**
+     * @param $id
+     * @return Task|null
+     */
+    public static function findPublic($id)
+    {
+        return Task::public()->where('id', '=', $id)->first();
+    }
 
     protected static function boot()
     {
         parent::boot();
 
         Task::observe(TaskObserver::class);
+
+        // se utente non è is_storm, non vede i task privati
+//        static::addGlobalScope(new VisibilityScope());
     }
 
     public function intervent_type()
@@ -169,6 +205,17 @@ class Task extends Model
         return $this->morphMany('App\History', 'historyable');
     }
 
+
+    public function getLastHistory()
+    {
+        return $this->history()->latest()->first();;
+    }
+
+    public function getFirstHistory()
+    {
+        return $this->history()->oldest()->first();;
+    }
+
     public function taskIntervents()
     {
         return $this->hasOne('App\TaskInterventType');
@@ -200,6 +247,29 @@ class Task extends Model
         return $this->getProjectUsers();
     }
 
+    public static function getSemiFakeData(Faker $faker, Project $proj = null, Section $sect = null, Subsection $ssect = null, User $author = null, TaskInterventType $type = null)
+    {
+        $status = $faker->randomElement(TASKS_STATUSES);
+        $is_open = is_object($proj) ? ($proj->project_status != PROJECT_STATUS_CLOSED) : !in_array($status, [TASKS_STATUS_COMPLETED, TASKS_STATUS_DENIED]);
+
+        return [
+            'number' => $faker->randomDigitNotNull(),
+            'title' => $faker->sentence(),
+            'description' => $faker->text(),
+            'estimated_hours' => $faker->randomFloat(1, 0, 100),
+            'worked_hours' => $faker->randomFloat(1, 0, 100),
+            'x_coord' => $faker->randomFloat(2, 1119.29, 1159.29), // scostarsi del 5% dal punto 1139.29
+            'y_coord' => $faker->randomFloat(2, 267.95, 307.95), // scostarsi del 5% dal punto  287.95
+            'task_status' => $status, //$faker->randomElement(TASKS_STATUSES),
+            'is_open' => $is_open, //$faker->randomElement([1, 0]),
+            'project_id' => $proj ? $proj->id : null,
+            'section_id' => $sect ? $sect->id : null,
+            'subsection_id' => $ssect ? $ssect->id : null,
+            'author_id' => $author ? $author->id : null,
+            'intervent_type_id' => $type ? $type->id : null,
+        ];
+    }
+
     /**
      * Creates a Task using some fake data and some others that have sense
      *
@@ -209,34 +279,16 @@ class Task extends Model
      * @param Subsection $ssect
      * @param User $author
      * @param TaskInterventType $type
-     *
      * @return Task $t
+     * @throws \Spatie\ModelStatus\Exceptions\InvalidStatus
+     *
      */
     public static function createSemiFake(Faker $faker, Project $proj = null, Section $sect = null, Subsection $ssect = null, User $author = null, TaskInterventType $type = null)
     {
-
         $status = $faker->randomElement(TASKS_STATUSES);
-        $is_open = is_object($proj) ? ($proj->project_status != PROJECT_STATUS_CLOSED) : !in_array($status, [TASKS_STATUS_COMPLETED, TASKS_STATUS_DENIED]);
-        $t = new Task([
-                'number' => $faker->randomDigitNotNull(),
-                'title' => $faker->sentence(),
-                'description' => $faker->text(),
-                'estimated_hours' => $faker->randomFloat(1, 0, 100),
-                'worked_hours' => $faker->randomFloat(1, 0, 100),
-                'x_coord' => $faker->randomFloat(2, 1119.29, 1159.29), // scostarsi del 5% dal punto 1139.29
-                'y_coord' => $faker->randomFloat(2, 267.95, 307.95), // scostarsi del 5% dal punto  287.95
-                'task_status' => $status, //$faker->randomElement(TASKS_STATUSES),
-                'is_open' => $is_open, //$faker->randomElement([1, 0]),
-                'project_id' => $proj ? $proj->id : null,
-                'section_id' => $sect ? $sect->id : null,
-                'subsection_id' => $ssect ? $ssect->id : null,
-                'author_id' => $author ? $author->id : null,
-                'intervent_type_id' => $type ? $type->id : null,
-            ]
-        );
+        $t = new Task(self::getSemiFakeData($faker, $proj, $sect, $ssect, $author, $type));
         $t->save();
         $t->setStatus($status);
-
         return $t;
     }
 
@@ -250,7 +302,9 @@ class Task extends Model
 
     /**
      * Adds an image as a generic_image Net7/Document
-     *
+     * @param string $filepath
+     * @param string|null $type
+     * @return Document
      */
     public function addDamageReportPhoto(string $filepath, string $type = null)
     {
@@ -345,9 +399,8 @@ class Task extends Model
         // $map = $map_dir.'map_'.$task->id.'.png';
 
 
-        $mapfileHandle =  tmpfile();
+        $mapfileHandle = tmpfile();
         $mapfilePath = stream_get_meta_data($mapfileHandle)['uri'];
-
 
 
         $tmpfileHandle = tmpfile();
@@ -358,117 +411,119 @@ class Task extends Model
         $isOpen = $task['is_open'];
         $status = $task['task_status'];
 
-        $section = Section::find($task['section_id']);
-        $bridgeMedia = $section->generic_images->last();
+//        $section = Section::find($task['section_id']);
+        $section = $task->section;
+        if ($section) {
+            $bridgeMedia = $section->generic_images->last();
+            if ($bridgeMedia) {
 
-        if ($bridgeMedia) {
+                $bridgeImagePath = $bridgeMedia->getPathBySize('');
+                $bridgeImageInfo = getimagesize($bridgeImagePath);
+                $image = imagecreate($bridgeImageInfo[0] * 2, $bridgeImageInfo[1] * 2);
+                imagecolorallocate($image, 255, 255, 255);
 
-            $bridgeImagePath = $bridgeMedia->getPathBySize('');
-            $bridgeImageInfo = getimagesize($bridgeImagePath);
-            $image = imagecreate($bridgeImageInfo[0] * 2 , $bridgeImageInfo[1] * 2);
-            imagecolorallocate($image, 255, 255, 255);
-
-            if (exif_imagetype($bridgeImagePath) === IMAGETYPE_PNG) {
-                // il ponte e' un'immagine png
-                $dest = imagecreatefrompng($bridgeImagePath);
-                imagealphablending($dest, false);
-                imagesavealpha($dest, true);
-            }
-
-            if (exif_imagetype($bridgeImagePath) === IMAGETYPE_JPEG) {
-                // il ponte e' un'immagine jpg
-                $dest = imagecreatefromjpeg($bridgeImagePath);
-            }
-
-            imagecopy($image, $dest, $bridgeImageInfo[0] / 2, $bridgeImageInfo[1] / 2,  0, 0, $bridgeImageInfo[0], $bridgeImageInfo[1]);
-
-
-            try {
-                $pinPath = $this->getIcon($status, $isOpen);
-                $iconInfo = getimagesize($pinPath);
-                $src = imagecreatefrompng($pinPath);
-                imagealphablending($src, false);
-                imagesavealpha($src, true);
-                // ridimensiono l'immagine del ponte e la fisso ad una larghezza fissa
-                $sizeW =  5000;
-                $sizeH =  $sizeW * ( $bridgeImageInfo[1] * 2 ) / ($bridgeImageInfo[0] * 2  ) ;
-
-                $x = $bridgeImageInfo[0]/2 + $task['y_coord'] ;
-                $y = ( $bridgeImageInfo[1] - $task['x_coord'] )  +  $bridgeImageInfo[1]/2;
-
-                $xx = ($x * $sizeW ) / ($bridgeImageInfo[0]*2) ;
-                $yy = ($y * $sizeH ) / ($bridgeImageInfo[1]*2) ;
-
-                // imagepng($image, $map);
-                imagepng($image, $mapfilePath);
-
-
-                // $el = $this->resize_image($map, $sizeW, $sizeH);
-                $el = $this->resize_image($mapfilePath, $sizeW, $sizeH);
-
-                imagealphablending($el, false);
-                imagesavealpha($el, true);
-
-                fclose($mapfileHandle);
-                imagecopymerge($el, $src, $xx- $iconInfo[0]/2, $yy - $iconInfo[1] , 0, 0, $iconInfo[0], $iconInfo[1], 100);
-
-
-                imagealphablending($el, false);
-                imagesavealpha($el, true);
-
-                $crop_w = 728;
-                $crop_h = 360;
-
-                $im2 = imagecrop($el, ['x' => $xx - ($crop_w/2), 'y' => $yy - ($crop_h/2), 'width' => $crop_w, 'height' => $crop_h]);
-                if ($im2 !== FALSE) {
-
-                    imagealphablending($im2, false);
-                    imagesavealpha($im2, true);
-                    // imagepng($im2, $map);
-                    imagepng($im2, $tmpfilePath);
-                    imagedestroy($im2);
+                if (exif_imagetype($bridgeImagePath) === IMAGETYPE_PNG) {
+                    // il ponte e' un'immagine png
+                    $dest = imagecreatefrompng($bridgeImagePath);
+                    imagealphablending($dest, false);
+                    imagesavealpha($dest, true);
                 }
 
-                imagedestroy($dest);
-                imagedestroy($src);
-                imagedestroy($image);
-
-                $this->addFileOrUpdateDocumentWithType($tmpfilePath, $this::CORROSION_MAP_DOCUMENT_TYPE, 'corrosion_map');
-                fclose($tmpfileHandle); //this removes the tempfile
-
-                return ['success' => true,  'H' => $sizeH, 'W' => $sizeW];
-
-                //   imagealphablending($src, false);
-                // imagesavealpha($src, true);
-                // resize non funziona la trasparenza del pin
-                //$iconInfo = [64, 96];
-                //$src = $this->resize_image($pinPath, 64, 96);
-
-                //       $sizeW =  $fixedSizeW;
-                //   $sizeH =  $fixedSizeW * ( $bridgeImageInfo[1] ) / ($bridgeImageInfo[0] ) ;
-
-                //     $cropY =  ( $sizeH - $task['x_coord'] + $iconInfo[1] ) +  $bridgeImageInfo[1];
-                // $cropX = ( ( $task['y_coord'] - $sizeW / 2 ) ) +  $bridgeImageInfo[0];
-
-                //imagealphablending($image, false);
-                //  imagesavealpha($image, true);
-                //$im2 = imagecrop($image, ['x' => $cropX, 'y' => $cropY, 'width' => $sizeW, 'height' => $sizeH]);
-                //imagepng($im2, $path.DIRECTORY_SEPARATOR.'map1.png');
-                //  imagealphablending($im2, false);
-                //  imagesavealpha($im2, true);
-                // imagecopymerge($im2, $src, $sizeW / 2 - ($iconInfo[0] / 2), $sizeH / 2 - ($iconInfo[1] ), 0, 0, $iconInfo[0], $iconInfo[1], 100);
-
-                /*if ($im2 !== FALSE) {
-                    imagepng($im2, $map);
-                    imagedestroy($im2);
+                if (exif_imagetype($bridgeImagePath) === IMAGETYPE_JPEG) {
+                    // il ponte e' un'immagine jpg
+                    $dest = imagecreatefromjpeg($bridgeImagePath);
                 }
 
-                imagedestroy($dest);
-                imagedestroy($src);
-                imagedestroy($image);*/
-                //  return ['success' => true, 'Y' => $cropY, 'X' => $cropX, 'H'=>$sizeH, 'W'=> $sizeW];
-            } catch (\Exception $exc) {
-                return ['success' => false, 'error' => $exc->getMessage()];
+                imagecopy($image, $dest, $bridgeImageInfo[0] / 2, $bridgeImageInfo[1] / 2, 0, 0, $bridgeImageInfo[0], $bridgeImageInfo[1]);
+
+
+                try {
+                    $pinPath = $this->getIcon($status, $isOpen);
+                    $iconInfo = getimagesize($pinPath);
+                    $src = imagecreatefrompng($pinPath);
+                    imagealphablending($src, false);
+                    imagesavealpha($src, true);
+                    // ridimensiono l'immagine del ponte e la fisso ad una larghezza fissa
+                    $sizeW = 5000;
+                    $sizeH = $sizeW * ($bridgeImageInfo[1] * 2) / ($bridgeImageInfo[0] * 2);
+
+                    $x = $bridgeImageInfo[0] / 2 + $task['y_coord'];
+                    $y = ($bridgeImageInfo[1] - $task['x_coord']) + $bridgeImageInfo[1] / 2;
+
+                    $xx = ($x * $sizeW) / ($bridgeImageInfo[0] * 2);
+                    $yy = ($y * $sizeH) / ($bridgeImageInfo[1] * 2);
+
+                    // imagepng($image, $map);
+                    imagepng($image, $mapfilePath);
+
+
+                    // $el = $this->resize_image($map, $sizeW, $sizeH);
+                    $el = $this->resize_image($mapfilePath, $sizeW, $sizeH);
+
+                    imagealphablending($el, false);
+                    imagesavealpha($el, true);
+
+                    fclose($mapfileHandle);
+                    imagecopymerge($el, $src, $xx - $iconInfo[0] / 2, $yy - $iconInfo[1], 0, 0, $iconInfo[0], $iconInfo[1], 100);
+
+
+                    imagealphablending($el, false);
+                    imagesavealpha($el, true);
+
+                    $crop_w = 728;
+                    $crop_h = 360;
+
+                    $im2 = imagecrop($el, ['x' => $xx - ($crop_w / 2), 'y' => $yy - ($crop_h / 2), 'width' => $crop_w, 'height' => $crop_h]);
+                    if ($im2 !== FALSE) {
+
+                        imagealphablending($im2, false);
+                        imagesavealpha($im2, true);
+                        // imagepng($im2, $map);
+                        imagepng($im2, $tmpfilePath);
+                        imagedestroy($im2);
+                    }
+
+                    imagedestroy($dest);
+                    imagedestroy($src);
+                    imagedestroy($image);
+
+                    $this->addFileOrUpdateDocumentWithType($tmpfilePath, $this::CORROSION_MAP_DOCUMENT_TYPE, 'corrosion_map');
+                    fclose($tmpfileHandle); //this removes the tempfile
+
+                    return ['success' => true, 'H' => $sizeH, 'W' => $sizeW];
+
+                    //   imagealphablending($src, false);
+                    // imagesavealpha($src, true);
+                    // resize non funziona la trasparenza del pin
+                    //$iconInfo = [64, 96];
+                    //$src = $this->resize_image($pinPath, 64, 96);
+
+                    //       $sizeW =  $fixedSizeW;
+                    //   $sizeH =  $fixedSizeW * ( $bridgeImageInfo[1] ) / ($bridgeImageInfo[0] ) ;
+
+                    //     $cropY =  ( $sizeH - $task['x_coord'] + $iconInfo[1] ) +  $bridgeImageInfo[1];
+                    // $cropX = ( ( $task['y_coord'] - $sizeW / 2 ) ) +  $bridgeImageInfo[0];
+
+                    //imagealphablending($image, false);
+                    //  imagesavealpha($image, true);
+                    //$im2 = imagecrop($image, ['x' => $cropX, 'y' => $cropY, 'width' => $sizeW, 'height' => $sizeH]);
+                    //imagepng($im2, $path.DIRECTORY_SEPARATOR.'map1.png');
+                    //  imagealphablending($im2, false);
+                    //  imagesavealpha($im2, true);
+                    // imagecopymerge($im2, $src, $sizeW / 2 - ($iconInfo[0] / 2), $sizeH / 2 - ($iconInfo[1] ), 0, 0, $iconInfo[0], $iconInfo[1], 100);
+
+                    /*if ($im2 !== FALSE) {
+                        imagepng($im2, $map);
+                        imagedestroy($im2);
+                    }
+
+                    imagedestroy($dest);
+                    imagedestroy($src);
+                    imagedestroy($image);*/
+                    //  return ['success' => true, 'Y' => $cropY, 'X' => $cropX, 'H'=>$sizeH, 'W'=> $sizeW];
+                } catch (\Exception $exc) {
+                    return ['success' => false, 'error' => $exc->getMessage()];
+                }
             }
         }
     }
@@ -553,16 +608,16 @@ EOF;
                     <tr width="700">
                         <td width="345"><span style="border-right: 10px solid white; font-weight: bold">Location: </span>$task_location</td>
                         <td width="345"><span style="font-weight: bold">Type: </span>$task_type</td>
-                    </tr>                    
+                    </tr>
                 </table>
 
                 <br>
-                
+
                 <table width="700" style="font-family: Raleway, sans-serif; color: #1f519b;">
                     <tr width="700">
                         <td width="345" rowspan="2" style="border-right: 10px solid white; vertical-align: top ;background-color: #eff9fe; padding: 8px">
                         <span style="font-weight: bold;">Description: </span>$description</td>
-                        
+
                         <td width="345" rowspan="1" style="vertical-align: top;background-color: #eff9fe; padding: 8px">
                         <span style="font-weight: bold;">Created: </span>$created_at</td>
                     </tr>
@@ -591,7 +646,7 @@ EOF;
 EOF;
             }
 
-            $trs = '<tr width="700">'.$tds_1.'</tr><br>';
+            $trs = '<tr width="700">' . $tds_1 . '</tr><br>';
 
             if (isset($photos_array[3])) {
                 $tds_2 = <<<EOF
@@ -608,11 +663,11 @@ EOF;
 EOF;
                 }
 
-                $trs .= '<tr width="700">'.$tds_2.'</tr>';
+                $trs .= '<tr width="700">' . $tds_2 . '</tr>';
             }
 
-            $images_table =  '<p style="text-align: left;font-size: 16px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Detail photos</p>
-                               <table width="792">'.$trs.'</table><br>';
+            $images_table = '<p style="text-align: left;font-size: 16px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Detail photos</p>
+                               <table width="792">' . $trs . '</table><br>';
 
             $html .= $images_table;
         }
@@ -622,7 +677,7 @@ EOF;
             $img_dettaglioHTML = <<<EOF
                 <p style="text-align: left;font-size: 16px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Overview photo</p>
                 <img width="760" height="auto" src="file://$img_dettaglio" alt="Overview image">
-  
+
 EOF;
         }
 
@@ -633,4 +688,71 @@ EOF;
         return $html;
     }
 
+    /**
+     * An internal ID calculated on a "per-boat" base
+     * @param $boat_id
+     * @return integer
+     */
+    public static function getLastInternalProgressiveIDByBoat($boat_id)
+    {
+        $max = Task::join('projects', 'projects.id', '=', 'tasks.project_id')
+            ->where('projects.boat_id', '=', $boat_id)
+            ->max('tasks.internal_progressive_number');
+        return $max ? $max : 0;
+    }
+
+    /**
+     * Goives total number of tasks calculated on a "per-boat" base
+     * @param $boat_id
+     * @return integer
+     */
+    public static function countTasksByBoat($boat_id)
+    {
+        return Task::join('projects', 'projects.id', '=', 'tasks.project_id')
+            ->where('projects.boat_id', '=', $boat_id)
+            ->withTrashed()
+            ->count();
+    }
+
+    /**
+     * @return void
+     */
+    public function updateInternalProgressiveNumber()
+    {
+        if (env('INTERNAL_PROG_NUM_ACTIVE')) {
+            $p_boat = $this->getProjectBoat();
+            if ($p_boat) {
+                $highest_internal_pn = Task::getLastInternalProgressiveIDByBoat($p_boat->id);
+                $this->update(['internal_progressive_number' => ++$highest_internal_pn]);
+            }
+        }
+    }
+
+    /**
+     * Get user who did last edit
+     *
+     * @return string|null
+     */
+    public function getLastEditor()
+    {
+        /** @var History $last_history */
+        $last_history = $this->getLastHistory();
+        if ($last_history) {
+            return $last_history->getBodyAttribute('user_name');
+        }
+    }
+
+    /**
+     * Get user who did last edit
+     *
+     * @return string|null
+     */
+    public function getLastEditorId()
+    {
+        /** @var History $last_history */
+        $last_history = $this->getLastHistory();
+        if ($last_history) {
+            return $last_history->getBodyAttribute('user_id');
+        }
+    }
 }

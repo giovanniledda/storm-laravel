@@ -69,6 +69,12 @@ return [
         'project-sections' => \App\ProjectSection::class,
         'sites' => \App\Site::class,
         'zones' => \App\Zone::class,
+        'histories' => \App\History::class,
+        'products' => \App\Product::class,
+        'project-products' => \App\ProjectProduct::class,
+        'tools' => \App\Tool::class,
+        'project-tools' => \App\ProjectTool::class,
+        'application-logs' => \App\ApplicationLog::class,
     ],
 
     /*

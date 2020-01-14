@@ -15,7 +15,7 @@ class ModelZoneTest extends TestCase
     {
 
         $data = Zone::getSemiFakeData($this->faker);
-        $except = [];
+        $except = ['project_id', 'parent_zone_id'];
 
         $zone1 = factory(Zone::class)->create();
         $this->checkAllFields($zone1, $data, $except);

@@ -46,7 +46,16 @@ class Project extends Model
 
     protected $table = 'projects';
     protected $fillable = [
-        'name', 'project_status', 'boat_id', 'project_type', 'project_progress', 'site_id', 'start_date', 'end_date', 'imported'
+        'name',
+        'project_status',
+        'boat_id',
+        'project_type',
+        'project_progress',
+        'site_id',
+        'start_date',
+        'end_date',
+        'imported',
+        'internal_progressive_number'
     ];
 
     public const REPORT_FOLDER = 'reports';
@@ -60,15 +69,10 @@ class Project extends Model
         Project::observe(ProjectObserver::class);
     }
 
-
-
     public function deleteDocument(Document $document){
-
         $this->deleteFromCloud($document);
         return $this->traitDeleteDocument($document);
-
     }
-
 
     private function deleteFromCloud(Document $document){
 
@@ -626,9 +630,25 @@ class Project extends Model
         return $this->site()->select('sites.name', 'sites.location')->first();
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function tasks()
     {
         return $this->hasMany(Task::class);
+    }
+
+    /**
+     * Se utente non è storm, non vedrà i task privati
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function tasksWithVisibility()
+    {
+        $user = \Auth::user();
+        if ($user && !$user->is_storm) {
+            return $this->tasks()->public();
+        }
+        return $this->tasks();
     }
 
     /**
@@ -692,7 +712,6 @@ class Project extends Model
         return $this->morphMany('App\Comment', 'commentable');
     }
 
-
     public function users()
     {
         return $this->belongsToMany('App\User', 'project_user')
@@ -700,6 +719,30 @@ class Project extends Model
             ->withPivot([
                 // 'role',
                 'profession_id',
+                'created_at',
+                'updated_at'
+            ]);
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function products()
+    {
+        return $this->belongsToMany('App\Product', 'project_product')
+            ->withPivot([
+                'created_at',
+                'updated_at'
+            ]);
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function tools()
+    {
+        return $this->belongsToMany('App\Tool', 'project_tool')
+            ->withPivot([
                 'created_at',
                 'updated_at'
             ]);
@@ -735,6 +778,13 @@ class Project extends Model
         return $this->getUserByIdBaseQuery($uid)->count() > 0;
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function application_logs()
+    {
+        return $this->hasMany(ApplicationLog::class);
+    }
 
     /**
      * Chiude un progetto o tenta di chiuderlo se trova i task tutti chiusi
@@ -1104,6 +1154,159 @@ class Project extends Model
     public function measurementLogs()
     {
         return $this->documents()->where('type', MEASUREMENT_FILE_TYPE);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function getParentZonesQuery()
+    {
+        return $this->zones()->whereNull('parent_zone_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getParentZones()
+    {
+        return $this->getParentZonesQuery()->get();
+    }
+
+    /**
+     * @return int
+     */
+    public function countParentZones()
+    {
+        return $this->getParentZonesQuery()->count();
+    }
+
+    /**
+     * @param $data
+     * @param array $excluded_ids
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function getParentZonesByDataQuery($data, $excluded_ids = [])
+    {
+        $ret = $this->getParentZonesQuery()->where($data);
+        if ($excluded_ids) {
+            $ret->whereNotIn('id', $excluded_ids);
+        }
+        return $ret;
+    }
+
+    /**
+     * @param $data
+     * @param array $excluded_ids
+     * @return int
+     */
+    public function countParentZonesByData($data, $excluded_ids = [])
+    {
+        return $this->getParentZonesByDataQuery($data, $excluded_ids)->count();
+    }
+
+    /**
+     * @param $parent_zone_id
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function getChildrenZonesQuery($parent_zone_id)
+    {
+        return $this->zones()->where('parent_zone_id', '=', $parent_zone_id);
+    }
+
+    /**
+     * @param $parent_zone_id
+     * @param $data
+     * @param array $excluded_ids
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function getChildrenZonesByDataQuery($parent_zone_id, $data, $excluded_ids = [])
+    {
+        $ret = $this->getChildrenZonesQuery($parent_zone_id)->where($data);
+        if ($excluded_ids) {
+            $ret->whereNotIn('id', $excluded_ids);
+        }
+        return $ret;
+    }
+
+    /**
+     * @param $parent_zone_id
+     * @param $data
+     * @param array $excluded_ids
+     * @return int
+     */
+    public function countChildrenZonesByData($parent_zone_id, $data, $excluded_ids = [])
+    {
+        return $this->getChildrenZonesByDataQuery($parent_zone_id, $data, $excluded_ids)->count();
+    }
+
+    /**
+     * Copies Zones from project A to project B
+     *
+     * @param Project $project
+     */
+    public function transferMyZonesToProject(Project $project)
+    {
+        if ($this->zones()->count()) {
+            foreach ($this->getParentZones() as $p_zone) {
+                $new_p_zone = Zone::create(
+                    [
+                        'project_id' => $project->id,
+                        'code' => $p_zone->code,
+                        'description' => $p_zone->description,
+                        'extension' => $p_zone->extension,
+                    ]
+                );
+
+                foreach ($p_zone->children_zones as $c_zone) {
+                    Zone::create(
+                        [
+                            'parent_zone_id' => $p_zone->id,
+                            'project_id' => $project->id,
+                            'code' => $c_zone->code,
+                            'description' => $c_zone->description,
+                            'extension' => $c_zone->extension,
+                        ]
+                    );
+                }
+            }
+        }
+    }
+
+    /**
+     * An internal ID calculated on a "per-boat" base
+     *
+     * @param $boat_id
+     * @return integer
+     */
+    public static function getLastInternalProgressiveIDByBoat($boat_id)
+    {
+        $max = Project::where('projects.boat_id', '=', $boat_id)->max('projects.internal_progressive_number');
+        return $max ? $max : 0;
+    }
+
+    /**
+     * Gives total number of projects calculated on a "per-boat" base
+     *
+     * @param $boat_id
+     * @return integer
+     */
+    public static function countProjectsByBoat($boat_id)
+    {
+        return Project::where('projects.boat_id', '=', $boat_id)->count();
+    }
+
+    /**
+     * @return void
+     */
+    public function updateInternalProgressiveNumber()
+    {
+        if (env('INTERNAL_PROG_NUM_ACTIVE')) {
+            $p_boat = $this->boat;
+            if ($p_boat) {
+                $highest_internal_pn = Project::getLastInternalProgressiveIDByBoat($p_boat->id);
+                $this->update(['internal_progressive_number' => ++$highest_internal_pn]);
+            }
+        }
     }
 }
 

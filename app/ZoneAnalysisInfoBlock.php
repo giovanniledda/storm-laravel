@@ -2,13 +2,16 @@
 
 namespace App;
 
+use App\Traits\JsonAPIPhotos;
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Model;
 use Net7\Documents\DocumentableTrait;
 
 class ZoneAnalysisInfoBlock extends Model
 {
-    use DocumentableTrait;
+    use DocumentableTrait, JsonAPIPhotos;
+
+    protected $_photo_documents_size = ''; // 'thumb'; TODO: a regime mettere thumb (in locale va solo se si azionano le code)
 
     /**
      * The table associated with the model.
@@ -70,6 +73,28 @@ class ZoneAnalysisInfoBlock extends Model
         $t = new ZoneAnalysisInfoBlock($data);
         $t->save();
         return $t;
+    }
+
+    /**
+     * @return array
+     */
+    public function toJsonApi()
+    {
+        $data = [
+            'type' => $this->table,
+            'id' => $this->id,
+            'attributes' => parent::toArray()
+        ];
+        return $data;
+    }
+
+    /**
+     * Overrides parent function
+     * @return array|string
+     */
+    public function toArray()
+    {
+        return $this->toJsonApi();
     }
 
     // TODO: functions to manage 1..N Photos

@@ -40,6 +40,11 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
             $task->post('{record}/generatemap', 'generateMap')->name('generateMap');
         });
 
+        $api->resource('tasks')->only('undo-status-change')->controller('TaskController')//uses the App\Http\Controllers\Api\TaskController
+            ->routes(function ($tasks) {
+                $tasks->get('{record}/undo-status-change', 'undoStatusChange')->name('undo-status-change');
+            });
+
         $api->resource('users');
 
         $api->resource('users')->only('closed-projects')->controller('UserController') //uses the App\Http\Controllers\Api\UserController
@@ -119,16 +124,32 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
             $project->post('{record}/env-log-delete', 'removeDocumentMeasurements')->name('env-log-delete');
         });
 
+        $api->resource('projects')->only('bulk-create-zones')->controller('ProjectController') // uses the App\Http\Controllers\Api\ZoneController
+        ->routes(function ($project) {
+            $project->post('{record}/bulk-create-zones', 'bulkCreateZones')->name('bulk-create-zones');
+        });
+
+        $api->resource('projects')->only('bulk-delete-zones')->controller('ProjectController') // uses the App\Http\Controllers\Api\ZoneController
+        ->routes(function ($project) {
+            $project->post('{record}/bulk-delete-zones', 'bulkDeleteZones')->name('bulk-delete-zones');
+        });
+
+        $api->resource('projects')->only('app-log-structure')->controller('ProjectController') // uses the App\Http\Controllers\Api\ZoneController
+        ->routes(function ($project) {
+            $project->get('{record}/app-log-structure/{app_log_id}', 'getApplicationLogStructure')->name('app-log-structure');
+        });
 
         $api->resource('projects')->relationships(function ($relations) {
             $relations->hasOne('boat'); // punta al methodo dell'adapter /app/jsonApi/Projects/Adapter non al modello
             $relations->hasMany('tasks');
             $relations->hasMany('users');
+            $relations->hasMany('products');
             $relations->hasMany('sections');
+            $relations->hasMany('application_logs');
         });
 
         $api->resource('updates');
-        $api->resource('updates')->only('mark-read')->controller('UpdateController') //uses the App\Http\Controllers\Api\UpdateController
+        $api->resource('updates')->only('mark-read')->controller('UpdateController') // uses the App\Http\Controllers\Api\UpdateController
         ->routes(function ($boats) {
             $boats->get('{record}/mark-read', 'markAsRead')->name('mark-read');
         });
@@ -136,7 +157,7 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
         $api->resource('comments');
 
 
-        $api->resource('documents')->only('show')->controller('DocumentsController') //uses the App\Http\Controllers\Api\DocumentController
+        $api->resource('documents')->only('show')->controller('DocumentsController') // uses the App\Http\Controllers\Api\DocumentController
         ->routes(function ($docs) {
             $docs->get('{record}/show/{size}', 'show')->name('show_with_size');
             $docs->get('{record}/show', 'show')->name('show');
@@ -148,8 +169,21 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
         /** APPLICATION LOG STUFF */
 
         $api->resource('zones');
+        $api->resource('products');
+        $api->resource('project-products');
+        $api->resource('tools');
+        $api->resource('project-tools');
 
         /** APPLICATION LOG STUFF - END */
 
+        $api->resource('histories');
+
+        $api->resource('histories')
+            ->only('image-delete', 'add-comment')
+            ->controller('HistoriesController') // uses the App\Http\Controllers\Api\HistoriesController
+            ->routes(function ($histories) {
+                $histories->post('{record}/image-delete', 'removeImageDocument')->name('image-delete');
+                $histories->post('{record}/add-comment', 'addComment')->name('add-comment');
+            });
     });
 });

@@ -18,6 +18,7 @@ class CreateGenericDataInfoBlocksTable extends Migration
 
             $table->string('name');
             $table->json('key_value_infos')->nullable();
+            $table->json('measurement_infos')->nullable();  // key - value where "key" is a parameter name and "value" an avg value
 
             $table->timestamps();
 

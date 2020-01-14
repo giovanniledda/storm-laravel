@@ -133,4 +133,7 @@ class BoatController extends Controller
         }
         return Utils::renderStandardJsonapiResponse($data, 200);
     }
+
+
+
 }

@@ -2,13 +2,17 @@
 
 namespace App;
 
+use App\Traits\JsonAPIPhotos;
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Model;
 use Net7\Documents\DocumentableTrait;
+use const DIRECTORY_SEPARATOR;
 
 class GenericDataInfoBlock extends Model
 {
-    use DocumentableTrait;
+    use DocumentableTrait, JsonAPIPhotos;
+
+    protected $_photo_documents_size = ''; // 'thumb'; TODO: a regime mettere thumb (in locale va solo se si azionano le code)
 
     /**
      * The table associated with the model.
@@ -72,5 +76,52 @@ class GenericDataInfoBlock extends Model
         return $t;
     }
 
-    // TODO: functions to manage 1..N Photos and 1...N Files
+    public function getMediaPath($media)
+    {
+        $media_id = $media->id;
+        /** @var ApplicationLogSection $app_log_section */
+        $app_log_section = $this->application_log_section;
+        if ($app_log_section) {
+            /** @var ApplicationLog $app_log */
+            $app_log = $app_log_section->application_log;
+            if ($app_log) {
+                /** @var Project $project */
+                $project = $app_log->project;
+
+                return DIRECTORY_SEPARATOR . 'projects' . DIRECTORY_SEPARATOR . $project->id .
+                        DIRECTORY_SEPARATOR . 'applications_logs' . DIRECTORY_SEPARATOR  . $app_log->application_type . DIRECTORY_SEPARATOR  . $app_log->id .
+                        DIRECTORY_SEPARATOR . 'applications_log_sections' . DIRECTORY_SEPARATOR  . $app_log_section->section_type . DIRECTORY_SEPARATOR  . $app_log_section->id .
+                        DIRECTORY_SEPARATOR . 'generic_data_info_blocks' . DIRECTORY_SEPARATOR  . $this->id .
+                        DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
+            }
+        }
+
+        return '/tmp/';
+    }
+
+
+    /**
+     * @return array
+     */
+    public function toJsonApi()
+    {
+        $data = [
+            'type' => $this->table,
+            'id' => $this->id,
+            'attributes' => parent::toArray()
+        ];
+        $data['attributes']['photos'] = $this->getPhotosApi();
+
+        return $data;
+    }
+
+    /**
+     * Overrides parent function
+     * @return array|string
+     */
+    public function toArray()
+    {
+        return $this->toJsonApi();
+    }
+
 }

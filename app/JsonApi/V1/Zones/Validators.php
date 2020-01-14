@@ -56,13 +56,11 @@ class Validators extends AbstractValidators
     ];
 
     /**
-     * @param array $document
+     * @param ValidatorInterface $validator
      * @return ValidatorInterface
      */
-    public function create(array $document): ValidatorInterface
+    protected function chekDescriptionUnique(ValidatorInterface &$validator): ValidatorInterface
     {
-        $validator = parent::create($document);
-
         // Questa regola si legge così:
         // - la descrizione dev'essere univoca tra zone padri all'interno dello stesso progetto
         $validator->sometimes('description', 'unique:zones,description', function ($input) {
@@ -96,6 +94,27 @@ class Validators extends AbstractValidators
         });
 
         return $validator;
+    }
+
+    /**
+     * @param array $document
+     * @return ValidatorInterface
+     */
+    public function create(array $document): ValidatorInterface
+    {
+        $validator = parent::create($document);
+        return $this->chekDescriptionUnique($validator);
+    }
+
+    /**
+     * @param $record
+     * @param array $document
+     * @return ValidatorInterface
+     */
+    public function update($record, array $document): ValidatorInterface
+    {
+        $validator = parent::update($record, $document);
+        return $this->chekDescriptionUnique($validator);
     }
 
     /**

@@ -52,6 +52,14 @@ class Product extends Model
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function projects()
+    {
+        return $this->belongsToMany('App\Project', 'project_product');
+    }
+
+    /**
      * Returns an array of data with values for each field
      *
      * @param Faker $faker
@@ -62,6 +70,7 @@ class Product extends Model
         return [
             'name' => $faker->word,
             'producer' => $faker->company,
+            'p_type' => PRODUCT_TYPE_PAINTING,
             'sv_percentage' => $faker->randomFloat(3),
             'components' => $faker->words(3),
         ];
@@ -75,9 +84,9 @@ class Product extends Model
      */
     public static function createSemiFake(Faker $faker)
     {
-        $data = self::getSemiFakeData($faker);
-        $t = new Product($data);
-        $t->save();
-        return $t;
+        $p = new Product(self::getSemiFakeData($faker));
+        $p->save();
+        return $p;
     }
+
 }

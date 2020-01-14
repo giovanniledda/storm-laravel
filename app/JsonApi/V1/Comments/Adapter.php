@@ -3,6 +3,7 @@
 namespace App\JsonApi\V1\Comments;
 
 use App\Comment;
+use App\History;
 use App\Task;
 use CloudCreativity\LaravelJsonApi\Eloquent\AbstractAdapter;
 use CloudCreativity\LaravelJsonApi\Pagination\StandardStrategy;
@@ -55,6 +56,11 @@ class Adapter extends AbstractAdapter
         if ($task_id = isset($resource['task_id']) ? $resource['task_id'] : null) {
             $comment->commentable_type = Task::class;
             $comment->commentable_id = $resource['task_id'];
+        }
+
+        if ($task_id = isset($resource['history_id']) ? $resource['history_id'] : null) {
+            $comment->commentable_type = History::class;
+            $comment->commentable_id = $resource['history_id'];
         }
     }
 }
