@@ -55,15 +55,20 @@ trait JsonAPIPhotos
     protected function extractJsonDocumentPhotoInfo(Document $photo_doc)
     {
         $media = $photo_doc->getRelatedMedia();
-        $file_path = $media->getPath($this->{'_photo_documents_size'});
-        return !file_exists($file_path) ? [] : [
-            'type' => 'documents',
-            'id' => $photo_doc->id,
-            'attributes' => [
-                'doc_type' => $photo_doc->type,
-                'base64' => base64_encode(file_get_contents($file_path))
-            ]
-        ];
+        if ($media) {
+            $file_path = $media->getPath($this->{'_photo_documents_size'});
+            if (file_exists($file_path)) {
+                return [
+                    'type' => 'documents',
+                    'id' => $photo_doc->id,
+                    'attributes' => [
+                        'doc_type' => $photo_doc->type,
+                        'base64' => base64_encode(file_get_contents($file_path))
+                    ]
+                ];
+            }
+        }
+        return [];
     }
 
     /**
