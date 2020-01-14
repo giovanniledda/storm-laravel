@@ -161,17 +161,19 @@ Artisan::command('move-task-images-conversions', function () {
                         $source_path = 'projects' . DIRECTORY_SEPARATOR . $project_id . DIRECTORY_SEPARATOR . 'tasks' . DIRECTORY_SEPARATOR .
                             $task_id . DIRECTORY_SEPARATOR . $document->type . DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
 
-                        $this->info("--- OLD PATH ($source_path)");
+
+                        $source_path = storage_path('app/'.$source_path ."c");
 
                         if ($source_path && is_dir($source_path)) {
                             $trick = Str::replaceLast('/', '<', $source_path);
                             $filename = Str::after($trick, '<');
-                            $new_file_dir_path = storage_path('app/'.$history->getMediaPath($media));
-                            if (!is_dir($new_file_dir_path)) {
-//                                mkdir($new_file_dir_path, 0755, true);
-                            }
+                            $new_file_dir_path = storage_path('app/'.$history->getMediaPath($media). "c");
+//                             if (!is_dir($new_file_dir_path)) {
+// //                                mkdir($new_file_dir_path, 0755, true);
+//                             }
                             $new_file_path = $new_file_dir_path.$filename;
-//                            rename($source_path, $new_file_path);
+
+                           rename($source_path, $new_file_path);
                             $this->info("--- OLD PATH ($source_path) ---> NEW PATH ($new_file_path)");
 
                             $this->info("--- Document ({$document->created_at}) [ID: {$document->id}]");
