@@ -205,12 +205,17 @@ class Task extends Model
         return $this->morphMany('App\History', 'historyable');
     }
 
-
+    /**
+     * @return History|object|null
+     */
     public function getLastHistory()
     {
         return $this->history()->latest()->first();;
     }
 
+    /**
+     * @return History|object|null
+     */
     public function getFirstHistory()
     {
         return $this->history()->oldest()->first();;
@@ -325,7 +330,7 @@ class Task extends Model
     }
 
     /**
-     * Retrieve iamge's path
+     * Retrieve additional image's path
      *
      * @return string
      */
@@ -335,7 +340,7 @@ class Task extends Model
     }
 
     /**
-     * Retrieve iamge's path
+     * Retrieve detailed image's path
      *
      * @return string
      */

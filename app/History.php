@@ -4,6 +4,7 @@ namespace App;
 
 use App\Traits\JsonAPIPhotos;
 use Illuminate\Database\Eloquent\Model;
+use Net7\Documents\Document;
 use Net7\Documents\DocumentableTrait;
 use function date;
 use function json_decode;
@@ -85,5 +86,26 @@ class History extends Model
     public function updateLastEdit()
     {
         $this->update(['updated_at' => date('Y-m-d H:i:s', time())]);
+    }
+
+
+    /**
+     * Retrieve additional image's path
+     *
+     * @return string
+     */
+    public function getAdditionalPhotoPath()
+    {
+        return $this->getDocumentMediaFilePath(Document::ADDITIONAL_IMAGE_TYPE, 'report-large');
+    }
+
+    /**
+     * Retrieve detailed image's path
+     *
+     * @return string
+     */
+    public function getDetailedPhotoPaths()
+    {
+        return $this->getAllDocumentsMediaFilePathArray(Document::DETAILED_IMAGE_TYPE, 'report');
     }
 }
