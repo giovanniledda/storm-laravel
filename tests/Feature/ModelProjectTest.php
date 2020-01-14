@@ -167,11 +167,15 @@ class ModelProjectTest extends TestCase
 
         /** @var Project $project */
         $project = Project::createSemiFake($this->faker);
-        $application_logs = factory(ApplicationLog::class, 10)->create();
+        $application_logs = factory(ApplicationLog::class, 10)->create([
+            'project_id' => $project->id
+        ]);
 
-        $project->application_logs()->saveMany($application_logs);
+//        $project->application_logs()->saveMany($application_logs); // non va, forse perché il campo projecT_id è stato aggiunto postumo (2020_01_02_121545_add_project_to_application_log) come index?
         /** @var ApplicationLog $application_log */
         foreach ($application_logs as $application_log) {
+//            $application_log->project()->associate($project);  // non va neanche così, vedi sopra
+//            $application_log->save();
             $this->assertEquals($project->id, $application_log->project->id);
         }
 
@@ -180,9 +184,11 @@ class ModelProjectTest extends TestCase
         // faccio lo stesso con un secondo progetto e vedo che gli app log siano distinti
         /** @var Project $project2 */
         $project2 = Project::createSemiFake($this->faker);
-        $application_logs2 = factory(ApplicationLog::class, 15)->create();
+        $application_logs2 = factory(ApplicationLog::class, 15)->create([
+            'project_id' => $project2->id
+        ]);
 
-        $project2->application_logs()->saveMany($application_logs2);
+//        $project2->application_logs()->saveMany($application_logs2); // non va, vedi sopra
         foreach ($application_logs2 as $application_log) {
             $this->assertEquals($project2->id, $application_log->project->id);
         }

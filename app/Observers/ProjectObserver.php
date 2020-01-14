@@ -102,7 +102,9 @@ class ProjectObserver
      */
     public function updated(Project $project)
     {
-        $project->setStatus($project->project_status);
+        if ($project->project_status) {
+            $project->setStatus($project->project_status);
+        }
     }
 
     /**
