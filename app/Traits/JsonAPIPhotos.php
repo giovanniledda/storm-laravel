@@ -68,7 +68,7 @@ trait JsonAPIPhotos
                 ];
             }
         }
-        return [];
+        return null;
     }
 
     /**
@@ -82,12 +82,16 @@ trait JsonAPIPhotos
         $photo_objects = [];
         $detailed_photo_docs = $this->getDetailedPhotoDocument();
         foreach ($detailed_photo_docs as $photo_doc) {
-            $photo_objects['detailed_images'][] = $this->extractJsonDocumentPhotoInfo($photo_doc);
+            if ($arr = $this->extractJsonDocumentPhotoInfo($photo_doc)) {
+                $photo_objects['detailed_images'][] = $arr;
+            }
         }
 
         $additional_photo_doc = $this->getAdditionalPhotoDocument();
         if ($additional_photo_doc) {
-            $photo_objects['additional_images'][] = $this->extractJsonDocumentPhotoInfo($additional_photo_doc);
+            if ($arr = $this->extractJsonDocumentPhotoInfo($additional_photo_doc)) {
+                $photo_objects['additional_images'][] = $arr;
+            }
         }
 
         return [$field_key => $photo_objects];
