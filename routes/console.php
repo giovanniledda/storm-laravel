@@ -81,11 +81,11 @@ Artisan::command('move-task-images', function () {
                         if ($file_path && file_exists($file_path)) {
                             $trick = Str::replaceLast('/', '<', $file_path);
                             $filename = Str::after($trick, '<');
-                            $new_file_dir_path = storage_path('app/'.$history->getMediaPath($media));
+                            $new_file_dir_path = storage_path('app/' . $history->getMediaPath($media));
                             if (!is_dir($new_file_dir_path)) {
                                 mkdir($new_file_dir_path, 0755, true);
                             }
-                            $new_file_path = $new_file_dir_path.$filename;
+                            $new_file_path = $new_file_dir_path . $filename;
                             rename($file_path, $new_file_path);
                             $this->info("--- OLD PATH ($file_path) ---> NEW PATH ($new_file_path)");
                         }
@@ -107,8 +107,6 @@ Artisan::command('move-task-images', function () {
     }
 
 })->describe('Takes images from Tasks and assign them to the first History instance of each Task');
-
-
 
 
 // Spostamento CONVERSIONI (dir "c") immagini da Task a History
@@ -153,7 +151,6 @@ Artisan::command('move-task-images-conversions', function () {
                     $document = Document::find($document_id);
                     if ($document) {
                         $media = $document->getRelatedMedia();
-//                        $source_path = $media->getPath(''); // modificare questo
 
                         $project_id = $resource->project->id;
                         $task_id = $resource->id;
@@ -161,25 +158,18 @@ Artisan::command('move-task-images-conversions', function () {
                         $source_path = 'projects' . DIRECTORY_SEPARATOR . $project_id . DIRECTORY_SEPARATOR . 'tasks' . DIRECTORY_SEPARATOR .
                             $task_id . DIRECTORY_SEPARATOR . $document->type . DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
 
-
-                        $source_path = storage_path('app/'.$source_path ."c");
+                        $source_path = storage_path('app/' . $source_path . "c");
 
                         if ($source_path && is_dir($source_path)) {
-                            $trick = Str::replaceLast('/', '<', $source_path);
-                            $filename = Str::after($trick, '<');
-                            $new_file_dir_path = storage_path('app/'.$history->getMediaPath($media). "c");
-//                             if (!is_dir($new_file_dir_path)) {
-// //                                mkdir($new_file_dir_path, 0755, true);
-//                             }
-                            $new_file_path = $new_file_dir_path.$filename;
+                            $new_file_dir_path = storage_path('app/' . $history->getMediaPath($media) . "c");
+                            $new_file_path = $new_file_dir_path;
 
-                           rename($source_path, $new_file_path);
+//                            rename($source_path, $new_file_path);
                             $this->info("--- OLD PATH ($source_path) ---> NEW PATH ($new_file_path)");
 
                             $this->info("--- Document ({$document->created_at}) [ID: {$document->id}]");
                             $this->info("--- ...updated!");
                         }
-
                     }
                 }
             }
@@ -192,7 +182,6 @@ Artisan::command('move-task-images-conversions', function () {
     }
 
 })->describe('Takes images CONVERSIONS from Tasks and assign them to the first History instance of each Task');
-
 
 
 // Spostamento descrizioni da Task a History comments
@@ -224,7 +213,7 @@ Artisan::command('move-task-descriptions', function () {
                     if ($history->comments()->count()) {
                         $comment = $history->getFirstcomment();
                         $this->info("-- Comment [ID: {$comment->id}]");
-                        $comment->body = $comment->body.' - '.$description;
+                        $comment->body = $comment->body . ' - ' . $description;
                         if (!$comment->author_id) {
                             $comment->author_id = $resource->author_id;
                         }
