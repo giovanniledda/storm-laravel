@@ -153,12 +153,12 @@ trait TemplateReplacementRules
     public function updateCurrentTaskPhotosArray()
     {
         $this->_currentTaskPhotos = [];
-        if ($this->_currentTask) {
+        if ($this->_currentTask && $this->_currentTask->getLastHistory()) {
             $index = 1;
-            foreach ($this->_currentTask->getDetailedPhotoPaths() as $path) {
+            foreach ($this->_currentTask->getLastHistory()->getDetailedPhotoPaths() as $path) {
                 $this->_currentTaskPhotos[$index++] = $path;
             }
-            $this->_currentTaskPhotos[5] = $this->_currentTask->getAdditionalPhotoPath();
+            $this->_currentTaskPhotos[5] = $this->_currentTask->getLastHistory()->getAdditionalPhotoPath();
         }
     }
 
