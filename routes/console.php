@@ -109,6 +109,90 @@ Artisan::command('move-task-images', function () {
 })->describe('Takes images from Tasks and assign them to the first History instance of each Task');
 
 
+
+
+// Spostamento CONVERSIONI (dir "c") immagini da Task a History
+Artisan::command('move-task-images-conversions', function () {
+
+    if ($this->confirm('Do you wish to continue?')) {
+        $this->comment('Running images moving...');
+        $tasks = App\Task::all();
+
+        $bar = $this->output->createProgressBar(count($tasks));
+
+        $bar->start();
+
+        /** @var Task $resource */
+        foreach ($tasks as $resource) {
+
+            $this->info("\n");
+            $this->info("- Task ({$resource->created_at}) {$resource->name} [ID: {$resource->id}]");
+
+            $history = $resource->getFirstHistory();
+            if ($history) {
+                $this->info("-- History ({$history->created_at}) [ID: {$history->id}]");
+
+                $detailed_images = $history->detailed_images;
+                $generic_images = $history->generic_images;
+                $additional_images = $history->additional_images;
+                $documents = [];
+
+                foreach ($detailed_images as $i) {
+                    $documents[] = $i->getShowApiUrl();
+                }
+
+                foreach ($generic_images as $i) {
+                    $documents[] = $i->getShowApiUrl();
+                }
+
+                foreach ($additional_images as $i) {
+                    $documents[] = $i->getShowApiUrl();
+                }
+
+                foreach ($documents as $document_id) {
+                    $document = Document::find($document_id);
+                    if ($document) {
+                        $media = $document->getRelatedMedia();
+//                        $source_path = $media->getPath(''); // modificare questo
+
+                        $project_id = $resource->project->id;
+                        $task_id = $resource->id;
+                        $media_id = $media->id;
+                        $source_path = 'projects' . DIRECTORY_SEPARATOR . $project_id . DIRECTORY_SEPARATOR . 'tasks' . DIRECTORY_SEPARATOR .
+                            $task_id . DIRECTORY_SEPARATOR . $document->type . DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
+
+                        $this->info("--- OLD PATH ($source_path)");
+
+                        if ($source_path && is_dir($source_path)) {
+                            $trick = Str::replaceLast('/', '<', $source_path);
+                            $filename = Str::after($trick, '<');
+                            $new_file_dir_path = storage_path('app/'.$history->getMediaPath($media));
+                            if (!is_dir($new_file_dir_path)) {
+//                                mkdir($new_file_dir_path, 0755, true);
+                            }
+                            $new_file_path = $new_file_dir_path.$filename;
+//                            rename($source_path, $new_file_path);
+                            $this->info("--- OLD PATH ($source_path) ---> NEW PATH ($new_file_path)");
+
+                            $this->info("--- Document ({$document->created_at}) [ID: {$document->id}]");
+                            $this->info("--- ...updated!");
+                        }
+
+                    }
+                }
+            }
+
+            $bar->advance();
+        }
+
+        $bar->finish();
+        $this->comment("\n...done!");
+    }
+
+})->describe('Takes images CONVERSIONS from Tasks and assign them to the first History instance of each Task');
+
+
+
 // Spostamento descrizioni da Task a History comments
 Artisan::command('move-task-descriptions', function () {
 
