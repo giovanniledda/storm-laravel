@@ -164,7 +164,7 @@ Artisan::command('move-task-images-conversions', function () {
                             $new_file_dir_path = storage_path('app/' . $history->getMediaPath($media) . "c");
                             $new_file_path = $new_file_dir_path;
 
-//                            rename($source_path, $new_file_path);
+                            rename($source_path, $new_file_path);
                             $this->info("--- OLD PATH ($source_path) ---> NEW PATH ($new_file_path)");
 
                             $this->info("--- Document ({$document->created_at}) [ID: {$document->id}]");
