@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Storage;
 use Net7\Documents\Document;
 use StormUtils;
 use User;
+use function array_merge;
 use function factory;
 use function memory_get_peak_usage;
 use function memory_get_usage;
@@ -35,7 +36,11 @@ use const APPLICATION_LOG_SECTION_TYPE_APPLICATION;
 use const APPLICATION_LOG_SECTION_TYPE_INSPECTION;
 use const APPLICATION_LOG_SECTION_TYPE_PREPARATION;
 use const APPLICATION_LOG_SECTION_TYPE_ZONES;
+use const APPLICATION_TYPE_FILLER;
+use const APPLICATION_TYPE_HIGHBUILD;
 use const APPLICATION_TYPE_PRIMER;
+use const APPLICATION_TYPE_TOPCOAT;
+use const APPLICATION_TYPE_UNDERCOAT;
 
 class SeederUtils
 {
@@ -335,187 +340,301 @@ class SeederUtils
 
     /**
      * @param ApplicationLog $application_log
+     * @return ApplicationLogSection
+     */
+    private function buildZonesApplicationLogSection(ApplicationLog &$application_log)
+    {
+        $section_zone = factory(ApplicationLogSection::class)->create([
+            'application_log_id' => $application_log->id,
+            'section_type' => APPLICATION_LOG_SECTION_TYPE_ZONES
+        ]);
+
+        $za_ib_1 = factory(ZoneAnalysisInfoBlock::class)->create([
+            'application_log_section_id' => $section_zone->id,
+            'name' => 'Zone 1'
+        ]);
+        $za_ib_2 = factory(ZoneAnalysisInfoBlock::class)->create([
+            'application_log_section_id' => $section_zone->id,
+            'name' => 'Zone 2'
+        ]);
+        return $section_zone;
+    }
+
+    /**
+     * @param ApplicationLog $application_log
+     * @param Project $project
+     * @return ApplicationLogSection
+     */
+    private function buildPreparationApplicationLogSection(ApplicationLog &$application_log, Project &$project)
+    {
+        $section_preparation = factory(ApplicationLogSection::class)->create([
+            'application_log_id' => $application_log->id,
+            'section_type' => APPLICATION_LOG_SECTION_TYPE_PREPARATION
+        ]);
+
+        $products = $project->products;
+        $p1 = $this->faker->randomElement($products);
+        $pu_ib_1 = factory(ProductUseInfoBlock::class)->create([
+            'name' => 'Substrate',
+            'application_log_section_id' => $section_preparation->id,
+            'product_id' => $p1->id,
+            'components' => [],
+            'thinners' => [],
+        ]);
+
+        $gd_ib_1 = factory(GenericDataInfoBlock::class)->create([
+            'name' => 'Surface preparation',
+            'application_log_section_id' => $section_preparation->id,
+            'key_value_infos' => [
+                'paper_grain' => $this->faker->randomDigitNotNull,
+                'short_description' => $this->faker->sentence(20)
+            ]
+        ]);
+        $this->addImageToBlock($gd_ib_1, './task/photo1.jpg', Document::DETAILED_IMAGE_TYPE);
+        $this->addImageToBlock($gd_ib_1, './task/photo2.jpg', Document::DETAILED_IMAGE_TYPE);
+        $this->addImageToBlock($gd_ib_1, './task/photo3.jpg', Document::DETAILED_IMAGE_TYPE);
+        $this->addImageToBlock($gd_ib_1, './task/photo4.jpg', Document::DETAILED_IMAGE_TYPE);
+
+        $tools = $project->tools;
+        $t1 = $this->faker->randomElement($tools);
+
+        $d_ib_1 = factory(DetectionsInfoBlock::class)->create([
+            'name' => 'Surface inspection',
+            'application_log_section_id' => $section_preparation->id,
+            'tool_id' => $t1->id,
+            'detections' => null
+        ]);
+
+        $this->updateDetectionBlock($d_ib_1, ['rugosita_superficie' => $this->faker->randomFloat(2)]);
+
+        if ($application_log->application_type == APPLICATION_TYPE_PRIMER) {
+            $t2 = $this->faker->randomElement($tools);
+            $d_ib_2 = factory(DetectionsInfoBlock::class)->create([
+                'name' => 'Sali',
+                'application_log_section_id' => $section_preparation->id,
+                'tool_id' => $t2->id,
+                'detections' => null
+            ]);
+
+            $this->updateDetectionBlock($d_ib_2, ['salt_value' => $this->faker->randomFloat(2)]);
+        }
+        return $section_preparation;
+    }
+
+    /**
+     * @param ApplicationLog $application_log
+     * @param Project $project
+     * @return ApplicationLogSection
+     */
+    private function buildApplicationApplicationLogSection(ApplicationLog &$application_log, Project &$project)
+    {
+        $section_application = factory(ApplicationLogSection::class)->create([
+            'application_log_id' => $application_log->id,
+            'section_type' => APPLICATION_LOG_SECTION_TYPE_APPLICATION
+        ]);
+
+        $tools = $project->tools;
+        $t = $this->faker->randomElement($tools);
+        $d_ib_1 = factory(DetectionsInfoBlock::class)->create([
+            'name' => 'Temperature & Humidity',
+            'application_log_section_id' => $section_application->id,
+            'tool_id' => $t->id,
+            'detections' => null
+        ]);
+        $this->updateDetectionBlock($d_ib_1, [
+            'temperature' => $this->faker->randomDigitNotNull,
+            'humidity' => $this->faker->randomFloat(2)
+        ]);
+
+        $products = $project->products;
+        $p3 = $this->faker->randomElement($products);
+        $pu_ib_1 = factory(ProductUseInfoBlock::class)->create([
+            'name' => 'Application product',
+            'application_log_section_id' => $section_application->id,
+            'product_id' => $p3->id,
+            'components' => [],
+            'thinners' => [
+                't1' => $this->faker->word,
+                't2' => $this->faker->word,
+            ],
+        ]);
+
+        $components = [];
+        foreach ($p3->components as $component) {
+            $components[] = [
+                'name' => $component,
+                    'number_of_tins' => $this->faker->randomDigitNotNull,
+                    'tins_capacity' => $this->faker->randomFloat(2),
+                    'tins_unity' => $this->faker->randomElement(['gallons', 'liters']),
+                    'batch_numbers' => [
+                        'bn1' => $this->faker->randomDigitNotNull,
+                        'bn2' => $this->faker->randomDigitNotNull,
+                        'bn3' => $this->faker->randomDigitNotNull
+                    ]
+            ];
+        }
+        $pu_ib_1->update([
+            'components' => $components
+        ]);
+
+        $gd_ib_1 = factory(GenericDataInfoBlock::class)->create([
+            'name' => 'Application method',
+            'application_log_section_id' => $section_application->id,
+            'key_value_infos' => [
+                'method' => $this->faker->word,
+                'nozzle_needle_size' => $this->faker->randomDigitNotNull,
+                'loss_factor' => $this->faker->randomFloat(2)
+            ]
+        ]);
+
+        return $section_application;
+    }
+
+    /**
+     * @param ApplicationLog $application_log
+     * @param Project $project
+     * @return ApplicationLogSection
+     */
+    private function buildInspectionApplicationLogSection(ApplicationLog &$application_log, Project &$project)
+    {
+        $section_inspection = factory(ApplicationLogSection::class)->create([
+            'application_log_id' => $application_log->id,
+            'section_type' => APPLICATION_LOG_SECTION_TYPE_INSPECTION
+        ]);
+
+        $tools = $project->tools;
+        if ($application_log->application_type == APPLICATION_TYPE_PRIMER) {
+            $t = $this->faker->randomElement($tools);
+            $d_ib_1 = factory(DetectionsInfoBlock::class)->create([
+                'name' => 'Adesione',
+                'application_log_section_id' => $section_inspection->id,
+                'tool_id' => $t->id,
+                'detections' => null
+            ]);
+            $this->updateDetectionBlock($d_ib_1, [
+                'adesione' => $this->faker->randomElement(['scarsa', 'sufficiente', 'buona', 'eccellente'])
+            ]);
+        }
+
+        if (
+            $application_log->application_type == APPLICATION_TYPE_FILLER ||
+            $application_log->application_type == APPLICATION_TYPE_HIGHBUILD ||
+            $application_log->application_type == APPLICATION_TYPE_UNDERCOAT
+        ) {
+            $t = $this->faker->randomElement($tools);
+            $d_ib_2 = factory(DetectionsInfoBlock::class)->create([
+                'name' => 'Avviamento',
+                'application_log_section_id' => $section_inspection->id,
+                'tool_id' => $t->id,
+                'detections' => null
+            ]);
+            $this->updateDetectionBlock($d_ib_2, [
+                'avviamento' => $this->faker->randomElement(['scarso', 'sufficiente', 'buono', 'eccellente'])
+            ]);
+        }
+
+        $t = $this->faker->randomElement($tools);
+        $d_ib_3 = factory(DetectionsInfoBlock::class)->create([
+            'name' => 'Spessori',
+            'application_log_section_id' => $section_inspection->id,
+            'tool_id' => $t->id,
+            'detections' => null
+        ]);
+        $this->updateDetectionBlock($d_ib_3, [
+            'spessore' => $this->faker->randomFloat(2)
+        ]);
+
+        if ($application_log->application_type == APPLICATION_TYPE_FILLER) {
+            $t = $this->faker->randomElement($tools);
+            $d_ib_4 = factory(DetectionsInfoBlock::class)->create([
+                'name' => 'Durezza',
+                'application_log_section_id' => $section_inspection->id,
+                'tool_id' => $t->id,
+                'detections' => null
+            ]);
+            $this->updateDetectionBlock($d_ib_4, [
+                'spessore' => $this->faker->randomDigitNotNull
+            ]);
+        }
+
+        if ($application_log->application_type == APPLICATION_TYPE_TOPCOAT) {
+            $t = $this->faker->randomElement($tools);
+            $d_ib_5 = factory(DetectionsInfoBlock::class)->create([
+                'name' => 'Gloss / DOI / Haze / Rspec',
+                'application_log_section_id' => $section_inspection->id,
+                'tool_id' => $t->id,
+                'detections' => null
+            ]);
+            $this->updateDetectionBlock($d_ib_5, [
+                'Gloss' => $this->faker->randomDigitNotNull,
+                'DOI' => $this->faker->randomDigitNotNull,
+                'Haze' => $this->faker->randomDigitNotNull,
+                'Rspec' => $this->faker->randomDigitNotNull
+            ]);
+        }
+
+        if ($application_log->application_type == APPLICATION_TYPE_TOPCOAT) {
+            $t = $this->faker->randomElement($tools);
+            $d_ib_6 = factory(DetectionsInfoBlock::class)->create([
+                'name' => 'Orange peel',
+                'application_log_section_id' => $section_inspection->id,
+                'tool_id' => $t->id,
+                'detections' => null
+            ]);
+            $this->updateDetectionBlock($d_ib_6, [
+                'orange_peel_value' => $this->faker->randomDigitNotNull
+            ]);
+        }
+
+        return $section_inspection;
+    }
+
+    /**
+     * @param DetectionsInfoBlock $d_ib
+     * @param array $fields
+     */
+    private function updateDetectionBlock(DetectionsInfoBlock &$d_ib, $fields = [])
+    {
+        $img_doc1 = $this->addImageToBlock($d_ib, './task/photo1.jpg', Document::DETAILED_IMAGE_TYPE);
+        $img_doc2 = $this->addImageToBlock($d_ib, './task/photo2.jpg', Document::DETAILED_IMAGE_TYPE);
+        $img_doc3 = $this->addImageToBlock($d_ib, './task/photo3.jpg', Document::DETAILED_IMAGE_TYPE);
+        $img_doc4 = $this->addImageToBlock($d_ib, './task/photo4.jpg', Document::DETAILED_IMAGE_TYPE);
+
+        $arr1 = array_merge($fields, ['image_doc_id' => $img_doc1->id]);
+        $arr2 = array_merge($fields, ['image_doc_id' => $img_doc2->id]);
+        $arr3 = array_merge($fields, ['image_doc_id' => $img_doc3->id]);
+        $arr4 = array_merge($fields, ['image_doc_id' => $img_doc4->id]);
+
+        $d_ib->update([
+            'detections' => [
+                $arr1,
+                $arr2,
+                $arr3,
+                $arr4
+            ]
+        ]);
+    }
+
+    /**
+     * @param ApplicationLog $application_log
      */
     public function addFakeStructureToApplicationLog(ApplicationLog &$application_log)
     {
         if ($application_log->application_log_sections()->count() == 0) {
-
-            //  ------------- ZONES --------------
-            $section_zone = factory(ApplicationLogSection::class)->create([
-                'application_log_id' => $application_log->id,
-                'section_type' => APPLICATION_LOG_SECTION_TYPE_ZONES
-            ]);
-
-            $za_ib_1 = factory(ZoneAnalysisInfoBlock::class)->create([
-                'application_log_section_id' => $section_zone->id,
-                'name' => 'Zone 1'
-            ]);
-            $za_ib_2 = factory(ZoneAnalysisInfoBlock::class)->create([
-                'application_log_section_id' => $section_zone->id,
-                'name' => 'Zone 2'
-            ]);
-
-            //  ------------- PREPARATION --------------
-            $section_preparation = factory(ApplicationLogSection::class)->create([
-                'application_log_id' => $application_log->id,
-                'section_type' => APPLICATION_LOG_SECTION_TYPE_PREPARATION
-            ]);
-
             /** @var Project $project */
             $project = $application_log->project;
-            $products = $project->products;
-            $p1 = $this->faker->randomElement($products);
-            $pu_ib_1 = factory(ProductUseInfoBlock::class)->create([
-                'name' => 'Substrate',
-                'application_log_section_id' => $section_preparation->id,
-                'product_id' => $p1->id,
-                'components' => [],
-                'thinners' => [],
-            ]);
 
-            $gd_ib_1 = factory(GenericDataInfoBlock::class)->create([
-                'name' => 'Surface preparation',
-                'application_log_section_id' => $section_preparation->id,
-                'key_value_infos' => [
-                    'paper_grain' => $this->faker->randomDigitNotNull,
-                    'short_description' => $this->faker->sentence(20)
-                ]
-            ]);
-            $this->addImageToBlock($gd_ib_1, './task/photo1.jpg', Document::DETAILED_IMAGE_TYPE);
-            $this->addImageToBlock($gd_ib_1, './task/photo2.jpg', Document::DETAILED_IMAGE_TYPE);
-            $this->addImageToBlock($gd_ib_1, './task/photo3.jpg', Document::DETAILED_IMAGE_TYPE);
-            $this->addImageToBlock($gd_ib_1, './task/photo4.jpg', Document::DETAILED_IMAGE_TYPE);
+            //  ------------- ZONES --------------
+            $section_zone = $this->buildZonesApplicationLogSection($application_log);
 
-            $tools = $project->tools;
-            $t1 = $this->faker->randomElement($tools);
-
-            $d_ib_1 = factory(DetectionsInfoBlock::class)->create([
-                'name' => 'Surface inspection',
-                'application_log_section_id' => $section_preparation->id,
-                'tool_id' => $t1->id,
-                'detections' => null
-            ]);
-
-            $img_doc1 = $this->addImageToBlock($d_ib_1, './task/photo1.jpg', Document::DETAILED_IMAGE_TYPE);
-            $img_doc2 = $this->addImageToBlock($d_ib_1, './task/photo2.jpg', Document::DETAILED_IMAGE_TYPE);
-            $img_doc3 = $this->addImageToBlock($d_ib_1, './task/photo3.jpg', Document::DETAILED_IMAGE_TYPE);
-            $img_doc4 = $this->addImageToBlock($d_ib_1, './task/photo4.jpg', Document::DETAILED_IMAGE_TYPE);
-
-            $d_ib_1->update([
-                'detections' => [
-                    [
-                        'rugosita_superficie' => $this->faker->randomFloat(2),
-                        'image_doc_id' => $img_doc1->id
-                    ],
-                    [
-                        'rugosita_superficie' => $this->faker->randomFloat(2),
-                        'image_doc_id' => $img_doc2->id
-                    ],
-                    [
-                        'rugosita_superficie' => $this->faker->randomFloat(2),
-                        'image_doc_id' => $img_doc3->id
-                    ],
-                    [
-                        'rugosita_superficie' => $this->faker->randomFloat(2),
-                        'image_doc_id' => $img_doc4->id
-                    ],
-                ]
-            ]);
-
-            if ($application_log->application_type == APPLICATION_TYPE_PRIMER) {
-                $t2 = $this->faker->randomElement($tools);
-                $d_ib_2 = factory(DetectionsInfoBlock::class)->create([
-                    'name' => 'Sali',
-                    'application_log_section_id' => $section_preparation->id,
-                    'tool_id' => $t2->id,
-                    'detections' => null
-                ]);
-
-                $img_doc1 = $this->addImageToBlock($d_ib_1, './task/photo1.jpg', Document::DETAILED_IMAGE_TYPE);
-                $img_doc2 = $this->addImageToBlock($d_ib_1, './task/photo2.jpg', Document::DETAILED_IMAGE_TYPE);
-                $img_doc3 = $this->addImageToBlock($d_ib_1, './task/photo3.jpg', Document::DETAILED_IMAGE_TYPE);
-                $img_doc4 = $this->addImageToBlock($d_ib_1, './task/photo4.jpg', Document::DETAILED_IMAGE_TYPE);
-
-                $d_ib_2->update([
-                    'detections' => [
-                        [
-                            'salt_value' => $this->faker->randomFloat(2),
-                            'image_doc_id' => $img_doc1->id
-                        ],
-                        [
-                            'salt_value' => $this->faker->randomFloat(2),
-                            'image_doc_id' => $img_doc2->id
-                        ],
-                        [
-                            'salt_value' => $this->faker->randomFloat(2),
-                            'image_doc_id' => $img_doc3->id
-                        ],
-                        [
-                            'salt_value' => $this->faker->randomFloat(2),
-                            'image_doc_id' => $img_doc4->id
-                        ],
-                    ]
-                ]);
-            }
+            //  ------------- PREPARATION --------------
+            $section_preparation = $this->buildPreparationApplicationLogSection($application_log, $project);
 
             //  ------------- APPLICATION --------------
-            $section_application = factory(ApplicationLogSection::class)->create([
-                'application_log_id' => $application_log->id,
-                'section_type' => APPLICATION_LOG_SECTION_TYPE_APPLICATION
-            ]);
-
-            $p3 = $this->faker->randomElement($products);
-            $pu_ib_1 = factory(ProductUseInfoBlock::class)->create([
-                'application_log_section_id' => $section_application->id,
-                'product_id' => $p3->id
-            ]);
-
-            $gd_ib_1 = factory(GenericDataInfoBlock::class)->create([
-                'application_log_section_id' => $section_application->id
-            ]);
-
-            $t = $this->faker->randomElement($tools);
-            $d_ib_1 = factory(DetectionsInfoBlock::class)->create([
-                'application_log_section_id' => $section_application->id,
-                'tool_id' => $t->id
-            ]);
+            $section_application = $this->buildApplicationApplicationLogSection($application_log, $project);
 
             //  ------------- INSPECTION --------------
-            $section_inspection = factory(ApplicationLogSection::class)->create([
-                'application_log_id' => $application_log->id,
-                'section_type' => APPLICATION_LOG_SECTION_TYPE_INSPECTION
-            ]);
-
-            $t = $this->faker->randomElement($tools);
-            $d_ib_1 = factory(DetectionsInfoBlock::class)->create([
-                'application_log_section_id' => $section_inspection->id,
-                'tool_id' => $t->id
-            ]);
-            $t = $this->faker->randomElement($tools);
-            $d_ib_2 = factory(DetectionsInfoBlock::class)->create([
-                'application_log_section_id' => $section_inspection->id,
-                'tool_id' => $t->id
-            ]);
-            $t = $this->faker->randomElement($tools);
-            $d_ib_3 = factory(DetectionsInfoBlock::class)->create([
-                'application_log_section_id' => $section_inspection->id,
-                'tool_id' => $t->id
-            ]);
-            $t = $this->faker->randomElement($tools);
-            $d_ib_4 = factory(DetectionsInfoBlock::class)->create([
-                'application_log_section_id' => $section_inspection->id,
-                'tool_id' => $t->id
-            ]);
-            $t = $this->faker->randomElement($tools);
-            $d_ib_5 = factory(DetectionsInfoBlock::class)->create([
-                'application_log_section_id' => $section_inspection->id,
-                'tool_id' => $t->id
-            ]);
-            $t = $this->faker->randomElement($tools);
-            $d_ib_6 = factory(DetectionsInfoBlock::class)->create([
-                'application_log_section_id' => $section_inspection->id,
-                'tool_id' => $t->id
-            ]);
+            $section_inspection = $this->buildInspectionApplicationLogSection($application_log, $project);
 
             $application_log->application_log_sections()->save($section_zone);
             $application_log->application_log_sections()->save($section_preparation);
