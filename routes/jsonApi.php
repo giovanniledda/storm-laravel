@@ -139,6 +139,11 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
             $project->get('{record}/app-log-structure/{app_log_id}', 'getApplicationLogStructure')->name('app-log-structure');
         });
 
+        $api->resource('projects')->only('app-log-next-id')->controller('ProjectController') // uses the App\Http\Controllers\Api\ZoneController
+        ->routes(function ($project) {
+            $project->get('{record}/app-log-next-id', 'getApplicationLogNextProgressiveNumber')->name('app-log-next-id');
+        });
+
         $api->resource('projects')->relationships(function ($relations) {
             $relations->hasOne('boat'); // punta al methodo dell'adapter /app/jsonApi/Projects/Adapter non al modello
             $relations->hasMany('tasks');

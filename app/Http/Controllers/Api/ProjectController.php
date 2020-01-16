@@ -8,6 +8,7 @@ use App\Jobs\ProjectLoadEnvironmentalData;
 use App\Notifications\TaskCreated;
 use App\Zone;
 use function __;
+use function abort_unless;
 use function array_key_exists;
 use function explode;
 use function in_array;
@@ -682,6 +683,34 @@ class ProjectController extends Controller
 
         } catch (\Exception $e) {
             return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error retrieving application log", $e->getMessage());
+        }
+    }
+
+    /**
+     *
+     * #PR29 /api/v1/projects/{record_id}/app-log-next-id
+     *
+     * @param Request $request
+     * @param $record
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
+     */
+    public function getApplicationLogNextProgressiveNumber(Request $request, $record)
+    {
+        try {
+
+            /** @var Project $record */
+            $boat = $record->boat;
+            abort_if(is_null($boat), 500, 'This project is not related to any boat');
+            $prog = ApplicationLog::getLastInternalProgressiveIDByBoat($boat->id);
+            $data = [
+                'type' => 'application_logs',
+                'id' => $prog + 1,
+                'attributes' => []
+            ];
+            return Utils::renderStandardJsonapiResponse(['data' => $data], 200);
+
+        } catch (\Exception $e) {
+            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error retrieving application log next ID", $e->getMessage());
         }
     }
 }
