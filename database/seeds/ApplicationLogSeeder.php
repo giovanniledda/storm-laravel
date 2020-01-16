@@ -62,7 +62,8 @@ class ApplicationLogSeeder extends Seeder
             }
 
             // Adda fake application logs
-            $app_logs = $this->utils->addFakeApplicationLogsToProject($project, 4);
+//            $app_logs = $this->utils->addRandomFakeApplicationLogsToProject($project, 4);
+            $app_logs = $this->utils->addCompleteListFakeApplicationLogsToProject($project);
             foreach ($app_logs as $app_log) {
                 $this->utils->addFakeStructureToApplicationLog($app_log);
             }

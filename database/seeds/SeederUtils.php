@@ -36,6 +36,7 @@ use const APPLICATION_LOG_SECTION_TYPE_APPLICATION;
 use const APPLICATION_LOG_SECTION_TYPE_INSPECTION;
 use const APPLICATION_LOG_SECTION_TYPE_PREPARATION;
 use const APPLICATION_LOG_SECTION_TYPE_ZONES;
+use const APPLICATION_TYPE_COATING;
 use const APPLICATION_TYPE_FILLER;
 use const APPLICATION_TYPE_HIGHBUILD;
 use const APPLICATION_TYPE_PRIMER;
@@ -321,11 +322,13 @@ class SeederUtils
     }
 
     /**
+     * Creates a specific number of app log with random type
+     *
      * @param Project $project
      * @param int $app_logs
      * @return array
      */
-    public function addFakeApplicationLogsToProject(Project $project, int $app_logs)
+    public function addRandomFakeApplicationLogsToProject(Project $project, int $app_logs)
     {
         $application_logs_obj_array = [];
         if ($project->application_logs()->count() == 0) {
@@ -334,6 +337,44 @@ class SeederUtils
                     'project_id' => $project->id
                 ]);
             }
+        }
+        return $application_logs_obj_array;
+    }
+
+    /**
+     * Creates one app log for each application type, per project
+     *
+     * @param Project $project
+     * @return array
+     */
+    public function addCompleteListFakeApplicationLogsToProject(Project $project)
+    {
+        $application_logs_obj_array = [];
+        if ($project->application_logs()->count() == 0) {
+            $application_logs_obj_array[] = factory(ApplicationLog::class)->create([
+                'project_id' => $project->id,
+                'application_type' => APPLICATION_TYPE_COATING
+            ]);
+            $application_logs_obj_array[] = factory(ApplicationLog::class)->create([
+                'project_id' => $project->id,
+                'application_type' => APPLICATION_TYPE_FILLER
+            ]);
+            $application_logs_obj_array[] = factory(ApplicationLog::class)->create([
+                'project_id' => $project->id,
+                'application_type' => APPLICATION_TYPE_HIGHBUILD
+            ]);
+            $application_logs_obj_array[] = factory(ApplicationLog::class)->create([
+                'project_id' => $project->id,
+                'application_type' => APPLICATION_TYPE_PRIMER
+            ]);
+            $application_logs_obj_array[] = factory(ApplicationLog::class)->create([
+                'project_id' => $project->id,
+                'application_type' => APPLICATION_TYPE_TOPCOAT
+            ]);
+            $application_logs_obj_array[] = factory(ApplicationLog::class)->create([
+                'project_id' => $project->id,
+                'application_type' => APPLICATION_TYPE_UNDERCOAT
+            ]);
         }
         return $application_logs_obj_array;
     }
@@ -566,10 +607,10 @@ class SeederUtils
                 'detections' => null
             ]);
             $this->updateDetectionBlock($d_ib_5, [
-                'Gloss' => $this->faker->randomDigitNotNull,
-                'DOI' => $this->faker->randomDigitNotNull,
-                'Haze' => $this->faker->randomDigitNotNull,
-                'Rspec' => $this->faker->randomDigitNotNull
+                'gloss' => $this->faker->randomDigitNotNull,
+                'doi' => $this->faker->randomDigitNotNull,
+                'haze' => $this->faker->randomDigitNotNull,
+                'rspec' => $this->faker->randomDigitNotNull
             ]);
         }
 

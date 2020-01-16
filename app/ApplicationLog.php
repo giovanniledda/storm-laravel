@@ -12,6 +12,7 @@ use const APPLICATION_TYPE_COATING;
 use const APPLICATION_TYPE_FILLER;
 use const APPLICATION_TYPE_HIGHBUILD;
 use const APPLICATION_TYPE_PRIMER;
+use const APPLICATION_TYPE_TOPCOAT;
 use const APPLICATION_TYPE_UNDERCOAT;
 
 class ApplicationLog extends Model
@@ -78,7 +79,8 @@ class ApplicationLog extends Model
                 APPLICATION_TYPE_FILLER,
                 APPLICATION_TYPE_HIGHBUILD,
                 APPLICATION_TYPE_UNDERCOAT,
-                APPLICATION_TYPE_COATING
+                APPLICATION_TYPE_COATING,
+                APPLICATION_TYPE_TOPCOAT
             ])
         ];
     }
