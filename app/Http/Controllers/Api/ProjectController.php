@@ -704,8 +704,10 @@ class ProjectController extends Controller
             $prog = ApplicationLog::getLastInternalProgressiveIDByBoat($boat->id);
             $data = [
                 'type' => 'application_logs',
-                'id' => $prog + 1,
-                'attributes' => []
+                'id' => time(),
+                'attributes' => [
+                    'internal_progressive_number' => $prog + 1
+                ]
             ];
             return Utils::renderStandardJsonapiResponse(['data' => $data], 200);
 
