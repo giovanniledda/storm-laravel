@@ -381,22 +381,29 @@ class SeederUtils
 
     /**
      * @param ApplicationLog $application_log
+     * @param Project $project
      * @return ApplicationLogSection
      */
-    private function buildZonesApplicationLogSection(ApplicationLog &$application_log)
+    private function buildZonesApplicationLogSection(ApplicationLog &$application_log, Project &$project)
     {
+        $zones = $project->zones;
+        $z1 = $this->faker->randomElement($zones);
+        $z2 = $this->faker->randomElement($zones);
+
         $section_zone = factory(ApplicationLogSection::class)->create([
             'application_log_id' => $application_log->id,
-            'section_type' => APPLICATION_LOG_SECTION_TYPE_ZONES
+            'section_type' => APPLICATION_LOG_SECTION_TYPE_ZONES,
         ]);
 
         $za_ib_1 = factory(ZoneAnalysisInfoBlock::class)->create([
             'application_log_section_id' => $section_zone->id,
-            'name' => 'Zone 1'
+            'name' => 'Zone 1',
+            'zone_id' => $z1->id
         ]);
         $za_ib_2 = factory(ZoneAnalysisInfoBlock::class)->create([
             'application_log_section_id' => $section_zone->id,
-            'name' => 'Zone 2'
+            'name' => 'Zone 2',
+            'zone_id' => $z2->id
         ]);
         return $section_zone;
     }
@@ -666,7 +673,7 @@ class SeederUtils
             $project = $application_log->project;
 
             //  ------------- ZONES --------------
-            $section_zone = $this->buildZonesApplicationLogSection($application_log);
+            $section_zone = $this->buildZonesApplicationLogSection($application_log, $project);
 
             //  ------------- PREPARATION --------------
             $section_preparation = $this->buildPreparationApplicationLogSection($application_log, $project);
