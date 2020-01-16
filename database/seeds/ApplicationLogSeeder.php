@@ -35,13 +35,13 @@ class ApplicationLogSeeder extends Seeder
         /** @var Project $project */
         foreach ($projects as $project) {
             // Add fake zones
-//            $this->utils->addFakeZonesToProject($project, 4, 5);
+            $this->utils->addFakeZonesToProject($project, 4, 5);
 
             // Add fake products
-//            $this->utils->addFakeProductsToProject($project, 4, true);
+            $this->utils->addFakeProductsToProject($project, 4, true);
 
             // Add fake tools
-//            $this->utils->addFakeToolsToProject($project, 4, true);
+            $this->utils->addFakeToolsToProject($project, 4, true);
 
             // WARNING: this remove all application logs
             if ($this->command->confirm("Do you wish to erase all Application Logs for Project [ID:{$project->id}]? [y|N]", false)) {
