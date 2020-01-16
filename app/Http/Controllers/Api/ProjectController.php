@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\ApplicationLog;
+use App\Http\Requests\RequestApplicationLog;
 use App\Jobs\NotifyTaskUpdates;
 use App\Jobs\ProjectLoadEnvironmentalData;
 use App\Notifications\TaskCreated;
@@ -713,6 +714,39 @@ class ProjectController extends Controller
 
         } catch (\Exception $e) {
             return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error retrieving application log next ID", $e->getMessage());
+        }
+    }
+
+    /**
+     *
+     * #PR30 (POST) /api/v1/projects/{record_id}/app-log-structure/{app_log_id}
+     *
+     * @param Request $request
+     * @param $record
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
+     */
+    public function postApplicationLogStructure(RequestApplicationLog $request, $record)
+    {
+        try {
+
+            /** @var ApplicationLog $app_log */
+            $app_log = $record->application_logs()->find($request->input('data.id'));
+            if (!$app_log) {
+                $app_log = ApplicationLog::create([
+                    'name' => $request->input('data.attributes.name'),
+                    'project_id' => $record->id
+                ]);
+            }
+            // dobbiamo distinguere tra l'app_log appena creato/recuperato ed il malloppone json passato in POST
+            $sections = $request->input('data.attributes.application_log_sections');
+            foreach ($sections as $section) {
+                // creare uno switch che analizza il tipo, prima però verifichiamo con l'id se abbiamo già la section e con update se è cambiata
+            }
+
+            return Utils::renderStandardJsonapiResponse(['data' => $app_log->toJsonApi()], 200);
+
+        } catch (\Exception $e) {
+            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error retrieving application log", $e->getMessage());
         }
     }
 }

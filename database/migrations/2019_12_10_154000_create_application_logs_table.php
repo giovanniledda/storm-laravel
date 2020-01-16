@@ -22,8 +22,7 @@ class CreateApplicationLogsTable extends Migration
                 APPLICATION_TYPE_FILLER,
                 APPLICATION_TYPE_HIGHBUILD,
                 APPLICATION_TYPE_UNDERCOAT,
-                APPLICATION_TYPE_COATING,
-                APPLICATION_TYPE_TOPCOAT
+                APPLICATION_TYPE_COATING
             ])->nullable();
 
             $table->timestamps();

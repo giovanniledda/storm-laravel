@@ -40,7 +40,6 @@ use const APPLICATION_TYPE_COATING;
 use const APPLICATION_TYPE_FILLER;
 use const APPLICATION_TYPE_HIGHBUILD;
 use const APPLICATION_TYPE_PRIMER;
-use const APPLICATION_TYPE_TOPCOAT;
 use const APPLICATION_TYPE_UNDERCOAT;
 
 class SeederUtils
@@ -369,10 +368,6 @@ class SeederUtils
             ]);
             $application_logs_obj_array[] = factory(ApplicationLog::class)->create([
                 'project_id' => $project->id,
-                'application_type' => APPLICATION_TYPE_TOPCOAT
-            ]);
-            $application_logs_obj_array[] = factory(ApplicationLog::class)->create([
-                'project_id' => $project->id,
                 'application_type' => APPLICATION_TYPE_UNDERCOAT
             ]);
         }
@@ -605,7 +600,7 @@ class SeederUtils
             ]);
         }
 
-        if ($application_log->application_type == APPLICATION_TYPE_TOPCOAT) {
+        if ($application_log->application_type == APPLICATION_TYPE_COATING) {
             $t = $this->faker->randomElement($tools);
             $d_ib_5 = factory(DetectionsInfoBlock::class)->create([
                 'name' => 'Gloss / DOI / Haze / Rspec',
@@ -621,7 +616,7 @@ class SeederUtils
             ]);
         }
 
-        if ($application_log->application_type == APPLICATION_TYPE_TOPCOAT) {
+        if ($application_log->application_type == APPLICATION_TYPE_COATING) {
             $t = $this->faker->randomElement($tools);
             $d_ib_6 = factory(DetectionsInfoBlock::class)->create([
                 'name' => 'Orange peel',
