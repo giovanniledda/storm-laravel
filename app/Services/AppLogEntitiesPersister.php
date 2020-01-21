@@ -11,7 +11,19 @@ use App\ProductUseInfoBlock;
 use App\Project;
 use App\Task;
 use App\ZoneAnalysisInfoBlock;
+use ArrayIterator;
+use Exception;
+use Illuminate\Support\Arr;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
+use MultipleIterator;
+use Net7\Documents\Document;
+use Validator;
 use function array_merge;
+use function class_exists;
+use function config;
+use function response;
+use function ucfirst;
 
 class AppLogEntitiesPersister
 {
@@ -77,6 +89,29 @@ class AppLogEntitiesPersister
                 } else {
                     $detections_info_block->update($attributes);
                 }
+
+                $doc_ids = $this->persistImages($detections_info_block, $attributes['photos']);
+                // valido solo per i detection_blocks: metto in correlazione immagini e detections
+                if (!empty($doc_ids)) {
+                    $detections = $detections_info_block->detections;
+                    if (!empty($detections)) {
+                        $new_detections = [];
+                        $iterator = new MultipleIterator();
+                        $iterator->attachIterator(new ArrayIterator($doc_ids));
+                        $iterator->attachIterator(new ArrayIterator($detections));
+                        foreach ($iterator as $values) {
+                            $doc_id = $values[0];
+                            $detection = $values[1];
+                            $detection['image_doc_id'] = $doc_id;
+                            $new_detections[] = $detection;
+                        }
+                        if (!empty($new_detections)) {
+                            $detections_info_block->update([
+                                'detections' => $new_detections
+                            ]);
+                        }
+                    }
+                }
             }
         }
     }
@@ -99,6 +134,65 @@ class AppLogEntitiesPersister
                 } else {
                     $generic_data_info_block->update($attributes);
                 }
+
+                $this->persistImages($generic_data_info_block, $attributes['photos']);
+            }
+        }
+    }
+
+    /**
+     * @param GenericDataInfoBlock|DetectionsInfoBlock $block
+     * @param $photos_data
+     * @return mixed
+     */
+    protected function addImage(&$block, $photos_data)
+    {
+
+        $type = $photos_data['doc_type'];
+        $base64File = $photos_data['base64'];
+        $filename = Arr::get($photos_data, 'filename', 'block_'.$type.'.jpg');
+        $file = Document::createUploadedFileFromBase64($base64File, $filename);
+        /** @var Document $doc */
+        $doc = $block->addDocumentFileDirectly($file, $filename, $type);
+        if ($doc) {
+            return $doc->id;
+        }
+    }
+
+    /**
+     * @param GenericDataInfoBlock|DetectionsInfoBlock $block
+     * @param $photos_data
+     * @return array
+     */
+    protected function persistImages(&$block, $photos_data)
+    {
+        if (!empty($photos_data)) {
+            $data = $photos_data['data'];
+            if (!empty($data)) {
+                $images = [];
+                if (isset($data['detailed_images'])) {
+                    foreach ($data['detailed_images'] as $detailed_image) {
+                        if ($detailed_image['id']) {
+                            // TODO: cerco Document con questo ID ed al max aggiorno l'immagine (capire come evitare se l'immagine è la stessa)
+                        }
+                        $doc_id = $this->addImage($block, $detailed_image['attributes']);
+                        if ($doc_id) {
+                            $images[] = $doc_id;
+                        }
+                    }
+                }
+                if (isset($data['additional_images'])) {
+                    foreach ($data['additional_images'] as $additional_image) {
+                        if ($additional_image['id']) {
+                            // TODO: cerco Document con questo ID ed al max aggiorno l'immagine (capire come evitare se l'immagine è la stessa)
+                        }
+                        $doc_id = $this->addImage($block, $additional_image['attributes']);
+                        if ($doc_id) {
+                            $images[] = $doc_id;
+                        }
+                    }
+                }
+                return $images;
             }
         }
     }
@@ -128,6 +222,7 @@ class AppLogEntitiesPersister
         ]);
         $this->persistProductUseInfoBlocks($app_log_section, $attributes['product_use_info_blocks']);
         $this->persistDetectionsInfoBlock($app_log_section, $attributes['detections_info_blocks']);
+        $this->persistGenericDataInfoBlock($app_log_section, $attributes['generic_data_info_blocks']);
     }
 
     /**
