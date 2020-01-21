@@ -429,7 +429,21 @@ class SeederUtils
             'name' => 'Surface preparation',
             'application_log_section_id' => $section_preparation->id,
             'key_value_infos' => [
-                'paper_grain' => $this->faker->randomDigitNotNull,
+                'paper_grain' => $this->faker->randomElement([
+                    'P36',
+                    'P40',
+                    'P80',
+                    'P120',
+                    'P180',
+                    'P200',
+                    'P320',
+                    'P400',
+                    'P1000',
+                    'P1500',
+                    'P2000',
+                    'P2500',
+                    'P3000'
+                ]),
                 'short_description' => $this->faker->sentence(20)
             ]
         ]);
@@ -496,35 +510,51 @@ class SeederUtils
             'application_log_section_id' => $section_application->id,
             'product_id' => $p3->id,
             'components' => [],
-            'thinners' => [
-                't1' => $this->faker->word,
-                't2' => $this->faker->word,
-            ],
+            'thinners' => [],
         ]);
 
         $components = [];
         foreach ($p3->components as $component) {
             $components[] = [
                 'name' => $component,
-                    'number_of_tins' => $this->faker->randomDigitNotNull,
-                    'tins_capacity' => $this->faker->randomFloat(2),
-                    'tins_unity' => $this->faker->randomElement(['gallons', 'liters']),
-                    'batch_numbers' => [
-                        'bn1' => $this->faker->randomDigitNotNull,
-                        'bn2' => $this->faker->randomDigitNotNull,
-                        'bn3' => $this->faker->randomDigitNotNull
-                    ]
+                'number_of_tins' => $this->faker->randomDigitNotNull,
+                'tins_capacity' => $this->faker->randomFloat(2),
+                'tins_unity' => $this->faker->randomElement(['gallons', 'liters']),
+                'batch_numbers' => [
+                    'bn1' => $this->faker->randomDigitNotNull,
+                    'bn2' => $this->faker->randomDigitNotNull,
+                    'bn3' => $this->faker->randomDigitNotNull
+                ]
             ];
         }
         $pu_ib_1->update([
             'components' => $components
         ]);
 
+        $thinners = [];
+        for ($i = 1; $i <= $this->faker->randomDigitNotNull; $i++) {
+            $thinners[] = [
+                'name' => $this->faker->word,
+                'number_of_tins' => $this->faker->randomDigitNotNull,
+                'tins_capacity' => $this->faker->randomFloat(2),
+                'tins_unity' => $this->faker->randomElement(['gallons', 'liters']),
+                'batch_numbers' => [
+                    'bn1' => $this->faker->randomDigitNotNull,
+                    'bn2' => $this->faker->randomDigitNotNull,
+                    'bn3' => $this->faker->randomDigitNotNull
+                ]
+            ];
+        }
+        $pu_ib_1->update([
+            'thinners' => $thinners
+        ]);
+
+
         $gd_ib_1 = factory(GenericDataInfoBlock::class)->create([
             'name' => 'Application method',
             'application_log_section_id' => $section_application->id,
             'key_value_infos' => [
-                'method' => $this->faker->word,
+                'method' => $this->faker->randomElement(['Convenzionale','Airless','HVLP','Elettrostatica','Rullo']),
                 'nozzle_needle_size' => $this->faker->randomDigitNotNull,
                 'loss_factor' => $this->faker->randomFloat(2)
             ]
