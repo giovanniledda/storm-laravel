@@ -2,11 +2,10 @@
 
 namespace App\Providers;
 
+use App\Services\AppLogEntitiesPersister;
 use CloudCreativity\LaravelJsonApi\LaravelJsonApi;
-use Countries;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
-
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -17,7 +16,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        // Non serve, perché in realtà non devo usare un'implementazione di un'interfaccia piuttosto che un'altra (vedi frase "There is no need to bind classes into the container if they do not depend on any interfaces")
+        // lascio però per "esercizio", per aiuto a capire bene Service Container e Provider, vedi: https://code.tutsplus.com/tutorials/how-to-register-use-laravel-service-providers--cms-28966
+        /*
+        $this->app->bind('App\Services\AppLogEntitiesPersister', function ($app) {
+            return new AppLogEntitiesPersister();
+        });
+        */
     }
 
     /**
@@ -33,9 +38,9 @@ class AppServiceProvider extends ServiceProvider
 
         /**
          * see https://codeburst.io/upload-and-manage-files-with-laravel-and-vue-915378c8b2a4
-         * 
-         * If you use MariaDB there is can be a problem to work with DBMS via artisan command. 
-         * In this case all that you need is using this 
+         *
+         * If you use MariaDB there is can be a problem to work with DBMS via artisan command.
+         * In this case all that you need is using this
          */
 
         // TODO: make this work:

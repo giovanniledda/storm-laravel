@@ -21,11 +21,17 @@ class ZoneAnalysisInfoBlock extends Model
     protected $table = 'zone_analysis_info_blocks';
 
     /**
-     * The attributes that aren't mass assignable.
+     * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $guarded = [];
+    protected $fillable = [
+        'application_log_section_id',
+        'zone_id',
+        'name',
+        'description',
+        'percentage_in_work',
+    ];
 
     /**
      * The zone which analysis block is referred

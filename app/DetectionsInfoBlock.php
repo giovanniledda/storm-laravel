@@ -22,11 +22,17 @@ class DetectionsInfoBlock extends Model
     protected $table = 'detections_info_blocks';
 
     /**
-     * The attributes that aren't mass assignable.
+     * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $guarded = [];
+    protected $fillable = [
+        'name',
+        'detections',
+        'short_description',
+        'application_log_section_id',
+        'tool_id',
+    ];
 
     /**
      * The attributes that should be cast to native types.

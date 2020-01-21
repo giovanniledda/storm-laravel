@@ -3,32 +3,22 @@
 namespace App\Http\Controllers\Api;
 
 use App\ApplicationLog;
+use App\ApplicationLogSection;
 use App\Http\Requests\RequestApplicationLog;
-use App\Jobs\NotifyTaskUpdates;
 use App\Jobs\ProjectLoadEnvironmentalData;
-use App\Notifications\TaskCreated;
+use App\Services\AppLogEntitiesPersister;
 use App\Zone;
 use function __;
-use function abort_unless;
 use function array_key_exists;
 use function explode;
 use function in_array;
 use function json_decode;
 use function md5;
-use function notify;
 use function response;
 use function trim;
-use function view;
-use const MEASUREMENT_FILE_TYPE;
-use const PROJECT_STATUS_CLOSED;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
-use App\User;
-use Validator;
 use Net7\Documents\Document;
-use Net7\Logging\models\Logs as Log;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RequestProjectChangeType;
 use App\Project;
@@ -38,15 +28,26 @@ use Net7\DocsGenerator\DocsGenerator;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use const PROJECT_STATUSES;
 use const REPORT_ENVIRONMENTAL_SUBTYPE;
+use const MEASUREMENT_FILE_TYPE;
+use const PROJECT_STATUS_CLOSED;
 
 class ProjectController extends Controller
 {
 
+    /**
+     * @var AppLogEntitiesPersister
+     */
+    protected $_persister;
+
+    public function __construct(AppLogEntitiesPersister $persister)
+    {
+        $this->_persister = $persister;
+    }
 
     /**
      * Ritorna i possibili stati usati nei progetti.
      * @param Request $request
-     * @return type
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
      */
     public function statuses(Request $request)
     {
@@ -741,6 +742,7 @@ class ProjectController extends Controller
             $sections = $request->input('data.attributes.application_log_sections');
             foreach ($sections as $section) {
                 // creare uno switch che analizza il tipo, prima però verifichiamo con l'id se abbiamo già la section e con update se è cambiata
+                $this->_persister->persistSection($app_log, $section);
             }
 
             return Utils::renderStandardJsonapiResponse(['data' => $app_log->toJsonApi()], 200);
