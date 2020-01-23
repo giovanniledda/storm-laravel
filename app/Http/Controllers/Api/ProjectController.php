@@ -737,6 +737,7 @@ class ProjectController extends Controller
             if (!$app_log) {
                 $app_log = ApplicationLog::create([
                     'name' => $request->input('data.attributes.name'),
+                    'application_type' => $request->input('data.attributes.application_type'),
                     'project_id' => $record->id
                 ]);
             }
