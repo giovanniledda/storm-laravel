@@ -56,7 +56,7 @@ class RequestApplicationLog extends FormRequest
             'data.attributes.name.string' => 'name field is not valid string',
             'data.attributes.application_type.required' => 'application_type field is required',
             'data.attributes.application_type.string' => 'application_type field is not valid string',
-            'data.attributes.application_type.in' => 'application_type field values admitted are only: '.
+            'data.attributes.application_type.in' => 'admitted application_type values are only: '.
             implode(', ', [
                 APPLICATION_TYPE_PRIMER,
                 APPLICATION_TYPE_FILLER,
