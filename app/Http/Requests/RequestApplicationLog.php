@@ -3,6 +3,12 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use function implode;
+use const APPLICATION_LOG_SECTION_TYPE_APPLICATION;
+use const APPLICATION_LOG_SECTION_TYPE_INSPECTION;
+use const APPLICATION_LOG_SECTION_TYPE_PREPARATION;
+use const APPLICATION_LOG_SECTION_TYPE_ZONES;
 
 class RequestApplicationLog extends FormRequest
 {
@@ -26,7 +32,14 @@ class RequestApplicationLog extends FormRequest
         return [
             'data.id' => 'required',
             'data.attributes.name' => 'required|string',
-            'data.attributes.application_type' => 'required|string'
+            'data.attributes.application_type' => 'required|string|'.
+                Rule::in([
+                    APPLICATION_TYPE_PRIMER,
+                    APPLICATION_TYPE_FILLER,
+                    APPLICATION_TYPE_HIGHBUILD,
+                    APPLICATION_TYPE_UNDERCOAT,
+                    APPLICATION_TYPE_COATING
+                ])
         ];
     }
 
@@ -43,6 +56,14 @@ class RequestApplicationLog extends FormRequest
             'data.attributes.name.string' => 'name field is not valid string',
             'data.attributes.application_type.required' => 'application_type field is required',
             'data.attributes.application_type.string' => 'application_type field is not valid string',
+            'data.attributes.application_type.in' => 'application_type field values admitted are only: '.
+            implode(', ', [
+                APPLICATION_TYPE_PRIMER,
+                APPLICATION_TYPE_FILLER,
+                APPLICATION_TYPE_HIGHBUILD,
+                APPLICATION_TYPE_UNDERCOAT,
+                APPLICATION_TYPE_COATING,
+            ]),
         ];
     }
 }

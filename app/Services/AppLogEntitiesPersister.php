@@ -4,32 +4,23 @@ namespace App\Services;
 
 use App\ApplicationLog;
 use App\ApplicationLogSection;
-use App\Boat;
 use App\DetectionsInfoBlock;
 use App\GenericDataInfoBlock;
 use App\ProductUseInfoBlock;
-use App\Project;
-use App\Task;
 use App\ZoneAnalysisInfoBlock;
 use ArrayIterator;
-use Exception;
 use Illuminate\Support\Arr;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\ValidationException;
 use MultipleIterator;
 use Net7\Documents\Document;
-use Validator;
 use function array_merge;
-use function class_exists;
-use function config;
-use function response;
-use function ucfirst;
+use function throw_if;
 
 class AppLogEntitiesPersister
 {
     /**
      * @param ApplicationLogSection $app_log_section
      * @param array $zone_analysis_info_blocks_data
+     * @throws \Exception
      */
     protected function persistZoneAnalysisInfoBlocks(ApplicationLogSection &$app_log_section, $zone_analysis_info_blocks_data = [])
     {
@@ -37,6 +28,19 @@ class AppLogEntitiesPersister
             foreach ($zone_analysis_info_blocks_data as $zone_analysis_info_block_data) {
                 $id = $zone_analysis_info_block_data['id'];
                 $attributes = $zone_analysis_info_block_data['attributes'];
+                // Se percentage_in_work è null significa che la zona in questione dev'essere:
+                // - rimossa: se è presente l'id
+                // - ignorata: se NON è presente l'id
+                if (!$attributes['percentage_in_work']) {
+                    if ($id) {
+                        $zone_analysis_info_block = $app_log_section->zone_analysis_info_blocks()->find($id);
+                        if ($zone_analysis_info_block) {
+                            $zone_analysis_info_block->delete();
+                        }
+                    }
+                    continue;
+                }
+
                 /** @var ZoneAnalysisInfoBlock $zone_analysis_info_block */
                 $zone_analysis_info_block = $app_log_section->zone_analysis_info_blocks()->find($id);
                 if (!$zone_analysis_info_block) {
@@ -74,6 +78,7 @@ class AppLogEntitiesPersister
     /**
      * @param ApplicationLogSection $app_log_section
      * @param array $detections_info_blocks_data
+     * @throws \Throwable
      */
     protected function persistDetectionsInfoBlock(ApplicationLogSection &$app_log_section, $detections_info_blocks_data = [])
     {
@@ -91,7 +96,7 @@ class AppLogEntitiesPersister
                 }
 
                 $doc_ids = $this->persistImages($detections_info_block, $attributes['photos']);
-                // valido solo per i detection_blocks: metto in correlazione immagini e detections
+                // valido solo per i detection_blocks: metto in correlazione immagini e detections attraverso i doc_id
                 if (!empty($doc_ids)) {
                     $detections = $detections_info_block->detections;
                     if (!empty($detections)) {
@@ -119,6 +124,7 @@ class AppLogEntitiesPersister
     /**
      * @param ApplicationLogSection $app_log_section
      * @param array $generic_data_info_blocks_data
+     * @throws \Throwable
      */
     protected function persistGenericDataInfoBlock(ApplicationLogSection &$app_log_section, $generic_data_info_blocks_data = [])
     {
@@ -144,13 +150,15 @@ class AppLogEntitiesPersister
      * @param GenericDataInfoBlock|DetectionsInfoBlock $block
      * @param $photos_data
      * @return mixed
+     * @throws \Throwable
      */
     protected function addImage(&$block, $photos_data)
     {
+        throw_if(!isset($photos_data['doc_type']) || !isset($photos_data['base64']), 'Exception', 'Image data are not correct.');
 
         $type = $photos_data['doc_type'];
         $base64File = $photos_data['base64'];
-        $filename = Arr::get($photos_data, 'filename', 'block_'.$type.'.jpg');
+        $filename = Arr::get($photos_data, 'filename', 'block_' . $type . '.jpg');
         $file = Document::createUploadedFileFromBase64($base64File, $filename);
         /** @var Document $doc */
         $doc = $block->addDocumentFileDirectly($file, $filename, $type);
@@ -161,38 +169,67 @@ class AppLogEntitiesPersister
 
     /**
      * @param GenericDataInfoBlock|DetectionsInfoBlock $block
+     * @param $images_data
+     * @param $docs_ids
+     * @throws \Throwable
+     */
+    protected function extractImagesDataFromArrayAndSaveDocIds(&$block, $images_data, &$docs_ids)
+    {
+        foreach ($images_data as $image_data) {
+            throw_if(!isset($image_data['id']), 'Exception', 'Cannot upload an image without ID.');
+            // Cerco Document con questo ID e aggiorno l'immagine se non ce l'ho
+            $doc = Document::find($image_data['id']);
+            if ($doc) {
+                $docs_ids[] = $doc->id;
+            } else {
+                $doc_id = $this->addImage($block, $image_data['attributes']);
+                if ($doc_id) {
+                    $docs_ids[] = $doc_id;
+                }
+            }
+        }
+    }
+
+    /**
+     * @param GenericDataInfoBlock|DetectionsInfoBlock $block
+     * @param $images_data
+     * @throws \Throwable
+     */
+    protected function removeDocuments(&$block, $images_data)
+    {
+        foreach ($images_data as $image_data) {
+            throw_if(!isset($image_data['id']), 'Exception', 'Cannot upload an image without ID.');
+            // Cerco Document con questo ID e aggiorno l'immagine se non ce l'ho
+            $doc = Document::find($image_data['id']);
+            if ($doc) {
+                $block->deleteDocument($doc);
+            }
+        }
+    }
+
+    /**
+     * @param GenericDataInfoBlock|DetectionsInfoBlock $block
      * @param $photos_data
      * @return array
+     * @throws \Throwable
      */
     protected function persistImages(&$block, $photos_data)
     {
         if (!empty($photos_data)) {
+            throw_if(!isset($photos_data['data']), 'Exception', 'Photos array needs "data" section.');
             $data = $photos_data['data'];
             if (!empty($data)) {
-                $images = [];
+                $docs_ids = [];
                 if (isset($data['detailed_images'])) {
-                    foreach ($data['detailed_images'] as $detailed_image) {
-                        if ($detailed_image['id']) {
-                            // TODO: cerco Document con questo ID ed al max aggiorno l'immagine (capire come evitare se l'immagine è la stessa)
-                        }
-                        $doc_id = $this->addImage($block, $detailed_image['attributes']);
-                        if ($doc_id) {
-                            $images[] = $doc_id;
-                        }
-                    }
+                    $this->extractImagesDataFromArrayAndSaveDocIds($block, $data['detailed_images'], $docs_ids);
                 }
                 if (isset($data['additional_images'])) {
-                    foreach ($data['additional_images'] as $additional_image) {
-                        if ($additional_image['id']) {
-                            // TODO: cerco Document con questo ID ed al max aggiorno l'immagine (capire come evitare se l'immagine è la stessa)
-                        }
-                        $doc_id = $this->addImage($block, $additional_image['attributes']);
-                        if ($doc_id) {
-                            $images[] = $doc_id;
-                        }
-                    }
+                    $this->extractImagesDataFromArrayAndSaveDocIds($block, $data['additional_images'], $docs_ids);
                 }
-                return $images;
+                if (isset($data['deleted_images'])) {
+                    $this->removeDocuments($block, $data['deleted_images']);
+                }
+                return $docs_ids;
             }
         }
     }
@@ -200,6 +237,7 @@ class AppLogEntitiesPersister
     /**
      * @param ApplicationLogSection $app_log_section
      * @param array $attributes
+     * @throws \Exception
      */
     protected function persistZonesSection(ApplicationLogSection &$app_log_section, $attributes = [])
     {
@@ -213,6 +251,7 @@ class AppLogEntitiesPersister
     /**
      * @param ApplicationLogSection $app_log_section
      * @param array $attributes
+     * @throws \Throwable
      */
     protected function persistPreparationSection(ApplicationLogSection &$app_log_section, $attributes = [])
     {
@@ -228,6 +267,7 @@ class AppLogEntitiesPersister
     /**
      * @param ApplicationLogSection $app_log_section
      * @param array $attributes
+     * @throws \Throwable
      */
     protected function persistApplicationSection(ApplicationLogSection &$app_log_section, $attributes = [])
     {
@@ -243,6 +283,7 @@ class AppLogEntitiesPersister
     /**
      * @param ApplicationLogSection $app_log_section
      * @param array $attributes
+     * @throws \Throwable
      */
     protected function persistInspectionSection(ApplicationLogSection &$app_log_section, $attributes = [])
     {
@@ -257,6 +298,7 @@ class AppLogEntitiesPersister
      * @param ApplicationLog $app_log
      * @param array $section_data
      * @return bool
+     * @throws \Throwable
      */
     public function persistSection(ApplicationLog $app_log, $section_data = [])
     {

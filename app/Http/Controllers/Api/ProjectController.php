@@ -528,6 +528,7 @@ class ProjectController extends Controller
     public function bulkCreateZones(Request $request, $record)
     {
         try {
+            // TODO: refactoring, c'è troppa logica qua, spostare in un Service
             $zones = $request->data;
             if (!empty($zones)) {
                 $parent_to_be_created = [];
@@ -725,6 +726,7 @@ class ProjectController extends Controller
      * @param Request $request
      * @param $record
      * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
+     * @throws \Throwable
      */
     public function postApplicationLogStructure(RequestApplicationLog $request, $record)
     {
@@ -748,7 +750,7 @@ class ProjectController extends Controller
             return Utils::renderStandardJsonapiResponse(['data' => $app_log->toJsonApi()], 200);
 
         } catch (\Exception $e) {
-            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error retrieving application log", $e->getMessage());
+            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error uploading application log", $e->getMessage());
         }
     }
 }
