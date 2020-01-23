@@ -101,13 +101,13 @@ class AppLogEntitiesPersister
                     $detections = $detections_info_block->detections;
                     if (!empty($detections)) {
                         $new_detections = [];
-                        $iterator = new MultipleIterator();
-                        $iterator->attachIterator(new ArrayIterator($doc_ids));
-                        $iterator->attachIterator(new ArrayIterator($detections));
-                        foreach ($iterator as $values) {
-                            $doc_id = $values[0];
-                            $detection = $values[1];
-                            $detection['image_doc_id'] = $doc_id;
+                        foreach ($detections as $detection) {
+                            if (isset($detection['image_doc_id']) && $detection['image_doc_id']) {
+                                $key_id = $detection['image_doc_id'];
+                                if (Arr::has($doc_ids, $key_id)) {
+                                    $detection['image_doc_id'] = $doc_ids[$key_id];
+                                }
+                            }
                             $new_detections[] = $detection;
                         }
                         if (!empty($new_detections)) {
@@ -178,13 +178,14 @@ class AppLogEntitiesPersister
         foreach ($images_data as $image_data) {
             throw_if(!isset($image_data['id']), 'Exception', 'Cannot upload an image without ID.');
             // Cerco Document con questo ID e aggiorno l'immagine se non ce l'ho
-            $doc = Document::find($image_data['id']);
+            $proposed_id = $image_data['id'];
+            $doc = Document::find($proposed_id);
             if ($doc) {
-                $docs_ids[] = $doc->id;
+                $docs_ids[$doc->id] = $doc->id;
             } else {
                 $doc_id = $this->addImage($block, $image_data['attributes']);
                 if ($doc_id) {
-                    $docs_ids[] = $doc_id;
+                    $docs_ids[$proposed_id] = $doc_id;
                 }
             }
         }
