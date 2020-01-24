@@ -175,17 +175,19 @@ class AppLogEntitiesPersister
      */
     protected function extractImagesDataFromArrayAndSaveDocIds(&$block, $images_data, &$docs_ids)
     {
-        foreach ($images_data as $image_data) {
-            throw_if(!isset($image_data['id']), 'Exception', 'Cannot upload an image without ID.');
-            // Cerco Document con questo ID e aggiorno l'immagine se non ce l'ho
-            $proposed_id = $image_data['id'];
-            $doc = Document::find($proposed_id);
-            if ($doc) {
-                $docs_ids[$doc->id] = $doc->id;
-            } else {
-                $doc_id = $this->addImage($block, $image_data['attributes']);
-                if ($doc_id) {
-                    $docs_ids[$proposed_id] = $doc_id;
+        if (!empty($images_data)) {
+            foreach ($images_data as $image_data) {
+                throw_if(!isset($image_data['id']), 'Exception', 'Cannot upload an image without ID.');
+                // Cerco Document con questo ID e aggiorno l'immagine se non ce l'ho
+                $proposed_id = $image_data['id'];
+                $doc = Document::find($proposed_id);
+                if ($doc) {
+                    $docs_ids[$doc->id] = $doc->id;
+                } else {
+                    $doc_id = $this->addImage($block, $image_data['attributes']);
+                    if ($doc_id) {
+                        $docs_ids[$proposed_id] = $doc_id;
+                    }
                 }
             }
         }
@@ -198,12 +200,14 @@ class AppLogEntitiesPersister
      */
     protected function removeDocuments(&$block, $images_data)
     {
-        foreach ($images_data as $image_data) {
-            throw_if(!isset($image_data['id']), 'Exception', 'Cannot upload an image without ID.');
-            // Cerco Document con questo ID e aggiorno l'immagine se non ce l'ho
-            $doc = Document::find($image_data['id']);
-            if ($doc) {
-                $block->deleteDocument($doc);
+        if (!empty($images_data)) {
+            foreach ($images_data as $image_data) {
+                throw_if(!isset($image_data['id']), 'Exception', 'Cannot upload an image without ID.');
+                // Cerco Document con questo ID e aggiorno l'immagine se non ce l'ho
+                $doc = Document::find($image_data['id']);
+                if ($doc) {
+                    $block->deleteDocument($doc);
+                }
             }
         }
     }

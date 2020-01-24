@@ -527,6 +527,7 @@ class ProjectController extends Controller
      * @param Request $request
      * @param $record
      * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
+     * @throws \Throwable
      */
     public function bulkCreateZones(Request $request, $record)
     {
