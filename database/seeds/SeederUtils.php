@@ -462,18 +462,18 @@ class SeederUtils
             'detections' => null
         ]);
 
-        $this->updateDetectionBlock($d_ib_1, ['rugosita_superficie' => $this->faker->randomFloat(2)]);
+        $this->updateDetectionBlock($d_ib_1, ['surface_roughness' => $this->faker->randomFloat(2)]);
 
         if ($application_log->application_type == APPLICATION_TYPE_PRIMER) {
             $t2 = $this->faker->randomElement($tools);
             $d_ib_2 = factory(DetectionsInfoBlock::class)->create([
-                'name' => 'Sali',
+                'name' => 'Salt - Bresle test',
                 'application_log_section_id' => $section_preparation->id,
                 'tool_id' => $t2->id,
                 'detections' => null
             ]);
 
-            $this->updateDetectionBlock($d_ib_2, ['salt_value' => $this->faker->randomFloat(2)]);
+            $this->updateDetectionBlock($d_ib_2, ['salts' => $this->faker->randomFloat(2)]);
         }
         return $section_preparation;
     }
@@ -554,7 +554,7 @@ class SeederUtils
             'name' => 'Application method',
             'application_log_section_id' => $section_application->id,
             'key_value_infos' => [
-                'method' => $this->faker->randomElement(['Convenzionale','Airless','HVLP','Elettrostatica','Rullo']),
+                'method' => $this->faker->randomElement(['Conventional', 'Airless', 'HVLP','Electrostatic', 'Roll']),
                 'nozzle_needle_size' => $this->faker->randomDigitNotNull,
                 'loss_factor' => $this->faker->randomFloat(2)
             ]
@@ -579,13 +579,13 @@ class SeederUtils
         if ($application_log->application_type == APPLICATION_TYPE_PRIMER) {
             $t = $this->faker->randomElement($tools);
             $d_ib_1 = factory(DetectionsInfoBlock::class)->create([
-                'name' => 'Adesione',
+                'name' => 'Adhesion',
                 'application_log_section_id' => $section_inspection->id,
                 'tool_id' => $t->id,
                 'detections' => null
             ]);
             $this->updateDetectionBlock($d_ib_1, [
-                'adesione' => $this->faker->randomElement(['scarsa', 'sufficiente', 'buona', 'eccellente'])
+                'adhesion' => $this->faker->randomFloat
             ]);
         }
 
@@ -596,37 +596,37 @@ class SeederUtils
         ) {
             $t = $this->faker->randomElement($tools);
             $d_ib_2 = factory(DetectionsInfoBlock::class)->create([
-                'name' => 'Avviamento',
+                'name' => 'Fairness',
                 'application_log_section_id' => $section_inspection->id,
                 'tool_id' => $t->id,
                 'detections' => null
             ]);
             $this->updateDetectionBlock($d_ib_2, [
-                'avviamento' => $this->faker->randomElement(['scarso', 'sufficiente', 'buono', 'eccellente'])
+                'fairness' => $this->faker->randomFloat
             ]);
         }
 
         $t = $this->faker->randomElement($tools);
         $d_ib_3 = factory(DetectionsInfoBlock::class)->create([
-            'name' => 'Spessori',
+            'name' => 'Thickness',
             'application_log_section_id' => $section_inspection->id,
             'tool_id' => $t->id,
             'detections' => null
         ]);
         $this->updateDetectionBlock($d_ib_3, [
-            'spessore' => $this->faker->randomFloat(2)
+            'thickness' => $this->faker->randomFloat(2)
         ]);
 
         if ($application_log->application_type == APPLICATION_TYPE_FILLER) {
             $t = $this->faker->randomElement($tools);
             $d_ib_4 = factory(DetectionsInfoBlock::class)->create([
-                'name' => 'Durezza',
+                'name' => 'Hardness',
                 'application_log_section_id' => $section_inspection->id,
                 'tool_id' => $t->id,
                 'detections' => null
             ]);
             $this->updateDetectionBlock($d_ib_4, [
-                'spessore' => $this->faker->randomDigitNotNull
+                'thickness' => $this->faker->randomDigitNotNull
             ]);
         }
 
@@ -655,7 +655,7 @@ class SeederUtils
                 'detections' => null
             ]);
             $this->updateDetectionBlock($d_ib_6, [
-                'orange_peel_value' => $this->faker->randomDigitNotNull
+                'orange_peel' => $this->faker->randomDigitNotNull
             ]);
         }
 
