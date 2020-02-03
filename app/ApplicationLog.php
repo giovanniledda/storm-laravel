@@ -46,6 +46,30 @@ class ApplicationLog extends Model
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function getStartedSectionsQuery()
+    {
+        return $this->application_log_sections()->where('is_started', '=', 1);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStartedSections()
+    {
+        return $this->getStartedSectionsQuery()->get();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function countStartedSections()
+    {
+        return $this->getStartedSectionsQuery()->count();
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function project()
@@ -150,5 +174,19 @@ class ApplicationLog extends Model
             'attributes' => $this
         ];
         return $data;
+    }
+
+    /**
+     * Array of attributes made ad hoc for ReportItem "data_attributes" field
+     * @return array
+     */
+    public function myAttributesForReportItem()
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'application_type' => $this->application_type,
+            'started_sections' => $this->getStartedSections()->pluck('section_type')
+        ];
     }
 }

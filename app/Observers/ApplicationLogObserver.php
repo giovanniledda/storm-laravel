@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\ApplicationLog;
+use App\ReportItem;
 
 class ApplicationLogObserver
 {
@@ -16,6 +17,10 @@ class ApplicationLogObserver
     {
         // Setto l'id interno progressivo calcolato su base "per boat"
         $applicationLog->updateInternalProgressiveNumber();
+
+        // creo una nuova istanza di ReportItem
+
+        ReportItem::touchForNewApplicationLog($applicationLog);
     }
 
     /**
