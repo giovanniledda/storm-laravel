@@ -27,6 +27,10 @@ class CreateReportItemsTable extends Migration
             // non è una vera e propria chiave esterna, può puntare ad un oggetto qualsiasi tra log, doc, app_log, etc.
             $table->unsignedBigInteger('report_id')->nullable();
 
+            // project
+            $table->unsignedBigInteger('project_id')->nullable();
+            $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
+
             // user: può essere il creatore o l'autore dell'ultima modifica
             $table->unsignedBigInteger('author_id')->nullable();
             $table->foreign('author_id')->references('id')->on('users')->onDelete('set null');

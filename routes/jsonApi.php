@@ -197,5 +197,7 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
                 $histories->post('{record}/image-delete', 'removeImageDocument')->name('image-delete');
                 $histories->post('{record}/add-comment', 'addComment')->name('add-comment');
             });
+
+        $api->resource('report-items');
     });
 });

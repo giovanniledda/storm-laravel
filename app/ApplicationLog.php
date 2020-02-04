@@ -30,7 +30,6 @@ class ApplicationLog extends Model
      */
     protected $guarded = [];
 
-
     protected static function boot()
     {
         parent::boot();
@@ -85,6 +84,14 @@ class ApplicationLog extends Model
     public function boat()
     {
         return $this->project ? $this->project->boat : null;
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function author()
+    {
+        return $this->belongsTo('App\User');
     }
 
     /**

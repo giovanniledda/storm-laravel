@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\ApplicationLog;
+use App\ProjectUser;
 use App\ReportItem;
 
 class ApplicationLogObserver
@@ -18,8 +19,14 @@ class ApplicationLogObserver
         // Setto l'id interno progressivo calcolato su base "per boat"
         $applicationLog->updateInternalProgressiveNumber();
 
-        // creo una nuova istanza di ReportItem
-
+        // Aggiorno l'autore
+        if (!$applicationLog->author_id && \Auth::check()) {
+            $auth_user = \Auth::user();
+            $applicationLog->update([
+                'author_id' => $auth_user->id
+            ]);
+        }
+        // Creo una nuova istanza di ReportItem
         ReportItem::touchForNewApplicationLog($applicationLog);
     }
 

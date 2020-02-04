@@ -1,0 +1,45 @@
+<?php
+
+namespace App\JsonApi\V1\ReportItems;
+
+use Neomerx\JsonApi\Schema\SchemaProvider;
+
+class Schema extends SchemaProvider
+{
+
+    /**
+     * @var string
+     */
+    protected $resourceType = 'report-items';
+
+    /**
+     * @param $resource
+     *      the domain record being serialized.
+     * @return string
+     */
+    public function getId($resource)
+    {
+        return (string) $resource->getRouteKey();
+    }
+
+    /**
+     * @param $resource
+     *      the domain record being serialized.
+     * @return array
+     */
+    public function getAttributes($resource)
+    {
+        return [
+            'report_type' => $resource->report_type,
+            'report_name' => $resource->report_name,
+            'data_attributes' => $resource->getDataAttributes(),
+            'report_links' => $resource->report_links,
+            'report_create_date' => $resource->report_create_date,
+            'report_update_date' => $resource->report_update_date,
+            'report_id' => $resource->report_id,
+            'author_id' => $resource->author_id,
+            'created-at' => $resource->created_at->toAtomString(),
+            'updated-at' => $resource->updated_at->toAtomString(),
+        ];
+    }
+}
