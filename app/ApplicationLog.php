@@ -8,6 +8,7 @@ use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Model;
 use function array_merge;
 use function env;
+use const APPLICATION_LOG_SECTION_TYPE_ZONES;
 use const APPLICATION_TYPE_COATING;
 use const APPLICATION_TYPE_FILLER;
 use const APPLICATION_TYPE_HIGHBUILD;
@@ -66,6 +67,23 @@ class ApplicationLog extends Model
     public function countStartedSections()
     {
         return $this->getStartedSectionsQuery()->count();
+    }
+
+    /**
+     * @param $type
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function getSectionsByTypeQuery($type)
+    {
+        return $this->application_log_sections()->where('section_type', '=', $type);
+    }
+
+    /**
+     * @return Model|\Illuminate\Database\Eloquent\Relations\HasMany|object|null
+     */
+    public function getZonesSection()
+    {
+        return $this->getSectionsByTypeQuery(APPLICATION_LOG_SECTION_TYPE_ZONES)->first();
     }
 
     /**
@@ -184,6 +202,26 @@ class ApplicationLog extends Model
     }
 
     /**
+     * @return array
+     */
+    public function getUsedZones()
+    {
+        $used_zones = [];
+        /** @var ApplicationLogSection $zones_section */
+        $zones_section = $this->getZonesSection();
+        if ($zones_section && $zones_section->is_started) {
+            if ($zones_section->zone_analysis_info_blocks()->with('zone')->count()) {
+                $zones_ib = $zones_section->zone_analysis_info_blocks()->with('zone')->get();
+                foreach ($zones_ib as $zone_ib) {
+                    $used_zones[] = $zone_ib->zone()->pluck('code');
+//                    $used_zones[] = $zone_ib->zone()->select(['code', 'description'])->get();
+                }
+            }
+        }
+        return $used_zones;
+    }
+
+    /**
      * Array of attributes made ad hoc for ReportItem "data_attributes" field
      * @return array
      */
@@ -193,7 +231,8 @@ class ApplicationLog extends Model
             'id' => $this->id,
             'name' => $this->name,
             'application_type' => $this->application_type,
-            'started_sections' => $this->getStartedSections()->pluck('section_type')
+            'started_sections' => $this->getStartedSections()->pluck('section_type'),
+            'zones' => $this->getUsedZones()
         ];
     }
 }

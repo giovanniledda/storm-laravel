@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use function method_exists;
+use function property_exists;
 
 class ReportItem extends Model
 {
@@ -94,6 +95,16 @@ class ReportItem extends Model
         $obj = $this->report_obj();
         if ($obj && method_exists($obj, 'myAttributesForReportItem')) {
             return $obj->myAttributesForReportItem();
+        }
+    }
+    /**
+     * @return string
+     */
+    public function getReportName()
+    {
+        $obj = $this->report_obj();
+        if ($obj && property_exists($obj, 'name')) {
+            return $obj->name;
         }
     }
 }

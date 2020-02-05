@@ -31,7 +31,7 @@ class Schema extends SchemaProvider
     {
         return [
             'report_type' => $resource->report_type,
-            'report_name' => $resource->report_name,
+            'report_name' => $resource->getReportName(),
             'data_attributes' => $resource->getDataAttributes(),
             'report_links' => $resource->report_links,
             'report_create_date' => $resource->report_create_date,
