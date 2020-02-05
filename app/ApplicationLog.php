@@ -213,8 +213,8 @@ class ApplicationLog extends Model
             if ($zones_section->zone_analysis_info_blocks()->with('zone')->count()) {
                 $zones_ib = $zones_section->zone_analysis_info_blocks()->with('zone')->get();
                 foreach ($zones_ib as $zone_ib) {
-                    $used_zones[] = $zone_ib->zone()->pluck('code');
-//                    $used_zones[] = $zone_ib->zone()->select(['code', 'description'])->get();
+//                    $used_zones[] = $zone_ib->zone()->pluck('code');
+                    $used_zones[] = $zone_ib->zone()->select(['id', 'code', 'description'])->first();
                 }
             }
         }
