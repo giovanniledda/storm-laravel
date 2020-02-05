@@ -31,13 +31,13 @@ class Schema extends SchemaProvider
     {
         return [
             'report_type' => $resource->report_type,
+            'report_id' => $resource->report_id,
             'report_name' => $resource->getReportName(),
             'data_attributes' => $resource->getDataAttributes(),
             'report_links' => $resource->report_links,
             'report_create_date' => $resource->report_create_date,
             'report_update_date' => $resource->report_update_date,
-            'report_id' => $resource->report_id,
-            'author_id' => $resource->author_id,
+            'author' => $resource->author_for_api(),
             'created-at' => $resource->created_at->toAtomString(),
             'updated-at' => $resource->updated_at->toAtomString(),
         ];

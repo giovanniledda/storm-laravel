@@ -77,10 +77,10 @@ class ReportItem extends Model
     {
         self::create([
             'report_type' => ApplicationLog::class,
+            'report_id' => $application_log->id,
             'report_name' => $application_log->name,
             'report_create_date' => $application_log->created_at,
             'report_update_date' => $application_log->updated_at,
-            'report_id' => $application_log->id,
             'author_id' => $author_id ? $author_id : $application_log->author_id,
             'data_attributes' => $application_log->myAttributesForReportItem(),
             'project_id' => $application_log->project_id,
@@ -97,6 +97,7 @@ class ReportItem extends Model
             return $obj->myAttributesForReportItem();
         }
     }
+
     /**
      * @return string
      */
@@ -106,5 +107,14 @@ class ReportItem extends Model
         if ($obj && property_exists($obj, 'name')) {
             return $obj->name;
         }
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function author_for_api()
+    {
+//        return $this->author()->pluck('name')->get();
+        return $this->author()->select(['id', 'name', 'surname'])->without(['roles'])->first();
     }
 }
