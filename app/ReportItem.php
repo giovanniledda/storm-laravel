@@ -149,7 +149,10 @@ class ReportItem extends Model
         return [
             'id' => $document->id,
             'area' => $this->data_attributes['area'],
-            'measurement_interval_dates' => "$min_date - $max_date",
+            'measurement_interval_dates' => [
+                'min' => $min_date,
+                'max' => $max_date
+            ]
         ];
     }
 

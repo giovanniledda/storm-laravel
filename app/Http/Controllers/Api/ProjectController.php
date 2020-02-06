@@ -459,7 +459,10 @@ class ProjectController extends Controller
                     [
                         'id' => $document->id,
                         'area' => $data_source,
-                        'measurement_interval_dates' => "$date_start - $date_end"
+                        'measurement_interval_dates' => [
+                            'min' => $date_start,
+                            'max' => $date_end
+                        ]
                     ]
                 );
             }
