@@ -6,6 +6,7 @@ use App\ApplicationLog;
 use App\ApplicationLogSection;
 use App\Http\Requests\RequestApplicationLog;
 use App\Jobs\ProjectLoadEnvironmentalData;
+use App\ReportItem;
 use App\Services\AppLogEntitiesPersister;
 use App\Services\ZonesPersister;
 use App\Zone;
@@ -357,6 +358,8 @@ class ProjectController extends Controller
                         $document,
                         $data_source
                     ); // default queue
+
+//                    ReportItem::touchForNewEnvironmentalLog();
 
                     return $this->renderJsonOrDownloadFile($request, $document);
                 }

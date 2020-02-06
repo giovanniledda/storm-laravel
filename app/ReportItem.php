@@ -88,6 +88,24 @@ class ReportItem extends Model
     }
 
     /**
+     * @param ApplicationLog $application_log
+     * @param int|null $author_id
+     */
+    public static function touchForNewEnvironmentalLog(ApplicationLog &$application_log, int $author_id = null)
+    {
+        self::create([
+            'report_type' => ApplicationLog::class,
+            'report_id' => $application_log->id,
+            'report_name' => $application_log->name,
+            'report_create_date' => $application_log->created_at,
+            'report_update_date' => $application_log->updated_at,
+            'author_id' => $author_id ? $author_id : $application_log->author_id,
+            'data_attributes' => $application_log->myAttributesForReportItem(),
+            'project_id' => $application_log->project_id,
+        ]);
+    }
+
+    /**
      * @return mixed
      */
     public function getDataAttributes()
@@ -104,7 +122,7 @@ class ReportItem extends Model
     public function getReportName()
     {
         $obj = $this->report_obj();
-        if ($obj && property_exists($obj, 'name')) {
+        if ($obj) {
             return $obj->name;
         }
     }
