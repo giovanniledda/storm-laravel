@@ -93,8 +93,10 @@ class ReportItem extends Model
     /**
      * @param Document $env_log_document
      * @param int|null $author_id
+     * @param int|null $project_id
+     * @param string|null $data_source
      */
-    public static function touchForNewEnvironmentalLog(Document &$env_log_document, int $author_id = null)
+    public static function touchForNewEnvironmentalLog(Document &$env_log_document, int $author_id = null, int $project_id = null, string $data_source = null)
     {
         self::create([
             'report_type' => REPORT_ITEM_TYPE_ENVIRONM_LOG,
@@ -103,8 +105,11 @@ class ReportItem extends Model
             'report_create_date' => $env_log_document->created_at,
             'report_update_date' => $env_log_document->updated_at,
             'author_id' => $author_id ? $author_id : $env_log_document->author_id,
-//            'data_attributes' => $env_log_document->myAttributesForReportItem(),
-//            'project_id' => $env_log_document->project_id,
+            'data_attributes' => [
+                'id' => $env_log_document->id,
+                'area' => $data_source
+            ],
+            'project_id' => $project_id,
             'reportable_type' => Document::class,
             'reportable_id' => $env_log_document->id,
         ]);
@@ -118,6 +123,8 @@ class ReportItem extends Model
         $obj = $this->reportable;
         if ($obj && method_exists($obj, 'myAttributesForReportItem')) {
             return $obj->myAttributesForReportItem();
+        } else {
+            return $this->data_attributes;
         }
     }
 
@@ -128,7 +135,9 @@ class ReportItem extends Model
     {
         $obj = $this->reportable;
         if ($obj) {
-            return $obj->name;
+            return $obj->name ?? $obj->title;
+        } else {
+            return $this->report_name;
         }
     }
 

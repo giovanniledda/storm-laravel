@@ -359,7 +359,13 @@ class ProjectController extends Controller
                         $data_source
                     ); // default queue
 
-//                    ReportItem::touchForNewEnvironmentalLog();
+                    if (\Auth::check()) {
+                        $auth_user = \Auth::user();
+                        $user_id = $auth_user->id;
+                    } else {
+                        $user_id = $document->author_id ?? 1; // admin
+                    }
+                    ReportItem::touchForNewEnvironmentalLog($document, $user_id, $project->id);
 
                     return $this->renderJsonOrDownloadFile($request, $document);
                 }

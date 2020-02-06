@@ -514,18 +514,20 @@ class SeederUtils
         ]);
 
         $components = [];
-        foreach ($p3->components as $component) {
-            $components[] = [
-                'name' => $component,
-                'number_of_tins' => $this->faker->randomDigitNotNull,
-                'tins_capacity' => $this->faker->randomFloat(2),
-                'tins_unity' => $this->faker->randomElement(['gallons', 'liters']),
-                'batch_numbers' => [
-                    'bn1' => $this->faker->randomDigitNotNull,
-                    'bn2' => $this->faker->randomDigitNotNull,
-                    'bn3' => $this->faker->randomDigitNotNull
-                ]
-            ];
+        if (!empty($p3->components)) {
+            foreach ($p3->components as $component) {
+                $components[] = [
+                    'name' => $component,
+                    'number_of_tins' => $this->faker->randomDigitNotNull,
+                    'tins_capacity' => $this->faker->randomFloat(2),
+                    'tins_unity' => $this->faker->randomElement(['gallons', 'liters']),
+                    'batch_numbers' => [
+                        'bn1' => $this->faker->randomDigitNotNull,
+                        'bn2' => $this->faker->randomDigitNotNull,
+                        'bn3' => $this->faker->randomDigitNotNull
+                    ]
+                ];
+            }
         }
         $pu_ib_1->update([
             'components' => $components
