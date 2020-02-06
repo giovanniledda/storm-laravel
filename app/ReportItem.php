@@ -145,10 +145,11 @@ class ReportItem extends Model
         $log = $this->project->measurementLogs()->where('id', '=', $document->id)->first();
         $min_date = Measurement::getMinTimeByDocument($log->id);
         $max_date = Measurement::getMaxTimeByDocument($log->id);
+        $data_attributes = $this->data_attributes;
 
         return [
             'id' => $document->id,
-            'area' => $this->data_attributes['area'],
+            'area' => $data_attributes['area'],
             'measurement_interval_dates' => [
                 'min' => $min_date,
                 'max' => $max_date
