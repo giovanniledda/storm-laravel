@@ -158,6 +158,9 @@ class ReportItem extends Model
      */
     public function getDataAttributes()
     {
+        if ($this->report_type == REPORT_ITEM_TYPE_ENVIRONM_LOG) {
+            return $this->getDataAttributesForEnvironmentalLog();
+        }
         $obj = $this->reportable;
         if ($obj && method_exists($obj, 'myAttributesForReportItem')) {
             return $obj->myAttributesForReportItem();
