@@ -246,10 +246,6 @@ class AppLogEntitiesPersister
      */
     protected function persistZonesSection(ApplicationLogSection &$app_log_section, $attributes = [])
     {
-        $app_log_section->update([
-            'is_started' => 1,
-//            'date_hour' => isset($attributes['date_hour']) ? $attributes['date_hour'] : null,
-        ]);
         $this->persistZoneAnalysisInfoBlocks($app_log_section, $attributes['zone_analysis_info_blocks']);
     }
 
@@ -261,7 +257,6 @@ class AppLogEntitiesPersister
     protected function persistPreparationSection(ApplicationLogSection &$app_log_section, $attributes = [])
     {
         $app_log_section->update([
-            'is_started' => 1,
             'date_hour' => isset($attributes['date_hour']) ? $attributes['date_hour'] : null,
         ]);
         $this->persistProductUseInfoBlocks($app_log_section, $attributes['product_use_info_blocks']);
@@ -277,7 +272,6 @@ class AppLogEntitiesPersister
     protected function persistApplicationSection(ApplicationLogSection &$app_log_section, $attributes = [])
     {
         $app_log_section->update([
-            'is_started' => 1,
             'date_hour' => isset($attributes['date_hour']) ? $attributes['date_hour'] : null,
         ]);
         $this->persistProductUseInfoBlocks($app_log_section, $attributes['product_use_info_blocks']);
@@ -293,7 +287,6 @@ class AppLogEntitiesPersister
     protected function persistInspectionSection(ApplicationLogSection &$app_log_section, $attributes = [])
     {
         $app_log_section->update([
-            'is_started' => 1,
             'date_hour' => isset($attributes['date_hour']) ? $attributes['date_hour'] : null,
         ]);
         $this->persistDetectionsInfoBlock($app_log_section, $attributes['detections_info_blocks']);
@@ -315,7 +308,8 @@ class AppLogEntitiesPersister
         if (!$app_log_section) {
             $app_log_section = ApplicationLogSection::create([
                 'section_type' => $type,
-                'application_log_id' => $app_log->id
+                'application_log_id' => $app_log->id,
+                'is_started' => $attributes['is_started']
             ]);
         } else if ($app_log_section->updated_at == $attributes['updated_at']) {
             return false;

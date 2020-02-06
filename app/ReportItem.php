@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Net7\Documents\Document;
+use Net7\EnvironmentalMeasurement\Models\Measurement;
 use function method_exists;
 use function property_exists;
 use const MEASUREMENT_FILE_TYPE;
@@ -94,9 +95,9 @@ class ReportItem extends Model
      * @param Document $env_log_document
      * @param int|null $author_id
      * @param int|null $project_id
-     * @param string|null $data_source
+     * @param array|null $data_attributes
      */
-    public static function touchForNewEnvironmentalLog(Document &$env_log_document, int $author_id = null, int $project_id = null, string $data_source = null)
+    public static function touchForNewEnvironmentalLog(Document &$env_log_document, int $author_id = null, int $project_id = null, array $data_attributes = null)
     {
         self::create([
             'report_type' => REPORT_ITEM_TYPE_ENVIRONM_LOG,
@@ -105,14 +106,51 @@ class ReportItem extends Model
             'report_create_date' => $env_log_document->created_at,
             'report_update_date' => $env_log_document->updated_at,
             'author_id' => $author_id ? $author_id : $env_log_document->author_id,
-            'data_attributes' => [
-                'id' => $env_log_document->id,
-                'area' => $data_source
-            ],
+            'data_attributes' => $data_attributes,
             'project_id' => $project_id,
             'reportable_type' => Document::class,
             'reportable_id' => $env_log_document->id,
         ]);
+    }
+
+    /**
+     * @param Document $document
+     * @param string $type
+     * @param int|null $author_id
+     * @param int|null $project_id
+     * @param array|null $data_attributes
+     */
+    public static function touchForNewDocument(Document &$document, string $type, int $author_id = null, int $project_id = null, array $data_attributes = null)
+    {
+        self::create([
+            'report_type' => $type,
+            'report_id' => $document->id,
+            'report_name' => $document->title,
+            'report_create_date' => $document->created_at,
+            'report_update_date' => $document->updated_at,
+            'author_id' => $author_id ? $author_id : $document->author_id,
+            'data_attributes' => $data_attributes,
+            'project_id' => $project_id,
+            'reportable_type' => Document::class,
+            'reportable_id' => $document->id,
+        ]);
+    }
+
+    /**
+     * @return array
+     */
+    public function getDataAttributesForEnvironmentalLog()
+    {
+        $document = $this->reportable;
+        $log = $this->project->measurementLogs()->where('id', '=', $document->id)->first();
+        $min_date = Measurement::getMinTimeByDocument($log->id);
+        $max_date = Measurement::getMaxTimeByDocument($log->id);
+
+        return [
+            'id' => $document->id,
+            'area' => $this->data_attributes['area'],
+            'measurement_interval_dates' => "$min_date - $max_date",
+        ];
     }
 
     /**

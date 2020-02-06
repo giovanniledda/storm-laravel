@@ -32,6 +32,8 @@ use const PROJECT_STATUSES;
 use const REPORT_ENVIRONMENTAL_SUBTYPE;
 use const MEASUREMENT_FILE_TYPE;
 use const PROJECT_STATUS_CLOSED;
+use const REPORT_ITEM_TYPE_CORR_MAP_DOC;
+use const REPORT_ITEM_TYPE_ENVIRONM_DOC;
 
 class ProjectController extends Controller
 {
@@ -260,7 +262,7 @@ class ProjectController extends Controller
     }
 
     /**
-     * API used to generate a report from the project
+     * #PR16: API used to generate a report from the project
      *
      * @param Request $request
      * @param $record
@@ -278,6 +280,26 @@ class ProjectController extends Controller
             // $template = 'corrosion_map';
             $template = $request->template;
             $document = $this->reportGenerationProcess($template, $project, REPORT_CORROSION_MAP_SUBTYPE);
+
+            if ($document) {
+                // TODO: refact not DRY
+                if (\Auth::check()) {
+                    $auth_user = \Auth::user();
+                    $user_id = $auth_user->id;
+                } else {
+                    $user_id = $document->author_id ?? 1; // admin
+                }
+
+                ReportItem::touchForNewDocument(
+                    $document,
+                    REPORT_ITEM_TYPE_CORR_MAP_DOC,
+                    $user_id,
+                    $project->id,
+                    [
+                        'id' => $document->id,
+                    ]
+                );
+            }
         } catch (\Exception $e) {
             return Utils::jsonAbortWithInternalError(422, 402, "Error generating report", $e->getMessage());
         }
@@ -365,7 +387,12 @@ class ProjectController extends Controller
                     } else {
                         $user_id = $document->author_id ?? 1; // admin
                     }
-                    ReportItem::touchForNewEnvironmentalLog($document, $user_id, $project->id);
+
+                    ReportItem::touchForNewEnvironmentalLog($document, $user_id, $project->id, [
+                        'id' => $document->id,
+                        'area' => $data_source,
+                        'measurement_interval_dates' => null,
+                    ]);
 
                     return $this->renderJsonOrDownloadFile($request, $document);
                 }
@@ -414,6 +441,28 @@ class ProjectController extends Controller
 
         try {
             $document = $this->reportGenerationProcess($template, $project, REPORT_ENVIRONMENTAL_SUBTYPE);
+
+            if ($document) {
+                // TODO: refact not DRY
+                if (\Auth::check()) {
+                    $auth_user = \Auth::user();
+                    $user_id = $auth_user->id;
+                } else {
+                    $user_id = $document->author_id ?? 1; // admin
+                }
+
+                ReportItem::touchForNewDocument(
+                    $document,
+                    REPORT_ITEM_TYPE_ENVIRONM_DOC,
+                    $user_id,
+                    $project->id,
+                    [
+                        'id' => $document->id,
+                        'area' => $data_source,
+                        'measurement_interval_dates' => "$date_start - $date_end"
+                    ]
+                );
+            }
         } catch (\Exception $e) {
             return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error generating report", $e->getMessage());
         }

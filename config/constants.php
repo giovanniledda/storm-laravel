@@ -247,4 +247,6 @@ defined('APPLICATION_TYPE_UNDERCOAT') or define('APPLICATION_TYPE_UNDERCOAT', 'u
 defined('APPLICATION_TYPE_COATING') or define('APPLICATION_TYPE_COATING', 'topcoat');
 defined('REPORT_ITEM_TYPE_APPLICATION_LOG') or define('REPORT_ITEM_TYPE_APPLICATION_LOG', 'application_log');
 defined('REPORT_ITEM_TYPE_ENVIRONM_LOG') or define('REPORT_ITEM_TYPE_ENVIRONM_LOG', 'environmental_log_data');
+defined('REPORT_ITEM_TYPE_ENVIRONM_DOC') or define('REPORT_ITEM_TYPE_ENVIRONM_DOC', 'environmental_log_document');
+defined('REPORT_ITEM_TYPE_CORR_MAP_DOC') or define('REPORT_ITEM_TYPE_CORR_MAP_DOC', 'corrosion_map_document');
 
