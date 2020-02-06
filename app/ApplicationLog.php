@@ -3,10 +3,8 @@
 namespace App;
 
 use App\Observers\ApplicationLogObserver;
-use App\Observers\TaskObserver;
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Model;
-use function array_merge;
 use function env;
 use const APPLICATION_LOG_SECTION_TYPE_ZONES;
 use const APPLICATION_TYPE_COATING;
@@ -110,6 +108,14 @@ class ApplicationLog extends Model
     public function author()
     {
         return $this->belongsTo('App\User');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\MorphOne
+     */
+    public function report_item()
+    {
+        return $this->morphOne('App\ReportItem', 'reportable');
     }
 
     /**

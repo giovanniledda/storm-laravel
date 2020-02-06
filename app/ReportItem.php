@@ -3,8 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Net7\Documents\Document;
 use function method_exists;
 use function property_exists;
+use const MEASUREMENT_FILE_TYPE;
+use const REPORT_ITEM_TYPE_APPLICATION_LOG;
+use const REPORT_ITEM_TYPE_ENVIRONM_LOG;
 
 class ReportItem extends Model
 {
@@ -58,15 +62,11 @@ class ReportItem extends Model
     }
 
     /**
-     * @return mixed|null
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
-    public function report_obj()
+    public function reportable()
     {
-        if ($this->report_type && $this->report_id) {
-            $model = new $this->report_type;
-            return $model->find($this->report_id);
-        }
-        return null;
+        return $this->morphTo();
     }
 
     /**
@@ -75,8 +75,8 @@ class ReportItem extends Model
      */
     public static function touchForNewApplicationLog(ApplicationLog &$application_log, int $author_id = null)
     {
-        self::create([
-            'report_type' => ApplicationLog::class,
+        $report_item = self::create([
+            'report_type' => REPORT_ITEM_TYPE_APPLICATION_LOG,
             'report_id' => $application_log->id,
             'report_name' => $application_log->name,
             'report_create_date' => $application_log->created_at,
@@ -84,24 +84,29 @@ class ReportItem extends Model
             'author_id' => $author_id ? $author_id : $application_log->author_id,
             'data_attributes' => $application_log->myAttributesForReportItem(),
             'project_id' => $application_log->project_id,
+            'reportable_type' => ApplicationLog::class,
+            'reportable_id' => $application_log->id,
         ]);
+
     }
 
     /**
-     * @param ApplicationLog $application_log
+     * @param Document $env_log_document
      * @param int|null $author_id
      */
-    public static function touchForNewEnvironmentalLog(ApplicationLog &$application_log, int $author_id = null)
+    public static function touchForNewEnvironmentalLog(Document &$env_log_document, int $author_id = null)
     {
         self::create([
-            'report_type' => ApplicationLog::class,
-            'report_id' => $application_log->id,
-            'report_name' => $application_log->name,
-            'report_create_date' => $application_log->created_at,
-            'report_update_date' => $application_log->updated_at,
-            'author_id' => $author_id ? $author_id : $application_log->author_id,
-            'data_attributes' => $application_log->myAttributesForReportItem(),
-            'project_id' => $application_log->project_id,
+            'report_type' => REPORT_ITEM_TYPE_ENVIRONM_LOG,
+            'report_id' => $env_log_document->id,
+            'report_name' => $env_log_document->title,
+            'report_create_date' => $env_log_document->created_at,
+            'report_update_date' => $env_log_document->updated_at,
+            'author_id' => $author_id ? $author_id : $env_log_document->author_id,
+//            'data_attributes' => $env_log_document->myAttributesForReportItem(),
+//            'project_id' => $env_log_document->project_id,
+            'reportable_type' => Document::class,
+            'reportable_id' => $env_log_document->id,
         ]);
     }
 
@@ -110,7 +115,7 @@ class ReportItem extends Model
      */
     public function getDataAttributes()
     {
-        $obj = $this->report_obj();
+        $obj = $this->reportable;
         if ($obj && method_exists($obj, 'myAttributesForReportItem')) {
             return $obj->myAttributesForReportItem();
         }
@@ -121,7 +126,7 @@ class ReportItem extends Model
      */
     public function getReportName()
     {
-        $obj = $this->report_obj();
+        $obj = $this->reportable;
         if ($obj) {
             return $obj->name;
         }

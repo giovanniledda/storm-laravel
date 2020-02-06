@@ -20,12 +20,16 @@ class ApplicationLogObserver
         $applicationLog->updateInternalProgressiveNumber();
 
         // Aggiorno l'autore
+        $user_id = 1; // admin
         if (!$applicationLog->author_id && \Auth::check()) {
             $auth_user = \Auth::user();
-            $applicationLog->update([
-                'author_id' => $auth_user->id
-            ]);
+            $user_id = $auth_user->id;
         }
+
+        $applicationLog->update([
+            'author_id' => $user_id
+        ]);
+
         // Creo una nuova istanza di ReportItem
         ReportItem::touchForNewApplicationLog($applicationLog);
     }

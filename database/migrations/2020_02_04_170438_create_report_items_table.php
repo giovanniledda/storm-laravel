@@ -22,6 +22,7 @@ class CreateReportItemsTable extends Migration
             $table->json('report_links')->nullable();  // link variabili a seconda del tipo di report
             $table->dateTime('report_create_date')->nullable(); // non uso i timestamp per questo dato perché potrebbero volere lo storico
             $table->dateTime('report_update_date')->nullable(); // non uso i timestamp per questo dato perché potrebbero volere lo storico
+
             // Relations:
 
             // non è una vera e propria chiave esterna, può puntare ad un oggetto qualsiasi tra log, doc, app_log, etc.
