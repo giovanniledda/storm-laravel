@@ -38,8 +38,8 @@ class Schema extends SchemaProvider
             'report_create_date' => $resource->report_create_date,
             'report_update_date' => $resource->report_update_date,
             'author' => $resource->author_for_api(),
-            'created-at' => $resource->created_at->toAtomString(),
-            'updated-at' => $resource->updated_at->toAtomString(),
+            'created_at' => $resource->created_at->toAtomString(),
+            'updated_at' => $resource->updated_at->toAtomString(),
         ];
     }
 }
