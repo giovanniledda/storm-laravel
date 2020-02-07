@@ -142,7 +142,7 @@ class ReportItem extends Model
      * @param Document $document
      * @return array
      */
-    protected function getGdriveInfoForDocument(Document $document)
+    protected static function getGdriveInfoForDocument(Document $document)
     {
         return [
             'gdrive_url' => $document->getGDriveLink(),
