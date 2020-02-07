@@ -42,7 +42,9 @@ class ApplicationLogObserver
      */
     public function updated(ApplicationLog $applicationLog)
     {
-        $applicationLog->report_item->update(['report_update_date' => $applicationLog->updated_at]);
+        if ($applicationLog->report_item) {
+            $applicationLog->report_item->update(['report_update_date' => $applicationLog->updated_at]);
+        }
     }
 
     /**
@@ -53,7 +55,9 @@ class ApplicationLogObserver
      */
     public function deleted(ApplicationLog $applicationLog)
     {
-        $applicationLog->report_item->delete();
+        if ($applicationLog->report_item) {
+            $applicationLog->report_item->delete();
+        }
     }
 
     /**
