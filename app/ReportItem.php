@@ -158,11 +158,11 @@ class ReportItem extends Model
      */
     public function getReportLinks()
     {
-        $document = $this->reportable;
-        if (get_class($document) == ApplicationLog::class) {
+        $object = $this->reportable;
+        if (get_class($object) == ApplicationLog::class) {
             return [];
         }
-        return self::getGdriveInfoForDocument($document);
+        return self::getGdriveInfoForDocument($object);
     }
 
     /**
