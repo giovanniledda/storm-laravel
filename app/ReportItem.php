@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Net7\Documents\Document;
 use Net7\EnvironmentalMeasurement\Models\Measurement;
+use function get_class;
 use function method_exists;
 use function property_exists;
 use const MEASUREMENT_FILE_TYPE;
@@ -149,6 +150,19 @@ class ReportItem extends Model
             'gdrive_url' => $document->getGDriveLink(),
             'gdrive_filename' => $document->getGDriveFilename()
         ];
+    }
+
+    /**
+     * Real time report links updated
+     * @return array
+     */
+    public function getReportLinks()
+    {
+        $document = $this->reportable;
+        if (get_class($document) == ApplicationLog::class) {
+            return [];
+        }
+        return self::getGdriveInfoForDocument($document);
     }
 
     /**

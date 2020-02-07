@@ -34,7 +34,7 @@ class Schema extends SchemaProvider
             'report_id' => $resource->report_id,
             'report_name' => $resource->getReportName(),
             'data_attributes' => $resource->getDataAttributes(),
-            'report_links' => $resource->report_links,
+            'report_links' => $resource->getReportLinks(),
             'report_create_date' => $resource->report_create_date,
             'report_update_date' => $resource->report_update_date,
             'author' => $resource->author_for_api(),
