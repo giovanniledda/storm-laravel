@@ -246,6 +246,10 @@ class AppLogEntitiesPersister
      */
     protected function persistZonesSection(ApplicationLogSection &$app_log_section, $attributes = [])
     {
+        $app_log_section->update([
+            'is_started' => $attributes['is_started'],
+//            'date_hour' => isset($attributes['date_hour']) ? $attributes['date_hour'] : null,
+        ]);
         $this->persistZoneAnalysisInfoBlocks($app_log_section, $attributes['zone_analysis_info_blocks']);
     }
 
@@ -257,6 +261,7 @@ class AppLogEntitiesPersister
     protected function persistPreparationSection(ApplicationLogSection &$app_log_section, $attributes = [])
     {
         $app_log_section->update([
+            'is_started' => $attributes['is_started'],
             'date_hour' => isset($attributes['date_hour']) ? $attributes['date_hour'] : null,
         ]);
         $this->persistProductUseInfoBlocks($app_log_section, $attributes['product_use_info_blocks']);
@@ -272,6 +277,7 @@ class AppLogEntitiesPersister
     protected function persistApplicationSection(ApplicationLogSection &$app_log_section, $attributes = [])
     {
         $app_log_section->update([
+            'is_started' => $attributes['is_started'],
             'date_hour' => isset($attributes['date_hour']) ? $attributes['date_hour'] : null,
         ]);
         $this->persistProductUseInfoBlocks($app_log_section, $attributes['product_use_info_blocks']);
@@ -287,6 +293,7 @@ class AppLogEntitiesPersister
     protected function persistInspectionSection(ApplicationLogSection &$app_log_section, $attributes = [])
     {
         $app_log_section->update([
+            'is_started' => $attributes['is_started'],
             'date_hour' => isset($attributes['date_hour']) ? $attributes['date_hour'] : null,
         ]);
         $this->persistDetectionsInfoBlock($app_log_section, $attributes['detections_info_blocks']);

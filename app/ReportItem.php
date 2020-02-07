@@ -107,6 +107,7 @@ class ReportItem extends Model
             'report_update_date' => $env_log_document->updated_at,
             'author_id' => $author_id ? $author_id : $env_log_document->author_id,
             'data_attributes' => $data_attributes,
+            'report_links' => self::getGdriveInfoForDocument($env_log_document),
             'project_id' => $project_id,
             'reportable_type' => Document::class,
             'reportable_id' => $env_log_document->id,
@@ -130,10 +131,23 @@ class ReportItem extends Model
             'report_update_date' => $document->updated_at,
             'author_id' => $author_id ? $author_id : $document->author_id,
             'data_attributes' => $data_attributes,
+            'report_links' => self::getGdriveInfoForDocument($document),
             'project_id' => $project_id,
             'reportable_type' => Document::class,
             'reportable_id' => $document->id,
         ]);
+    }
+
+    /**
+     * @param Document $document
+     * @return array
+     */
+    protected function getGdriveInfoForDocument(Document $document)
+    {
+        return [
+            'gdrive_url' => $document->getGDriveLink(),
+            'gdrive_filename' => $document->getGDriveFilename()
+        ];
     }
 
     /**
