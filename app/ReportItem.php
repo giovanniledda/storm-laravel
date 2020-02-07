@@ -43,7 +43,8 @@ class ReportItem extends Model
      * @var array
      */
     protected $casts = [
-        'data_attributes' => 'array'
+        'data_attributes' => 'array',
+        'report_links' => 'array',
     ];
 
     /**
