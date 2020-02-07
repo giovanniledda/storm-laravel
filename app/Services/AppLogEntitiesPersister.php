@@ -322,6 +322,8 @@ class AppLogEntitiesPersister
             return false;
         }
 
+        $app_log->touch();
+
         switch ($type) {
             case APPLICATION_LOG_SECTION_TYPE_ZONES:
                 $this->persistZonesSection($app_log_section, $attributes);

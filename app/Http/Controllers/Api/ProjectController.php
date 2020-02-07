@@ -701,6 +701,10 @@ class ProjectController extends Controller
                     'application_type' => $request->input('data.attributes.application_type'),
                     'project_id' => $record->id
                 ]);
+            } else if ($app_log->name != $request->input('data.attributes.name')) {
+                $app_log->update([
+                    'name' => $request->input('data.attributes.name'),
+                ]);
             }
             // dobbiamo distinguere tra l'app_log appena creato/recuperato ed il malloppone json passato in POST
             $sections = $request->input('data.attributes.application_log_sections');
