@@ -173,7 +173,8 @@ class ReportItem extends Model
         if (get_class($object) == ApplicationLog::class) {
             // get-app-log-structure
             return [
-                'edit_url' => '/api/v1/projects/'.$this->project_id.'/app-log-structure/'.$object->id
+//                'edit_url' => '/api/v1/projects/'.$this->project_id.'/app-log-structure/'.$object->id
+                'edit_url' => url("/api/v1/projects/{$this->project_id}/app-log-structure/{$object->id}")
             ];
         }
         return self::getGdriveInfoForDocument($object);
