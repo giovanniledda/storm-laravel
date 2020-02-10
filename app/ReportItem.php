@@ -73,6 +73,17 @@ class ReportItem extends Model
     }
 
     /**
+     * @param $document_id
+     * @return ReportItem
+     */
+    public static function findByDocumentId($document_id)
+    {
+        return self::where('reportable_type', '=', Document::class)
+            ->where('reportable_id', '=', $document_id)
+            ->last();
+    }
+
+    /**
      * @param ApplicationLog $application_log
      * @param int|null $author_id
      */
