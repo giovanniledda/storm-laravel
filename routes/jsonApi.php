@@ -180,6 +180,7 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
 
         /** APPLICATION LOG STUFF */
 
+        $api->resource('application-logs');
         $api->resource('zones');
         $api->resource('products');
         $api->resource('project-products');

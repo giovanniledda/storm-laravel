@@ -31,8 +31,8 @@ class Schema extends SchemaProvider
     {
         return [
             'application_type' => $resource->application_type,
-            'created-at' => $resource->created_at->toAtomString(),
-            'updated-at' => $resource->updated_at->toAtomString(),
+            'created_at' => $resource->created_at->toAtomString(),
+            'updated_at' => $resource->updated_at->toAtomString(),
         ];
     }
 }
