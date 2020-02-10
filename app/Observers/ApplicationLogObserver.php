@@ -27,7 +27,8 @@ class ApplicationLogObserver
         }
 
         $applicationLog->update([
-            'author_id' => $user_id
+            'author_id' => $user_id,
+            'last_editor_id' => $user_id,
         ]);
 
         // Creo una nuova istanza di ReportItem
@@ -45,6 +46,23 @@ class ApplicationLogObserver
         if ($applicationLog->report_item) {
             $applicationLog->report_item->update(['report_update_date' => $applicationLog->updated_at]);
         }
+    }
+
+    /**
+     * Handle the application log "saving" (before save) event.
+     *
+     * @param  \App\ApplicationLog  $applicationLog
+     * @return void
+     */
+    public function saving(ApplicationLog $applicationLog)
+    {
+        // Aggiorno l'autore
+        $user_id = 1; // admin
+        if (\Auth::check()) {
+            $auth_user = \Auth::user();
+            $user_id = $auth_user->id;
+        }
+        $applicationLog->last_editor_id = $user_id;
     }
 
     /**

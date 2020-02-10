@@ -111,6 +111,30 @@ class ApplicationLog extends Model
     }
 
     /**
+     * @return Model|\Illuminate\Database\Eloquent\Relations\BelongsTo|object|null
+     */
+    public function author_for_api()
+    {
+        return $this->author()->select(['name', 'surname'])->first();
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function last_editor()
+    {
+        return $this->belongsTo('App\User', 'last_editor_id');
+    }
+
+    /**
+     * @return Model|\Illuminate\Database\Eloquent\Relations\BelongsTo|object|null
+     */
+    public function last_editor_for_api()
+    {
+        return $this->last_editor()->select(['name', 'surname'])->first();
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\MorphOne
      */
     public function report_item()
@@ -204,6 +228,9 @@ class ApplicationLog extends Model
             'id' => $this->id,
             'attributes' => $this
         ];
+        // editor e author vanno aggiunti dopo aver assegnato $this
+        $data['attributes']['author'] = $this->author_for_api();
+        $data['attributes']['last_editor'] = $this->last_editor_for_api();
         return $data;
     }
 
@@ -237,6 +264,7 @@ class ApplicationLog extends Model
             'id' => $this->id,
             'name' => $this->name,
             'application_type' => $this->application_type,
+            'last_editor' => $this->last_editor_for_api(),
             'started_sections' => $this->getStartedSections()->pluck('section_type'),
             'zones' => $this->getUsedZones()
         ];
