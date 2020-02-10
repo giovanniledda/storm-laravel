@@ -80,7 +80,7 @@ class ReportItem extends Model
     {
         return self::where('reportable_type', '=', Document::class)
             ->where('reportable_id', '=', $document_id)
-            ->last();
+            ->first();
     }
 
     /**
