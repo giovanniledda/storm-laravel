@@ -30,6 +30,7 @@ class Schema extends SchemaProvider
     public function getAttributes($resource)
     {
         return [
+            'project_id' => $resource->project_id,
             'report_type' => $resource->report_type,
             'report_id' => $resource->report_id,
             'report_name' => $resource->getReportName(),

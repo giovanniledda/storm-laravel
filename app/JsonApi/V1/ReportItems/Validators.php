@@ -29,7 +29,7 @@ class Validators extends AbstractValidators
      * @var string[]|null
      *      the allowed filters, an empty array for none allowed, or null to allow all.
      */
-    protected $allowedFilteringParameters = ['project_id'];
+    protected $allowedFilteringParameters = ['project_id', 'report_type'];
 
     /**
      * Get resource validation rules.
@@ -53,7 +53,8 @@ class Validators extends AbstractValidators
     protected function queryRules(): array
     {
         return [
-            //
+            'filter.project_id' => 'integer',
+            'filter.report_type' => 'string',
         ];
     }
 

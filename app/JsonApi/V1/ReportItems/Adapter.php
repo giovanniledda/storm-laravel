@@ -6,6 +6,7 @@ use CloudCreativity\LaravelJsonApi\Eloquent\AbstractAdapter;
 use CloudCreativity\LaravelJsonApi\Pagination\StandardStrategy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use function explode;
 
 class Adapter extends AbstractAdapter
 {
@@ -41,11 +42,10 @@ class Adapter extends AbstractAdapter
      */
     protected function filter($query, Collection $filters)
     {
-//        $this->filterWithScopes($query, $filters);
+        $this->filterWithScopes($query, $filters->only('project_id'));
 
-        // ricerca per project_id
-        if ($project_id = $filters->get('project_id')) {
-            $query->where('project_id', '=', "{$project_id}");
+        if ($report_types = $filters->get('report_type')) {
+            $query->whereIn('report_type', explode('|', $report_types));
         }
     }
 
