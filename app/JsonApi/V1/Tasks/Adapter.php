@@ -4,9 +4,16 @@ namespace App\JsonApi\V1\Tasks;
 
 use CloudCreativity\LaravelJsonApi\Eloquent\AbstractAdapter;
 use CloudCreativity\LaravelJsonApi\Pagination\StandardStrategy;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Neomerx\JsonApi\Contracts\Encoder\Parameters\EncodingParametersInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use function array_filter;
+use function array_keys;
+use function array_map;
+use function array_merge;
+use function explode;
 use const ROLE_BOAT_MANAGER;
 
 class Adapter extends AbstractAdapter {
@@ -114,9 +121,38 @@ class Adapter extends AbstractAdapter {
         if ($createdAtFrom = $filters->get('created-at-from')) {
             $query->where('created_at', '>=', "{$createdAtFrom}");
         }
-        // ricerca per created-at from
+        // ricerca per created-at to
         if ($createdAtTo = $filters->get('created-at-to')) {
             $query->where('created_at', '<=', "{$createdAtTo}");
+        }
+
+        if ($updated_at_from = $filters->get('updated-at-from')) {
+            $query->where('updated_at', '>=', $updated_at_from);
+        }
+        if ($updated_at_to = $filters->get('updated-at-to')) {
+            $query->where('updated_at', '<=', $updated_at_to);
+        }
+
+        // internal_progressive_numbers, mi vengono passati così 3, 7, 9-12, ...
+        if ($prog_nums = $filters->get('prog_nums')) {
+            $numbers = explode(',', $prog_nums);
+            $intervals = array_filter($numbers, function ($elem) {
+                return Str::contains($elem, '-');
+            });
+            if (!empty($intervals)) {
+                $intervals_exploded = array_map(function ($elem) {
+                    $nums = [];
+                    list($start, $stop) = explode('-', $elem); // "9-12" => [9, 12]
+                    for ($i = $start; $i <= $stop; $i++) {
+                        $nums[] = (string)$i;
+                    }
+                    return $nums;
+                }, $intervals);
+                $numbers = Arr::except($numbers, array_keys($intervals));
+                $numbers = array_merge($numbers, Arr::flatten($intervals_exploded));
+            }
+
+            $query->whereIn('internal_progressive_number', $numbers);
         }
 
         // ricerca is_open
