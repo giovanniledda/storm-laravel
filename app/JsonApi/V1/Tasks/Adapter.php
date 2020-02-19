@@ -62,7 +62,7 @@ class Adapter extends AbstractAdapter {
     protected function filter($query, Collection $filters) {
 
         if ($status = $filters->get('status')) {
-            $query->whereIn('status', explode('|', $status));
+            $query->whereIn('task_status', explode('|', $status));
         }
 
         if ($project_id = $filters->get('project_id')) {
