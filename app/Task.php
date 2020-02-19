@@ -13,6 +13,7 @@ use Venturecraft\Revisionable\RevisionableTrait;
 use Net7\Documents\Document;
 use Net7\Documents\DocumentableTrait;
 use Faker\Generator as Faker;
+use function array_push;
 use function explode;
 use function in_array;
 use function is_object;
@@ -54,6 +55,8 @@ class Task extends Model
     private $max_x;
     private $min_y;
     private $max_y;
+
+    public $last_history;
 
     public const CORROSION_MAP_DOCUMENT_TYPE = 'corrosion_map';
 
@@ -210,7 +213,35 @@ class Task extends Model
      */
     public function getLastHistory()
     {
-        return $this->history()->latest()->first();;
+        return $this->last_history ?? $this->history()->latest()->first();
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getLastHistoryForApi()
+    {
+        $last_history = $this->getLastHistory();
+        if ($last_history) {
+            $data = [
+                'id' => $last_history->id,
+                'type' => History::class,
+                'attributes' => $last_history
+            ];
+            Arr::forget($data['attributes'], 'documents');
+            $data['attributes']['comments'] = $last_history->comments_for_api;
+            $data['attributes']['photos'] = $last_history->getPhotosApi();
+            return $data;
+        }
+        return null;
+    }
+
+    /**
+     * @return History|object|null
+     */
+    public function setLastHistory()
+    {
+        $this->last_history = $this->history()->latest()->first();
     }
 
     /**
@@ -218,7 +249,7 @@ class Task extends Model
      */
     public function getFirstHistory()
     {
-        return $this->history()->oldest()->first();;
+        return $this->history()->oldest()->first();
     }
 
     public function taskIntervents()
