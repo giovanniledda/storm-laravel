@@ -60,70 +60,36 @@ class Adapter extends AbstractAdapter {
      * @return void
      */
     protected function filter($query, Collection $filters) {
-        // TODO IMPLEMENTARE L'ACCESSO HAI TASK A LIVELLO DI ACL
-        // ricerca per status
+
         if ($status = $filters->get('status')) {
-            $statuses = explode(',', $status);
-            foreach ($statuses as $i => $s) {
-                if ($i === 0) {
-                    $query->where('task_status', '=', "{$s}");
-                } else {
-                    $query->orWhere('task_status', '=', "{$s}");
-                }
-            }
+            $query->whereIn('status', explode('|', $status));
         }
 
-        // ricerca per project_id
         if ($project_id = $filters->get('project_id')) {
-            $query->where('project_id', '=', "{$project_id}");
+            $query->where('project_id', '=', $project_id);
         }
 
-        // ricerca per section_id
         if ($section_id = $filters->get('section_id')) {
-            $sections = explode(',', $section_id);
-            foreach ($sections as $i => $section) {
-                if ($i === 0) {
-                    $query->where('section_id', '=', "{$section}");
-                } else {
-                    $query->orWhere('section_id', '=', "{$section}");
-                }
-            }
+            $query->whereIn('section_id', explode('|', $section_id));
         }
 
         if ($subsection_id = $filters->get('subsection_id')) {
-            $query->where('subsection_id', '=', "{$subsection_id}");
+            $query->whereIn('subsection_id', explode('|', $subsection_id));
         }
 
-        // ricerca per intervent_type_id
         if ($intervent_type_id = $filters->get('intervent_type_id')) {
-            $intervents = explode(',', $intervent_type_id);
-            foreach ($intervents as $i => $intertervent) {
-                if ($i === 0) {
-                    $query->where('intervent_type_id', '=', "{$intertervent}");
-                } else {
-                    $query->orWhere('intervent_type_id', '=', "{$intertervent}");
-                }
-            }
-        }
-        // ricerca per author_id
-        if ($author_id = $filters->get('author_id')) {
-            $authors = explode(',', $author_id);
-            foreach ($authors as $i => $author) {
-                if ($i === 0) {
-                    $query->where('author_id', '=', "{$author}");
-                } else {
-                    $query->orWhere('author_id', '=', "{$author}");
-                }
-            }
+            $query->whereIn('intervent_type_id', explode('|', $intervent_type_id));
         }
 
-        // ricerca per created-at from
-        if ($createdAtFrom = $filters->get('created-at-from')) {
-            $query->where('created_at', '>=', "{$createdAtFrom}");
+        if ($author_id = $filters->get('author_id')) {
+            $query->whereIn('author_id', explode('|', $author_id));
         }
-        // ricerca per created-at to
+
+        if ($createdAtFrom = $filters->get('created-at-from')) {
+            $query->where('created_at', '>=', $createdAtFrom);
+        }
         if ($createdAtTo = $filters->get('created-at-to')) {
-            $query->where('created_at', '<=', "{$createdAtTo}");
+            $query->where('created_at', '<=', $createdAtTo);
         }
 
         if ($updated_at_from = $filters->get('updated-at-from')) {
