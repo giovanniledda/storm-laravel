@@ -28,5 +28,8 @@ class AuthServiceProvider extends ServiceProvider
 
         //  routes necessary to issue access tokens and revoke access tokens, clients, and personal access tokens
         Passport::routes();
+        Passport::tokensExpireIn(now()->addDays(7));
+        Passport::refreshTokensExpireIn(now()->addDays(7));
+        Passport::personalAccessTokensExpireIn(now()->addDays(7));
     }
 }

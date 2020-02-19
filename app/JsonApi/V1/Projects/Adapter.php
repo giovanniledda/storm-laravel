@@ -37,7 +37,7 @@ class Adapter extends AbstractAdapter
      * @inheritdoc
      */
     protected $relationships = [
-        'tasks', 'boat','products'
+        'tasks', 'boat','products','application_logs'
     ];
 
     /**

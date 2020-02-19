@@ -124,19 +124,31 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
             $project->post('{record}/env-log-delete', 'removeDocumentMeasurements')->name('env-log-delete');
         });
 
-        $api->resource('projects')->only('bulk-create-zones')->controller('ProjectController') // uses the App\Http\Controllers\Api\ZoneController
+        $api->resource('projects')->only('bulk-create-zones')->controller('ProjectController')
         ->routes(function ($project) {
             $project->post('{record}/bulk-create-zones', 'bulkCreateZones')->name('bulk-create-zones');
         });
 
-        $api->resource('projects')->only('bulk-delete-zones')->controller('ProjectController') // uses the App\Http\Controllers\Api\ZoneController
+        $api->resource('projects')->only('bulk-delete-zones')->controller('ProjectController')
         ->routes(function ($project) {
             $project->post('{record}/bulk-delete-zones', 'bulkDeleteZones')->name('bulk-delete-zones');
         });
 
-        $api->resource('projects')->only('app-log-structure')->controller('ProjectController') // uses the App\Http\Controllers\Api\ZoneController
+        // GET - PR28
+        $api->resource('projects')->only('get-app-log-structure')->controller('ProjectController')
         ->routes(function ($project) {
-            $project->get('{record}/app-log-structure/{app_log_id}', 'getApplicationLogStructure')->name('app-log-structure');
+            $project->get('{record}/app-log-structure/{app_log_id}', 'getApplicationLogStructure')->name('get-app-log-structure');
+        });
+
+        // POST - PR30
+        $api->resource('projects')->only('post-app-log-structure')->controller('ProjectController')
+        ->routes(function ($project) {
+            $project->post('{record}/app-log-structure', 'postApplicationLogStructure')->name('post-app-log-structure');
+        });
+
+        $api->resource('projects')->only('app-log-next-id')->controller('ProjectController')
+        ->routes(function ($project) {
+            $project->get('{record}/app-log-next-id', 'getApplicationLogNextProgressiveNumber')->name('app-log-next-id');
         });
 
         $api->resource('projects')->relationships(function ($relations) {
@@ -168,6 +180,7 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
 
         /** APPLICATION LOG STUFF */
 
+        $api->resource('application-logs');
         $api->resource('zones');
         $api->resource('products');
         $api->resource('project-products');
@@ -185,5 +198,7 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
                 $histories->post('{record}/image-delete', 'removeImageDocument')->name('image-delete');
                 $histories->post('{record}/add-comment', 'addComment')->name('add-comment');
             });
+
+        $api->resource('report-items');
     });
 });

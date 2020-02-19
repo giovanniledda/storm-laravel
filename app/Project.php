@@ -39,7 +39,6 @@ class Project extends Model
 
     use HasStatuses,
         SerializesModels,
-
         HasMeasurements,
         TemplateReplacementRules,
         EnvParamsInputOutputTransations;
@@ -784,6 +783,14 @@ class Project extends Model
     public function application_logs()
     {
         return $this->hasMany(ApplicationLog::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function report_items()
+    {
+        return $this->hasMany(ReportItem::class);
     }
 
     /**

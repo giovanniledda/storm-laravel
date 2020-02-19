@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\ApplicationLogSection;
 use function factory;
 use App\Boat;
 use App\Project;
@@ -37,8 +38,6 @@ class ModelApplicationLogTest extends TestCase
         $this->assertEquals($project->boat->id, $application_log->boat()->id);
     }
 
-
-
     function test_internal_progressive_number() {
 
         $boats = factory(Boat::class, 3)->create();
@@ -64,5 +63,41 @@ class ModelApplicationLogTest extends TestCase
                 }
             }
         }
+    }
+
+    function test_started_sections() {
+
+        $application_log_sections_num = $this->faker->numberBetween(1, 15);
+        $application_log_sections_started_num = $started_counter = $this->faker->numberBetween(1, $application_log_sections_num);
+
+        /** @var ApplicationLog $application_log */
+        $application_log = factory(ApplicationLog::class)->create();
+        $application_log_sections = factory(ApplicationLogSection::class, $application_log_sections_num)->create();
+
+        /** application_log **/
+        /** $table->foreign('application_log_id')->references('id')->on('application_logs')->onDelete('set null'); **/
+
+        // assegno le app log sections (5 elementi) all'app log
+        $application_log->application_log_sections()->saveMany($application_log_sections);
+
+        $this->assertEquals($application_log_sections_num, $application_log->application_log_sections()->count());
+
+        foreach ($application_log_sections as $application_log_section) {
+            $this->assertEquals($application_log_section->application_log_id, $application_log->id);
+            $this->assertEquals($application_log_section->application_log->id, $application_log->id); // testo la relazione inversa
+
+            if ($started_counter > 0) {
+                $started_counter--;
+                $application_log_section->update([
+                    'is_started' => 1
+                ]);
+            } else {
+                $application_log_section->update([
+                    'is_started' => 0
+                ]);
+            }
+        }
+
+        $this->assertEquals($application_log_sections_started_num, $application_log->countStartedSections());
     }
 }

@@ -196,6 +196,10 @@ class AuthController extends Controller
             'type' => 'users',
             'attributes' => $user
         ];
+        // devo fare questo perché per snellire il JSON dell'utente in TUTTE le api ho messo i campi nell'array $hidden di User
+        // in questa però li vogliamo
+        $data['attributes']['forced_roles'] = $user->roles;
+        $data['attributes']['forced_permissions'] = $user->permissions;
         return response()->json(['data' => $data], 200);
     }
 }

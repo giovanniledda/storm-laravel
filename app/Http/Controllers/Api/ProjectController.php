@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\ApplicationLog;
-use App\Jobs\NotifyTaskUpdates;
+use App\ApplicationLogSection;
+use App\Http\Requests\RequestApplicationLog;
 use App\Jobs\ProjectLoadEnvironmentalData;
-use App\Notifications\TaskCreated;
+use App\ReportItem;
+use App\Services\AppLogEntitiesPersister;
+use App\Services\ZonesPersister;
 use App\Zone;
 use function __;
 use function array_key_exists;
@@ -13,20 +16,11 @@ use function explode;
 use function in_array;
 use function json_decode;
 use function md5;
-use function notify;
 use function response;
 use function trim;
-use function view;
-use const MEASUREMENT_FILE_TYPE;
-use const PROJECT_STATUS_CLOSED;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
-use App\User;
-use Validator;
 use Net7\Documents\Document;
-use Net7\Logging\models\Logs as Log;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RequestProjectChangeType;
 use App\Project;
@@ -36,15 +30,30 @@ use Net7\DocsGenerator\DocsGenerator;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use const PROJECT_STATUSES;
 use const REPORT_ENVIRONMENTAL_SUBTYPE;
+use const MEASUREMENT_FILE_TYPE;
+use const PROJECT_STATUS_CLOSED;
+use const REPORT_ITEM_TYPE_CORR_MAP_DOC;
+use const REPORT_ITEM_TYPE_ENVIRONM_DOC;
 
 class ProjectController extends Controller
 {
 
+    /**
+     * @var AppLogEntitiesPersister
+     */
+    protected $_app_log_persister;
+    protected $_zones_persister;
+
+    public function __construct(AppLogEntitiesPersister $al_persister, ZonesPersister $z_persister)
+    {
+        $this->_app_log_persister = $al_persister;
+        $this->_zones_persister = $z_persister;
+    }
 
     /**
      * Ritorna i possibili stati usati nei progetti.
      * @param Request $request
-     * @return type
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
      */
     public function statuses(Request $request)
     {
@@ -253,7 +262,7 @@ class ProjectController extends Controller
     }
 
     /**
-     * API used to generate a report from the project
+     * #PR16: API used to generate a report from the project
      *
      * @param Request $request
      * @param $record
@@ -271,6 +280,26 @@ class ProjectController extends Controller
             // $template = 'corrosion_map';
             $template = $request->template;
             $document = $this->reportGenerationProcess($template, $project, REPORT_CORROSION_MAP_SUBTYPE);
+
+            if ($document) {
+                // TODO: refact not DRY
+                if (\Auth::check()) {
+                    $auth_user = \Auth::user();
+                    $user_id = $auth_user->id;
+                } else {
+                    $user_id = $document->author_id ?? 1; // admin
+                }
+
+                ReportItem::touchForNewDocument(
+                    $document,
+                    REPORT_ITEM_TYPE_CORR_MAP_DOC,
+                    $user_id,
+                    $project->id,
+                    [
+                        'id' => $document->id,
+                    ]
+                );
+            }
         } catch (\Exception $e) {
             return Utils::jsonAbortWithInternalError(422, 402, "Error generating report", $e->getMessage());
         }
@@ -352,6 +381,19 @@ class ProjectController extends Controller
                         $data_source
                     ); // default queue
 
+                    if (\Auth::check()) {
+                        $auth_user = \Auth::user();
+                        $user_id = $auth_user->id;
+                    } else {
+                        $user_id = $document->author_id ?? 1; // admin
+                    }
+
+                    ReportItem::touchForNewEnvironmentalLog($document, $user_id, $project->id, [
+                        'id' => $document->id,
+                        'area' => $data_source,
+                        'measurement_interval_dates' => null,
+                    ]);
+
                     return $this->renderJsonOrDownloadFile($request, $document);
                 }
             } else {
@@ -399,6 +441,31 @@ class ProjectController extends Controller
 
         try {
             $document = $this->reportGenerationProcess($template, $project, REPORT_ENVIRONMENTAL_SUBTYPE);
+
+            if ($document) {
+                // TODO: refact not DRY
+                if (\Auth::check()) {
+                    $auth_user = \Auth::user();
+                    $user_id = $auth_user->id;
+                } else {
+                    $user_id = $document->author_id ?? 1; // admin
+                }
+
+                ReportItem::touchForNewDocument(
+                    $document,
+                    REPORT_ITEM_TYPE_ENVIRONM_DOC,
+                    $user_id,
+                    $project->id,
+                    [
+                        'id' => $document->id,
+                        'area' => $data_source,
+                        'measurement_interval_dates' => [
+                            'min' => $date_start,
+                            'max' => $date_end
+                        ]
+                    ]
+                );
+            }
         } catch (\Exception $e) {
             return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error generating report", $e->getMessage());
         }
@@ -521,115 +588,13 @@ class ProjectController extends Controller
      * @param Request $request
      * @param $record
      * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
+     * @throws \Throwable
      */
     public function bulkCreateZones(Request $request, $record)
     {
         try {
             $zones = $request->data;
-            if (!empty($zones)) {
-                $parent_to_be_created = [];
-                $children_to_be_created = [];  // key (code+desc del padre) => value (array dei figli)
-                $new_children_for_existing_parent = [];  // key (id del padre) => value (array dei figli)
-                $to_be_updated = [];
-
-                $parent_used_code_descr = [];
-                foreach ($zones as $parent_zone) {
-                    $children_for_this_parent = [];
-                    $code = $parent_zone['attributes']['code'];
-                    $description = $parent_zone['attributes']['description'];
-                    $data = [
-                      'code' => $code,
-                      'description' => $description
-                    ];
-                    $parent_key = md5($code.$description);
-
-                    // verifico che non ci sia omonimia tra gli altri nodi parent per lo stesso progetto
-                    $excluded_ids = isset($parent_zone['id']) ? [$parent_zone['id']] : [];
-                    /** @var Project $record */
-                    if (in_array($parent_key, $parent_used_code_descr) || $record->countParentZonesByData($data, $excluded_ids)) {
-                        return Utils::jsonAbortWithInternalError(
-                            422,
-                            110,
-                            'Error creating zones',
-                            "Impossible to create parent Zone [$code, $description]: code+description already taken!");
-                    }
-                    $parent_used_code_descr[] = $parent_key;
-
-                    $children = $parent_zone['attributes']['children_zones'];
-                    unset($parent_zone['attributes']['children_zones']);
-                    if (isset($parent_zone['id'])) {
-                        $to_be_updated[$parent_zone['id']] = $parent_zone['attributes'];
-                    } else {
-                        $parent_to_be_created[] = $parent_zone['attributes'];
-                    }
-                    $children_used_code_descr = [];
-                    foreach ($children as $child) {
-                        $c_code = isset($child['code']) ? $child['code'] : null;
-                        $c_description = isset($child['description']) ? $child['description'] : null;
-                        $parent_zone_id = isset($child['parent_zone_id']) ? $child['parent_zone_id'] : null;
-                        $md5 = md5($c_code.$c_description);
-                        // verifico che non ci sia omonimia tra gli altri nodi children per lo stesso nodo parent
-                        $excluded_ids = isset($child['id']) ? [$child['id']] : [];
-                        if (in_array($md5, $children_used_code_descr) || $record->countChildrenZonesByData($parent_zone_id, $child, $excluded_ids)) {
-                            return Utils::jsonAbortWithInternalError(
-                                422,
-                                110,
-                                'Error creating zones',
-                                "Impossible to create child Zone [$c_code, $c_description]: code+description already taken for parent Zone [$code, $description]!");
-                        }
-                        $children_used_code_descr[] = $md5;
-                        if (isset($child['id'])) {
-                            $to_be_updated[$child['id']] = $child;
-                        } else {
-                            $children_for_this_parent[] = $child;
-                        }
-                    }
-                    if (isset($parent_zone['id'])) {
-                        $new_children_for_existing_parent[$parent_zone['id']] = $children_for_this_parent;
-                    } else {
-                        $children_to_be_created[$parent_key] = $children_for_this_parent;
-                    }
-                }
-
-                foreach ($to_be_updated as $id => $zone_data) {
-                    $zone = Zone::findOrFail($id);
-                    if (isset($zone_data['id'])) {
-                        unset($zone_data['id']);
-                    }
-                    $zone->update($zone_data);
-                }
-
-                foreach ($parent_to_be_created as $zone_data) {
-                    $p_zone = Zone::create($zone_data);
-                    $code = $p_zone->code;
-                    $description = $p_zone->description;
-                    $parent_key = md5($code.$description);
-                    if (array_key_exists($parent_key, $children_to_be_created)) {
-                        foreach ($children_to_be_created[$parent_key] as $child_data) {
-                            $child_data['parent_zone_id'] = $p_zone->id;
-                            Zone::create($child_data);
-                        }
-                    }
-                }
-
-                if (!empty($new_children_for_existing_parent)) {
-                    foreach ($new_children_for_existing_parent as $parent_id => $new_children_data) {
-                        foreach ($new_children_data as $child_data) {
-                            if ($record->countChildrenZonesByData($parent_id, $child_data)) {
-                                $c_code = isset($child_data['code']) ? $child_data['code'] : null;
-                                $c_description = isset($child_data['description']) ? $child_data['description'] : null;
-                                return Utils::jsonAbortWithInternalError(
-                                    422,
-                                    110,
-                                    'Error creating zones',
-                                    "Impossible to create child Zone [$c_code, $c_description]: code+description already taken for parent Zone [ID: $parent_id]!");
-                            }
-                            $child_data['parent_zone_id'] = $parent_id;
-                            Zone::create($child_data);
-                        }
-                    }
-                }
-            }
+            $this->_zones_persister->persistZones($record, $zones);
 
             return Utils::renderStandardJsonapiResponse([], 204);
 
@@ -682,6 +647,76 @@ class ProjectController extends Controller
 
         } catch (\Exception $e) {
             return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error retrieving application log", $e->getMessage());
+        }
+    }
+
+    /**
+     *
+     * #PR29 /api/v1/projects/{record_id}/app-log-next-id
+     *
+     * @param Request $request
+     * @param $record
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
+     */
+    public function getApplicationLogNextProgressiveNumber(Request $request, $record)
+    {
+        try {
+
+            /** @var Project $record */
+            $boat = $record->boat;
+            abort_if(is_null($boat), 500, 'This project is not related to any boat');
+            $prog = ApplicationLog::getLastInternalProgressiveIDByBoat($boat->id);
+            $data = [
+                'type' => 'application_logs',
+                'id' => time(),
+                'attributes' => [
+                    'internal_progressive_number' => $prog + 1
+                ]
+            ];
+            return Utils::renderStandardJsonapiResponse(['data' => $data], 200);
+
+        } catch (\Exception $e) {
+            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error retrieving application log next ID", $e->getMessage());
+        }
+    }
+
+    /**
+     *
+     * #PR30 (POST) /api/v1/projects/{record_id}/app-log-structure/{app_log_id}
+     *
+     * @param Request $request
+     * @param $record
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
+     * @throws \Throwable
+     */
+    public function postApplicationLogStructure(RequestApplicationLog $request, $record)
+    {
+        try {
+
+            /** @var ApplicationLog $app_log */
+            $app_log = $record->application_logs()->find($request->input('data.id'));
+            if (!$app_log) {
+                $app_log = ApplicationLog::create([
+                    'name' => $request->input('data.attributes.name'),
+                    'application_type' => $request->input('data.attributes.application_type'),
+                    'project_id' => $record->id
+                ]);
+            } else if ($app_log->name != $request->input('data.attributes.name')) {
+                $app_log->update([
+                    'name' => $request->input('data.attributes.name'),
+                ]);
+            }
+            // dobbiamo distinguere tra l'app_log appena creato/recuperato ed il malloppone json passato in POST
+            $sections = $request->input('data.attributes.application_log_sections');
+            foreach ($sections as $section) {
+                // creare uno switch che analizza il tipo, prima però verifichiamo con l'id se abbiamo già la section e con update se è cambiata
+                $this->_app_log_persister->persistSection($app_log, $section);
+            }
+
+            return Utils::renderStandardJsonapiResponse(['data' => $app_log->toJsonApi()], 200);
+
+        } catch (\Exception $e) {
+            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error uploading application log", $e->getMessage());
         }
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\JsonApi\V1\ApplicationLogs;
+namespace App\JsonApi\V1\ReportItems;
 
 use Neomerx\JsonApi\Schema\SchemaProvider;
 
@@ -10,7 +10,7 @@ class Schema extends SchemaProvider
     /**
      * @var string
      */
-    protected $resourceType = 'application-logs';
+    protected $resourceType = 'report-items';
 
     /**
      * @param $resource
@@ -30,7 +30,15 @@ class Schema extends SchemaProvider
     public function getAttributes($resource)
     {
         return [
-            'application_type' => $resource->application_type,
+            'project_id' => $resource->project_id,
+            'report_type' => $resource->report_type,
+            'report_id' => $resource->report_id,
+            'report_name' => $resource->getReportName(),
+            'data_attributes' => $resource->getDataAttributes(),
+            'report_links' => $resource->getReportLinks(),
+            'report_create_date' => $resource->report_create_date,
+            'report_update_date' => $resource->report_update_date,
+            'author' => $resource->author_for_api(),
             'created_at' => $resource->created_at->toAtomString(),
             'updated_at' => $resource->updated_at->toAtomString(),
         ];

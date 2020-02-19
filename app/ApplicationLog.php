@@ -3,11 +3,10 @@
 namespace App;
 
 use App\Observers\ApplicationLogObserver;
-use App\Observers\TaskObserver;
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Model;
-use function array_merge;
 use function env;
+use const APPLICATION_LOG_SECTION_TYPE_ZONES;
 use const APPLICATION_TYPE_COATING;
 use const APPLICATION_TYPE_FILLER;
 use const APPLICATION_TYPE_HIGHBUILD;
@@ -30,7 +29,6 @@ class ApplicationLog extends Model
      */
     protected $guarded = [];
 
-
     protected static function boot()
     {
         parent::boot();
@@ -43,6 +41,47 @@ class ApplicationLog extends Model
     public function application_log_sections()
     {
         return $this->hasMany('App\ApplicationLogSection', 'application_log_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function getStartedSectionsQuery()
+    {
+        return $this->application_log_sections()->where('is_started', '=', 1);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStartedSections()
+    {
+        return $this->getStartedSectionsQuery()->get();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function countStartedSections()
+    {
+        return $this->getStartedSectionsQuery()->count();
+    }
+
+    /**
+     * @param $type
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function getSectionsByTypeQuery($type)
+    {
+        return $this->application_log_sections()->where('section_type', '=', $type);
+    }
+
+    /**
+     * @return Model|\Illuminate\Database\Eloquent\Relations\HasMany|object|null
+     */
+    public function getZonesSection()
+    {
+        return $this->getSectionsByTypeQuery(APPLICATION_LOG_SECTION_TYPE_ZONES)->first();
     }
 
     /**
@@ -61,6 +100,46 @@ class ApplicationLog extends Model
     public function boat()
     {
         return $this->project ? $this->project->boat : null;
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function author()
+    {
+        return $this->belongsTo('App\User');
+    }
+
+    /**
+     * @return Model|\Illuminate\Database\Eloquent\Relations\BelongsTo|object|null
+     */
+    public function author_for_api()
+    {
+        return $this->author()->select(['name', 'surname'])->first();
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function last_editor()
+    {
+        return $this->belongsTo('App\User', 'last_editor_id');
+    }
+
+    /**
+     * @return Model|\Illuminate\Database\Eloquent\Relations\BelongsTo|object|null
+     */
+    public function last_editor_for_api()
+    {
+        return $this->last_editor()->select(['name', 'surname'])->first();
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\MorphOne
+     */
+    public function report_item()
+    {
+        return $this->morphOne('App\ReportItem', 'reportable');
     }
 
     /**
@@ -149,6 +228,45 @@ class ApplicationLog extends Model
             'id' => $this->id,
             'attributes' => $this
         ];
+        // editor e author vanno aggiunti dopo aver assegnato $this
+        $data['attributes']['author'] = $this->author_for_api();
+        $data['attributes']['last_editor'] = $this->last_editor_for_api();
         return $data;
+    }
+
+    /**
+     * @return array
+     */
+    public function getUsedZones()
+    {
+        $used_zones = [];
+        /** @var ApplicationLogSection $zones_section */
+        $zones_section = $this->getZonesSection();
+        if ($zones_section && $zones_section->is_started) {
+            if ($zones_section->zone_analysis_info_blocks()->with('zone')->count()) {
+                $zones_ib = $zones_section->zone_analysis_info_blocks()->with('zone')->get();
+                foreach ($zones_ib as $zone_ib) {
+//                    $used_zones[] = $zone_ib->zone()->pluck('code');
+                    $used_zones[] = $zone_ib->zone()->select(['id', 'code', 'description'])->first();
+                }
+            }
+        }
+        return $used_zones;
+    }
+
+    /**
+     * Array of attributes made ad hoc for ReportItem "data_attributes" field
+     * @return array
+     */
+    public function myAttributesForReportItem()
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'application_type' => $this->application_type,
+            'last_editor' => $this->last_editor_for_api(),
+            'started_sections' => $this->getStartedSections()->pluck('section_type'),
+            'zones' => $this->getUsedZones()
+        ];
     }
 }

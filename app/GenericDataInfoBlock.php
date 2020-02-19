@@ -22,11 +22,15 @@ class GenericDataInfoBlock extends Model
     protected $table = 'generic_data_info_blocks';
 
     /**
-     * The attributes that aren't mass assignable.
+     * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $guarded = [];
+    protected $fillable = [
+        'name',
+        'key_value_infos',
+        'application_log_section_id',
+    ];
 
     /**
      * The attributes that should be cast to native types.

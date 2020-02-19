@@ -82,7 +82,7 @@ class ModelZoneTest extends TestCase
             ['code' => $zone_child2->code, 'description' => $zone_child2->description]
         ));
 
-        // testare: transferMyZonesToProject
+        // test su: transferMyZonesToProject
         /** @var Project $project2 */
         $project2 = factory(Project::class)->create();
         $project->transferMyZonesToProject($project2);

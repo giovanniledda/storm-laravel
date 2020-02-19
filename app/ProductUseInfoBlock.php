@@ -15,11 +15,18 @@ class ProductUseInfoBlock extends Model
     protected $table = 'product_use_info_blocks';
 
     /**
-     * The attributes that aren't mass assignable.
+     * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $guarded = [];
+    protected $fillable = [
+        'name',
+        'viscosity',
+        'components',
+        'thinners',
+        'application_log_section_id',
+        'product_id'
+    ];
 
     /**
      * The attributes that should be cast to native types.
