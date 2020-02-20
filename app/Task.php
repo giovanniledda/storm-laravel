@@ -2,6 +2,7 @@
 
 namespace App;
 
+use DB;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Net7\DocsGenerator\Utils;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -281,6 +282,19 @@ class Task extends Model
 // aggiungere qua altra logica, se serve (tipo filtri sui ruoli, etc)
 //        return StormUtils::getAllBoatManagers();
         return $this->getProjectUsers();
+    }
+
+    /**
+     * @param $project_id
+     * @return \Illuminate\Support\Collection
+     */
+    public static function getAllAuthors($project_id) {
+
+        return DB::table('users')
+            ->join('tasks', 'users.id', '=', 'tasks.author_id')
+            ->where('tasks.project_id', '=', $project_id)
+            ->select('users.id', 'users.name', 'users.surname')
+            ->get();
     }
 
     public static function getSemiFakeData(Faker $faker, Project $proj = null, Section $sect = null, Subsection $ssect = null, User $author = null, TaskInterventType $type = null)
@@ -580,11 +594,11 @@ class Task extends Model
 
     /**
      * Ridimensiona un'immagine da un path
-     * @param type $file
-     * @param type $w
-     * @param type $h
-     * @param type $crop
-     * @return type
+     * @param $file
+     * @param $w
+     * @param $h
+     * @param $crop
+     * @return mixed
      */
     private function resize_image($file, $w, $h, $crop = FALSE)
     {
