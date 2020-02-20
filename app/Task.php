@@ -356,7 +356,6 @@ class Task extends Model
             'file' => $file,
         ]);
         $this->addDocumentWithType($doc, $type ? $type : Document::GENERIC_IMAGE_TYPE);
-
         return $doc;
     }
 

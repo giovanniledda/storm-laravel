@@ -4,9 +4,13 @@ namespace App;
 
 use App\Traits\JsonAPIPhotos;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Net7\Documents\Document;
 use Net7\Documents\DocumentableTrait;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use function copy;
 use function date;
+use function explode;
 use function json_decode;
 use function time;
 use const DIRECTORY_SEPARATOR;
@@ -107,5 +111,28 @@ class History extends Model
     public function getDetailedPhotoPaths()
     {
         return $this->getAllDocumentsMediaFilePathArray(Document::DETAILED_IMAGE_TYPE, 'report');
+    }
+
+    /**
+     * Adds an image as a generic_image Net7/Document
+     * @param string $filepath
+     * @param string|null $type
+     * @return Document
+     */
+    public function addDamageReportPhoto(string $filepath, string $type = null)
+    {
+        // mettere tutto in una funzione
+        $f_arr = explode('/', $filepath);
+        $filename = Arr::last($f_arr);
+        $tempFilepath = '/tmp/' . $filename;
+        copy('./storage/seeder/' . $filepath, $tempFilepath);
+        $file = new UploadedFile($tempFilepath, $filename, null, null, true);
+
+        $doc = new Document([
+            'title' => "Damage photo for History {$this->id}",
+            'file' => $file,
+        ]);
+        $this->addDocumentWithType($doc, $type ? $type : Document::GENERIC_IMAGE_TYPE);
+        return $doc;
     }
 }

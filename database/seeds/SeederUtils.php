@@ -222,7 +222,9 @@ class SeederUtils
     {
 //        return;
         if (Storage::disk('local-seeder')->exists($filepath)) {
-            $task->addDamageReportPhoto($filepath, $type);
+            if ($history = $task->getLastHistory()) {
+                $history->addDamageReportPhoto($filepath, $type);
+            }
         }
     }
 
