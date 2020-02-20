@@ -17,9 +17,11 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Queue\SerializesModels;
 use App\Jobs\SendDocumentsToGoogleDrive;
 use Illuminate\Support\Facades\DB;
+use function array_map;
 use function json_decode;
 use function preg_replace;
 use const MEASUREMENT_FILE_TYPE;
+use const TASKS_STATUS_ACCEPTED;
 
 // use Illuminate\Support\Facades\Queue;
 
@@ -648,6 +650,30 @@ class Project extends Model
             return $this->tasks()->public();
         }
         return $this->tasks();
+    }
+
+
+    /**
+     * Se utente non è storm, non vedrà i task privati
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function tasksWithVisibilityByStatus($status)
+    {
+        $user = \Auth::user();
+        if ($user && !$user->is_storm) {
+            return $this->tasks()->where('task_status', '=', $status)->public();
+        }
+        return $this->tasks()->where('task_status', '=', $status);
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllTaskNumGroupedByStatus()
+    {
+        return array_map(function ($status) {
+            return [$status => $this->tasksWithVisibilityByStatus($status)->count()];
+        }, TASKS_STATUSES);
     }
 
     /**

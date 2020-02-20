@@ -290,11 +290,14 @@ class Task extends Model
      */
     public static function getAllAuthors($project_id) {
 
-        return DB::table('users')
-            ->join('tasks', 'users.id', '=', 'tasks.author_id')
-            ->where('tasks.project_id', '=', $project_id)
-            ->select('users.id', 'users.name', 'users.surname')
-            ->get();
+        $user = \Auth::user();
+        $q = User::join('tasks', 'users.id', '=', 'tasks.author_id')
+            ->where('tasks.project_id', '=', $project_id);
+        if ($user && !$user->is_storm) {
+            $q = $q->where('tasks.is_private', '!=', 1);
+        }
+        return $q->select('users.id', 'users.name', 'users.surname')->get();
+
     }
 
     public static function getSemiFakeData(Faker $faker, Project $proj = null, Section $sect = null, Subsection $ssect = null, User $author = null, TaskInterventType $type = null)

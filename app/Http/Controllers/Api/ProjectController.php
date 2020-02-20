@@ -735,7 +735,7 @@ class ProjectController extends Controller
         try {
 
             $ret = [
-                'tasks_num' => $record->tasks()->count(),
+                'tasks_num' => $record->getAllTaskNumGroupedByStatus(),
                 'authors' => Task::getAllAuthors($record->id)
             ];
             return Utils::renderStandardJsonapiResponse(['data' => $ret], 200);
