@@ -19,7 +19,7 @@ class History extends Model
 {
     use DocumentableTrait, JsonAPIPhotos;
 
-    protected $_photo_documents_size = 'thumb'; // 'thumb'; TODO: a regime mettere thumb (in locale va solo se si azionano le code)
+    protected $_photo_documents_size = ''; // 'thumb'; TODO: a regime mettere thumb (in locale va solo se si azionano le code)
 
     protected $table = 'history';
 
