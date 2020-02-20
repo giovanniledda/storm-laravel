@@ -52,11 +52,11 @@ trait JsonAPIPhotos
      * @param Document $photo_doc
      * @return array
      */
-    protected function extractJsonDocumentPhotoInfo(Document $photo_doc)
+    protected function extractJsonDocumentPhotoInfo(Document $photo_doc, $image_size = null)
     {
         $media = $photo_doc->getRelatedMedia();
         if ($media) {
-            $file_path = $media->getPath($this->{'_photo_documents_size'});
+            $file_path = $media->getPath($image_size ?? $this->{'_photo_documents_size'});
             if (file_exists($file_path)) {
                 return [
                     'type' => 'documents',
@@ -75,21 +75,22 @@ trait JsonAPIPhotos
      * Return an array of base64 media objects
      *
      * @param string $field_key
+     * @param null $image_size
      * @return array
      */
-    public function getPhotosApi($field_key = 'data')
+    public function getPhotosApi($field_key = 'data', $image_size = null)
     {
         $photo_objects = [];
         $detailed_photo_docs = $this->getDetailedPhotoDocument();
         foreach ($detailed_photo_docs as $photo_doc) {
-            if ($arr = $this->extractJsonDocumentPhotoInfo($photo_doc)) {
+            if ($arr = $this->extractJsonDocumentPhotoInfo($photo_doc, $image_size)) {
                 $photo_objects['detailed_images'][] = $arr;
             }
         }
 
         $additional_photo_doc = $this->getAdditionalPhotoDocument();
         if ($additional_photo_doc) {
-            if ($arr = $this->extractJsonDocumentPhotoInfo($additional_photo_doc)) {
+            if ($arr = $this->extractJsonDocumentPhotoInfo($additional_photo_doc, $image_size)) {
                 $photo_objects['additional_images'][] = $arr;
             }
         }

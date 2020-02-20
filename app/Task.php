@@ -230,7 +230,7 @@ class Task extends Model
             ];
             Arr::forget($data['attributes'], 'documents');
             $data['attributes']['comments'] = $last_history->comments_for_api;
-            $data['attributes']['photos'] = $last_history->getPhotosApi();
+            $data['attributes']['photos'] = $last_history->getPhotosApi('data', 'thumb');
             return $data;
         }
         return null;
