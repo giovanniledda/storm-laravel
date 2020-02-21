@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Auth;
 use DB;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Net7\DocsGenerator\Utils;
@@ -296,8 +297,10 @@ class Task extends Model
         if ($user && !$user->is_storm) {
             $q = $q->where('tasks.is_private', '!=', 1);
         }
-        return $q->select('users.id', 'users.name', 'users.surname')->get();
-
+        return $q->select('users.id', 'users.name', 'users.surname')
+            ->orderBy('users.name', 'asc')
+            ->distinct()
+            ->get();
     }
 
     public static function getSemiFakeData(Faker $faker, Project $proj = null, Section $sect = null, Subsection $ssect = null, User $author = null, TaskInterventType $type = null)
