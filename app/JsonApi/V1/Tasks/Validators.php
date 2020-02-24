@@ -45,8 +45,8 @@ class Validators extends AbstractValidators
         'intervent_type_id.numeric' => 'intervent_type_id '.VALIDATOR_NUMERIC,
         'intervent_type_id.exists' => 'intervent_type_id '.VALIDATOR_EXIST,
         ];
-     
-    
+
+
     /**
      * Get resource validation rules.
      *
@@ -65,7 +65,7 @@ class Validators extends AbstractValidators
         'status' => 'in:'.TASKS_STATUS_DRAFT.','.TASKS_STATUS_SUBMITTED.','.TASKS_STATUS_ACCEPTED.','.TASKS_STATUS_IN_PROGRESS.','.TASKS_STATUS_DENIED.','.TASKS_STATUS_REMARKED.','.TASKS_STATUS_MONITORED.','.TASKS_STATUS_COMPLETED,
         'project_id'=> 'required|numeric|exists:projects,id',
         'section_id'=> 'required|numeric|exists:sections,id',
-        'intervent_type_id'=>'required|numeric|exists:task_intervent_types,id', 
+        'intervent_type_id'=>'required|numeric|exists:task_intervent_types,id',
         'x_coord'=>'required|numeric',
         'y_coord'=>'required|numeric',
         ];
@@ -79,7 +79,7 @@ class Validators extends AbstractValidators
     protected function queryRules(): array
     {
         return [
-            //
+            'filter.prog_nums' =>  'regex:/^(\d+(-\d+)?,?\s?)*$/',  // non c'è modo di avere un messaggio personalizzato purtroppo
         ];
     }
 

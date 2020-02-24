@@ -2,6 +2,8 @@
 
 namespace App;
 
+use Auth;
+use DB;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Net7\DocsGenerator\Utils;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -13,6 +15,7 @@ use Venturecraft\Revisionable\RevisionableTrait;
 use Net7\Documents\Document;
 use Net7\Documents\DocumentableTrait;
 use Faker\Generator as Faker;
+use function array_push;
 use function explode;
 use function in_array;
 use function is_object;
@@ -54,6 +57,8 @@ class Task extends Model
     private $max_x;
     private $min_y;
     private $max_y;
+
+    public $last_history;
 
     public const CORROSION_MAP_DOCUMENT_TYPE = 'corrosion_map';
 
@@ -210,7 +215,35 @@ class Task extends Model
      */
     public function getLastHistory()
     {
-        return $this->history()->latest()->first();;
+        return $this->last_history ?? $this->history()->latest()->first();
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getLastHistoryForApi()
+    {
+        $last_history = $this->getLastHistory();
+        if ($last_history) {
+            $data = [
+                'id' => $last_history->id,
+                'type' => History::class,
+                'attributes' => $last_history
+            ];
+            Arr::forget($data['attributes'], 'documents');
+            $data['attributes']['comments'] = $last_history->comments_for_api;
+            $data['attributes']['photos'] = $last_history->getPhotosApi('data', 'thumb');
+            return $data;
+        }
+        return null;
+    }
+
+    /**
+     * @return History|object|null
+     */
+    public function setLastHistory()
+    {
+        $this->last_history = $this->history()->latest()->first();
     }
 
     /**
@@ -218,7 +251,7 @@ class Task extends Model
      */
     public function getFirstHistory()
     {
-        return $this->history()->oldest()->first();;
+        return $this->history()->oldest()->first();
     }
 
     public function taskIntervents()
@@ -250,6 +283,24 @@ class Task extends Model
 // aggiungere qua altra logica, se serve (tipo filtri sui ruoli, etc)
 //        return StormUtils::getAllBoatManagers();
         return $this->getProjectUsers();
+    }
+
+    /**
+     * @param $project_id
+     * @return \Illuminate\Support\Collection
+     */
+    public static function getAllAuthors($project_id) {
+
+        $user = \Auth::user();
+        $q = User::join('tasks', 'users.id', '=', 'tasks.author_id')
+            ->where('tasks.project_id', '=', $project_id);
+        if ($user && !$user->is_storm) {
+            $q = $q->where('tasks.is_private', '!=', 1);
+        }
+        return $q->select('users.id', 'users.name', 'users.surname')
+            ->orderBy('users.name', 'asc')
+            ->distinct()
+            ->get();
     }
 
     public static function getSemiFakeData(Faker $faker, Project $proj = null, Section $sect = null, Subsection $ssect = null, User $author = null, TaskInterventType $type = null)
@@ -325,7 +376,6 @@ class Task extends Model
             'file' => $file,
         ]);
         $this->addDocumentWithType($doc, $type ? $type : Document::GENERIC_IMAGE_TYPE);
-
         return $doc;
     }
 
@@ -550,11 +600,11 @@ class Task extends Model
 
     /**
      * Ridimensiona un'immagine da un path
-     * @param type $file
-     * @param type $w
-     * @param type $h
-     * @param type $crop
-     * @return type
+     * @param $file
+     * @param $w
+     * @param $h
+     * @param $crop
+     * @return mixed
      */
     private function resize_image($file, $w, $h, $crop = FALSE)
     {

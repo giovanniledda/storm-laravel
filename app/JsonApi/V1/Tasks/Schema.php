@@ -87,12 +87,12 @@ class Schema extends SchemaProvider
     public function getAttributes($resource)
     {
 //        $author = User::where('id', $resource->author_id)->first();
+        $resource->setLastHistory(); // ottimizza il processo per una singola invocazione della API
         $author = $resource->author;
         $comments = $resource->comments()->get();
         $section = Section::select("name")->where('id', $resource->section_id)->first();
         $intervent_types = TaskInterventType::select("name")->where('id', '=', $resource->intervent_type_id)->first();
         return [
-
             'description' => $resource->description,
             'number' => $resource->number,
             'internal_progressive_number' => $resource->internal_progressive_number,
@@ -101,6 +101,7 @@ class Schema extends SchemaProvider
             'status' => $resource->task_status,
             'author_id' => $resource->author ? $author->id : '',
             'author' => $resource->author ? $author->name . ' ' . $author->surname : '',
+            'last_history' => $resource->getLastHistoryForApi(),
             'last_editor' => $resource->getLastEditor(),
             'last_editor_id' => $resource->getLastEditorId(),
             'is_open' => $resource->is_open,

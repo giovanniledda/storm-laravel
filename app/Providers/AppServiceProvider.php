@@ -6,6 +6,7 @@ use App\Services\AppLogEntitiesPersister;
 use CloudCreativity\LaravelJsonApi\LaravelJsonApi;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Str;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -99,7 +100,6 @@ class AppServiceProvider extends ServiceProvider
             $no = __('No');
             return "<?php echo {$expression} == 1  ? '$yes' : '$no'; ?>";
         });
-
 
     }
 }

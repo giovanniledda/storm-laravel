@@ -9,6 +9,7 @@ use App\Jobs\ProjectLoadEnvironmentalData;
 use App\ReportItem;
 use App\Services\AppLogEntitiesPersister;
 use App\Services\ZonesPersister;
+use App\Task;
 use App\Zone;
 use function __;
 use function array_key_exists;
@@ -714,6 +715,30 @@ class ProjectController extends Controller
             }
 
             return Utils::renderStandardJsonapiResponse(['data' => $app_log->toJsonApi()], 200);
+
+        } catch (\Exception $e) {
+            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error uploading application log", $e->getMessage());
+        }
+    }
+
+    /**
+     *
+     * #PR31 (POST) /api/v1/projects/{record_id}/tasks-statistics
+     *
+     * @param Request $request
+     * @param $record
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
+     * @throws \Throwable
+     */
+    public function getTasksStatistics(Request $request, $record)
+    {
+        try {
+
+            $ret = [
+                'tasks_num' => $record->getAllTaskNumGroupedByStatus(),
+                'authors' => Task::getAllAuthors($record->id)
+            ];
+            return Utils::renderStandardJsonapiResponse(['data' => $ret], 200);
 
         } catch (\Exception $e) {
             return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error uploading application log", $e->getMessage());
