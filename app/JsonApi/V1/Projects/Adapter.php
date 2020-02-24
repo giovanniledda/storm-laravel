@@ -62,7 +62,7 @@ class Adapter extends AbstractAdapter
             $query->where('project_status', '=', "{$status}");
         }
         if ($boat_id = $filters->get('boat_id')) {
-            $query->where('boat_id', '=', "{$boat_id}");
+            $query->where('projects.boat_id', '=', "{$boat_id}");
         }
 
         $user = \Auth::user();
