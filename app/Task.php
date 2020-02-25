@@ -671,7 +671,7 @@ EOF;
                 <table width="700" style="font-family: Raleway, sans-serif; color: #1f519b;">
                     <tr width="700">
                         <td width="345" rowspan="2" style="border-right: 10px solid white; vertical-align: top ;background-color: #eff9fe; padding: 8px">
-                        <span style="font-weight: bold;">Description: </span>$description</td>
+                        <span style="font-weight: bold;">Description 2: </span>$description</td>
 
                         <td width="345" rowspan="1" style="vertical-align: top;background-color: #eff9fe; padding: 8px">
                         <span style="font-weight: bold;">Created: </span>$created_at</td>
