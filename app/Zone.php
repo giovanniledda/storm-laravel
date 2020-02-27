@@ -83,6 +83,14 @@ class Zone extends Model
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function tasks()
+    {
+        return $this->hasMany('App\Task', 'zone_id');
+    }
+
+    /**
      * Returns an array of data with values for each field
      *
      * @param Faker $faker

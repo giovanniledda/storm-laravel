@@ -143,6 +143,22 @@ class ApplicationLog extends Model
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function closed_tasks()
+    {
+        return $this->belongsToMany('App\Task', 'App\ApplicationLogTask')->wherePivot('action', '=', 'close');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function opened_tasks()
+    {
+        return $this->belongsToMany('App\Task', 'App\ApplicationLogTask')->wherePivot('action', '=', 'open');
+    }
+
+    /**
      * Returns an array of data with values for each field
      *
      * @param Faker $faker

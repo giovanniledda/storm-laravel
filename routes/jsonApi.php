@@ -29,10 +29,8 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
         $api->resource('tasks');
      //   $api->resource('task-minimized');
 
-        $api->resource('tasks')->only('statuses')->controller('TaskController')//uses the App\Http\Controllers\Api\TaskController
-        ->routes(function ($tasks) {
-            $tasks->get('/statuses', 'statuses')->name('statuses');
-        });
+        $api->get('/task-primary-statuses', 'TaskController@primaryStatuses')->name('task-primary-statuses');
+        $api->get('/task-remark-statuses', 'TaskController@remarkStatuses')->name('task-remark-statuses');
 
         $api->resource('tasks')->only('history')->controller('TaskController')//uses the App\Http\Controllers\Api\TaskController
         ->routes(function ($task) {

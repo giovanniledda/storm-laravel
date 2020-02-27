@@ -829,7 +829,7 @@ class Project extends Model
 
         /** controllo se il progetto ha task che si trovano in
          *  TASKS_STATUS_DRAFT, TASKS_STATUS_IN_PROGRESS,
-         *  TASKS_STATUS_REMARKED, TASKS_STATUS_ACCEPTED
+         *  TASKS_STATUS_ACCEPTED
          * * */
         $foundTasks = $this->tasks()
             ->where('is_open', '=', 1)
@@ -839,7 +839,7 @@ class Project extends Model
                     TASKS_STATUS_SUBMITTED,
                     TASKS_STATUS_ACCEPTED,
                     TASKS_STATUS_IN_PROGRESS,
-                    TASKS_STATUS_REMARKED
+//                    TASKS_STATUS_REMARKED
                 ]);
 
 

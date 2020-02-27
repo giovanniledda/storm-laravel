@@ -16,20 +16,35 @@ use Illuminate\Http\UploadedFile;
 use App\Utils\Utils;
 use App\Section;
 use function is_null;
+use const TASK_TYPE_PRIMARY;
+use const TASK_TYPE_REMARK;
 use const TASKS_STATUSES;
 
 class TaskController extends Controller
 {
 
-    public function statuses(Request $request)
+    public function primaryStatuses(Request $request)
     {
-        $resp = new Response(["data" => [
-            "type" => "tasks",
-            "attributes" => ["task-statuses" => TASKS_STATUSES]
-        ]], 201);
-        $resp->header('Content-Type', 'application/vnd.api+json');
+        return Utils::renderStandardJsonapiResponse([
+            'data' => [
+                'type' => 'tasks',
+                'attributes' => [
+                    'task-type' => TASK_TYPE_PRIMARY,
+                    'task-statuses' => TASKS_STATUSES
+                ]
+            ]], 201);
+    }
 
-        return $resp;
+    public function remarkStatuses(Request $request)
+    {
+        return Utils::renderStandardJsonapiResponse([
+            'data' => [
+                'type' => 'tasks',
+                'attributes' => [
+                    'task-type' => TASK_TYPE_REMARK,
+                    'task-statuses' => TASKS_R_STATUSES
+                ]
+            ]], 201);
     }
 
     public function history(Request $request, $related)
@@ -50,11 +65,7 @@ class TaskController extends Controller
                 "id" => $history['id'],
                 "attributes" => $history_data]);
         }
-        $resp = Response(["data" => $data], 200);
-        $resp->header('Content-Type', 'application/vnd.api+json');
-
-        return $resp;
-        //  exit();
+        return Utils::renderStandardJsonapiResponse(['data' => $data], 200);
     }
 
     public function generateMap(Request $request, $related)

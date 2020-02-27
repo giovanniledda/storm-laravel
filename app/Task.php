@@ -254,10 +254,39 @@ class Task extends Model
         return $this->history()->oldest()->first();
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function taskIntervents()
     {
         return $this->hasOne('App\TaskInterventType');
-//        return $this->hasOneThrough('App\Site', 'App\Project');  // NON funziona perché i progetti sono "many" e il site è "one"
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function zone()
+    {
+        return $this->belongsTo('App\Zone', 'zone_id');
+    }
+
+
+    /**
+     * Application Log from where the Task has been closed
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function closer_application_log()
+    {
+        return $this->belongsToMany('App\ApplicationLog', 'App\ApplicationLogTask')->wherePivot('action', '=', 'close');
+    }
+
+    /**
+     * Application Log from where the Task has been opened
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function opener_application_log()
+    {
+        return $this->belongsToMany('App\ApplicationLog', 'App\ApplicationLogTask')->wherePivot('action', '=', 'open');
     }
 
     public function getProjectUsers()
