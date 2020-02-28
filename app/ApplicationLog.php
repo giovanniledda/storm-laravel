@@ -6,6 +6,7 @@ use App\Observers\ApplicationLogObserver;
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Model;
 use function env;
+use function factory;
 use const APPLICATION_LOG_SECTION_TYPE_ZONES;
 use const APPLICATION_TYPE_COATING;
 use const APPLICATION_TYPE_FILLER;
@@ -150,6 +151,11 @@ class ApplicationLog extends Model
         return $this->belongsToMany('App\Task', 'App\ApplicationLogTask')->wherePivot('action', '=', 'close');
     }
 
+    public function closeTask(Task $task)
+    {
+        $this->closed_tasks()->attach($task->id, ['action' => 'close']);
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
@@ -158,16 +164,29 @@ class ApplicationLog extends Model
         return $this->belongsToMany('App\Task', 'App\ApplicationLogTask')->wherePivot('action', '=', 'open');
     }
 
+    public function openTask(Task $task)
+    {
+        $this->opened_tasks()->attach($task->id, ['action' => 'open']);
+    }
+
     /**
      * Returns an array of data with values for each field
      *
      * @param Faker $faker
+     * @param User|null $user
      * @return array
      */
-    public static function getSemiFakeData(Faker $faker)
+    public static function getSemiFakeData(Faker $faker, User $user = null)
     {
+        try {
+            $last_editor = $user ?? User::all()->random(1);
+        } catch (\Exception $e) {
+            $last_editor = factory(User::class)->create();
+        }
+
         return [
             'name' => $faker->word,
+            'last_editor_id' => $last_editor->id,
             'application_type' => $faker->randomElement([
                 APPLICATION_TYPE_PRIMER,
                 APPLICATION_TYPE_FILLER,

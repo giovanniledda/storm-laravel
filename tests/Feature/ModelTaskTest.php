@@ -7,6 +7,7 @@ use App\Section;
 use App\Subsection;
 use App\Task;
 use App\Project;
+use App\Zone;
 use Tests\TestCase;
 use function factory;
 
@@ -79,7 +80,6 @@ class ModelTaskTest extends TestCase
 
     }
 
-
     function test_internal_progressive_number() {
 
         $boats = factory(Boat::class, 3)->create();
@@ -105,5 +105,36 @@ class ModelTaskTest extends TestCase
                 }
             }
         }
+    }
+
+    function testBasicRelationships() {
+
+        /** @var Task $task1 */
+        $task1 = factory(Task::class)->create();
+        /** @var Task $task2 */
+        $task2 = factory(Task::class)->create();
+        /** @var Task $task3 */
+        $task3 = factory(Task::class)->create();
+
+        /** zone */
+        /** $table->foreign('zone_id')->references('id')->on('zones')->onDelete('set null'); */
+
+        /** @var Zone $zone */
+        $zone = factory(Zone::class)->create();
+        $task1->zone()->associate($zone);
+        $task1->save();
+        $task2->zone()->associate($zone);
+        $task2->save();
+
+        // dalla Zone
+        $zone->tasks()->save($task3);
+
+        $this->assertContains($task1->id, $zone->tasks()->pluck('id')); // testo la relazione inversa
+        $this->assertContains($task2->id, $zone->tasks()->pluck('id')); // testo la relazione inversa
+        $this->assertContains($task3->id, $zone->tasks()->pluck('id')); // testo la relazione inversa
+
+        $this->assertEquals($zone->id, $task1->zone->id);
+        $this->assertEquals($zone->id, $task2->zone->id);
+        $this->assertEquals($zone->id, $task3->zone->id);
     }
 }

@@ -28,6 +28,9 @@ class CreateApplicationLogsTasksTable extends Migration
             // application log
             $table->unsignedBigInteger('application_log_id')->nullable();
             $table->foreign('application_log_id')->references('id')->on('application_logs')->onDelete('cascade');
+
+            $table->timestamps();
+
         });
     }
 
