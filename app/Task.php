@@ -52,6 +52,8 @@ class Task extends Model
         'is_private',
         'bridge_position',
         'internal_progressive_number',
+        'zone_id',
+        'task_type',
     ];
     private $min_x;
     private $max_x;

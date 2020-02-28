@@ -3,6 +3,10 @@
 namespace App\JsonApi\V1\Tasks;
 
 use CloudCreativity\LaravelJsonApi\Validation\AbstractValidators;
+use const TASK_TYPE_PRIMARY;
+use const TASK_TYPE_REMARK;
+use const VALIDATOR_EXIST;
+use const VALIDATOR_STRING;
 
 class Validators extends AbstractValidators
 {
@@ -44,6 +48,12 @@ class Validators extends AbstractValidators
         'intervent_type_id.required' => 'intervent_type_id '.VALIDATOR_REQUIRED,
         'intervent_type_id.numeric' => 'intervent_type_id '.VALIDATOR_NUMERIC,
         'intervent_type_id.exists' => 'intervent_type_id '.VALIDATOR_EXIST,
+        'zone_id.numeric' => 'zone_id '.VALIDATOR_NUMERIC,
+        'zone_id.exists' => 'Zone with ID of :input '.VALIDATOR_EXIST,
+        'task_type.string' => 'task_type '.VALIDATOR_STRING,
+        'task_type.in' => 'task_type admitted values are: '.TASK_TYPE_REMARK.','.TASK_TYPE_PRIMARY,
+        'opener_application_log_id.numeric' => 'opener_application_log_id '.VALIDATOR_NUMERIC,
+        'opener_application_log_id.exists' => 'Application Log with ID of :input '.VALIDATOR_EXIST,
         ];
 
 
@@ -68,6 +78,9 @@ class Validators extends AbstractValidators
         'intervent_type_id'=>'required|numeric|exists:task_intervent_types,id',
         'x_coord'=>'required|numeric',
         'y_coord'=>'required|numeric',
+        'zone_id'=> 'numeric|exists:zones,id',
+        'task_type'=> 'string|in:'.TASK_TYPE_REMARK.','.TASK_TYPE_PRIMARY,
+        'opener_application_log_id'=> 'numeric|exists:application_logs,id',
         ];
     }
 

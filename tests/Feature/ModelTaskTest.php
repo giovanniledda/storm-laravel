@@ -136,5 +136,6 @@ class ModelTaskTest extends TestCase
         $this->assertEquals($zone->id, $task1->zone->id);
         $this->assertEquals($zone->id, $task2->zone->id);
         $this->assertEquals($zone->id, $task3->zone->id);
+
     }
 }

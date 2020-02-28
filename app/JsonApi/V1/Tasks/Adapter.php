@@ -2,9 +2,12 @@
 
 namespace App\JsonApi\V1\Tasks;
 
+use App\ApplicationLog;
+use App\Task;
 use CloudCreativity\LaravelJsonApi\Eloquent\AbstractAdapter;
 use CloudCreativity\LaravelJsonApi\Pagination\StandardStrategy;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Neomerx\JsonApi\Contracts\Encoder\Parameters\EncodingParametersInterface;
 use Illuminate\Database\Eloquent\Builder;
@@ -34,7 +37,9 @@ class Adapter extends AbstractAdapter {
         'subsection_id',
         'x_coord',
         'y_coord',
-        'bridge_position'
+        'bridge_position',
+        'zone_id',
+        'task_type'
     ];
 
     /**
@@ -52,6 +57,20 @@ class Adapter extends AbstractAdapter {
      */
     public function __construct(StandardStrategy $paging) {
         parent::__construct(new \App\Task(), $paging);
+    }
+
+    /**
+     * @param Task $task
+     * @param $resource
+     */
+    protected function created(Task $task, $resource)
+    {
+        // se mi viene passato un app_log_id, sarà l'app log da cui il task è stato aperto
+        Log::debug("Opening Task {$task->id} from APP LOG {$resource['opener_application_log_id']}");
+
+        $application_log = ApplicationLog::findOrFail($resource['opener_application_log_id']);
+        $application_log->opened_tasks()->attach($task->id, ['action' => 'open']);
+
     }
 
     /**
@@ -164,5 +183,7 @@ class Adapter extends AbstractAdapter {
             }
         }
     }
+
+
 
 }

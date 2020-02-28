@@ -92,7 +92,11 @@ class Schema extends SchemaProvider
         $comments = $resource->comments()->get();
         $section = Section::select("name")->where('id', $resource->section_id)->first();
         $intervent_types = TaskInterventType::select("name")->where('id', '=', $resource->intervent_type_id)->first();
+        $zone = $resource->zone;
+        $closer_app_log = $resource->closer_application_log()->first();
+        $opener_app_log = $resource->opener_application_log()->first();
         return [
+            'task_type' => $resource->task_type,
             'description' => $resource->description,
             'number' => $resource->number,
             'internal_progressive_number' => $resource->internal_progressive_number,
@@ -116,6 +120,9 @@ class Schema extends SchemaProvider
             'x_coord' => $resource->x_coord,
             'y_coord' => $resource->y_coord,
             'comments' => $comments,
+            'zone' => $zone,
+            'opener_application_log_id' => $opener_app_log ? $opener_app_log->id : null,
+            'closer_application_log_id' => $closer_app_log ? $closer_app_log->id : null,
             'created-at' => $resource->created_at->toAtomString(),
             'updated-at' => $resource->updated_at->toAtomString(),
         ];
