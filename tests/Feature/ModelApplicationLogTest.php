@@ -183,10 +183,26 @@ class ModelApplicationLogTest extends TestCase
         /** @var Task $task4 */
         $task4 = factory(Task::class)->create();
 
+        // ... openTask
         $application_log->openTask($task4);
         $this->assertEquals($task4->opener_application_log()->first()->id, $application_log->id);
 
+        // ... closeTask
         $application_log->closeTask($task4);
         $this->assertEquals($task4->closer_application_log()->first()->id, $application_log->id);
+
+        /** @var Task $task5 */
+        $task5 = factory(Task::class)->create([
+            'project_id' => factory(Project::class)->create()->id
+        ]);
+
+        // .. openMe
+        $task5->openMe($application_log);
+        $this->assertEquals($task5->opener_application_log()->first()->id, $application_log->id);
+
+        // .. closeMe
+        $task5->closeMe($application_log);
+        $this->assertEquals($task5->closer_application_log()->first()->id, $application_log->id);
+
     }
 }

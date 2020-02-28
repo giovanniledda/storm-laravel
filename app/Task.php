@@ -20,8 +20,10 @@ use function explode;
 use function in_array;
 use function is_object;
 use const PROJECT_STATUS_CLOSED;
+use const TASK_TYPE_PRIMARY;
 use const TASKS_STATUS_COMPLETED;
 use const TASKS_STATUS_DENIED;
+use const TASKS_STATUS_R_CLOSED;
 use const TASKS_STATUSES;
 
 class Task extends Model
@@ -839,6 +841,41 @@ EOF;
         $last_history = $this->getLastHistory();
         if ($last_history) {
             return $last_history->getBodyAttribute('user_id');
+        }
+    }
+
+    /**
+     * This function "closes" the Task, setting some fields
+     *
+     * @param ApplicationLog $application_log
+     */
+    public function closeMe(ApplicationLog $application_log = null)
+    {
+        $this->update([
+            'is_open' => false,
+            'task_status' => $this->task_type == TASK_TYPE_PRIMARY ? TASKS_STATUS_COMPLETED : TASKS_STATUS_R_CLOSED
+        ]);
+
+        if ($application_log) {
+            $application_log->closeTask($this);
+        }
+    }
+
+    /**
+     * This function "open" the Task, setting some fields
+     *
+     * @param ApplicationLog $application_log
+     * @param null $status
+     */
+    public function openMe(ApplicationLog $application_log = null, $status = null)
+    {
+        $this->update([
+            'is_open' => true,
+            'task_status' => $status
+        ]);
+
+        if ($application_log) {
+            $application_log->openTask($this);
         }
     }
 }

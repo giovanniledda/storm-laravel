@@ -190,6 +190,11 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
         $api->resource('tools');
         $api->resource('project-tools');
 
+        $api->resource('application-logs')->only('close-tasks')->controller('ApplicationLogController') //uses the App\Http\Controllers\Api\ProjectController
+        ->routes(function ($project) {
+            $project->post('{record}/close-tasks', 'closeTasks')->name('close-tasks');
+        });
+
         /** APPLICATION LOG STUFF - END */
 
         $api->resource('histories');

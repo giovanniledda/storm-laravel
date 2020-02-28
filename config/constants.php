@@ -118,7 +118,6 @@ defined('TASKS_STATUS_IN_PROGRESS') or define('TASKS_STATUS_IN_PROGRESS', 'in pr
 defined('TASKS_STATUS_DENIED') or define('TASKS_STATUS_DENIED', 'denied');
 defined('TASKS_STATUS_MONITORED') or define('TASKS_STATUS_MONITORED', 'monitored');
 defined('TASKS_STATUS_COMPLETED') or define('TASKS_STATUS_COMPLETED', 'completed');  // antonio ti inculo
-
 defined('TASKS_STATUSES') or define('TASKS_STATUSES',
         [
          TASKS_STATUS_DRAFT,
@@ -129,13 +128,16 @@ defined('TASKS_STATUSES') or define('TASKS_STATUSES',
          TASKS_STATUS_COMPLETED,
          TASKS_STATUS_MONITORED,
          ]);
+
 defined('TASKS_STATUS_R_OPEN') or define('TASKS_STATUS_R_OPEN', 'open');  // _R: Remark
+defined('TASKS_STATUS_R_CLOSED') or define('TASKS_STATUS_R_CLOSED', 'closed');  // _R: Remark
 defined('TASKS_STATUS_R_NO_ACTIONS') or define('TASKS_STATUS_R_NO_ACTIONS', 'no_actions');  // _R: Remark
 defined('TASKS_STATUS_R_LOCAL_REPAINT') or define('TASKS_STATUS_R_LOCAL_REPAINT', 'local_repaint');  // _R: Remark
 defined('TASKS_STATUS_R_TOTAL_REPAINT') or define('TASKS_STATUS_R_TOTAL_REPAINT', 'total_repaint');  // _R: Remark
 defined('TASKS_R_STATUSES') or define('TASKS_R_STATUSES',
         [
         TASKS_STATUS_R_OPEN,
+        TASKS_STATUS_R_CLOSED,
         TASKS_STATUS_R_NO_ACTIONS,
         TASKS_STATUS_R_LOCAL_REPAINT,
         TASKS_STATUS_R_TOTAL_REPAINT,
