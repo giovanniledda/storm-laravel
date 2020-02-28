@@ -148,6 +148,12 @@ class Adapter extends AbstractAdapter {
             $query->where('zone_id', '=', $zone_id);
         }
 
+        if ($opener_application_log_id = $filters->get('opener_application_log_id')) {
+            $query->join('applications_logs_tasks', 'applications_logs_tasks.task_id', '=', 'tasks.id')
+            ->where('applications_logs_tasks.application_log_id', '=', $opener_application_log_id)
+            ->where('applications_logs_tasks.action', '=', 'open');
+        }
+
         // ricerca is_open
         if ($filters->has('is_open')) {
             $isOpen = $filters->get('is_open');
