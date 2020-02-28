@@ -140,6 +140,14 @@ class Adapter extends AbstractAdapter {
             $query->whereIn('internal_progressive_number', $numbers);
         }
 
+        if ($task_type = $filters->get('task_type')) {
+            $query->where('task_type', '=', $task_type);
+        }
+
+        if ($zone_id = $filters->get('zone_id')) {
+            $query->where('zone_id', '=', $zone_id);
+        }
+
         // ricerca is_open
         if ($filters->has('is_open')) {
             $isOpen = $filters->get('is_open');

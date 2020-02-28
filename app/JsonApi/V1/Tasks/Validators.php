@@ -93,6 +93,8 @@ class Validators extends AbstractValidators
     {
         return [
             'filter.prog_nums' =>  'regex:/^(\d+(-\d+)?,?\s?)*$/',  // non c'è modo di avere un messaggio personalizzato purtroppo
+            'filter.task_type' =>  'string|in:'.TASK_TYPE_REMARK.','.TASK_TYPE_PRIMARY,
+            'filter.zone_id'=> 'numeric',
         ];
     }
 
