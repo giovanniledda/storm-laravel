@@ -21,6 +21,7 @@ use function in_array;
 use function is_object;
 use const PROJECT_STATUS_CLOSED;
 use const TASK_TYPE_PRIMARY;
+use const TASK_TYPE_REMARK;
 use const TASKS_STATUS_COMPLETED;
 use const TASKS_STATUS_DENIED;
 use const TASKS_STATUS_R_CLOSED;
@@ -152,6 +153,28 @@ class Task extends Model
     public function scopePrivate($query)
     {
         return $query->where('is_private', '=', 1);
+    }
+
+    /**
+     * Scope a query to only include only remarks
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeRemark($query)
+    {
+        return $query->where('task_type', '=', TASK_TYPE_REMARK);
+    }
+
+    /**
+     * Scope a query to only include only open Tasks
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeOpen($query)
+    {
+        return $query->where('is_open', '=', 1);
     }
 
     /**

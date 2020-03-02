@@ -190,9 +190,14 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
         $api->resource('tools');
         $api->resource('project-tools');
 
-        $api->resource('application-logs')->only('close-tasks')->controller('ApplicationLogController') //uses the App\Http\Controllers\Api\ProjectController
+        $api->resource('application-logs')->only('close-remarks')->controller('ApplicationLogController') //uses the App\Http\Controllers\Api\ProjectController
         ->routes(function ($project) {
-            $project->post('{record}/close-tasks', 'closeTasks')->name('close-tasks');
+            $project->post('{record}/close-remarks', 'closeRemarks')->name('close-remarks');
+        });
+
+        $api->resource('application-logs')->only('other-remarks')->controller('ApplicationLogController') //uses the App\Http\Controllers\Api\ProjectController
+        ->routes(function ($project) {
+            $project->get('{record}/other-remarks', 'otherRemarks')->name('other-remarks');
         });
 
         /** APPLICATION LOG STUFF - END */

@@ -40,25 +40,43 @@ class ApplicationLogController extends Controller
 {
 
     /**
-     * #AL02  api/v1/application-logs/{id}/close-tasks
+     * #AL02  api/v1/application-logs/{id}/close-remarks
      *
      * @param Request $request
-     * @param $record
+     * @param ApplicationLog $app_log
      * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
      */
-    public function closeTasks(Request $request, $record)
+    public function closeRemarks(Request $request, ApplicationLog $app_log)
     {
         try {
-            if ($task_ids = $request->input('task_ids')) {
-                $tasks = Task::whereIn('id', explode(',', $task_ids))->get();
+            if ($remarks_ids = $request->input('remarks_ids')) {
+                $tasks = Task::whereIn('id', explode(',', $remarks_ids))->get();
                 if ($tasks->count()) {
                     /** @var Task $task */
                     foreach ($tasks as $task) {
-                        $task->closeMe($record);
+                        $task->closeMe($app_log);
                     }
                 }
             }
             return Utils::renderStandardJsonapiResponse([], 204);
+
+        } catch (\Exception $e) {
+            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error creating zones", $e->getMessage());
+        }
+    }
+
+    /**
+     * #AL03  api/v1/application-logs/{id}/other-remarks
+     *
+     * @param Request $request
+     * @param ApplicationLog $app_log
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
+     */
+    public function otherRemarks(Request $request, ApplicationLog $app_log)
+    {
+        try {
+
+            return Utils::renderStandardJsonapiResponse(['ID' => $app_log->id], 200);
 
         } catch (\Exception $e) {
             return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error creating zones", $e->getMessage());

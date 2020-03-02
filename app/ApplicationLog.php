@@ -5,6 +5,7 @@ namespace App;
 use App\Observers\ApplicationLogObserver;
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Model;
+use function array_map;
 use function env;
 use function factory;
 use const APPLICATION_LOG_SECTION_TYPE_ZONES;
@@ -170,6 +171,29 @@ class ApplicationLog extends Model
     }
 
     /**
+     * If the AppLog has a "zones" section, this function gets the remarks associated with those zones
+     *
+     * @return array
+     */
+    public function getOpenedRemarksFromMyZones()
+    {
+        $other_remarks = [];
+        $used_zones = $this->getUsedZones();
+        if (!empty($used_zones)) {
+            $zones_ids = array_map(function ($zone) {
+                return $zone['id'];
+            }, $used_zones);
+
+            $other_remarks = Task::remark()
+                ->open()
+                ->whereIn('zone_id', $zones_ids)
+                ->whereNotIn('id', $this->opened_tasks()->pluck('id'))
+                ->get();
+        }
+        return $other_remarks;
+    }
+
+    /**
      * Returns an array of data with values for each field
      *
      * @param Faker $faker
@@ -186,7 +210,7 @@ class ApplicationLog extends Model
 
         return [
             'name' => $faker->word,
-            'last_editor_id' => $last_editor->id,
+//            'last_editor_id' => $last_editor->id,
             'application_type' => $faker->randomElement([
                 APPLICATION_TYPE_PRIMER,
                 APPLICATION_TYPE_FILLER,

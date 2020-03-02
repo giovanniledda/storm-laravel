@@ -5,11 +5,15 @@ namespace Tests\Feature;
 use App\ApplicationLogSection;
 use App\ApplicationLogTask;
 use App\Task;
+use App\Zone;
+use App\ZoneAnalysisInfoBlock;
+use Seeds\SeederUtils;
 use function factory;
 use App\Boat;
 use App\Project;
 use Tests\TestCase;
 use App\ApplicationLog;
+use const TASK_TYPE_REMARK;
 
 class ModelApplicationLogTest extends TestCase
 {
@@ -204,5 +208,151 @@ class ModelApplicationLogTest extends TestCase
         $task5->closeMe($application_log);
         $this->assertEquals($task5->closer_application_log()->first()->id, $application_log->id);
 
+    }
+
+    // test for getOpenedTaskFromMyZones function
+    function test_opened_tasks_from_my_zones() {
+
+        $utils = new SeederUtils();
+
+        /** @var Project $project */
+        $project = factory(Project::class)->create();
+
+        // adding Zones to project
+        $utils->addFakeZonesToProject($project, 2, 4);
+
+        /** @var ApplicationLog $first_application_log */
+        $first_application_log = factory(ApplicationLog::class)->create(
+            [
+                'project_id' => $project->id,
+            ]
+        );
+
+        // Adding "ZONES" section to app log
+        /** @var ApplicationLogSection $section_zone */
+        $section_zone = $utils->buildZonesApplicationLogSection($first_application_log, $project);  // this creates 2 zones_ib related to 2 random zones of the project (*)
+        $first_application_log->application_log_sections()->save($section_zone);
+
+        // extract the choosen zones (*)
+        $zones = [];
+        $zone_ib = $section_zone->zone_analysis_info_blocks;
+        /** @var ZoneAnalysisInfoBlock $item */
+        foreach ($zone_ib as $item) {
+            $zones[] = $item->zone;
+        }
+
+        // Creating some remarks (Task) who bind to the first of those zones
+        /** @var Task $task1 */
+        $task1 = factory(Task::class)->create(
+            [
+                'project_id' => $project->id,
+                'is_open' => true,
+                'task_type' => TASK_TYPE_REMARK
+            ]
+        );
+        /** @var Task $task2 */
+        $task2 = factory(Task::class)->create(
+            [
+                'project_id' => $project->id,
+                'is_open' => true,
+                'task_type' => TASK_TYPE_REMARK
+            ]
+        );
+        /** @var Task $task3 */
+        $task3 = factory(Task::class)->create(
+            [
+                'project_id' => $project->id,
+                'is_open' => true,
+                'task_type' => TASK_TYPE_REMARK
+            ]
+        );
+
+        /** @var Zone $zone1 */
+        $zone1 = $this->faker->randomElement($zones);
+
+        // ...associating remarks to zone1
+        $zone1->tasks()->save($task1);
+        $zone1->tasks()->save($task2);
+        $zone1->tasks()->save($task3);
+
+        // Creating some other remarks (Task) who bind to the other zone
+        /** @var Task $task4 */
+        $task4 = factory(Task::class)->create(
+            [
+                'project_id' => $project->id,
+                'is_open' => true,
+                'task_type' => TASK_TYPE_REMARK
+            ]
+        );
+        /** @var Task $task5 */
+        $task5 = factory(Task::class)->create(
+            [
+                'project_id' => $project->id,
+                'is_open' => true,
+                'task_type' => TASK_TYPE_REMARK
+            ]
+        );
+        /** @var Task $task6 */
+        $task6 = factory(Task::class)->create(
+            [
+                'project_id' => $project->id,
+                'is_open' => true,
+                'task_type' => TASK_TYPE_REMARK
+            ]
+        );
+
+        do {
+            /** @var Zone $zone2 */
+            $zone2 = $this->faker->randomElement($zones);
+        } while ($zone2->id != $zone1->id);
+
+        // ...associating remarks to zone2
+        $zone2->tasks()->save($task4);
+        $zone2->tasks()->save($task5);
+        $zone2->tasks()->save($task6);
+
+        // open some tasks from the initial App Log
+        $task1->openMe($first_application_log);
+        $this->assertEquals($task1->opener_application_log()->first()->id, $first_application_log->id);
+
+        $task2->openMe($first_application_log);
+        $this->assertEquals($task2->opener_application_log()->first()->id, $first_application_log->id);
+
+//        $task3->openMe($application_log);
+
+        $task4->openMe($first_application_log);
+        $this->assertEquals($task4->opener_application_log()->first()->id, $first_application_log->id);
+
+        $task5->openMe($first_application_log);
+        $this->assertEquals($task5->opener_application_log()->first()->id, $first_application_log->id);
+
+//        $task6->openMe($application_log);
+
+
+        // Now I've to create a different App Log wich uses the same zones in its zone_ib
+        /** @var ApplicationLog $other_application_log */
+        $other_application_log = factory(ApplicationLog::class)->create();
+
+        // Adding "ZONES" section to app log
+        /** @var ApplicationLogSection $section_zone */
+        $section_zone2 = $utils->buildZonesApplicationLogSection($other_application_log, $project, $zones);  // this creates 2 zones_ib related to $zones parameter
+        $other_application_log->application_log_sections()->save($section_zone2); // ...now $first_application_log and $other_application_log have $zones in common
+
+        // opening the remaining two remark from $other_application_log
+        $task3->openMe($other_application_log);
+        $this->assertEquals($task3->opener_application_log()->first()->id, $other_application_log->id);
+
+        $task6->openMe($other_application_log);
+        $this->assertEquals($task6->opener_application_log()->first()->id, $other_application_log->id);
+
+        // finally get "other" tasks
+        $tasks = $other_application_log->getOpenedRemarksFromMyZones();
+
+        $first_application_log_tasks = [$task1->id, $task2->id, $task4->id, $task5->id];
+        $my_tasks = [$task3->id, $task6->id];
+        foreach ($tasks as $t) {
+            $this->assertContains($t->id, $first_application_log_tasks);
+            $this->assertNotContains($t->id, $my_tasks);
+        }
     }
 }
