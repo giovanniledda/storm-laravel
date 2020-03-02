@@ -70,7 +70,6 @@ class Adapter extends AbstractAdapter {
 
         $application_log = ApplicationLog::findOrFail($resource['opener_application_log_id']);
         $application_log->opened_tasks()->attach($task->id, ['action' => 'open']);
-
     }
 
     /**
@@ -152,6 +151,14 @@ class Adapter extends AbstractAdapter {
             $query->join('applications_logs_tasks', 'applications_logs_tasks.task_id', '=', 'tasks.id')
             ->where('applications_logs_tasks.application_log_id', '=', $opener_application_log_id)
             ->where('applications_logs_tasks.action', '=', 'open');
+        }
+
+        // per ottenere lo schema jsonAPI dei Task, forzo così, non è il massimo, vedere se è possibile ottimizzare in qualche modo senza dover ciclare sui risultati
+        if ($exclude_opener_application_log_id = $filters->get('exclude_opener_application_log_id')) {
+            /** @var ApplicationLog $application_log */
+            $application_log = ApplicationLog::findOrFail($exclude_opener_application_log_id);
+            $other_tasks_ids = $application_log->getOpenedRemarksFromMyZones(true);
+            $query->whereIn('tasks.id', $other_tasks_ids);
         }
 
         // ricerca is_open

@@ -173,22 +173,24 @@ class ApplicationLog extends Model
     /**
      * If the AppLog has a "zones" section, this function gets the remarks associated with those zones
      *
+     * @param bool $apply_pluck
      * @return array
      */
-    public function getOpenedRemarksFromMyZones()
+    public function getOpenedRemarksFromMyZones($apply_pluck = false)
     {
         $other_remarks = [];
         $used_zones = $this->getUsedZones();
-        if (!empty($used_zones)) {
+        if (1 || !empty($used_zones)) {
             $zones_ids = array_map(function ($zone) {
                 return $zone['id'];
             }, $used_zones);
 
-            $other_remarks = Task::remark()
+            $other_remarks_collection = Task::remark()
                 ->open()
                 ->whereIn('zone_id', $zones_ids)
-                ->whereNotIn('id', $this->opened_tasks()->pluck('id'))
-                ->get();
+                ->whereNotIn('id', $this->opened_tasks()->pluck('id'));
+
+            return $apply_pluck ? $other_remarks_collection->pluck('id') : $other_remarks_collection->get();
         }
         return $other_remarks;
     }

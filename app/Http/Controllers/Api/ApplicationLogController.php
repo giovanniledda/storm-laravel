@@ -76,7 +76,8 @@ class ApplicationLogController extends Controller
     {
         try {
 
-            return Utils::renderStandardJsonapiResponse(['ID' => $app_log->id], 200);
+            $remarks = $app_log->getOpenedRemarksFromMyZones();
+            return Utils::renderStandardJsonapiResponse(['data' => $remarks], 200);
 
         } catch (\Exception $e) {
             return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error creating zones", $e->getMessage());
