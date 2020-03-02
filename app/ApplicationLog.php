@@ -180,7 +180,7 @@ class ApplicationLog extends Model
     {
         $other_remarks = [];
         $used_zones = $this->getUsedZones();
-        if (1 || !empty($used_zones)) {
+        if (!empty($used_zones)) {
             $zones_ids = array_map(function ($zone) {
                 return $zone['id'];
             }, $used_zones);
