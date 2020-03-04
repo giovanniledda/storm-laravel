@@ -699,8 +699,8 @@ class Task extends Model
         $corrosionMapHTML = '';
         if ($corrosionMapFilePath = $this->getCorrosionMapFilePath()) {
             $corrosionMapHTML = <<<EOF
-                <img width="760" height="auto" src="file://$corrosionMapFilePath" alt="Corrosion Map"><br>
-EOF;
+                <img width="350" src="file://$corrosionMapFilePath" alt="Corrosion Map">
+                EOF;
         }
 
         $point_id = $this->id;
@@ -713,6 +713,30 @@ EOF;
 
         $html = <<<EOF
             <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Point #$point_id</p>
+
+            <table cellpadding="0" cellspacing="0">
+                <tbody>
+                    <tr>
+                        <td>$corrosionMapHTML</td>
+                        <td width="400">
+                            <span style="font-weight: bold">Type: </span>$task_type
+                            <br>
+                            <span style="font-weight: bold;">Description: </span>$description
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>$corrosionMapHTML</td>
+                        <td><span style="border-right: 10px solid white; font-weight: bold">Location: </span>$task_location
+                            <br>
+                            <span style="font-weight: bold;">Created: </span>$created_at
+                            <br>
+                            <span style="font-weight: bold;">Last edited: </span>$updated_at
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
                 $corrosionMapHTML
 
                 <table width="700" style="color: #1f519b; font-family: Raleway, sans-serif;">
