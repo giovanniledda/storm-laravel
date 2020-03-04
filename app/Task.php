@@ -718,72 +718,14 @@ EOF;
         }
 
         $html = <<<EOF
-            <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Tipo 1 #$point_id</p>
-
-            <table cellpadding="0" cellspacing="0" style="width:750px;">
-                <tbody>
-                    <tr>
-                        <td>$corrosionMapHTML</td>
-                        <td width="30"></td>
-                        <td>
-                            <span style="font-weight: bold">Type: </span>$task_type
-                            <br>
-                            <span style="font-weight: bold;">Description: </span>$description
-                        </td>
-                    </tr>
-
-                    <tr height="30"></tr>
-
-                    <tr>
-                        <td>$img_dettaglioHTML</td>
-                        <td width="30"></td>
-                        <td><span style="border-right: 10px solid white; font-weight: bold">Location: </span>$task_location
-                            <br>
-                            <span style="font-weight: bold;">Created: </span>$created_at
-                            <br>
-                            <span style="font-weight: bold;">Last edited: </span>$updated_at
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Tipo 2 #$point_id</p>
-
-            <table cellpadding="0" cellspacing="0">
-                <tbody width="700">
-                    <tr>
-                        <td>$corrosionMapHTML</td>
-                        <td width="30"></td>
-                        <td>
-                            <span style="font-weight: bold">Type: </span>$task_type
-                            <br>
-                            <span style="font-weight: bold;">Description: </span>$description
-                        </td>
-                    </tr>
-
-                    <tr height="30"></tr>
-
-                    <tr>
-                        <td>$img_dettaglioHTML</td>
-                        <td width="30"></td>
-                        <td><span style="border-right: 10px solid white; font-weight: bold">Location: </span>$task_location
-                            <br>
-                            <span style="font-weight: bold;">Created: </span>$created_at
-                            <br>
-                            <span style="font-weight: bold;">Last edited: </span>$updated_at
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Tipo 3 #$point_id</p>
+            <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Point #$point_id</p>
 
             <table cellpadding="0" cellspacing="0">
                 <tbody>
                     <tr>
-                        <td width="350">$corrosionMapHTML</td>
-                        <td width="30"></td>
-                        <td width="350">
+                        <td width="300">$corrosionMapHTML</td>
+                        <td width="50"></td>
+                        <td width="300">
                             <span style="font-weight: bold">Type: </span>$task_type
                             <br>
                             <span style="font-weight: bold;">Description: </span>$description
@@ -793,9 +735,9 @@ EOF;
                     <tr height="30"></tr>
 
                     <tr>
-                        <td width="350">$img_dettaglioHTML</td>
-                        <td width="30"></td>
-                        <td width="350"><span style="border-right: 10px solid white; font-weight: bold">Location: </span>$task_location
+                        <td width="300">$img_dettaglioHTML</td>
+                        <td width="50"></td>
+                        <td width="300"><span style="border-right: 10px solid white; font-weight: bold">Location: </span>$task_location
                             <br>
                             <span style="font-weight: bold;">Created: </span>$created_at
                             <br>
@@ -811,13 +753,13 @@ EOF;
         // creo la tabella a seconda delle immagini che ho
         if (!empty($photos_array) && count($photos_array) > 1) {
             $tds_1 = <<<EOF
-                    <td>
+                    <td width="300">
                       <img height="200"  src="file://$photos_array[1]" alt="Corrosion img 1">
                     </td>
 EOF;
             if (isset($photos_array[2])) {
                 $tds_1 .= <<<EOF
-                    <td>
+                    <td width="300">
                       <img height="200"  src="file://$photos_array[2]" alt="Corrosion img 2">
                     </td>
 EOF;
@@ -827,14 +769,14 @@ EOF;
 
             if (isset($photos_array[3])) {
                 $tds_2 = <<<EOF
-                    <td>
+                    <td width="300">
                       <img height="200" src="file://$photos_array[3]" alt="Corrosion img 3">
                     </td>
 EOF;
 
                 if (isset($photos_array[4])) {
                     $tds_2 .= <<<EOF
-                        <td>
+                        <td width="300">
                           <img height="200"  src="file://$photos_array[4]" alt="Corrosion img 4">
                         </td>
 EOF;
@@ -844,7 +786,7 @@ EOF;
             }
 
             $images_table = '<p style="text-align: left;font-size: 16px;font-weight: bold; font-family: Raleway, sans-serif;">Detail photos</p>
-                               <table><tbody>' . $trs . '<tr height="30"></tr></tbody></table>';
+                               <table><tbody>' . $trs . '<tr height="50"></tr></tbody></table>';
 
             $html .= $images_table;
         }
