@@ -700,7 +700,7 @@ class Task extends Model
         if ($corrosionMapFilePath = $this->getCorrosionMapFilePath()) {
             $corrosionMapHTML = <<<EOF
                 <img height="200" src="file://$corrosionMapFilePath" alt="Corrosion Map">
-                EOF;
+EOF;
         }
 
         $point_id = $this->id;
@@ -710,6 +710,12 @@ class Task extends Model
         $description = Utils::sanitizeTextsForPlaceholders($this->description);
         $created_at = $this->created_at;
         $updated_at = $this->updated_at;
+        $img_dettaglioHTML = '';
+        if ($img_dettaglio = $this->getAdditionalPhotoPath()) {
+            $img_dettaglioHTML = <<<EOF
+                <img height="200" src="file://$img_dettaglio" alt="Overview image">
+EOF;
+        }
 
         $html = <<<EOF
             <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Point #$point_id</p>
@@ -729,7 +735,7 @@ class Task extends Model
                     <tr height="30"></tr>
 
                     <tr>
-                        <td>src="file://$img_dettaglio"</td>
+                        <td>$img_dettaglioHTML</td>
                         <td width="30"></td>
                         <td><span style="border-right: 10px solid white; font-weight: bold">Location: </span>$task_location
                             <br>
@@ -785,17 +791,9 @@ EOF;
             $html .= $images_table;
         }
 
-        $img_dettaglioHTML = '';
-        if ($img_dettaglio = $this->getAdditionalPhotoPath()) {
-            $img_dettaglioHTML = <<<EOF
-                <p style="text-align: left;font-size: 16px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Overview photo</p>
-                <img width="760" height="auto" src="file://$img_dettaglio" alt="Overview image">
-
-EOF;
-        }
 
         $html .= <<<EOF
-            $img_dettaglioHTML
+            
             <p style="page-break-before: always;"></p>
 EOF;
         return $html;
