@@ -65,11 +65,13 @@ class Adapter extends AbstractAdapter {
      */
     protected function created(Task $task, $resource)
     {
-        // se mi viene passato un app_log_id, sarà l'app log da cui il task è stato aperto
-        Log::debug("Opening Task {$task->id} from APP LOG {$resource['opener_application_log_id']}");
+        if (isset($resource['opener_application_log_id'])) {
+            // se mi viene passato un app_log_id, sarà l'app log da cui il task è stato aperto
+            Log::debug("Opening Task {$task->id} from APP LOG {$resource['opener_application_log_id']}");
 
-        $application_log = ApplicationLog::findOrFail($resource['opener_application_log_id']);
-        $application_log->opened_tasks()->attach($task->id, ['action' => 'open']);
+            $application_log = ApplicationLog::findOrFail($resource['opener_application_log_id']);
+            $application_log->opened_tasks()->attach($task->id, ['action' => 'open']);
+        }
     }
 
     /**
