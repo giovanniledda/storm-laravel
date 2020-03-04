@@ -123,6 +123,8 @@ class Schema extends SchemaProvider
             'zone' => $zone,
             'opener_application_log_id' => $opener_app_log ? $opener_app_log->id : null,
             'closer_application_log_id' => $closer_app_log ? $closer_app_log->id : null,
+            'opener_application_log_name' => $opener_app_log ? $opener_app_log->name : null,
+            'closer_application_log_name' => $closer_app_log ? $closer_app_log->name : null,
             'created-at' => $resource->created_at->toAtomString(),
             'updated-at' => $resource->updated_at->toAtomString(),
         ];
