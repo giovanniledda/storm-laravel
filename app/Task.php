@@ -699,7 +699,7 @@ class Task extends Model
         $corrosionMapHTML = '';
         if ($corrosionMapFilePath = $this->getCorrosionMapFilePath()) {
             $corrosionMapHTML = <<<EOF
-                <img width="350" src="file://$corrosionMapFilePath" alt="Corrosion Map">
+                <img height="200" src="file://$corrosionMapFilePath" alt="Corrosion Map">
                 EOF;
         }
 
@@ -718,15 +718,19 @@ class Task extends Model
                 <tbody>
                     <tr>
                         <td>$corrosionMapHTML</td>
-                        <td width="400">
+                        <td width="30"></td>
+                        <td>
                             <span style="font-weight: bold">Type: </span>$task_type
                             <br>
                             <span style="font-weight: bold;">Description: </span>$description
                         </td>
                     </tr>
 
+                    <tr height="30"></tr>
+
                     <tr>
-                        <td>$corrosionMapHTML</td>
+                        <td>src="file://$img_dettaglio"</td>
+                        <td width="30"></td>
                         <td><span style="border-right: 10px solid white; font-weight: bold">Location: </span>$task_location
                             <br>
                             <span style="font-weight: bold;">Created: </span>$created_at
@@ -737,72 +741,46 @@ class Task extends Model
                 </tbody>
             </table>
 
-                $corrosionMapHTML
 
-                <table width="700" style="color: #1f519b; font-family: Raleway, sans-serif;">
-                    <tr width="700">
-                        <td width="345"><span style="border-right: 10px solid white; font-weight: bold">Location: </span>$task_location</td>
-                        <td width="345"><span style="font-weight: bold">Type: </span>$task_type</td>
-                    </tr>
-                </table>
-
-                <br>
-
-                <table width="700" style="font-family: Raleway, sans-serif; color: #1f519b;">
-                    <tr width="700">
-                        <td width="345" rowspan="2" style="border-right: 10px solid white; vertical-align: top ;background-color: #eff9fe; padding: 8px">
-                        <span style="font-weight: bold;">Description 2: </span>$description</td>
-
-                        <td width="345" rowspan="1" style="vertical-align: top;background-color: #eff9fe; padding: 8px">
-                        <span style="font-weight: bold;">Created: </span>$created_at</td>
-                    </tr>
-
-                    <tr width="700">
-                        <td width="345" rowspan="1" style="vertical-align: top;background-color: #eff9fe; padding: 8px">
-                        <span style="font-weight: bold;">Last edited: </span>$updated_at</td>
-                    </tr>
-                </table>
-
-                <br>
 
 EOF;
         // creo la tabella a seconda delle immagini che ho
         if (!empty($photos_array) && count($photos_array) > 1) {
             $tds_1 = <<<EOF
-                    <td width="345" align="center" style="border-right: 10px solid white; background-color: black; padding: 0;">
-                      <img width="360" height="auto"  src="file://$photos_array[1]" alt="Corrosion img 1">
+                    <td>
+                      <img height="200"  src="file://$photos_array[1]" alt="Corrosion img 1">
                     </td>
 EOF;
             if (isset($photos_array[2])) {
                 $tds_1 .= <<<EOF
-                    <td width="345" align="center" style="background-color: black; padding: 0;">
-                      <img width="360" height="auto"  src="file://$photos_array[2]" alt="Corrosion img 2">
+                    <td>
+                      <img height="200"  src="file://$photos_array[2]" alt="Corrosion img 2">
                     </td>
 EOF;
             }
 
-            $trs = '<tr width="700">' . $tds_1 . '</tr><br>';
+            $trs = '<tr>' . $tds_1 . '</tr><tr height=30></tr>';
 
             if (isset($photos_array[3])) {
                 $tds_2 = <<<EOF
-                    <td width="345" align="center" style="border-right: 10px solid white; background-color: black;padding: 0">
-                      <img width="360" height="auto"  src="file://$photos_array[3]" alt="Corrosion img 3">
+                    <td>
+                      <img height="200" src="file://$photos_array[3]" alt="Corrosion img 3">
                     </td>
 EOF;
 
                 if (isset($photos_array[4])) {
                     $tds_2 .= <<<EOF
-                        <td width="345" align="center" style="background-color: black;padding: 0;">
-                          <img width="360" height="auto"  src="file://$photos_array[4]" alt="Corrosion img 4">
+                        <td>
+                          <img height="200"  src="file://$photos_array[4]" alt="Corrosion img 4">
                         </td>
 EOF;
                 }
 
-                $trs .= '<tr width="700">' . $tds_2 . '</tr>';
+                $trs .= '<tr>' . $tds_2 . '</tr>';
             }
 
-            $images_table = '<p style="text-align: left;font-size: 16px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Detail photos</p>
-                               <table width="792">' . $trs . '</table><br>';
+            $images_table = '<p style="text-align: left;font-size: 16px;font-weight: bold; font-family: Raleway, sans-serif;">Detail photos</p>
+                               <table><tbody>' . $trs . '<tr height="30"></tr></tbody></table>';
 
             $html .= $images_table;
         }
