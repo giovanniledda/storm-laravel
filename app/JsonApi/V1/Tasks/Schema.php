@@ -91,7 +91,7 @@ class Schema extends SchemaProvider
         $author = $resource->author;
         $comments = $resource->comments()->get();
         $section = Section::select("name")->where('id', $resource->section_id)->first();
-        $intervent_types = TaskInterventType::select("name")->where('id', '=', $resource->intervent_type_id)->first();
+        $intervent_type = $resource->intervent_type;
         $zone = $resource->zone;
         $closer_app_log = $resource->closer_application_log()->first();
         $opener_app_log = $resource->opener_application_log()->first();
@@ -115,7 +115,7 @@ class Schema extends SchemaProvider
             'section_id' => $resource->section_id,
             'section_name' => $section->name,
             'intervent_type_id' => $resource->intervent_type_id,
-            'intervent_type_name' => $intervent_types->name,
+            'intervent_type_name' => $intervent_type ? $intervent_type->name : null,
             'subsection_id' => $resource->subsection_id,
             'x_coord' => $resource->x_coord,
             'y_coord' => $resource->y_coord,
