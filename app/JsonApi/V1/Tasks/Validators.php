@@ -75,11 +75,11 @@ class Validators extends AbstractValidators
         'status' => 'in:'.TASKS_STATUS_DRAFT.','.TASKS_STATUS_SUBMITTED.','.TASKS_STATUS_ACCEPTED.','.TASKS_STATUS_IN_PROGRESS.','.TASKS_STATUS_DENIED.','.TASKS_STATUS_MONITORED.','.TASKS_STATUS_COMPLETED,
         'project_id'=> 'required|numeric|exists:projects,id',
         'section_id'=> 'required|numeric|exists:sections,id',
-        'intervent_type_id'=>'required|numeric|exists:task_intervent_types,id',
         'x_coord'=>'required|numeric',
         'y_coord'=>'required|numeric',
         'zone_id'=> 'numeric|exists:zones,id',
         'task_type'=> 'string|in:'.TASK_TYPE_REMARK.','.TASK_TYPE_PRIMARY,
+        'intervent_type_id'=>'numeric|exists:task_intervent_types,id',
         'opener_application_log_id'=> 'numeric|exists:application_logs,id',
         ];
     }

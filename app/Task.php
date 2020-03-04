@@ -876,7 +876,7 @@ EOF;
     {
         $this->update([
             'is_open' => false,
-            'task_status' => $this->task_type == TASK_TYPE_PRIMARY ? TASKS_STATUS_COMPLETED : TASKS_STATUS_R_CLOSED
+//            'task_status' => $this->task_type == TASK_TYPE_PRIMARY ? TASKS_STATUS_COMPLETED : TASKS_STATUS_R_CLOSED
         ]);
 
         if ($application_log) {
