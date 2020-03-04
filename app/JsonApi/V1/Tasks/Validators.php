@@ -42,7 +42,6 @@ class Validators extends AbstractValidators
             'x_coord.numeric'=> 'x_coord '.VALIDATOR_NUMERIC,
             'y_coord.required'=> 'y_coord '.VALIDATOR_REQUIRED,
             'y_coord.numeric'=> 'y_coord '.VALIDATOR_NUMERIC,
-            'intervent_type_id.required' => 'intervent_type_id '.VALIDATOR_REQUIRED,
             'intervent_type_id.numeric' => 'intervent_type_id '.VALIDATOR_NUMERIC,
             'intervent_type_id.exists' => 'intervent_type_id '.VALIDATOR_EXIST,
             'zone_id.numeric' => 'zone_id '.VALIDATOR_NUMERIC,
@@ -101,10 +100,10 @@ class Validators extends AbstractValidators
            'section_id' => 'required|numeric|exists:sections,id',
            'x_coord' => 'required|numeric',
            'y_coord' => 'required|numeric',
-           'zone_id' => 'numeric|exists:zones,id',
+           'zone_id' => 'nullable|numeric|exists:zones,id',
            'task_type' => 'string|in:' . TASK_TYPE_REMARK . ',' . TASK_TYPE_PRIMARY,
-           'intervent_type_id' => 'required_if:task_type,' . TASK_TYPE_PRIMARY . '|numeric|exists:task_intervent_types,id',
-           'opener_application_log_id' => 'numeric|exists:application_logs,id',
+           'intervent_type_id' => 'nullable|required_if:task_type,' . TASK_TYPE_PRIMARY . '|numeric|exists:task_intervent_types,id',
+           'opener_application_log_id' => 'nullable|numeric|exists:application_logs,id',
         ];
     }
 
