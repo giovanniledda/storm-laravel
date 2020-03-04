@@ -720,7 +720,7 @@ EOF;
         $html = <<<EOF
             <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Point #$point_id</p>
 
-            <table cellpadding="0" cellspacing="0">
+            <table cellpadding="0" cellspacing="0" style="width:750px;">
                 <tbody>
                     <tr>
                         <td>$corrosionMapHTML</td>
@@ -786,7 +786,7 @@ EOF;
             }
 
             $images_table = '<p style="text-align: left;font-size: 16px;font-weight: bold; font-family: Raleway, sans-serif;">Detail photos</p>
-                               <table><tbody>' . $trs . '<tr height="30"></tr></tbody></table>';
+                               <table style="width:750px;"><tbody>' . $trs . '<tr height="30"></tr></tbody></table>';
 
             $html .= $images_table;
         }
