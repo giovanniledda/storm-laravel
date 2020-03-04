@@ -755,9 +755,6 @@ EOF;
             $tds_1 = <<<EOF
                     <td width="750">
                       <img height="200"  src="file://$photos_array[1]" alt="Corrosion img 1">
-                      <img height="200"  src="file://$photos_array[2]" alt="Corrosion img 2">
-                      <img height="200" src="file://$photos_array[3]" alt="Corrosion img 3">
-                      <img height="200"  src="file://$photos_array[4]" alt="Corrosion img 4">
                     </td>
 EOF;
             if (isset($photos_array[2])) {
@@ -779,8 +776,11 @@ EOF;
 
                 if (isset($photos_array[4])) {
                     $tds_2 .= <<<EOF
-                        <td>
-                          <img height="200"  src="file://$photos_array[4]" alt="Corrosion img 4">
+                        <td width="750">
+                          <img height="200"  src="file://$photos_array[1]" alt="Corrosion img 4">
+                          <img height="200"  src="file://$photos_array[2]" alt="Corrosion img 2">
+                        <img height="200" src="file://$photos_array[3]" alt="Corrosion img 3">
+                        <img height="200"  src="file://$photos_array[4]" alt="Corrosion img 4">
                         </td>
 EOF;
                 }
