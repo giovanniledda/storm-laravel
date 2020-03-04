@@ -3,13 +3,27 @@
 namespace App\JsonApi\V1\Tasks;
 
 use CloudCreativity\LaravelJsonApi\Validation\AbstractValidators;
+use phpDocumentor\Reflection\Types\Self_;
+use function array_merge;
+use function explode;
+use function implode;
 use const TASK_TYPE_PRIMARY;
 use const TASK_TYPE_REMARK;
+use const TASKS_R_STATUSES;
+use const TASKS_STATUSES;
 use const VALIDATOR_EXIST;
 use const VALIDATOR_STRING;
 
 class Validators extends AbstractValidators
 {
+
+    /**
+     * @return string
+     */
+    private static function getTaskStatusOptions()
+    {
+        return implode(',', array_merge(TASKS_STATUSES, TASKS_R_STATUSES));
+    }
 
     /**
      * The include paths a client is allowed to request.
@@ -40,7 +54,7 @@ class Validators extends AbstractValidators
         'section_id.numeric'=> 'section_id '.VALIDATOR_NUMERIC,
         'section_id.required'=> 'section_id '.VALIDATOR_REQUIRED,
         'section_id.exists'=> 'section_id '.VALIDATOR_EXIST,
-        'status.in' => 'status '.VALIDATOR_IN.' '.TASKS_STATUS_DRAFT.', '.TASKS_STATUS_SUBMITTED.', '.TASKS_STATUS_ACCEPTED.', '.TASKS_STATUS_IN_PROGRESS.', '.TASKS_STATUS_DENIED.', '.TASKS_STATUS_MONITORED.', '.TASKS_STATUS_COMPLETED,
+        'status.in' => 'status (:input) '.VALIDATOR_IN.' '.TASKS_STATUS_DRAFT.', '.TASKS_STATUS_SUBMITTED.', '.TASKS_STATUS_ACCEPTED.', '.TASKS_STATUS_IN_PROGRESS.', '.TASKS_STATUS_DENIED.', '.TASKS_STATUS_MONITORED.', '.TASKS_STATUS_COMPLETED,
         'x_coord.required'=> 'x_coord '.VALIDATOR_REQUIRED,
         'x_coord.numeric'=> 'x_coord '.VALIDATOR_NUMERIC,
         'y_coord.required'=> 'y_coord '.VALIDATOR_REQUIRED,
@@ -66,13 +80,15 @@ class Validators extends AbstractValidators
      */
     protected function rules($record = null): array
     {
+        $zio = 'in: '.self::getTaskStatusOptions();
+        $r=0;
        return [
         //'title' => 'string|min:1|max:255',
 //        'description' => 'string',
         'number' => 'numeric',
         'worked_hours' => 'numeric',
         'estimated_hours' => 'numeric',
-        'status' => 'in:'.TASKS_STATUS_DRAFT.','.TASKS_STATUS_SUBMITTED.','.TASKS_STATUS_ACCEPTED.','.TASKS_STATUS_IN_PROGRESS.','.TASKS_STATUS_DENIED.','.TASKS_STATUS_MONITORED.','.TASKS_STATUS_COMPLETED,
+        'status' => 'in: '.self::getTaskStatusOptions(),
         'project_id'=> 'required|numeric|exists:projects,id',
         'section_id'=> 'required|numeric|exists:sections,id',
         'x_coord'=>'required|numeric',

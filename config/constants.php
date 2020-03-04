@@ -117,7 +117,7 @@ defined('TASKS_STATUS_ACCEPTED') or define('TASKS_STATUS_ACCEPTED', 'accepted');
 defined('TASKS_STATUS_IN_PROGRESS') or define('TASKS_STATUS_IN_PROGRESS', 'in progress');
 defined('TASKS_STATUS_DENIED') or define('TASKS_STATUS_DENIED', 'denied');
 defined('TASKS_STATUS_MONITORED') or define('TASKS_STATUS_MONITORED', 'monitored');
-defined('TASKS_STATUS_COMPLETED') or define('TASKS_STATUS_COMPLETED', 'completed');  // antonio ti inculo
+defined('TASKS_STATUS_COMPLETED') or define('TASKS_STATUS_COMPLETED', 'completed');
 defined('TASKS_STATUSES') or define('TASKS_STATUSES',
         [
          TASKS_STATUS_DRAFT,
@@ -169,7 +169,7 @@ defined('TASK_INTERVENT_TYPE_OTHER') or define('TASK_INTERVENT_TYPE_OTHER', 'oth
 defined('VALIDATOR_REQUIRED') or define('VALIDATOR_REQUIRED', 'is required and cannot be null');
 defined('VALIDATOR_STRING') or define('VALIDATOR_STRING', 'is not a string');
 defined('VALIDATOR_NUMERIC') or define('VALIDATOR_NUMERIC', 'is not a numeric value');
-defined('VALIDATOR_IN') or define('VALIDATOR_IN', 'is not a valid value, valid values are : ');
+defined('VALIDATOR_IN') or define('VALIDATOR_IN', 'is not a valid value, valid values are: ');
 defined('VALIDATOR_EMAIL') or define('VALIDATOR_EMAIL', 'is not a valid email address');
 defined('VALIDATOR_EMAIL_UNIQUE') or define('VALIDATOR_EMAIL_UNIQUE', 'this email address is already used in the system, please choose another one.');
 defined('VALIDATOR_EXIST') or define('VALIDATOR_EXIST', 'does not exist in the database');
