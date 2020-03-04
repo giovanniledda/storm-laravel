@@ -762,7 +762,9 @@ EOF;
 EOF;
             if (isset($photos_array[2])) {
                 $tds_1 .= <<<EOF
-                    
+                    <td>
+                      <img height="200"  src="file://$photos_array[2]" alt="Corrosion img 2">
+                    </td>
 EOF;
             }
 
@@ -770,19 +772,23 @@ EOF;
 
             if (isset($photos_array[3])) {
                 $tds_2 = <<<EOF
-                    
+                    <td>
+                      <img height="200" src="file://$photos_array[3]" alt="Corrosion img 3">
+                    </td>
 EOF;
 
                 if (isset($photos_array[4])) {
                     $tds_2 .= <<<EOF
-                       
+                        <td>
+                          <img height="200"  src="file://$photos_array[4]" alt="Corrosion img 4">
+                        </td>
 EOF;
                 }
 
                 $trs .= '<tr>' . $tds_2 . '</tr>';
             }
 
-            $images_table = '<br><p style="text-align: left;font-size: 16px;font-weight: bold; font-family: Raleway, sans-serif;">Detail photos</p>
+            $images_table = '<p style="text-align: left;font-size: 16px;font-weight: bold; font-family: Raleway, sans-serif;">Detail photos</p>
                                <table><tbody>' . $trs . '<tr height="50"></tr></tbody></table>';
 
             $html .= $images_table;
