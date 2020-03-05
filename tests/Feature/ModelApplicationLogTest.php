@@ -345,15 +345,24 @@ class ModelApplicationLogTest extends TestCase
         $task6->openMe($second_application_log);
         $this->assertEquals($task6->opener_application_log()->first()->id, $second_application_log->id);
 
-        // finally get "other" tasks
-        $tasks = $second_application_log->getExternallyOpenedRemarksRelatedToMyZones();
+        // finally get "other" tasks for both
+        $first_app_log_tasks_collection = $first_application_log->getExternallyOpenedRemarksRelatedToMyZones();
+        $second_app_log_tasks_collection = $second_application_log->getExternallyOpenedRemarksRelatedToMyZones();
 
-        $this->assertEquals(2, count($first_application_log->getExternallyOpenedRemarksRelatedToMyZones()));
-        $this->assertEquals(4, count($second_application_log->getExternallyOpenedRemarksRelatedToMyZones()));
+//        $this->assertNotEmpty($first_app_log_tasks_collection);
+        $this->assertNotEmpty($second_app_log_tasks_collection);
 
+        // check for 1st app log
         $first_application_log_tasks = [$task1->id, $task2->id, $task4->id, $task5->id];
         $other_application_log_tasks = [$task3->id, $task6->id];
-        foreach ($tasks as $t) {
+
+        foreach ($first_app_log_tasks_collection as $t) {
+            $this->assertNotContains($t->id, $first_application_log_tasks);
+            $this->assertContains($t->id, $other_application_log_tasks);
+        }
+
+        // check for 2nd app log
+        foreach ($second_app_log_tasks_collection as $t) {
             $this->assertContains($t->id, $first_application_log_tasks);
             $this->assertNotContains($t->id, $other_application_log_tasks);
         }
