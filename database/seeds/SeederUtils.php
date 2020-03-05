@@ -381,9 +381,10 @@ class SeederUtils
      * @param ApplicationLog $application_log
      * @param Project $project
      * @param array $zones
+     * @param bool $is_section_started
      * @return ApplicationLogSection
      */
-    public function buildZonesApplicationLogSection(ApplicationLog &$application_log, Project &$project, array $zones = [])
+    public function buildZonesApplicationLogSection(ApplicationLog &$application_log, Project &$project, array $zones = [], bool $is_section_started = false)
     {
         $zones = (count($zones) >= 2) ? $zones : $project->zones;
         $z1 = (count($zones) >= 2) ? $zones[0] : $this->faker->randomElement($zones);
@@ -392,6 +393,7 @@ class SeederUtils
         $section_zone = factory(ApplicationLogSection::class)->create([
             'application_log_id' => $application_log->id,
             'section_type' => APPLICATION_LOG_SECTION_TYPE_ZONES,
+            'is_started' => $is_section_started,
         ]);
 
         $za_ib_1 = factory(ZoneAnalysisInfoBlock::class)->create([

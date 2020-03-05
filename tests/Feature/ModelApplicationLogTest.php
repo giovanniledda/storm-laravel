@@ -230,7 +230,7 @@ class ModelApplicationLogTest extends TestCase
 
         // Adding "ZONES" section to app log
         /** @var ApplicationLogSection $section_zone */
-        $section_zone = $utils->buildZonesApplicationLogSection($first_application_log, $project);  // this creates 2 zones_ib related to 2 random zones of the project (*)
+        $section_zone = $utils->buildZonesApplicationLogSection($first_application_log, $project, [], true);  // this creates 2 zones_ib related to 2 random zones of the project (*)
         $first_application_log->application_log_sections()->save($section_zone);
 
         // extract the choosen zones (*)
@@ -335,7 +335,7 @@ class ModelApplicationLogTest extends TestCase
 
         // Adding "ZONES" section to app log
         /** @var ApplicationLogSection $section_zone */
-        $section_zone2 = $utils->buildZonesApplicationLogSection($second_application_log, $project, $zones);  // this creates 2 zones_ib related to $zones parameter
+        $section_zone2 = $utils->buildZonesApplicationLogSection($second_application_log, $project, $zones, true);  // this creates 2 zones_ib related to $zones parameter
         $second_application_log->application_log_sections()->save($section_zone2); // ...now $first_application_log and $other_application_log have $zones in common
 
         // opening the remaining two remark from $other_application_log
@@ -349,7 +349,7 @@ class ModelApplicationLogTest extends TestCase
         $first_app_log_tasks_collection = $first_application_log->getExternallyOpenedRemarksRelatedToMyZones();
         $second_app_log_tasks_collection = $second_application_log->getExternallyOpenedRemarksRelatedToMyZones();
 
-//        $this->assertNotEmpty($first_app_log_tasks_collection);
+        $this->assertNotEmpty($first_app_log_tasks_collection);
         $this->assertNotEmpty($second_app_log_tasks_collection);
 
         // check for 1st app log
