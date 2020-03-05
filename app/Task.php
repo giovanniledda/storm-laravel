@@ -766,7 +766,7 @@ EOF;
 EOF;
             }
 
-            $trs = '<tr>' . $tds_1 . '</tr><tr height=30></tr>';
+//            $trs = '<tr>' . $tds_1 . '</tr><tr height=30></tr>';
 
             if (isset($photos_array[3])) {
                 $tds_2 = <<<EOF
@@ -783,7 +783,7 @@ EOF;
 EOF;
                 }
 
-                $trs .= '<tr>' . $tds_2 . '</tr>';
+                $trs = '<tr>' . $tds_1 .$tds_2 . '</tr>';
             }
 
             $images_table = '<p style="text-align: left;font-size: 16px;font-weight: bold; font-family: Raleway, sans-serif;">Detail photos</p>
@@ -794,7 +794,7 @@ EOF;
 
 
         $html .= <<<EOF
-            
+
             <p style="page-break-before: always;"></p>
 EOF;
         return $html;

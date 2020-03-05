@@ -76,7 +76,7 @@ class ApplicationLogController extends Controller
     {
         try {
 
-            $remarks = $app_log->getOpenedRemarksFromMyZones();
+            $remarks = $app_log->getExternallyOpenedRemarksRelatedToMyZones();
             return Utils::renderStandardJsonapiResponse(['data' => $remarks], 200);
 
         } catch (\Exception $e) {

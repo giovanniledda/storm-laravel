@@ -159,7 +159,7 @@ class Adapter extends AbstractAdapter {
         if ($exclude_opener_application_log_id = $filters->get('exclude_opener_application_log_id')) {
             /** @var ApplicationLog $application_log */
             $application_log = ApplicationLog::findOrFail($exclude_opener_application_log_id);
-            $other_tasks_ids = $application_log->getOpenedRemarksFromMyZones(true);
+            $other_tasks_ids = $application_log->getExternallyOpenedRemarksRelatedToMyZones(true);
             $query->whereIn('tasks.id', $other_tasks_ids);
         }
 

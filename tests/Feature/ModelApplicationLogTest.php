@@ -330,29 +330,32 @@ class ModelApplicationLogTest extends TestCase
 
 
         // Now I've to create a different App Log wich uses the same zones in its zone_ib
-        /** @var ApplicationLog $other_application_log */
-        $other_application_log = factory(ApplicationLog::class)->create();
+        /** @var ApplicationLog $second_application_log */
+        $second_application_log = factory(ApplicationLog::class)->create();
 
         // Adding "ZONES" section to app log
         /** @var ApplicationLogSection $section_zone */
-        $section_zone2 = $utils->buildZonesApplicationLogSection($other_application_log, $project, $zones);  // this creates 2 zones_ib related to $zones parameter
-        $other_application_log->application_log_sections()->save($section_zone2); // ...now $first_application_log and $other_application_log have $zones in common
+        $section_zone2 = $utils->buildZonesApplicationLogSection($second_application_log, $project, $zones);  // this creates 2 zones_ib related to $zones parameter
+        $second_application_log->application_log_sections()->save($section_zone2); // ...now $first_application_log and $other_application_log have $zones in common
 
         // opening the remaining two remark from $other_application_log
-        $task3->openMe($other_application_log);
-        $this->assertEquals($task3->opener_application_log()->first()->id, $other_application_log->id);
+        $task3->openMe($second_application_log);
+        $this->assertEquals($task3->opener_application_log()->first()->id, $second_application_log->id);
 
-        $task6->openMe($other_application_log);
-        $this->assertEquals($task6->opener_application_log()->first()->id, $other_application_log->id);
+        $task6->openMe($second_application_log);
+        $this->assertEquals($task6->opener_application_log()->first()->id, $second_application_log->id);
 
         // finally get "other" tasks
-        $tasks = $other_application_log->getOpenedRemarksFromMyZones();
+        $tasks = $second_application_log->getExternallyOpenedRemarksRelatedToMyZones();
+
+        $this->assertEquals(2, count($first_application_log->getExternallyOpenedRemarksRelatedToMyZones()));
+        $this->assertEquals(4, count($second_application_log->getExternallyOpenedRemarksRelatedToMyZones()));
 
         $first_application_log_tasks = [$task1->id, $task2->id, $task4->id, $task5->id];
-        $my_tasks = [$task3->id, $task6->id];
+        $other_application_log_tasks = [$task3->id, $task6->id];
         foreach ($tasks as $t) {
             $this->assertContains($t->id, $first_application_log_tasks);
-            $this->assertNotContains($t->id, $my_tasks);
+            $this->assertNotContains($t->id, $other_application_log_tasks);
         }
     }
 }

@@ -174,9 +174,9 @@ class ApplicationLog extends Model
      * If the AppLog has a "zones" section, this function gets the remarks associated with those zones
      *
      * @param bool $apply_pluck
-     * @return array
+     * @return array|mixed
      */
-    public function getOpenedRemarksFromMyZones($apply_pluck = false)
+    public function getExternallyOpenedRemarksRelatedToMyZones($apply_pluck = false)
     {
         $other_remarks = [];
         $used_zones = $this->getUsedZones();
@@ -327,7 +327,8 @@ class ApplicationLog extends Model
             'application_type' => $this->application_type,
             'last_editor' => $this->last_editor_for_api(),
             'started_sections' => $this->getStartedSections()->pluck('section_type'),
-            'zones' => $this->getUsedZones()
+            'zones' => $this->getUsedZones(),
+            'remarks_num' => count($this->getExternallyOpenedRemarksRelatedToMyZones()),
         ];
     }
 }
