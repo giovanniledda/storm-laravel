@@ -711,8 +711,10 @@ EOF;
         $created_at = $this->created_at;
         $updated_at = $this->updated_at;
 
+        $first_history = $this->getFirstHistory();
         $img_dettaglioHTML = '<h1>No photo available</h1>';
-        if ($img_dettaglio = $this->getAdditionalPhotoPath()) {
+        if ($first_history && $first_history->getAdditionalPhotoPath()) {
+            $img_dettaglio = $first_history->getAdditionalPhotoPath();
             $img_dettaglioHTML = <<<EOF
                 <img height="200" src="file://$img_dettaglio" alt="Overview image">
 EOF;
