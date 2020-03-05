@@ -725,7 +725,7 @@ EOF;
                     <tr>
                         <td width="300">$corrosionMapHTML</td>
                         <td width="50"></td>
-                        <td width="300">
+                        <td width="300" valign="top">
                             <span style="font-weight: bold">Type: </span>$task_type
                             <br>
                             <span style="font-weight: bold;">Description: </span>$description
@@ -737,7 +737,7 @@ EOF;
                     <tr>
                         <td width="300">$img_dettaglioHTML</td>
                         <td width="50"></td>
-                        <td width="300"><span style="border-right: 10px solid white; font-weight: bold">Location: </span>$task_location
+                        <td width="300" valign="top"><span style="border-right: 10px solid white; font-weight: bold">Location: </span>$task_location
                             <br>
                             <span style="font-weight: bold;">Created: </span>$created_at
                             <br>
@@ -753,14 +753,14 @@ EOF;
         // creo la tabella a seconda delle immagini che ho
         if (!empty($photos_array) && count($photos_array) > 1) {
             $tds_1 = <<<EOF
-                    <td width="750">
-                      <img height="200"  src="file://$photos_array[1]" alt="Corrosion img 1">
+                    <td width="300">
+                        <img width="300" src="file://$photos_array[1]" alt="Corrosion img 1">
                     </td>
 EOF;
             if (isset($photos_array[2])) {
                 $tds_1 .= <<<EOF
-                    <td>
-                      <img height="200"  src="file://$photos_array[2]" alt="Corrosion img 2">
+                    <td width="300">
+                        <img width="300" src="file://$photos_array[2]" alt="Corrosion img 2">
                     </td>
 EOF;
             }
@@ -769,18 +769,15 @@ EOF;
 
             if (isset($photos_array[3])) {
                 $tds_2 = <<<EOF
-                    <td>
-                      <img height="200" src="file://$photos_array[3]" alt="Corrosion img 3">
+                    <td width="300">
+                        <img width="300" src="file://$photos_array[3]" alt="Corrosion img 3">
                     </td>
 EOF;
 
                 if (isset($photos_array[4])) {
                     $tds_2 .= <<<EOF
-                        <td width="750">
-                          <img height="200"  src="file://$photos_array[1]" alt="Corrosion img 4">
-                          <img height="200"  src="file://$photos_array[2]" alt="Corrosion img 2">
-                        <img height="200" src="file://$photos_array[3]" alt="Corrosion img 3">
-                        <img height="200"  src="file://$photos_array[4]" alt="Corrosion img 4">
+                        <td width="300">
+                            <img width="300"  src="file://$photos_array[4]" alt="Corrosion img 4">
                         </td>
 EOF;
                 }
