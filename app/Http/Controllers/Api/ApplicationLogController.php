@@ -61,7 +61,7 @@ class ApplicationLogController extends Controller
             return Utils::renderStandardJsonapiResponse([], 204);
 
         } catch (\Exception $e) {
-            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error creating zones", $e->getMessage());
+            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error closing remarks", $e->getMessage());
         }
     }
 
@@ -80,7 +80,26 @@ class ApplicationLogController extends Controller
             return Utils::renderStandardJsonapiResponse(['data' => $remarks], 200);
 
         } catch (\Exception $e) {
-            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error creating zones", $e->getMessage());
+            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error retrieving remarks", $e->getMessage());
+        }
+    }
+
+    /**
+     * #AL04 api/v1/application-logs/{id}/zones
+     *
+     * @param Request $request
+     * @param ApplicationLog $app_log
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
+     */
+    public function getZones(Request $request, ApplicationLog $app_log)
+    {
+        try {
+
+            $zones = $app_log->getUsedZones();
+            return Utils::renderStandardJsonapiResponse(['data' => $zones], 200);
+
+        } catch (\Exception $e) {
+            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error retrieving zones", $e->getMessage());
         }
     }
 

@@ -200,6 +200,11 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
             $project->get('{record}/other-remarks', 'otherRemarks')->name('other-remarks');
         });
 
+        $api->resource('application-logs')->only('zones')->controller('ApplicationLogController') //uses the App\Http\Controllers\Api\ProjectController
+        ->routes(function ($project) {
+            $project->get('{record}/zones', 'getZones')->name('zones');
+        });
+
         /** APPLICATION LOG STUFF - END */
 
         $api->resource('histories');
