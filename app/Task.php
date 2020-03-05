@@ -710,6 +710,7 @@ EOF;
         $description = Utils::sanitizeTextsForPlaceholders($this->description);
         $created_at = $this->created_at;
         $updated_at = $this->updated_at;
+
         $img_dettaglioHTML = '';
         if ($img_dettaglio = $this->getAdditionalPhotoPath()) {
             $img_dettaglioHTML = <<<EOF
@@ -754,13 +755,13 @@ EOF;
         if (!empty($photos_array) && count($photos_array) > 1) {
             $tds_1 = <<<EOF
                     <td width="300">
-                        <img width="300" src="file://$photos_array[1]" alt="Corrosion img 1">
+                        <img width="400" src="file://$photos_array[1]" alt="Corrosion img 1">
                     </td>
 EOF;
             if (isset($photos_array[2])) {
                 $tds_1 .= <<<EOF
                     <td width="300">
-                        <img width="300" src="file://$photos_array[2]" alt="Corrosion img 2">
+                        <img width="400" src="file://$photos_array[2]" alt="Corrosion img 2">
                     </td>
 EOF;
             }
@@ -770,14 +771,14 @@ EOF;
             if (isset($photos_array[3])) {
                 $tds_2 = <<<EOF
                     <td width="300">
-                        <img width="300" src="file://$photos_array[3]" alt="Corrosion img 3">
+                        <img width="400" src="file://$photos_array[3]" alt="Corrosion img 3">
                     </td>
 EOF;
 
                 if (isset($photos_array[4])) {
                     $tds_2 .= <<<EOF
                         <td width="300">
-                            <img width="300"  src="file://$photos_array[4]" alt="Corrosion img 4">
+                            <img width="400"  src="file://$photos_array[4]" alt="Corrosion img 4">
                         </td>
 EOF;
                 }
@@ -786,7 +787,7 @@ EOF;
             }
 
             $images_table = '<p style="text-align: left;font-size: 16px;font-weight: bold; font-family: Raleway, sans-serif;">Detail photos</p>
-                               <table><tbody>' . $trs . '<tr height="50"></tr></tbody></table>';
+                               <table><tbody>' . $trs . '</tbody></table>';
 
             $html .= $images_table;
         }
