@@ -703,7 +703,7 @@ class Task extends Model
 EOF;
         }
 
-        $point_id = $this->id;
+        $point_id = $this->internal_progressive_number;
         $task_location = $this->section ? Utils::sanitizeTextsForPlaceholders($this->section->name) : '?';
         $task_type = $this->intervent_type ? Utils::sanitizeTextsForPlaceholders($this->intervent_type->name) : '?';
         //         'task_status' => Utils::sanitizeTextsForPlaceholders($task->task_status),
