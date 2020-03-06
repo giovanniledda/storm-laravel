@@ -328,7 +328,7 @@ class ApplicationLog extends Model
             'last_editor' => $this->last_editor_for_api(),
             'started_sections' => $this->getStartedSections()->pluck('section_type'),
             'zones' => $this->getUsedZones(),
-            'remarks_num' => count($this->getExternallyOpenedRemarksRelatedToMyZones()),
+            'remarks_num' => $this->opened_tasks()->count(),
         ];
     }
 }
