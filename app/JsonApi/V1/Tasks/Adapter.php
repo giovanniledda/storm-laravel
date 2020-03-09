@@ -150,9 +150,10 @@ class Adapter extends AbstractAdapter {
         }
 
         if ($opener_application_log_id = $filters->get('opener_application_log_id')) {
-            $query->join('applications_logs_tasks', 'applications_logs_tasks.task_id', '=', 'tasks.id')
-            ->where('applications_logs_tasks.application_log_id', '=', $opener_application_log_id)
-            ->where('applications_logs_tasks.action', '=', 'open');
+            $query->select('tasks.*')
+                ->join('applications_logs_tasks', 'applications_logs_tasks.task_id', '=', 'tasks.id')
+                ->where('applications_logs_tasks.application_log_id', '=', $opener_application_log_id)
+                ->where('applications_logs_tasks.action', '=', 'open');
         }
 
         // per ottenere lo schema jsonAPI dei Task, forzo così, non è il massimo, vedere se è possibile ottimizzare in qualche modo senza dover ciclare sui risultati
