@@ -70,7 +70,7 @@ class TaskController extends Controller
 
     public function generateMap(Request $request, $related)
     {
-        //$task = Task::findOrFail($related->id);
+//        $task = Task::findOrFail($related->id);
         $task = $request->record;
         return $task->updateMap();
 

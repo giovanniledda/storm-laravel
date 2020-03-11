@@ -400,7 +400,7 @@ trait TemplateReplacementRules
                 'legendPos' => 'b',
                 'legendOverlay' => '0',
                 'haxLabel' => 'Time',
-                'vaxLabel' => 0,
+                'vaxLabel' => $vax_label,
                 'haxLabelDisplay' => 'vertical',
                 'vaxLabelDisplay' => 0,
                 'hgrid' => '1',
