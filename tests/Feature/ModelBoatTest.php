@@ -3,9 +3,16 @@
 namespace Tests\Feature;
 
 use App\Boat;
+use App\Profession;
+use App\Project;
+use App\ProjectUser;
 use App\Section;
 use App\Subsection;
 use Tests\TestCase;
+use App\User;
+use function factory;
+use const PROJECT_STATUS_CLOSED;
+use const PROJECT_STATUS_IN_SITE;
 
 class ModelBoatTest extends TestCase
 {
@@ -37,5 +44,56 @@ class ModelBoatTest extends TestCase
         $this->assertCount(count($all_subsections), $boat->subsections);
     }
 
+
+    function test_access_only_my_boats()
+    {
+        $boats = factory(Boat::class, 3)->create();
+
+        $project = factory(Project::class)->create([
+            'project_status' => PROJECT_STATUS_IN_SITE
+        ]);
+
+        // associo le 3 boat al progetto $project
+        foreach ($boats as $boat) {
+            $project->boat()->associate($boat)->save();
+            $this->assertEquals($boat->name, $project->boat->name);
+        }
+
+        // creo un utente e lo associo al progetto $project
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $profession = factory(Profession::class)->create();
+        ProjectUser::createOneIfNotExists($user->id, $project->id, $profession->id);
+
+        // faccio lo stesso...con altre 3 barche, un altro progetto $project2 e un altro utente $user2
+
+        $boats2 = factory(Boat::class, 3)->create();
+
+        $project2 = factory(Project::class)->create([
+            'project_status' => PROJECT_STATUS_IN_SITE
+        ]);
+
+        foreach ($boats2 as $boat) {
+            $project2->boat()->associate($boat)->save();
+            $this->assertEquals($boat->name, $project2->boat->name);
+        }
+
+        /** @var User $user2 */
+        $user2 = factory(User::class)->create();
+        $profession2 = factory(Profession::class)->create();
+        ProjectUser::createOneIfNotExists($user2->id, $project2->id, $profession2->id);
+
+        // TEST: $user1 non deve vedere le $boats2 e $user2 non deve vedere le $boats
+
+        $user1_boats_ids = $user->boatsOfMyActiveProjects(true);
+        foreach ($boats2 as $boat2) {
+            $this->assertNotContains($boat2->id, $user1_boats_ids);
+        }
+
+        $user2_boats_ids = $user2->boatsOfMyActiveProjects(true);
+        foreach ($boats as $boat1) {
+            $this->assertNotContains($boat1->id, $user2_boats_ids);
+        }
+    }
 
 }

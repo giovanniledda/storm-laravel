@@ -127,21 +127,42 @@ class User extends Authenticatable
         return $this->projects()->where('project_status', '!=', PROJECT_STATUS_CLOSED)->get();
     }
 
-    public function boatsOfMyClosedProjects()
+    /**
+     * @param bool $return_ids
+     * @return \Illuminate\Support\Collection
+     */
+    public function boatsOfMyClosedProjects($return_ids = false)
     {
         $boat_ids = $this->closedProjects()->pluck('boat_id');
+        if ($return_ids) {
+            return $boat_ids;
+        }
         return Boat::whereIn('id', $boat_ids)->get();
     }
 
-    public function boatsOfMyActiveProjects()
+    /**
+     * @param bool $return_ids
+     * @return \Illuminate\Support\Collection
+     */
+    public function boatsOfMyActiveProjects($return_ids = false)
     {
         $boat_ids = $this->activeProjects()->pluck('boat_id');
+        if ($return_ids) {
+            return $boat_ids;
+        }
         return Boat::whereIn('id', $boat_ids)->get();
     }
 
-    public function boatsOfMyProjects()
+    /**
+     * @param bool $return_ids
+     * @return \Illuminate\Support\Collection
+     */
+    public function boatsOfMyProjects($return_ids = false)
     {
         $boat_ids = $this->projects()->pluck('boat_id');
+        if ($return_ids) {
+            return $boat_ids;
+        }
         return Boat::whereIn('id', $boat_ids)->get();
     }
 
