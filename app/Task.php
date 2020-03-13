@@ -721,6 +721,9 @@ EOF;
         }
 
         $html = <<<EOF
+            <h1>H1 - Point #$point_id - H1</h1>
+            <h2>H2 - Point #$point_id - H2</h2>
+            <h3>H3 - Point #$point_id - H3</h3>
             <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Point #$point_id</p>
 
             <table cellpadding="0" cellspacing="0">
