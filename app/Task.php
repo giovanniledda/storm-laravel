@@ -732,16 +732,16 @@ EOF;
         $author_comment = '';
         $description = Utils::sanitizeTextsForPlaceholders($this->description);
         if ($description) {
-            $author_comment = "<br><br>The author added this comment:</span><br><span style=\"background-color: #ececec; width: 100%; padding: 8px\">$description</span>";
+            $author_comment = "<br><br>The author added this comment:</span><br><span style='background-color: #ececec; width: 100%; padding: 8px'>$description</span>";
         }
 
         $task_type_status_str = '';
         if ($task_type == TASK_TYPE_PRIMARY) {
-            $task_type_status_str = "<span>This task <span style=\"opacity: 0.6\">(#$point_id)</span> is currently <b>$status</b>, and was last updated on $updated_at.</span><span>.";
-            $task_definition = "<span style=\"line-height: 20px\">This task was created on $created_at. The task is located on<b> $task_location </b> and was classified as <b> $task_intervent_type.</b>";
+            $task_type_status_str = "<span>This task <span style='opacity: 0.6'>(#$point_id)</span> is currently <b>$status</b>, and was last updated on $updated_at.</span><span>.";
+            $task_definition = "<span style='line-height: 20px'>This task was created on $created_at. The task is located on<b> $task_location </b> and was classified as <b> $task_intervent_type.</b>";
         } else {
-            $task_type_status_str = "<span>This remark <span style=\"opacity: 0.6\">(#$point_id)</span> is classified as <b>$status</b>, and was last updated on $updated_at </span><span>.";
-            $task_definition = "<span style=\"line-height: 20px\">This remark was created on $created_at. The remark is located on<b> $task_location.";
+            $task_type_status_str = "<span>This remark <span style='opacity: 0.6'>(#$point_id)</span> is classified as <b>$status</b>, and was last updated on $updated_at </span><span>.";
+            $task_definition = "<span style='line-height: 20px'>This remark was created on $created_at. The remark is located on<b> $task_location.";
         }
 
         $html = <<<EOF
