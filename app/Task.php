@@ -699,7 +699,7 @@ class Task extends Model
         $corrosionMapHTML = '';
         if ($corrosionMapFilePath = $this->getCorrosionMapFilePath()) {
             $corrosionMapHTML = <<<EOF
-                <img width="466" src="file://$corrosionMapFilePath" alt="Corrosion Map">
+                <img width="400" src="file://$corrosionMapFilePath" alt="Corrosion Map">
 EOF;
         }
 
@@ -716,7 +716,7 @@ EOF;
         if ($first_history && $first_history->getAdditionalPhotoPath()) {
             $img_dettaglio = $first_history->getAdditionalPhotoPath();
             $img_dettaglioHTML = <<<EOF
-                <img width="466" src="file://$img_dettaglio" alt="Overview image">
+                <img width="400" src="file://$img_dettaglio" alt="Overview image">
 EOF;
         }
 
@@ -726,34 +726,22 @@ EOF;
             <table cellpadding="0" cellspacing="0">
                 <tbody>
                     <tr>
-                        <td width="350" style="border: 1px solid #ececec">$corrosionMapHTML</td>
+                        <td width="300" style="border: 1px solid #ececec">$corrosionMapHTML</td>
                         <td width="30"></td>
-                        <td width="300" valign="top">
-                            <span style="font-weight: bold; color: #1f519b;">Latest update</span>
-                            <br>
-                            <span style="">Last edited: </span>$updated_at
-                            <br>
-                            <span style="">Status: </span>
-                            <br>
-                            <span style="">Description: </span>$description
+                        <td width="350" valign="top">
+                            <span style="font-weight: bold; color: #1f519b;">Latest update</span><br>
+                            <span>This task (#$point_id) is currently <b>status</b>, updated on $updated_at</span><span style="">. The author added this comment: "$description"</span>
                         </td>
                     </tr>
 
                     <tr height="30"></tr>
 
                     <tr>
-                        <td width="350">$img_dettaglioHTML</td>
+                        <td width="300">$img_dettaglioHTML</td>
                         <td width="30"></td>
-                        <td width="300" valign="top">
-                            <span style="border: 1px solid #ececec; color: #1f519b; font-weight: bold">Overview</span>
-                            <br>
-                            <span style="">Created: </span>$created_at
-                            <br>
-                            <span style="">Type: </span>$task_type
-                            <br>
-                            <span style="">Location: </span>$task_location
-                            <br>
-                            <span style="">Zone: </span>    
+                        <td width="350" valign="top">
+                            <span style="border: 1px solid #ececec; color: #1f519b; font-weight: bold">Overview</span><br>
+                            <span>This task was created on $created_at. The problem classification is <b>$task_type</b> and was located on <b>$task_location</b>. If available, more precisely descrepted here: <b>zone</b>.</span>
                         </td>
                     </tr>
                 </tbody>
