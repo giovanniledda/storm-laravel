@@ -715,6 +715,7 @@ EOF;
         $description = Utils::sanitizeTextsForPlaceholders($this->description);
         $created_at = $this->created_at;
         $updated_at = $this->updated_at;
+        $status = $this->task_status;
 
         $first_history = $this->getFirstHistory();
         $img_dettaglioHTML = '<div style="color: #666666; text-align: center; width: 100%;">No overview photo available</div>';
@@ -735,7 +736,7 @@ EOF;
                         <td width="30"></td>
                         <td width="350" valign="top">
                             <span style="font-weight: bold; color: #1f519b;">Latest update</span><br>
-                            <span>This task <span style="opacity: 0.6">( #$point_id )</span> is currently <b>status</b>, and was last updated on $updated_at </span><span>.
+                            <span>This task <span style="opacity: 0.6">( #$point_id )</span> is currently <b>$status</b>, and was last updated on $updated_at </span><span>.
                         </td>
                     </tr>
 
