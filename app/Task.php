@@ -813,7 +813,7 @@ EOF;
 
             $html .= $images_table;
         } else {
-            $html .= '<br><br><span style="text-align: left;font-size: 16px;font-weight: bold; font-family: Raleway, sans-serif; color: #1f519b;">Detail photos</span><span>No photos available.</span>';
+            $html .= '<br><br><span style="text-align: left;font-size: 16px;font-weight: bold; font-family: Raleway, sans-serif; color: #1f519b;">Detail photos</span><br><span>No photos available.</span>';
         }
 
         $html .= <<<EOF
