@@ -699,7 +699,7 @@ class Task extends Model
         $corrosionMapHTML = '';
         if ($corrosionMapFilePath = $this->getCorrosionMapFilePath()) {
             $corrosionMapHTML = <<<EOF
-                <img height="200" src="file://$corrosionMapFilePath" alt="Corrosion Map">
+                <img width="466" src="file://$corrosionMapFilePath" alt="Corrosion Map">
 EOF;
         }
 
@@ -712,7 +712,7 @@ EOF;
         $updated_at = $this->updated_at;
 
         $first_history = $this->getFirstHistory();
-        $img_dettaglioHTML = '<div style="background-color: #ececec; color: #666666; text-align: center; height: 200px; vertical-align: middle; font-size: 24px; line-height: 32px;">No overview photo available</div>';
+        $img_dettaglioHTML = '<div style="background-color: #ececec; color: #666666; text-align: center; width: 350px; line-height: 128px">No overview photo available</div>';
         if ($first_history && $first_history->getAdditionalPhotoPath()) {
             $img_dettaglio = $first_history->getAdditionalPhotoPath();
             $img_dettaglioHTML = <<<EOF
@@ -731,11 +731,11 @@ EOF;
                         <td width="300" valign="top">
                             <span style="font-weight: bold; color: #1f519b;">Latest update</span>
                             <br>
-                            <span style="font-weight: bold;">Last edited: </span>$updated_at
+                            <span style="">Last edited: </span>$updated_at
                             <br>
-                            <span style="font-weight: bold">Status: </span>
+                            <span style="">Status: </span>
                             <br>
-                            <span style="font-weight: bold;">Description: </span>$description
+                            <span style="">Description: </span>$description
                         </td>
                     </tr>
 
@@ -745,22 +745,15 @@ EOF;
                         <td width="350">$img_dettaglioHTML</td>
                         <td width="30"></td>
                         <td width="300" valign="top">
-                            <span style="font-weight: bold; color: #1f519b;">Overview</span>
+                            <span style="color: #1f519b;">Overview</span>
                             <br>
-                            <ul>
-                              <li>
-                                <span style="font-weight: bold;">Created: </span>$created_at
-                              </li>
-                              <li>
-                                <span style="font-weight: bold">Type: </span>$task_type
-                              </li>
-                              <li>
-                                <span style="font-weight: bold">Location: </span>$task_location
-                              </li>
-                              <li>
-                                <span style="font-weight: bold">Zone: </span>
-                              </li>
-                            </ul>
+                            <span style="">Created: </span>$created_at
+                            <br>
+                            <span style="">Type: </span>$task_type
+                            <br>
+                            <span style="">Location: </span>$task_location
+                            <br>
+                            <span style="">Zone: </span>$task_location    
                         </td>
                     </tr>
                 </tbody>
