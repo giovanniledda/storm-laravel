@@ -19,6 +19,7 @@ use function array_push;
 use function explode;
 use function in_array;
 use function is_object;
+use function strtoupper;
 use const PROJECT_STATUS_CLOSED;
 use const TASK_TYPE_PRIMARY;
 use const TASK_TYPE_REMARK;
@@ -710,12 +711,13 @@ EOF;
 
         $point_id = $this->internal_progressive_number;
         $task_location = $this->section ? Utils::sanitizeTextsForPlaceholders($this->section->name) : '?';
-        $task_type = $this->intervent_type ? Utils::sanitizeTextsForPlaceholders($this->intervent_type->name) : '?';
+        $task_intervent_type = $this->intervent_type ? Utils::sanitizeTextsForPlaceholders($this->intervent_type->name) : '?';
         //         'task_status' => Utils::sanitizeTextsForPlaceholders($task->task_status),
         $description = Utils::sanitizeTextsForPlaceholders($this->description);
         $created_at = $this->created_at;
         $updated_at = $this->updated_at;
         $status = $this->task_status;
+        $task_type = strtoupper($this->task_type);
 
         $first_history = $this->getFirstHistory();
         $img_dettaglioHTML = '<div style="color: #666666; text-align: center; width: 100%;">No overview photo available</div>';
@@ -736,7 +738,7 @@ EOF;
                         <td width="30"></td>
                         <td width="350" valign="top">
                             <span style="font-weight: bold; color: #1f519b;">Latest update</span><br>
-                            <span>This task <span style="opacity: 0.6">( #$point_id )</span> is currently <b>$status</b>, and was last updated on $updated_at </span><span>.
+                            <span>This task [$task_type] <span style="opacity: 0.6">( #$point_id )</span> is currently <b>$status</b>, and was last updated on $updated_at </span><span>.
                         </td>
                     </tr>
 
@@ -747,7 +749,7 @@ EOF;
                         <td width="30"></td>
                         <td width="350" valign="top">
                             <span style="border: 1px solid #ececec; color: #1f519b; font-weight: bold">Overview</span><br>
-                            <span style="line-height: 20px">This task was created on $created_at . The task is located on<b> $task_location </b> and was classified as <b> $task_type </b>. <br><br>The author added this comment:</span><br>
+                            <span style="line-height: 20px">This task was created on $created_at . The task is located on<b> $task_location </b> and was classified as <b> $task_intervent_type </b>. <br><br>The author added this comment:</span><br>
                             <span style="background-color: #ececec; width: 100%; padding: 8px">$description</span>
                         </td>
                     </tr>
