@@ -712,7 +712,7 @@ EOF;
         $updated_at = $this->updated_at;
 
         $first_history = $this->getFirstHistory();
-        $img_dettaglioHTML = '<div style="background-color: #ececec; color: #666666; text-align: center; width: 100%; height: 300px">No overview photo available</div>';
+        $img_dettaglioHTML = '<div style="border: 1px solid #ececec; color: #666666; text-align: center; width: 100%;">No overview photo available</div>';
         if ($first_history && $first_history->getAdditionalPhotoPath()) {
             $img_dettaglio = $first_history->getAdditionalPhotoPath();
             $img_dettaglioHTML = <<<EOF
@@ -745,7 +745,7 @@ EOF;
                         <td width="350">$img_dettaglioHTML</td>
                         <td width="30"></td>
                         <td width="300" valign="top">
-                            <span style="color: #1f519b;">Overview</span>
+                            <span style="color: #1f519b; font-weight: bold">Overview</span>
                             <br>
                             <span style="">Created: </span>$created_at
                             <br>
