@@ -117,5 +117,8 @@ class ModelZoneTest extends TestCase
             $this->assertEquals($zone_analysis_info_block->zone->id, $zone_child1->id); // testo la relazione inversa
             $this->assertContains($zone_analysis_info_block->id, $zone_child1->zone_analysis_info_blocks()->pluck('id')) ;
         }
+
+
+
     }
 }

@@ -91,8 +91,12 @@ class Schema extends SchemaProvider
         $author = $resource->author;
         $comments = $resource->comments()->get();
         $section = Section::select("name")->where('id', $resource->section_id)->first();
-        $intervent_types = TaskInterventType::select("name")->where('id', '=', $resource->intervent_type_id)->first();
+        $intervent_type = $resource->intervent_type;
+        $zone = $resource->zone;
+        $closer_app_log = $resource->closer_application_log()->first();
+        $opener_app_log = $resource->opener_application_log()->first();
         return [
+            'task_type' => $resource->task_type,
             'description' => $resource->description,
             'number' => $resource->number,
             'internal_progressive_number' => $resource->internal_progressive_number,
@@ -111,13 +115,18 @@ class Schema extends SchemaProvider
             'section_id' => $resource->section_id,
             'section_name' => $section->name,
             'intervent_type_id' => $resource->intervent_type_id,
-            'intervent_type_name' => $intervent_types->name,
+            'intervent_type_name' => $intervent_type ? $intervent_type->name : null,
             'subsection_id' => $resource->subsection_id,
             'x_coord' => $resource->x_coord,
             'y_coord' => $resource->y_coord,
             'comments' => $comments,
-            'created-at' => $resource->created_at->toAtomString(),
-            'updated-at' => $resource->updated_at->toAtomString(),
+            'zone' => $zone,
+            'opener_application_log_id' => $opener_app_log ? $opener_app_log->id : null,
+            'closer_application_log_id' => $closer_app_log ? $closer_app_log->id : null,
+            'opener_application_log_name' => $opener_app_log ? $opener_app_log->name : null,
+            'closer_application_log_name' => $closer_app_log ? $closer_app_log->name : null,
+            'created-at' => $resource->created_at ? $resource->created_at->toAtomString() : null,
+            'updated-at' => $resource->updated_at ? $resource->updated_at->toAtomString() : null,
         ];
     }
 

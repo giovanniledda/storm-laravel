@@ -76,10 +76,9 @@ class LightSeeder extends Seeder
 
                 $sections[$boats[$i]->id] = $this->utils->createSection($boats[$i]);
 
-                $this->command->info("Section {$sections[$boats[$i]->id]->name} for Boat {$boats[$i]->name} created");
 
                 // Creare un left, un right e gli altri deck
-                if (!$left_done) {
+                if (0 && !$left_done) {
                     $sections[$boats[$i]->id]->update([
                         'section_type' => SECTION_TYPE_LEFT_SIDE,
                         'name' => 'Starboard']);
@@ -88,9 +87,11 @@ class LightSeeder extends Seeder
                     $this->utils->addImageToSection($sections[$boats[$i]->id], './section/starboard.png');
 
                     $left_done = true;
+                    $this->command->info("Section {$sections[$boats[$i]->id]->name} for Boat {$boats[$i]->name} created");
                     continue;
                 }
-                if (!$right_done) {
+
+                if (0 && !$right_done) {
                     $sections[$boats[$i]->id]->update([
                         'section_type' => SECTION_TYPE_RIGHT_SIDE,
                         'name' => 'Port']);
@@ -99,15 +100,18 @@ class LightSeeder extends Seeder
                     $this->utils->addImageToSection($sections[$boats[$i]->id], './section/port.png');
 
                     $right_done = true;
+                    $this->command->info("Section {$sections[$boats[$i]->id]->name} for Boat {$boats[$i]->name} created");
                     continue;
                 }
-                $name = $this->faker->randomElement(['sundeck', 'upperdeck', 'maindeck', 'lowerdeck', 'topdeck', 'wheelhousedeck']);
+
+                $name = $this->faker->randomElement(['sundeck', 'mast', 'maindeck', 'lowerdeck', 'topdeck', 'wheelhousedeck']);
                 $sections[$boats[$i]->id]->update([
                     'section_type' => SECTION_TYPE_DECK,
                     'name' => ucfirst($name)]);
 
                 // associo la foto di un ponte a caso
                 $this->utils->addImageToSection($sections[$boats[$i]->id], "./section/$name.png");
+                $this->command->info("Section {$sections[$boats[$i]->id]->name} for Boat {$boats[$i]->name} created");
             }
         }
 

@@ -196,7 +196,7 @@ class ModelDocumentTest extends TestCase
 
         $doc = $task->generic_documents->last();
         $firstMedia = $doc->getRelatedMedia();
-        $expected_media_id = 1;
+        $expected_media_id = 3;  // previous was "1", ask Giacomi for explanations
         $this->assertEquals($expected_media_id, $firstMedia->id);
         $this->assertEquals($expected_media_id, $doc->current_media_id);
 
@@ -215,12 +215,9 @@ class ModelDocumentTest extends TestCase
 
         $doc = $task->generic_documents->last();
         $secondMedia = $doc->getRelatedMedia();
-        $expected_media_id = 2;
+        $expected_media_id = 4; // previous was "2", ask Giacomi for explanations
         $this->assertEquals($expected_media_id, $secondMedia->id);
         $this->assertEquals($expected_media_id, $doc->current_media_id);
-
-
-
     }
 
     public function test_update_document(){

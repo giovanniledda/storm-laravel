@@ -375,8 +375,9 @@ trait TemplateReplacementRules
                 $max_scale = $env_param->getMaximum();
                 $min_scale = $min_threshold ? min($min_threshold, $env_param->getMinimum()) : $env_param->getMinimum();
             }
+            $measurements_num = count($measurements);
 
-            throw_if(!count($measurements), new \Exception("No data in this date range, for this data source!", 403));
+            throw_if(!$measurements_num, new \Exception("No data in this date range, for this data source!", 403));
 
             /** @var Measurement $measurement */
             foreach ($measurements as $measurement) {
@@ -400,11 +401,11 @@ trait TemplateReplacementRules
                 'legendPos' => 'b',
                 'legendOverlay' => '0',
                 'haxLabel' => 'Time',
-                'vaxLabel' => 0,
+                'vaxLabel' => $vax_label,
                 'haxLabelDisplay' => 'vertical',
                 'vaxLabelDisplay' => 0,
                 'hgrid' => '1',
-                'vgrid' => '1',
+                'vgrid' => $measurements_num > 100 ? 0 : '1',
                 'scalingMax' => $max_scale,
                 'scalingMin' => $min_scale,
                 'horizontalOffset' => 360,

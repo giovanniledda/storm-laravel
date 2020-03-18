@@ -5,7 +5,9 @@ namespace App;
 use App\Observers\ApplicationLogObserver;
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Model;
+use function array_map;
 use function env;
+use function factory;
 use const APPLICATION_LOG_SECTION_TYPE_ZONES;
 use const APPLICATION_TYPE_COATING;
 use const APPLICATION_TYPE_FILLER;
@@ -143,15 +145,74 @@ class ApplicationLog extends Model
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function closed_tasks()
+    {
+        return $this->belongsToMany('App\Task', 'App\ApplicationLogTask')->wherePivot('action', '=', 'close');
+    }
+
+    public function closeTask(Task $task)
+    {
+        $this->closed_tasks()->attach($task->id, ['action' => 'close']);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function opened_tasks()
+    {
+        return $this->belongsToMany('App\Task', 'App\ApplicationLogTask')->wherePivot('action', '=', 'open');
+    }
+
+    public function openTask(Task $task)
+    {
+        $this->opened_tasks()->attach($task->id, ['action' => 'open']);
+    }
+
+    /**
+     * If the AppLog has a "zones" section, this function gets the remarks associated with those zones
+     *
+     * @param bool $apply_pluck
+     * @return array|mixed
+     */
+    public function getExternallyOpenedRemarksRelatedToMyZones($apply_pluck = false)
+    {
+        $other_remarks = [];
+        $used_zones = $this->getUsedZones();
+        if (!empty($used_zones)) {
+            $zones_ids = array_map(function ($zone) {
+                return $zone['id'];
+            }, $used_zones);
+
+            $other_remarks_collection = Task::remark()
+                ->open()
+                ->whereIn('zone_id', $zones_ids)
+                ->whereNotIn('id', $this->opened_tasks()->pluck('id'));
+
+            return $apply_pluck ? $other_remarks_collection->pluck('id') : $other_remarks_collection->get();
+        }
+        return $other_remarks;
+    }
+
+    /**
      * Returns an array of data with values for each field
      *
      * @param Faker $faker
+     * @param User|null $user
      * @return array
      */
-    public static function getSemiFakeData(Faker $faker)
+    public static function getSemiFakeData(Faker $faker, User $user = null)
     {
+        try {
+            $last_editor = $user ?? User::all()->random(1);
+        } catch (\Exception $e) {
+            $last_editor = factory(User::class)->create();
+        }
+
         return [
             'name' => $faker->word,
+//            'last_editor_id' => $last_editor->id,
             'application_type' => $faker->randomElement([
                 APPLICATION_TYPE_PRIMER,
                 APPLICATION_TYPE_FILLER,
@@ -266,7 +327,8 @@ class ApplicationLog extends Model
             'application_type' => $this->application_type,
             'last_editor' => $this->last_editor_for_api(),
             'started_sections' => $this->getStartedSections()->pluck('section_type'),
-            'zones' => $this->getUsedZones()
+            'zones' => $this->getUsedZones(),
+            'remarks_num' => $this->opened_tasks()->count(),
         ];
     }
 }

@@ -2,9 +2,12 @@
 
 namespace App\JsonApi\V1\Tasks;
 
+use App\ApplicationLog;
+use App\Task;
 use CloudCreativity\LaravelJsonApi\Eloquent\AbstractAdapter;
 use CloudCreativity\LaravelJsonApi\Pagination\StandardStrategy;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Neomerx\JsonApi\Contracts\Encoder\Parameters\EncodingParametersInterface;
 use Illuminate\Database\Eloquent\Builder;
@@ -34,7 +37,9 @@ class Adapter extends AbstractAdapter {
         'subsection_id',
         'x_coord',
         'y_coord',
-        'bridge_position'
+        'bridge_position',
+        'zone_id',
+        'task_type'
     ];
 
     /**
@@ -52,6 +57,21 @@ class Adapter extends AbstractAdapter {
      */
     public function __construct(StandardStrategy $paging) {
         parent::__construct(new \App\Task(), $paging);
+    }
+
+    /**
+     * @param Task $task
+     * @param $resource
+     */
+    protected function created(Task $task, $resource)
+    {
+        if (isset($resource['opener_application_log_id'])) {
+            // se mi viene passato un app_log_id, sarà l'app log da cui il task è stato aperto
+            Log::debug("Opening Task {$task->id} from APP LOG {$resource['opener_application_log_id']}");
+
+            $application_log = ApplicationLog::findOrFail($resource['opener_application_log_id']);
+            $application_log->opened_tasks()->attach($task->id, ['action' => 'open']);
+        }
     }
 
     /**
@@ -121,6 +141,29 @@ class Adapter extends AbstractAdapter {
             $query->whereIn('internal_progressive_number', $numbers);
         }
 
+        if ($task_type = $filters->get('task_type')) {
+            $query->where('task_type', '=', $task_type);
+        }
+
+        if ($zone_id = $filters->get('zone_id')) {
+            $query->where('zone_id', '=', $zone_id);
+        }
+
+        if ($opener_application_log_id = $filters->get('opener_application_log_id')) {
+            $query->select('tasks.*')
+                ->join('applications_logs_tasks', 'applications_logs_tasks.task_id', '=', 'tasks.id')
+                ->where('applications_logs_tasks.application_log_id', '=', $opener_application_log_id)
+                ->where('applications_logs_tasks.action', '=', 'open');
+        }
+
+        // per ottenere lo schema jsonAPI dei Task, forzo così, non è il massimo, vedere se è possibile ottimizzare in qualche modo senza dover ciclare sui risultati
+        if ($exclude_opener_application_log_id = $filters->get('exclude_opener_application_log_id')) {
+            /** @var ApplicationLog $application_log */
+            $application_log = ApplicationLog::findOrFail($exclude_opener_application_log_id);
+            $other_tasks_ids = $application_log->getExternallyOpenedRemarksRelatedToMyZones(true);
+            $query->whereIn('tasks.id', $other_tasks_ids);
+        }
+
         // ricerca is_open
         if ($filters->has('is_open')) {
             $isOpen = $filters->get('is_open');
@@ -164,5 +207,7 @@ class Adapter extends AbstractAdapter {
             }
         }
     }
+
+
 
 }

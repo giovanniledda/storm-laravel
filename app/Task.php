@@ -20,8 +20,11 @@ use function explode;
 use function in_array;
 use function is_object;
 use const PROJECT_STATUS_CLOSED;
+use const TASK_TYPE_PRIMARY;
+use const TASK_TYPE_REMARK;
 use const TASKS_STATUS_COMPLETED;
 use const TASKS_STATUS_DENIED;
+use const TASKS_STATUS_R_CLOSED;
 use const TASKS_STATUSES;
 
 class Task extends Model
@@ -52,6 +55,8 @@ class Task extends Model
         'is_private',
         'bridge_position',
         'internal_progressive_number',
+        'zone_id',
+        'task_type',
     ];
     private $min_x;
     private $max_x;
@@ -148,6 +153,28 @@ class Task extends Model
     public function scopePrivate($query)
     {
         return $query->where('is_private', '=', 1);
+    }
+
+    /**
+     * Scope a query to only include only remarks
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeRemark($query)
+    {
+        return $query->where('task_type', '=', TASK_TYPE_REMARK);
+    }
+
+    /**
+     * Scope a query to only include only open Tasks
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeOpen($query)
+    {
+        return $query->where('is_open', '=', 1);
     }
 
     /**
@@ -254,10 +281,39 @@ class Task extends Model
         return $this->history()->oldest()->first();
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function taskIntervents()
     {
         return $this->hasOne('App\TaskInterventType');
-//        return $this->hasOneThrough('App\Site', 'App\Project');  // NON funziona perché i progetti sono "many" e il site è "one"
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function zone()
+    {
+        return $this->belongsTo('App\Zone', 'zone_id');
+    }
+
+
+    /**
+     * Application Log from where the Task has been closed
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function closer_application_log()
+    {
+        return $this->belongsToMany('App\ApplicationLog', 'App\ApplicationLogTask')->wherePivot('action', '=', 'close');
+    }
+
+    /**
+     * Application Log from where the Task has been opened
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function opener_application_log()
+    {
+        return $this->belongsToMany('App\ApplicationLog', 'App\ApplicationLogTask')->wherePivot('action', '=', 'open');
     }
 
     public function getProjectUsers()
@@ -643,11 +699,11 @@ class Task extends Model
         $corrosionMapHTML = '';
         if ($corrosionMapFilePath = $this->getCorrosionMapFilePath()) {
             $corrosionMapHTML = <<<EOF
-                <img width="760" height="auto" src="file://$corrosionMapFilePath" alt="Corrosion Map"><br>
+                <img height="200" src="file://$corrosionMapFilePath" alt="Corrosion Map">
 EOF;
         }
 
-        $point_id = $this->id;
+        $point_id = $this->internal_progressive_number;
         $task_location = $this->section ? Utils::sanitizeTextsForPlaceholders($this->section->name) : '?';
         $task_type = $this->intervent_type ? Utils::sanitizeTextsForPlaceholders($this->intervent_type->name) : '?';
         //         'task_status' => Utils::sanitizeTextsForPlaceholders($task->task_status),
@@ -655,89 +711,92 @@ EOF;
         $created_at = $this->created_at;
         $updated_at = $this->updated_at;
 
+        $first_history = $this->getFirstHistory();
+        $img_dettaglioHTML = '<h1>No photo available</h1>';
+        if ($first_history && $first_history->getAdditionalPhotoPath()) {
+            $img_dettaglio = $first_history->getAdditionalPhotoPath();
+            $img_dettaglioHTML = <<<EOF
+                <img height="200" src="file://$img_dettaglio" alt="Overview image">
+EOF;
+        }
+
         $html = <<<EOF
             <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Point #$point_id</p>
-                $corrosionMapHTML
 
-                <table width="700" style="color: #1f519b; font-family: Raleway, sans-serif;">
-                    <tr width="700">
-                        <td width="345"><span style="border-right: 10px solid white; font-weight: bold">Location: </span>$task_location</td>
-                        <td width="345"><span style="font-weight: bold">Type: </span>$task_type</td>
-                    </tr>
-                </table>
-
-                <br>
-
-                <table width="700" style="font-family: Raleway, sans-serif; color: #1f519b;">
-                    <tr width="700">
-                        <td width="345" rowspan="2" style="border-right: 10px solid white; vertical-align: top ;background-color: #eff9fe; padding: 8px">
-                        <span style="font-weight: bold;">Description: </span>$description</td>
-
-                        <td width="345" rowspan="1" style="vertical-align: top;background-color: #eff9fe; padding: 8px">
-                        <span style="font-weight: bold;">Created: </span>$created_at</td>
+            <table cellpadding="0" cellspacing="0">
+                <tbody>
+                    <tr>
+                        <td width="300">$corrosionMapHTML</td>
+                        <td width="50"></td>
+                        <td width="300" valign="top">
+                            <span style="font-weight: bold">Type: </span>$task_type
+                            <br>
+                            <span style="font-weight: bold;">Description: </span>$description
+                        </td>
                     </tr>
 
-                    <tr width="700">
-                        <td width="345" rowspan="1" style="vertical-align: top;background-color: #eff9fe; padding: 8px">
-                        <span style="font-weight: bold;">Last edited: </span>$updated_at</td>
-                    </tr>
-                </table>
+                    <tr height="30"></tr>
 
-                <br>
+                    <tr>
+                        <td width="300">$img_dettaglioHTML</td>
+                        <td width="50"></td>
+                        <td width="300" valign="top"><span style="border-right: 10px solid white; font-weight: bold">Location: </span>$task_location
+                            <br>
+                            <span style="font-weight: bold;">Created: </span>$created_at
+                            <br>
+                            <span style="font-weight: bold;">Last edited: </span>$updated_at
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+
 
 EOF;
         // creo la tabella a seconda delle immagini che ho
         if (!empty($photos_array) && count($photos_array) > 1) {
             $tds_1 = <<<EOF
-                    <td width="345" align="center" style="border-right: 10px solid white; background-color: black; padding: 0;">
-                      <img width="360" height="auto"  src="file://$photos_array[1]" alt="Corrosion img 1">
+                    <td width="300">
+                        <img width="400" src="file://$photos_array[1]" alt="Corrosion img 1">
                     </td>
 EOF;
             if (isset($photos_array[2])) {
                 $tds_1 .= <<<EOF
-                    <td width="345" align="center" style="background-color: black; padding: 0;">
-                      <img width="360" height="auto"  src="file://$photos_array[2]" alt="Corrosion img 2">
+                    <td width="300">
+                        <img width="400" src="file://$photos_array[2]" alt="Corrosion img 2">
                     </td>
 EOF;
             }
 
-            $trs = '<tr width="700">' . $tds_1 . '</tr><br>';
+//            $trs = '<tr>' . $tds_1 . '</tr><tr height=30></tr>';
 
             if (isset($photos_array[3])) {
                 $tds_2 = <<<EOF
-                    <td width="345" align="center" style="border-right: 10px solid white; background-color: black;padding: 0">
-                      <img width="360" height="auto"  src="file://$photos_array[3]" alt="Corrosion img 3">
+                    <td width="300">
+                        <img width="400" src="file://$photos_array[3]" alt="Corrosion img 3">
                     </td>
 EOF;
 
                 if (isset($photos_array[4])) {
                     $tds_2 .= <<<EOF
-                        <td width="345" align="center" style="background-color: black;padding: 0;">
-                          <img width="360" height="auto"  src="file://$photos_array[4]" alt="Corrosion img 4">
+                        <td width="300">
+                            <img width="400"  src="file://$photos_array[4]" alt="Corrosion img 4">
                         </td>
 EOF;
                 }
 
-                $trs .= '<tr width="700">' . $tds_2 . '</tr>';
+                $trs = '<tr>' . $tds_1 .$tds_2 . '</tr>';
             }
 
-            $images_table = '<p style="text-align: left;font-size: 16px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Detail photos</p>
-                               <table width="792">' . $trs . '</table><br>';
+            $images_table = '<p style="text-align: left;font-size: 16px;font-weight: bold; font-family: Raleway, sans-serif;">Detail photos</p>
+                               <table><tbody>' . $trs . '</tbody></table>';
 
             $html .= $images_table;
         }
 
-        $img_dettaglioHTML = '';
-        if ($img_dettaglio = $this->getAdditionalPhotoPath()) {
-            $img_dettaglioHTML = <<<EOF
-                <p style="text-align: left;font-size: 16px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Overview photo</p>
-                <img width="760" height="auto" src="file://$img_dettaglio" alt="Overview image">
-
-EOF;
-        }
 
         $html .= <<<EOF
-            $img_dettaglioHTML
+
             <p style="page-break-before: always;"></p>
 EOF;
         return $html;
@@ -808,6 +867,41 @@ EOF;
         $last_history = $this->getLastHistory();
         if ($last_history) {
             return $last_history->getBodyAttribute('user_id');
+        }
+    }
+
+    /**
+     * This function "closes" the Task, setting some fields
+     *
+     * @param ApplicationLog $application_log
+     */
+    public function closeMe(ApplicationLog $application_log = null)
+    {
+        $this->update([
+            'is_open' => false,
+//            'task_status' => $this->task_type == TASK_TYPE_PRIMARY ? TASKS_STATUS_COMPLETED : TASKS_STATUS_R_CLOSED
+        ]);
+
+        if ($application_log) {
+            $application_log->closeTask($this);
+        }
+    }
+
+    /**
+     * This function "open" the Task, setting some fields
+     *
+     * @param ApplicationLog $application_log
+     * @param null $status
+     */
+    public function openMe(ApplicationLog $application_log = null, $status = null)
+    {
+        $this->update([
+            'is_open' => true,
+            'task_status' => $status
+        ]);
+
+        if ($application_log) {
+            $application_log->openTask($this);
         }
     }
 }

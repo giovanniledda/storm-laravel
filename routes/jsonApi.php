@@ -29,10 +29,8 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
         $api->resource('tasks');
      //   $api->resource('task-minimized');
 
-        $api->resource('tasks')->only('statuses')->controller('TaskController')//uses the App\Http\Controllers\Api\TaskController
-        ->routes(function ($tasks) {
-            $tasks->get('/statuses', 'statuses')->name('statuses');
-        });
+        $api->get('/task-primary-statuses', 'TaskController@primaryStatuses')->name('task-primary-statuses');
+        $api->get('/task-remark-statuses', 'TaskController@remarkStatuses')->name('task-remark-statuses');
 
         $api->resource('tasks')->only('history')->controller('TaskController')//uses the App\Http\Controllers\Api\TaskController
         ->routes(function ($task) {
@@ -191,6 +189,21 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
         $api->resource('project-products');
         $api->resource('tools');
         $api->resource('project-tools');
+
+        $api->resource('application-logs')->only('close-remarks')->controller('ApplicationLogController') //uses the App\Http\Controllers\Api\ProjectController
+        ->routes(function ($project) {
+            $project->post('{record}/close-remarks', 'closeRemarks')->name('close-remarks');
+        });
+
+        $api->resource('application-logs')->only('other-remarks')->controller('ApplicationLogController') //uses the App\Http\Controllers\Api\ProjectController
+        ->routes(function ($project) {
+            $project->get('{record}/other-remarks', 'otherRemarks')->name('other-remarks');
+        });
+
+        $api->resource('application-logs')->only('zones')->controller('ApplicationLogController') //uses the App\Http\Controllers\Api\ProjectController
+        ->routes(function ($project) {
+            $project->get('{record}/zones', 'getZones')->name('zones');
+        });
 
         /** APPLICATION LOG STUFF - END */
 

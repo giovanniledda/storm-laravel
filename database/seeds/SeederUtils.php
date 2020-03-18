@@ -28,6 +28,7 @@ use Net7\Documents\Document;
 use StormUtils;
 use User;
 use function array_merge;
+use function count;
 use function factory;
 use function memory_get_peak_usage;
 use function memory_get_usage;
@@ -379,17 +380,20 @@ class SeederUtils
     /**
      * @param ApplicationLog $application_log
      * @param Project $project
+     * @param array $zones
+     * @param bool $is_section_started
      * @return ApplicationLogSection
      */
-    private function buildZonesApplicationLogSection(ApplicationLog &$application_log, Project &$project)
+    public function buildZonesApplicationLogSection(ApplicationLog &$application_log, Project &$project, array $zones = [], bool $is_section_started = false)
     {
-        $zones = $project->zones;
-        $z1 = $this->faker->randomElement($zones);
-        $z2 = $this->faker->randomElement($zones);
+        $zones = (count($zones) >= 2) ? $zones : $project->zones;
+        $z1 = (count($zones) >= 2) ? $zones[0] : $this->faker->randomElement($zones);
+        $z2 = (count($zones) >= 2) ? $zones[1] : $this->faker->randomElement($zones);
 
         $section_zone = factory(ApplicationLogSection::class)->create([
             'application_log_id' => $application_log->id,
             'section_type' => APPLICATION_LOG_SECTION_TYPE_ZONES,
+            'is_started' => $is_section_started,
         ]);
 
         $za_ib_1 = factory(ZoneAnalysisInfoBlock::class)->create([
@@ -410,7 +414,7 @@ class SeederUtils
      * @param Project $project
      * @return ApplicationLogSection
      */
-    private function buildPreparationApplicationLogSection(ApplicationLog &$application_log, Project &$project)
+    public function buildPreparationApplicationLogSection(ApplicationLog &$application_log, Project &$project)
     {
         $section_preparation = factory(ApplicationLogSection::class)->create([
             'application_log_id' => $application_log->id,
@@ -485,7 +489,7 @@ class SeederUtils
      * @param Project $project
      * @return ApplicationLogSection
      */
-    private function buildApplicationApplicationLogSection(ApplicationLog &$application_log, Project &$project)
+    public function buildApplicationApplicationLogSection(ApplicationLog &$application_log, Project &$project)
     {
         $section_application = factory(ApplicationLogSection::class)->create([
             'application_log_id' => $application_log->id,
@@ -572,7 +576,7 @@ class SeederUtils
      * @param Project $project
      * @return ApplicationLogSection
      */
-    private function buildInspectionApplicationLogSection(ApplicationLog &$application_log, Project &$project)
+    public function buildInspectionApplicationLogSection(ApplicationLog &$application_log, Project &$project)
     {
         $section_inspection = factory(ApplicationLogSection::class)->create([
             'application_log_id' => $application_log->id,
@@ -670,7 +674,7 @@ class SeederUtils
      * @param DetectionsInfoBlock $d_ib
      * @param array $fields
      */
-    private function updateDetectionBlock(DetectionsInfoBlock &$d_ib, $fields = [])
+    public function updateDetectionBlock(DetectionsInfoBlock &$d_ib, $fields = [])
     {
         $img_doc1 = $this->addImageToBlock($d_ib, './task/photo1.jpg', Document::DETAILED_IMAGE_TYPE);
         $img_doc2 = $this->addImageToBlock($d_ib, './task/photo2.jpg', Document::DETAILED_IMAGE_TYPE);
