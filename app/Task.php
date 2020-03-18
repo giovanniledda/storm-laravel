@@ -712,11 +712,11 @@ EOF;
         $updated_at = $this->updated_at;
 
         $first_history = $this->getFirstHistory();
-        $img_dettaglioHTML = '<div style="border: 1px solid #ececec; color: #666666; text-align: center; width: 100%;">No overview photo available</div>';
+        $img_dettaglioHTML = '<div style="color: #666666; text-align: center; width: 100%;">No overview photo available</div>';
         if ($first_history && $first_history->getAdditionalPhotoPath()) {
             $img_dettaglio = $first_history->getAdditionalPhotoPath();
             $img_dettaglioHTML = <<<EOF
-                <img width="300" src="file://$img_dettaglio" alt="Overview image">
+                <img width="466" src="file://$img_dettaglio" alt="Overview image">
 EOF;
         }
 
@@ -745,7 +745,7 @@ EOF;
                         <td width="350">$img_dettaglioHTML</td>
                         <td width="30"></td>
                         <td width="300" valign="top">
-                            <span style="color: #1f519b; font-weight: bold">Overview</span>
+                            <span style="border: 1px solid #ececec; color: #1f519b; font-weight: bold">Overview</span>
                             <br>
                             <span style="">Created: </span>$created_at
                             <br>
@@ -753,7 +753,7 @@ EOF;
                             <br>
                             <span style="">Location: </span>$task_location
                             <br>
-                            <span style="">Zone: </span>$task_location    
+                            <span style="">Zone: </span>    
                         </td>
                     </tr>
                 </tbody>
@@ -765,14 +765,14 @@ EOF;
         // creo la tabella a seconda delle immagini che ho
         if (!empty($photos_array) && count($photos_array) > 1) {
             $tds_1 = <<<EOF
-                    <td width="150">
-                        <img width="200" src="file://$photos_array[1]" alt="Corrosion img 1">
+                    <td width="174">
+                        <img width="232" src="file://$photos_array[1]" alt="Corrosion img 1">
                     </td>
 EOF;
             if (isset($photos_array[2])) {
                 $tds_1 .= <<<EOF
-                    <td width="150">
-                        <img width="200" src="file://$photos_array[2]" alt="Corrosion img 2">
+                    <td width="174">
+                        <img width="232" src="file://$photos_array[2]" alt="Corrosion img 2">
                     </td>
 EOF;
             }
@@ -781,15 +781,15 @@ EOF;
 
             if (isset($photos_array[3])) {
                 $tds_2 = <<<EOF
-                    <td width="150">
-                        <img width="200" src="file://$photos_array[3]" alt="Corrosion img 3">
+                    <td width="174">
+                        <img width="232" src="file://$photos_array[3]" alt="Corrosion img 3">
                     </td>
 EOF;
 
                 if (isset($photos_array[4])) {
                     $tds_2 .= <<<EOF
-                        <td width="150">
-                            <img width="200"  src="file://$photos_array[4]" alt="Corrosion img 4">
+                        <td width="174">
+                            <img width="232"  src="file://$photos_array[4]" alt="Corrosion img 4">
                         </td>
 EOF;
                 }
@@ -797,7 +797,7 @@ EOF;
                 $trs = '<tr>' . $tds_1 .$tds_2 . '</tr>';
             }
 
-            $images_table = '<p style="text-align: left;font-size: 16px;font-weight: bold; font-family: Raleway, sans-serif;">Detail photos</p>
+            $images_table = '<br><br><span style="text-align: left;font-size: 16px;font-weight: bold; font-family: Raleway, sans-serif; color: #1f519b;">Detail photos</span>
                                <table><tbody>' . $trs . '</tbody></table>';
 
             $html .= $images_table;
