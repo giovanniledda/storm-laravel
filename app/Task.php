@@ -16,9 +16,11 @@ use Net7\Documents\Document;
 use Net7\Documents\DocumentableTrait;
 use Faker\Generator as Faker;
 use function array_push;
+use function date;
 use function explode;
 use function in_array;
 use function is_object;
+use function strtotime;
 use function strtoupper;
 use const PROJECT_STATUS_CLOSED;
 use const TASK_TYPE_PRIMARY;
@@ -713,9 +715,8 @@ EOF;
         $task_location = $this->section ? Utils::sanitizeTextsForPlaceholders($this->section->name) : '?';
         $task_intervent_type = $this->intervent_type ? Utils::sanitizeTextsForPlaceholders($this->intervent_type->name) : '?';
         //         'task_status' => Utils::sanitizeTextsForPlaceholders($task->task_status),
-        $description = Utils::sanitizeTextsForPlaceholders($this->description);
-        $created_at = $this->created_at;
-        $updated_at = $this->updated_at;
+        $created_at = date('d M Y', strtotime($this->created_at));
+        $updated_at = date('d M Y', strtotime($this->updated_at));
         $status = $this->task_status;
         $task_type = strtoupper($this->task_type);
 
@@ -726,6 +727,12 @@ EOF;
             $img_dettaglioHTML = <<<EOF
                 <img width="400" src="file://$img_dettaglio" alt="Overview image">
 EOF;
+        }
+
+        $author_comment = '';
+        $description = Utils::sanitizeTextsForPlaceholders($this->description);
+        if ($description) {
+            $author_comment = '<br><br>The author added this comment:</span><br><span style="background-color: #ececec; width: 100%; padding: 8px">$description</span>';
         }
 
         $html = <<<EOF
@@ -749,8 +756,7 @@ EOF;
                         <td width="30"></td>
                         <td width="350" valign="top">
                             <span style="border: 1px solid #ececec; color: #1f519b; font-weight: bold">Overview</span><br>
-                            <span style="line-height: 20px">This task was created on $created_at . The task is located on<b> $task_location </b> and was classified as <b> $task_intervent_type </b>. <br><br>The author added this comment:</span><br>
-                            <span style="background-color: #ececec; width: 100%; padding: 8px">$description</span>
+                            <span style="line-height: 20px">This task was created on $created_at . The task is located on<b> $task_location </b> and was classified as <b> $task_intervent_type </b>. $author_comment
                         </td>
                     </tr>
                 </tbody>
