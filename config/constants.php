@@ -8,6 +8,7 @@
 defined('SECTION_TYPE_LEFT_SIDE') or define('SECTION_TYPE_LEFT_SIDE', 'left_side');
 defined('SECTION_TYPE_RIGHT_SIDE') or define('SECTION_TYPE_RIGHT_SIDE',  'right_side');
 defined('SECTION_TYPE_DECK') or define('SECTION_TYPE_DECK', 'deck');
+defined('SECTION_IMAGE_POINTS_OVERVIEW') or define('SECTION_IMAGE_POINTS_OVERVIEW', 'points_overview_image');
 
 
 /*

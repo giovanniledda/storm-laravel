@@ -20,9 +20,14 @@ php artisan db:seed --class="RolesAndPermissionsSeeder"
 # seeder tabella countries
 php artisan db:seed --class="CountriesSeeder"
 
-# seeder dati vari su tutti (o quasi) i modelli
-echo -e "\n crea un sito, n barche, n professioni e relative sezioni, \n crea n utenti con vari ruoli e li associa alle barche, \n crea n progetti e li associa alle barche e agli utenti"
-php artisan db:seed --class="DatabaseSeeder"
+# crea qualche barca con progetti e task ma in misura minore rispetto agli altri seeder
+php artisan db:seed --class="LightSeeder"
+
+# crea n zone (4 padri con 5 figli) per ogni progetto
+php artisan db:seed --class="ZonesSeeder"
+
+# crea AppLog completi per ogni progetto
+php artisan db:seed --class="ApplicationLogSeeder"
 
 
 

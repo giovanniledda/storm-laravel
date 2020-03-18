@@ -639,11 +639,16 @@ class Task extends Model
         }
     }
 
-    private function getIcon($status, $isOpen, $icon = 'Active')
+    /**
+     * @param null $p_status
+     * @param null $p_isOpen
+     * @param string $icon
+     * @return string
+     */
+    private function getIcon($p_status = null, $p_isOpen = null, $icon = 'Active')
     {
-        /* return storage_path() .
-          DIRECTORY_SEPARATOR . 'storm-pins'.DIRECTORY_SEPARATOR.'Active.png';
-         */
+        $status = $p_status ?? $this->task_status;
+        $isOpen = $p_isOpen ?? $this->is_open;
         $icon = $icon . '.png';
         $status = str_replace(' ', '_', $status);
         $path = storage_path() . DIRECTORY_SEPARATOR . 'storm-pins';
