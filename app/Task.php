@@ -735,6 +735,15 @@ EOF;
             $author_comment = '<br><br>The author added this comment:</span><br><span style="background-color: #ececec; width: 100%; padding: 8px">$description</span>';
         }
 
+        $task_type_status_str = '';
+        if ($task_type == TASK_TYPE_PRIMARY) {
+            $task_type_status_str = '<span>This task <span style="opacity: 0.6">(#$point_id)</span> is currently <b>$status</b>, and was last updated on $updated_at.</span><span>.';
+            $task_definition = '<span style="line-height: 20px">This task was created on $created_at. The task is located on<b> $task_location </b> and was classified as <b> $task_intervent_type.</b>';
+        } else {
+            $task_type_status_str = '<span>This remark <span style="opacity: 0.6">(#$point_id)</span> is classified as <b>$status</b>, and was last updated on $updated_at </span><span>.';
+            $task_definition = '<span style="line-height: 20px">This remark was created on $created_at. The remark is located on<b> $task_location.';
+        }
+
         $html = <<<EOF
             <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Point #$point_id</p>
 
@@ -745,7 +754,7 @@ EOF;
                         <td width="30"></td>
                         <td width="350" valign="top">
                             <span style="font-weight: bold; color: #1f519b;">Latest update</span><br>
-                            <span>This task [$task_type] <span style="opacity: 0.6">( #$point_id )</span> is currently <b>$status</b>, and was last updated on $updated_at </span><span>.
+                            $task_type_status_str
                         </td>
                     </tr>
 
@@ -756,7 +765,7 @@ EOF;
                         <td width="30"></td>
                         <td width="350" valign="top">
                             <span style="border: 1px solid #ececec; color: #1f519b; font-weight: bold">Overview</span><br>
-                            <span style="line-height: 20px">This task was created on $created_at . The task is located on<b> $task_location </b> and was classified as <b> $task_intervent_type </b>. $author_comment
+                            $task_definition $author_comment
                         </td>
                     </tr>
                 </tbody>
@@ -804,8 +813,9 @@ EOF;
                                <table><tbody>' . $trs . '</tbody></table>';
 
             $html .= $images_table;
+        } else {
+            $html .= '<br><br><span style="text-align: left;font-size: 16px;font-weight: bold; font-family: Raleway, sans-serif; color: #1f519b;">Detail photos</span><span>No photos available.</span>';
         }
-
 
         $html .= <<<EOF
 
