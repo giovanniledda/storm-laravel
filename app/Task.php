@@ -712,7 +712,7 @@ EOF;
         $updated_at = $this->updated_at;
 
         $first_history = $this->getFirstHistory();
-        $img_dettaglioHTML = '<div style="background-color: #ececec; color: #666666; text-align: center; width: 350px; line-height: 128px">No overview photo available</div>';
+        $img_dettaglioHTML = '<div style="background-color: #ececec; color: #666666; text-align: center; width: 100%; height: 300px">No overview photo available</div>';
         if ($first_history && $first_history->getAdditionalPhotoPath()) {
             $img_dettaglio = $first_history->getAdditionalPhotoPath();
             $img_dettaglioHTML = <<<EOF
