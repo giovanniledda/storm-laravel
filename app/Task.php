@@ -718,7 +718,7 @@ EOF;
         $created_at = date('d M Y', strtotime($this->created_at));
         $updated_at = date('d M Y', strtotime($this->updated_at));
         $status = $this->task_status;
-        $task_type = strtoupper($this->task_type);
+        $task_type = $this->task_type;
 
         $first_history = $this->getFirstHistory();
         $img_dettaglioHTML = '<div style="color: #666666; text-align: center; width: 100%;">No overview photo available</div>';
@@ -735,7 +735,6 @@ EOF;
             $author_comment = "<br><br>The author added this comment:</span><br><span style='background-color: #ececec; width: 100%; padding: 8px'>$description</span>";
         }
 
-        $task_type_status_str = '';
         if ($task_type == TASK_TYPE_PRIMARY) {
             $task_type_status_str = "<span>This task <span style='opacity: 0.6'>(#$point_id)</span> is currently <b>$status</b>, and was last updated on $updated_at.</span><span>.";
             $task_definition = "<span style='line-height: 20px'>This task was created on $created_at. The task is located on<b> $task_location </b> and was classified as <b> $task_intervent_type.</b>";
