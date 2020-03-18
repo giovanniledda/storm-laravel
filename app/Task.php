@@ -730,7 +730,7 @@ EOF;
                         <td width="30"></td>
                         <td width="350" valign="top">
                             <span style="font-weight: bold; color: #1f519b;">Latest update</span><br>
-                            <span>This task (#$point_id) is currently <b>status</b>, updated on $updated_at</span><span style="">. The author added this comment: "$description"</span>
+                            <span>This task ( #$point_id ) is currently <b>status</b>, updated on $updated_at </span><span>. The author added this comment: " $description "</span>
                         </td>
                     </tr>
 
@@ -741,7 +741,7 @@ EOF;
                         <td width="30"></td>
                         <td width="350" valign="top">
                             <span style="border: 1px solid #ececec; color: #1f519b; font-weight: bold">Overview</span><br>
-                            <span>This task was created on $created_at. The problem classification is <b>$task_type</b> and was located on <b>$task_location</b>. If available, more precisely descrepted here: <b>zone</b>.</span>
+                            <span>This task was created on $created_at . The problem classification is <b> $task_type </b> and was located on <b> $task_location </b>. If available, more precisely descrepted here: <b>zone</b>.</span>
                         </td>
                     </tr>
                 </tbody>
