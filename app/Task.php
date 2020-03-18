@@ -712,7 +712,7 @@ EOF;
         $updated_at = $this->updated_at;
 
         $first_history = $this->getFirstHistory();
-        $img_dettaglioHTML = '<h2 style="background-color: #ececec">No overviw photo available</h2>';
+        $img_dettaglioHTML = '<div style="background-color: #ececec; color: #666666; text-align: center; height: 200px; vertical-align: middle; font-size: 24px; line-height: 32px;">No overview photo available</div>';
         if ($first_history && $first_history->getAdditionalPhotoPath()) {
             $img_dettaglio = $first_history->getAdditionalPhotoPath();
             $img_dettaglioHTML = <<<EOF
@@ -726,10 +726,14 @@ EOF;
             <table cellpadding="0" cellspacing="0">
                 <tbody>
                     <tr>
-                        <td width="300" style="border: 1px solid #ececec">$corrosionMapHTML</td>
+                        <td width="350" style="border: 1px solid #ececec">$corrosionMapHTML</td>
                         <td width="30"></td>
                         <td width="300" valign="top">
-                            <span style="font-weight: bold">Type: </span>$task_type
+                            <span style="font-weight: bold; color: #1f519b;">Latest update</span>
+                            <br>
+                            <span style="font-weight: bold;">Last edited: </span>$updated_at
+                            <br>
+                            <span style="font-weight: bold">Status: </span>
                             <br>
                             <span style="font-weight: bold;">Description: </span>$description
                         </td>
@@ -738,13 +742,25 @@ EOF;
                     <tr height="30"></tr>
 
                     <tr>
-                        <td width="300">$img_dettaglioHTML</td>
+                        <td width="350">$img_dettaglioHTML</td>
                         <td width="30"></td>
-                        <td width="300" valign="top"><span style="border-right: 10px solid white; font-weight: bold">Location: </span>$task_location
+                        <td width="300" valign="top">
+                            <span style="font-weight: bold; color: #1f519b;">Overview</span>
                             <br>
-                            <span style="font-weight: bold;">Created: </span>$created_at
-                            <br>
-                            <span style="font-weight: bold;">Last edited: </span>$updated_at
+                            <ul>
+                              <li>
+                                <span style="font-weight: bold;">Created: </span>$created_at
+                              </li>
+                              <li>
+                                <span style="font-weight: bold">Type: </span>$task_type
+                              </li>
+                              <li>
+                                <span style="font-weight: bold">Location: </span>$task_location
+                              </li>
+                              <li>
+                                <span style="font-weight: bold">Zone: </span>
+                              </li>
+                            </ul>
                         </td>
                     </tr>
                 </tbody>
