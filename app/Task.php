@@ -741,7 +741,7 @@ EOF;
                         <td width="30"></td>
                         <td width="350" valign="top">
                             <span style="border: 1px solid #ececec; color: #1f519b; font-weight: bold">Overview</span><br>
-                            <span style="line-height: 20px">This task was created on $created_at . The task classification is <b> $task_type </b> and was located on <b> $task_location </b>. <br><br>The author added this comment:</span><br>
+                            <span style="line-height: 20px">This task was created on $created_at . The task is located on<b> $task_location </b> and was classified as <b> $task_type </b>. <br><br>The author added this comment:</span><br>
                             <span style="background-color: #ececec; width: 100%; padding: 8px">$description</span>
                         </td>
                     </tr>
