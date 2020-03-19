@@ -165,14 +165,20 @@ class ModelTaskTest extends TestCase
             }
         }
 
+        $this->assertCount(15, $all_tasks_a_ids);
+
         // recupero le sezioni a partire dai task id raccolti
         $probably_sections_a = Section::getSectionsStartingFromTasks($all_tasks_a_ids);
         $this->assertNotEmpty($probably_sections_a);
 
+        /** @var Section $section */
         foreach ($probably_sections_a as $section) {
             $this->assertContains($section->id, $sections_a_ids);
-        }
 
+            // testo il filtraggio dei task "propri"
+            $my_tasks = $section->getOnlyMyTasks($all_tasks_a_ids);
+            $this->assertCount(5, $my_tasks);
+        }
 
     }
 

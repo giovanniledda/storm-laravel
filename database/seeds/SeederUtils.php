@@ -251,7 +251,7 @@ class SeederUtils
     {
 //        return;
         if (Storage::disk('local-seeder')->exists($filepath)) {
-            $section->addImagePhoto($filepath, $type);
+            $section->addImagePhoto('./storage/seeder/' . $filepath, $type);
         }
     }
 

@@ -4,6 +4,7 @@
 
 namespace App\Traits;
 
+use App\Section;
 use App\Task;
 use App\User;
 use Faker\Factory as FakerFactory;
@@ -213,6 +214,12 @@ trait TemplateReplacementRules
         }
     }
 
+    /**
+     * Stampa nel docx l'htlm relativo ai task
+     *
+     * @return string
+     * @throws \Throwable
+     */
     public function getCorrosionMapHtmlBlock()
     {
         /** @var Task $task */
@@ -227,6 +234,34 @@ trait TemplateReplacementRules
     }
 
     /**
+     * Stampa nel docx l'htlm relativo alle immagini delle sezioni con tutti i pin sopra
+     *
+     * @return string
+     * @throws \Throwable
+     */
+    public function getCorrosionMapHtmlSectionImgsOverview()
+    {
+        /** @var Task $task */
+        $html = '<table cellpadding="0" cellspacing="0"><tbody>';
+        $task_ids = $this->_taskToIncludeInReport ?? $this->tasks()->pluck('id')->toArray();
+        $sections = Section::getSectionsStartingFromTasks($task_ids);
+        /** @var Section $section */
+        foreach ($sections as $section) {
+            $section->drawOverviewImageWithTaskPoints($task_ids);
+            $overview_img = $section->getPointsImageOverview();
+            $html .= <<<EOF
+                    <tr>
+                        <td width="696" style="border: 1px solid #ececec">
+                            <img width="696" src="file://$overview_img" alt="Section Overview Image">
+                        </td>
+                    </tr>
+EOF;
+        }
+        $html .= '</tbody></table>';
+        return $html;
+    }
+
+    /**
      * Associate the "corrosion_map" Template and its Placeholders to an object
      */
     public function setupCorrosionMapTemplate()
@@ -237,7 +272,8 @@ trait TemplateReplacementRules
             '$boat_type$' => 'getBoatType()',
             '$boat_name$' => 'getBoatName()',
             '$break_n1$' => null,  // riconosciuto dal sistema
-            '$html_bloccoTask$' => 'getCorrosionMapHtmlBlock()'
+            '$html_bloccoTask$' => 'getCorrosionMapHtmlBlock()',
+            '$html_sectionImgsOverview$' => 'getCorrosionMapHtmlSectionImgsOverview()'
         ];
         $this->insertPlaceholders('corrosion_map', $placeholders, true);
     }

@@ -11,6 +11,12 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use function abs;
+use function ceil;
+use function getimagesize;
+use function imagecopyresampled;
+use function imagecreatefrompng;
+use function imagecreatetruecolor;
 use function is_null;
 use const PERMISSION_ADMIN;
 use const PERMISSION_WORKER;
@@ -235,6 +241,64 @@ class Utils
             default:
                 return 500;
         }
+    }
+
+    /**
+     *
+     * Ridimensiona un'immagine da un path
+     * @param $file
+     * @param $w
+     * @param $h
+     * @param $crop
+     * @return mixed
+     */
+    public static function resize_image($file, $w, $h, $crop = FALSE)
+    {
+        list($width, $height) = getimagesize($file);
+        $r = $width / $height;
+        if ($crop) {
+            if ($width > $height) {
+                $width = ceil($width - ($width * abs($r - $w / $h)));
+            } else {
+                $height = ceil($height - ($height * abs($r - $w / $h)));
+            }
+            $newwidth = $w;
+            $newheight = $h;
+        } else {
+            if ($w / $h > $r) {
+                $newwidth = $h * $r;
+                $newheight = $h;
+            } else {
+                $newheight = $w / $r;
+                $newwidth = $w;
+            }
+        }
+        $src = imagecreatefrompng($file);
+        $dst = imagecreatetruecolor($newwidth, $newheight);
+        imagecopyresampled($dst, $src, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
+
+        return $dst;
+    }
+
+
+    /**
+     * https://stackoverflow.com/a/279310/470749
+     *
+     * @param resource $image
+     * @param int $newWidth
+     * @param int $newHeight
+     * @return resource
+     */
+    public static function getPNGImageResized($image, int $newWidth, int $newHeight) {
+        $newImg = imagecreatetruecolor($newWidth, $newHeight);
+        imagealphablending($newImg, false);
+        imagesavealpha($newImg, true);
+        $transparent = imagecolorallocatealpha($newImg, 255, 255, 255, 127);
+        imagefilledrectangle($newImg, 0, 0, $newWidth, $newHeight, $transparent);
+        $src_w = imagesx($image);
+        $src_h = imagesy($image);
+        imagecopyresampled($newImg, $image, 0, 0, 0, 0, $newWidth, $newHeight, $src_w, $src_h);
+        return $newImg;
     }
 
 }

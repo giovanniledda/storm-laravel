@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Utils\Utils;
 use Illuminate\Database\Eloquent\Model;
 use Faker\Generator as Faker;
 use Illuminate\Support\Arr;
@@ -9,6 +10,7 @@ use Net7\Documents\Document;
 use Net7\Documents\DocumentableTrait;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use function exif_imagetype;
+use function explode;
 use function fclose;
 use function getimagesize;
 use function imagealphablending;
@@ -33,6 +35,7 @@ use function unlink;
 use const DIRECTORY_SEPARATOR;
 use const IMAGETYPE_JPEG;
 use const IMAGETYPE_PNG;
+use const SECTION_IMAGE_POINTS_OVERVIEW;
 
 class Section extends Model
 {
@@ -120,18 +123,22 @@ class Section extends Model
     /**
      * Adds an image as a generic_image Net7/Document
      *
+     * @param string $filepath
+     * @param string|null $type
+     * @param string|null $title
+     * @param string|null $p_filename
+     * @return Document
      */
-    public function addImagePhoto(string $filepath, string $type = null)
+    public function addImagePhoto(string $filepath, string $type = null, string $title = null, string $p_filename = null)
     {
         // TODO: mettere tutto in una funzione
-        $f_arr = explode('/', $filepath);
-        $filename = Arr::last($f_arr);
+        $filename = $p_filename ?? Arr::last(explode('/', $filepath));
         $tempFilepath = '/tmp/' . $filename;
-        copy('./storage/seeder/' . $filepath, $tempFilepath);
+        copy($filepath, $tempFilepath);
         $file = new UploadedFile($tempFilepath, $filename, null, null, true);
 
         $doc = new Document([
-            'title' => "Image photo for section {$this->id}",
+            'title' => $title ?? "Image photo for section {$this->id}",
             'file' => $file,
         ]);
         $this->addDocumentWithType($doc, $type ? $type : Document::GENERIC_IMAGE_TYPE);
@@ -158,103 +165,134 @@ class Section extends Model
             ->get();
     }
 
+    /**
+     * Given a bunch of Task ids, this function filters them belongings to a particular Section
+     *
+     * @param array $tasks_ids
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getOnlyMyTasks(array $tasks_ids)
+    {
+        return $this->tasks()->whereIn('id', $tasks_ids)->get();
+    }
 
     /**
      *  Give the deck image with all its points
+     * @param array $tasks_ids
+     * @return array
      */
-    public function drawOverviewImageWithTaskPoints()
+    public function drawOverviewImageWithTaskPoints(array $tasks_ids = [])
     {
         ini_set('memory_limit', '-1');
-        $bridgeMedia = $this->generic_images->last();
-//        SECTION_IMAGE_POINTS_OVERVIEW
-        if ($bridgeMedia && $this->tasks()->count()) {
-            $bridgeImagePath = $bridgeMedia->getPathBySize('');
-            /** @var Task $task */
-            foreach ($this->tasks as $task) {
+        $deck_media = $this->generic_images->last();
+        $my_tasks = !empty($tasks_ids) ? $this->getOnlyMyTasks($tasks_ids) : $this->tasks;
+        if ($deck_media && count($my_tasks)) {
 
-                $map_dir = storage_path() . DIRECTORY_SEPARATOR . '/sections/';
-                if (!is_dir($map_dir)) {
-                    mkdir($map_dir);
-                }
+            $deck_with_pins_f_handler = tmpfile();
+            $deck_with_pins_f_path = stream_get_meta_data($deck_with_pins_f_handler)['uri'];
 
-                $tmpfilePath = storage_path() . DIRECTORY_SEPARATOR . '/sections/' . DIRECTORY_SEPARATOR . $task->id . '_map.png';
-                if (is_file($tmpfilePath)) {
-                    unlink($tmpfilePath);
-                }
+            $tmpfileHandle = tmpfile();
+            $final_file_path = stream_get_meta_data($tmpfileHandle)['uri'];
 
-                $mapfileHandle = tmpfile();
-                $mapfilePath = stream_get_meta_data($mapfileHandle)['uri'];
+            $deck_img_path = $deck_media->getPathBySize('');
+            $bridgeImageInfo = getimagesize($deck_img_path);
 
-                $tmpfileHandle = tmpfile();
-                $tmpfilePath = stream_get_meta_data($tmpfileHandle)['uri'];
+            // crea un immagine tutta bianca con W e H il doppio di quelle dell'immagine del ponte
+            $dst_deck_white_bkg_img = imagecreate($bridgeImageInfo[0] * 2, $bridgeImageInfo[1] * 2);
+            imagecolorallocate($dst_deck_white_bkg_img, 255, 255, 255);
 
-                $bridgeImagePath = $bridgeMedia->getPathBySize('');
-                $bridgeImageInfo = getimagesize($bridgeImagePath);
-                $image = imagecreate($bridgeImageInfo[0] * 2, $bridgeImageInfo[1] * 2);
-                imagecolorallocate($image, 255, 255, 255);
-
-                if (exif_imagetype($bridgeImagePath) === IMAGETYPE_PNG) {
-                    // il ponte e' un'immagine png
-                    $dest = imagecreatefrompng($bridgeImagePath);
-                    imagealphablending($dest, false);
-                    imagesavealpha($dest, true);
-                }
-
-                if (exif_imagetype($bridgeImagePath) === IMAGETYPE_JPEG) {
-                    // il ponte e' un'immagine jpg
-                    $dest = imagecreatefromjpeg($bridgeImagePath);
-                }
-
-                imagecopy($image, $dest, $bridgeImageInfo[0] / 2, $bridgeImageInfo[1] / 2, 0, 0, $bridgeImageInfo[0], $bridgeImageInfo[1]);
-
-                try {
-                    $pinPath = $task->getIcon();
-                    $iconInfo = getimagesize($pinPath);
-                    $src = imagecreatefrompng($pinPath);
-                    imagealphablending($src, false);
-                    imagesavealpha($src, true);
-
-                    // ridimensiono l'immagine del ponte e la fisso ad una larghezza fissa
-                    $sizeW = 696;  // larghezza del foglio A4 (queste immagini sono create per il doc CorrosionMap)
-                    $sizeH = $sizeW * ($bridgeImageInfo[1] * 2) / ($bridgeImageInfo[0] * 2);
-
-                    $x = $bridgeImageInfo[0] / 2 + $task->y_coord;
-                    $y = ($bridgeImageInfo[1] - $task->x_coord) + $bridgeImageInfo[1] / 2;
-
-                    $xx = ($x * $sizeW) / ($bridgeImageInfo[0] * 2);
-                    $yy = ($y * $sizeH) / ($bridgeImageInfo[1] * 2);
-
-                    // imagepng($image, $map);
-                    imagepng($image, $mapfilePath);
-
-                    // $el = $this->resize_image($map, $sizeW, $sizeH);
-                    $el = $task->resize_image($mapfilePath, $sizeW, $sizeH);
-
-                    imagealphablending($el, false);
-                    imagesavealpha($el, true);
-
-                    fclose($mapfileHandle);
-                    imagecopymerge($el, $src, $xx - $iconInfo[0] / 2, $yy - $iconInfo[1], 0, 0, $iconInfo[0], $iconInfo[1], 100);
-
-                    imagealphablending($el, false);
-                    imagesavealpha($el, true);
-
-                    imagedestroy($dest);
-                    imagedestroy($src);
-                    imagedestroy($image);
-
-                    // no...devo salvare su un file tmp che vado a rimpiazzare ogni volta...solo alla fine salvo nella section
-
-                    $this->addFileOrUpdateDocumentWithType($tmpfilePath, $this::CORROSION_MAP_DOCUMENT_TYPE, 'corrosion_map');
-
-                    fclose($tmpfileHandle); //this removes the tempfile
-
-                    return ['success' => true, 'H' => $sizeH, 'W' => $sizeW];
-
-                } catch (\Exception $exc) {
-                    return ['success' => false, 'error' => $exc->getMessage()];
-                }
+            if (exif_imagetype($deck_img_path) === IMAGETYPE_PNG) {
+                // il ponte e' un'immagine png
+                $original_deck_img_src = imagecreatefrompng($deck_img_path);
+                imagealphablending($original_deck_img_src, false);
+                imagesavealpha($original_deck_img_src, true);
             }
+
+            if (exif_imagetype($deck_img_path) === IMAGETYPE_JPEG) {
+                // il ponte e' un'immagine jpg
+                $original_deck_img_src = imagecreatefromjpeg($deck_img_path);
+            }
+
+            // Copy a part of src_im onto dst_im starting at the x,y coordinates src_x, src_y with a width of src_w and a height of src_h. The portion defined will be copied onto the x,y coordinates, dst_x and dst_y.
+            // In sostanza qua si copia l'immagine bianca sopra l'immagine trasparente del ponte
+            imagecopy($dst_deck_white_bkg_img, $original_deck_img_src, $bridgeImageInfo[0] / 2, $bridgeImageInfo[1] / 2, 0, 0, $bridgeImageInfo[0], $bridgeImageInfo[1]);
+
+            // ridimensiono l'immagine del ponte e la fisso ad una larghezza fissa
+            $sizeW = 696;  // larghezza del foglio A4 (queste immagini sono create per il doc CorrosionMap)
+            $sizeH = $sizeW * ($bridgeImageInfo[1] * 2) / ($bridgeImageInfo[0] * 2);
+            // copio l'immagine del ponte con lo sfondo bianco precedentemente applicato, nel file temporaneo $mapfilePath
+            imagepng($dst_deck_white_bkg_img, $deck_with_pins_f_path);
+
+            // ridimensiono l'immagine secondo i calcoli sopra
+            $deck_with_pins_resized_img_dest = Utils::resize_image($deck_with_pins_f_path, $sizeW, $sizeH);
+
+            imagealphablending($deck_with_pins_resized_img_dest, false);
+            imagesavealpha($deck_with_pins_resized_img_dest, true);
+
+            $resize_pins = false;
+            /** @var Task $task */
+            foreach ($my_tasks as $task) {
+                // creo l'immagine PNG del pin del Task
+                $pinPath = $task->getIcon();
+                $iconInfo = getimagesize($pinPath);
+                if ($resize_pins) {
+                    $new_w = 20;
+                    $new_h = 30;
+                    $pin_png_image_src = Utils::resize_image($pinPath, $new_w, $new_h);
+//                  $pin_png_image_src_orig = imagecreatefrompng($pinPath);
+//                  $pin_png_image_src = Utils::getPNGImageResized($pin_png_image_src_orig, $new_w, $new_h);
+                } else {
+                    $new_w = $iconInfo[0]; // 20;
+                    $new_h = $iconInfo[1]; // 48;
+
+                    $pin_png_image_src = imagecreatefrompng($pinPath);
+                    imagealphablending($pin_png_image_src, false);
+                    imagesavealpha($pin_png_image_src, true);
+                }
+
+                // Credo che questi calcoli siano fatti per invertire coordinate X e Y (è così, mi ha detto @miscali)
+                $x = $bridgeImageInfo[0] / 2 + $task->y_coord;
+                $y = ($bridgeImageInfo[1] - $task->x_coord) + $bridgeImageInfo[1] / 2;
+                // ... e per riposizionare X e Y del pin in base al ridimensionamento dell'immagine
+                $xx = ($x * $sizeW) / ($bridgeImageInfo[0] * 2);
+                $yy = ($y * $sizeH) / ($bridgeImageInfo[1] * 2);
+
+                // copio il pin  sull'immagine del deck
+                imagecopymerge($deck_with_pins_resized_img_dest, $pin_png_image_src, $xx - $new_w / 2, $yy - $new_h, 0, 0, $new_w, $new_h, 100);
+
+                imagealphablending($deck_with_pins_resized_img_dest, false);
+                imagesavealpha($deck_with_pins_resized_img_dest, true);
+
+                imagedestroy($pin_png_image_src);
+            }
+
+            imagealphablending($deck_with_pins_resized_img_dest, false);
+            imagesavealpha($deck_with_pins_resized_img_dest, true);
+            imagepng($deck_with_pins_resized_img_dest, $final_file_path);
+
+            $this->addImagePhoto($final_file_path, SECTION_IMAGE_POINTS_OVERVIEW, "Deck with pins image for Section #{$this->id}", 'deck_with_pins_resized_img_dest.png');
+
+            fclose($deck_with_pins_f_handler);
+
+            imagedestroy($original_deck_img_src);
+            imagedestroy($dst_deck_white_bkg_img);
+
+            fclose($tmpfileHandle); //this removes the tempfile
+            return $final_file_path;
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getPointsImageOverview()
+    {
+        $document = $this->documents->where('type', SECTION_IMAGE_POINTS_OVERVIEW)->first();
+        if ($document) {
+            $media = $document->getRelatedMedia();
+            return $media->getPath();
+        } else {
+            return '';
         }
     }
 }
