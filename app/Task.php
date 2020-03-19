@@ -171,6 +171,17 @@ class Task extends Model
     }
 
     /**
+     * Scope a query to only include only primary
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopePrimary($query)
+    {
+        return $query->where('task_type', '=', TASK_TYPE_PRIMARY);
+    }
+
+    /**
      * Scope a query to only include only open Tasks
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
