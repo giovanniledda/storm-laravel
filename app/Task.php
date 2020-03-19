@@ -22,6 +22,7 @@ use function in_array;
 use function is_object;
 use function strtotime;
 use function strtoupper;
+use const DIRECTORY_SEPARATOR;
 use const PROJECT_STATUS_CLOSED;
 use const TASK_TYPE_PRIMARY;
 use const TASK_TYPE_REMARK;
@@ -656,7 +657,7 @@ class Task extends Model
         $status = str_replace(' ', '_', $status);
         $path = storage_path() . DIRECTORY_SEPARATOR . 'storm-pins';
         if (!$isOpen) {
-            return $path . DIRECTORY_SEPARATOR . $status . DIRECTORY_SEPARATOR . $icon;
+            return $path . DIRECTORY_SEPARATOR . $status . DIRECTORY_SEPARATOR . 'closed' . DIRECTORY_SEPARATOR . $icon;
         }
         return $path . DIRECTORY_SEPARATOR . $status . DIRECTORY_SEPARATOR . $icon;
     }
