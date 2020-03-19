@@ -140,6 +140,26 @@ class Section extends Model
     }
 
     /**
+     * Given some Task ids, get the related Sections
+     *
+     * @param array $tasks_ids
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public static function getSectionsStartingFromTasks(array $tasks_ids)
+    {
+        return Section::query()
+            ->select('*')
+            ->distinct()
+            ->whereIn('id', function($query) use ($tasks_ids){
+                $query->select('section_id')
+                    ->from('tasks')
+                    ->whereIn('id', $tasks_ids);
+            })
+            ->get();
+    }
+
+
+    /**
      *  Give the deck image with all its points
      */
     public function drawOverviewImageWithTaskPoints()
@@ -152,12 +172,12 @@ class Section extends Model
             /** @var Task $task */
             foreach ($this->tasks as $task) {
 
-                $map_dir = storage_path() . DIRECTORY_SEPARATOR . '/tasks/';
+                $map_dir = storage_path() . DIRECTORY_SEPARATOR . '/sections/';
                 if (!is_dir($map_dir)) {
                     mkdir($map_dir);
                 }
 
-                $tmpfilePath = storage_path() . DIRECTORY_SEPARATOR . '/tasks/' . DIRECTORY_SEPARATOR . $task->id . '_map.png';
+                $tmpfilePath = storage_path() . DIRECTORY_SEPARATOR . '/sections/' . DIRECTORY_SEPARATOR . $task->id . '_map.png';
                 if (is_file($tmpfilePath)) {
                     unlink($tmpfilePath);
                 }
