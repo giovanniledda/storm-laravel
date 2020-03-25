@@ -180,6 +180,8 @@ class Section extends Model
      *  Give the deck image with all its points
      * @param array $tasks_ids
      * @return array
+     *
+     * TODO: funzione troppo lunga, spezza in più parti
      */
     public function drawOverviewImageWithTaskPoints(array $tasks_ids = [])
     {
@@ -218,8 +220,19 @@ class Section extends Model
             imagecopy($dst_deck_white_bkg_img, $original_deck_img_src, $bridgeImageInfo[0] / 2, $bridgeImageInfo[1] / 2, 0, 0, $bridgeImageInfo[0], $bridgeImageInfo[1]);
 
             // ridimensiono l'immagine del ponte e la fisso ad una larghezza fissa
-            $sizeW = 696;  // larghezza del foglio A4 (queste immagini sono create per il doc CorrosionMap)
-            $sizeH = $sizeW * ($bridgeImageInfo[1] * 2) / ($bridgeImageInfo[0] * 2);
+            $iconInfo = getimagesize($deck_img_path);
+
+            // TODO: spostare tra le prop
+            $resize_image = true;
+            $resize_pins = false;
+
+            if ($resize_image) {
+                $sizeW = 696;  // larghezza del foglio A4 (queste immagini sono create per il doc CorrosionMap)
+                $sizeH = $sizeW * ($bridgeImageInfo[1] * 2) / ($bridgeImageInfo[0] * 2);
+            } else {
+                $sizeW = $iconInfo[0];
+                $sizeH = $iconInfo[1];
+            }
             // copio l'immagine del ponte con lo sfondo bianco precedentemente applicato, nel file temporaneo $mapfilePath
             imagepng($dst_deck_white_bkg_img, $deck_with_pins_f_path);
 
@@ -229,15 +242,14 @@ class Section extends Model
             imagealphablending($deck_with_pins_resized_img_dest, false);
             imagesavealpha($deck_with_pins_resized_img_dest, true);
 
-            $resize_pins = false;
             /** @var Task $task */
             foreach ($my_tasks as $task) {
                 // creo l'immagine PNG del pin del Task
-                $pinPath = $task->getIcon();
+                $pinPath = $task->getIcon(null, null, 'Active', true);
                 $iconInfo = getimagesize($pinPath);
                 if ($resize_pins) {
-                    $new_w = 20;
-                    $new_h = 30;
+                    $new_w = 10;
+                    $new_h = 25;
                     $pin_png_image_src = Utils::resize_image($pinPath, $new_w, $new_h);
 //                  $pin_png_image_src_orig = imagecreatefrompng($pinPath);
 //                  $pin_png_image_src = Utils::getPNGImageResized($pin_png_image_src_orig, $new_w, $new_h);

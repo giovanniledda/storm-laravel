@@ -247,9 +247,15 @@ trait TemplateReplacementRules
         $sections = Section::getSectionsStartingFromTasks($task_ids);
         /** @var Section $section */
         foreach ($sections as $section) {
+            $section_text = "Section {$section->name}, id: {$section->id}";
             $section->drawOverviewImageWithTaskPoints($task_ids);
             $overview_img = $section->getPointsImageOverview();
             $html .= <<<EOF
+                    <tr>
+                        <td width="696" style="border: 1px solid #ececec">
+                            $section_text
+                        </td>
+                    </tr>
                     <tr>
                         <td width="696" style="border: 1px solid #ececec">
                             <img width="696" src="file://$overview_img" alt="Section Overview Image">

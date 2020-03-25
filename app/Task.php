@@ -659,15 +659,17 @@ class Task extends Model
      * @param null $p_status
      * @param null $p_isOpen
      * @param string $icon
+     * @param bool $miniature
      * @return string
      */
-    public function getIcon($p_status = null, $p_isOpen = null, $icon = 'Active')
+    public function getIcon($p_status = null, $p_isOpen = null, $icon = 'Active', $miniature = false)
     {
         $status = $p_status ?? $this->task_status;
         $isOpen = $p_isOpen ?? $this->is_open;
         $icon = $icon . '.png';
         $status = str_replace(' ', '_', $status);
-        $path = storage_path() . DIRECTORY_SEPARATOR . 'storm-pins';
+        $dir = $miniature ? 'storm-pins-half' : 'storm-pins';
+        $path = storage_path() . DIRECTORY_SEPARATOR . $dir;
         if (!$isOpen && file_exists($path . DIRECTORY_SEPARATOR . $status . DIRECTORY_SEPARATOR . 'closed' . DIRECTORY_SEPARATOR . $icon)) {
             return $path . DIRECTORY_SEPARATOR . $status . DIRECTORY_SEPARATOR . 'closed' . DIRECTORY_SEPARATOR . $icon;
         }
