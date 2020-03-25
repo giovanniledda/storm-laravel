@@ -719,7 +719,7 @@ EOF;
         if ($first_history && $first_history->getAdditionalPhotoPath()) {
             $img_dettaglio = $first_history->getAdditionalPhotoPath();
             $img_dettaglioHTML = <<<EOF
-                <img width="400" src="file://$img_dettaglio" alt="Overview image">
+                <img src="file://$img_dettaglio" alt="Overview image">
 EOF;
         }
 
@@ -739,7 +739,7 @@ EOF;
 
         $html = <<<EOF
             <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Point #$point_id</p>
-
+            $img_dettaglioHTML
             <table cellpadding="0" cellspacing="0">
                 <tbody>
                     <tr>
