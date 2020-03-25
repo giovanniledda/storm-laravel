@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="30" height="46" viewBox="0 0 30 46">
+  <g fill="none" fill-rule="evenodd">
+    <g transform="translate(0 .5)">
+      <circle cx="15" cy="15" r="15" fill="#0A6FDB"/>
+      <path stroke="#0A6FDB" stroke-linecap="round" stroke-width="3" d="M15,24 L15,44"/>
+      <g stroke="#0A6FDB" stroke-linecap="round" stroke-width="1.5" transform="translate(10.5 8.5)">
+        <path d="M4.5,6.5 L4.5,0"/>
+        <path d="M2.25,8.75 L2.25,4.25" transform="rotate(-90 2.25 6.5)"/>
+      </g>
+    </g>
+    <g transform="translate(7 9)">
+      <polygon fill="#FFF" points="3.4 2 1 8.336 6.4 10 7 2"/>
+      <path fill="#0A6FDB" stroke="#FFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M0.238218146,9.09849605 C2.41273938,3.58972023 3.5,0.835332318 3.5,0.835332318"/>
+      <path stroke="#FFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.5997528 1L16.7210046 9.0922992M11 9.73333333L10 2.26666667"/>
+      <path fill="#0A6FDB" stroke="#FFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7,9.73333333 L6,2.26666667" transform="matrix(-1 0 0 1 13 0)"/>
+      <circle cx="3" cy="10" r="3" fill="#FFF" stroke="#0A6FDB" stroke-width="1.5"/>
+      <path fill="#0A6FDB" stroke="#FFF" stroke-linecap="round" stroke-width="1.5" d="M7,6.5 L10,6.5"/>
+      <rect width="5" height="2" x="6" y="4" fill="#FFF"/>
+      <path fill="#0A6FDB" stroke="#FFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7.3,3.5 L9.7,3.5"/>
+      <path fill="#FFF" stroke="#FFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7,2 C7,0.8954305 6.13131332,0 5.059734,0 C3.98815467,0 3.31694835,0.937808635 3,2"/>
+      <path fill="#FFF" stroke="#FFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14,2 C14,0.8954305 13.1313133,0 12.059734,0 C10.9881547,0 10.3169484,0.937808635 10,2" transform="matrix(-1 0 0 1 24 0)"/>
+      <polygon fill="#FFF" points="12.4 2 10 8.336 15.4 10 16 2" transform="matrix(-1 0 0 1 26 0)"/>
+      <circle cx="14" cy="10" r="3" fill="#FFF" stroke="#0A6FDB" stroke-width="1.5"/>
+    </g>
+  </g>
+</svg>

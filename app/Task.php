@@ -666,7 +666,9 @@ class Task extends Model
     {
         $status = $p_status ?? $this->task_status;
         $isOpen = $p_isOpen ?? $this->is_open;
-        $icon = $icon . '.png';
+//        $ext = in_array($status, ['monitored', 'completed', 'denied']) ? '.svg' : '.png';
+        $ext = '.png';
+        $icon = $icon . $ext;
         $status = str_replace(' ', '_', $status);
         $dir = $miniature ? 'storm-pins-half' : 'storm-pins';
         $path = storage_path() . DIRECTORY_SEPARATOR . $dir;

@@ -224,7 +224,7 @@ class Section extends Model
 
             // TODO: spostare tra le prop
             $resize_image = true;
-            $resize_pins = false;
+            $resize_pins = true;
 
             if ($resize_image) {
                 $sizeW = 696;  // larghezza del foglio A4 (queste immagini sono create per il doc CorrosionMap)
@@ -249,10 +249,10 @@ class Section extends Model
                 $iconInfo = getimagesize($pinPath);
                 if ($resize_pins) {
                     $new_w = 10;
-                    $new_h = 25;
-                    $pin_png_image_src = Utils::resize_image($pinPath, $new_w, $new_h);
-//                  $pin_png_image_src_orig = imagecreatefrompng($pinPath);
-//                  $pin_png_image_src = Utils::getPNGImageResized($pin_png_image_src_orig, $new_w, $new_h);
+                    $new_h = 14.5;
+//                    $pin_png_image_src = Utils::resize_image($pinPath, $new_w, $new_h);
+                  $pin_png_image_src_orig = imagecreatefrompng($pinPath);
+                  $pin_png_image_src = Utils::getPNGImageResized($pin_png_image_src_orig, $new_w, $new_h);
                 } else {
                     $new_w = $iconInfo[0]; // 20;
                     $new_h = $iconInfo[1]; // 48;
@@ -270,10 +270,11 @@ class Section extends Model
                 $yy = ($y * $sizeH) / ($bridgeImageInfo[1] * 2);
 
                 // copio il pin  sull'immagine del deck
-                imagecopymerge($deck_with_pins_resized_img_dest, $pin_png_image_src, $xx - $new_w / 2, $yy - $new_h, 0, 0, $new_w, $new_h, 100);
+//                imagecopymerge($deck_with_pins_resized_img_dest, $pin_png_image_src, $xx - $new_w / 2, $yy - $new_h, 0, 0, $new_w, $new_h, 100);
+                Utils::imagecopymerge_alpha($deck_with_pins_resized_img_dest, $pin_png_image_src, $xx - $new_w / 2, $yy - $new_h, 0, 0, $new_w, $new_h, 100);
 
-                imagealphablending($deck_with_pins_resized_img_dest, false);
-                imagesavealpha($deck_with_pins_resized_img_dest, true);
+//                imagealphablending($deck_with_pins_resized_img_dest, false);
+//                imagesavealpha($deck_with_pins_resized_img_dest, true);
 
                 imagedestroy($pin_png_image_src);
             }
