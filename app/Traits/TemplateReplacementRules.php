@@ -16,6 +16,7 @@ use Phpdocx\Elements\WordFragment;
 use function count;
 use function date;
 use function fclose;
+use function getimagesize;
 use function min;
 use function throw_if;
 use function time;
@@ -245,10 +246,23 @@ trait TemplateReplacementRules
         $html = '<table cellpadding="0" cellspacing="0"><tbody>';
         $task_ids = $this->_taskToIncludeInReport ?? $this->tasks()->pluck('id')->toArray();
         $sections = Section::getSectionsStartingFromTasks($task_ids);
+
+        // 1 - prendo l'img di section con la W maggiore
+        $max_w = 0;
+        /** @var Section $section */
+        foreach ($sections as $section) {
+            $deck_media = $section->generic_images->last();
+            $deck_img_path = $deck_media->getPathBySize('');
+            $bridgeImageInfo = getimagesize($deck_img_path);
+            $max_w = max($max_w, $bridgeImageInfo[0]);
+        }
+
         /** @var Section $section */
         foreach ($sections as $section) {
             $section_text = "Section {$section->name}, id: {$section->id}";
-            $section->drawOverviewImageWithTaskPoints($task_ids);
+            // 2 - divido questo max per 1236 la W ed ottengo un fattore per cui dovrò andare a dividere la W (in realtà divido per il fattore * 2) di tutte le altre section per ottenere la dimensione corretta
+            // 3 - passo il fattore ottenuto alla drawOverviewImageWithTaskPoints
+            $section->drawOverviewImageWithTaskPoints($task_ids, $max_w/1236);
             $overview_img = $section->getPointsImageOverview();
             $html .= <<<EOF
                     <tr>
