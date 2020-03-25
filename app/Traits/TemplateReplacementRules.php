@@ -273,7 +273,7 @@ trait TemplateReplacementRules
                     </tr>
                     <tr>
                         <td width="696" style="border: 1px solid #ececec">
-                            <img width="696" src="file://$overview_img" alt="Section Overview Image">
+                            <img src="file://$overview_img" alt="Section Overview Image">
                         </td>
                     </tr>
 EOF;
