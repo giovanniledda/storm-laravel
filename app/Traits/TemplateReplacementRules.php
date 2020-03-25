@@ -256,13 +256,14 @@ trait TemplateReplacementRules
             $bridgeImageInfo = getimagesize($deck_img_path);
             $max_w = max($max_w, $bridgeImageInfo[0]);
         }
+        $d_factor = $max_w/1236;
 
         /** @var Section $section */
         foreach ($sections as $section) {
-            $section_text = "Section {$section->name}, id: {$section->id}";
+            $section_text = "Section {$section->name}, id: {$section->id}, fattore divisione: $d_factor";
             // 2 - divido questo max per 1236 la W ed ottengo un fattore per cui dovrò andare a dividere la W (in realtà divido per il fattore * 2) di tutte le altre section per ottenere la dimensione corretta
             // 3 - passo il fattore ottenuto alla drawOverviewImageWithTaskPoints
-            $section->drawOverviewImageWithTaskPoints($task_ids, $max_w/1236);
+            $section->drawOverviewImageWithTaskPoints($task_ids, $d_factor);
             $overview_img = $section->getPointsImageOverview();
             $html .= <<<EOF
                     <tr>
