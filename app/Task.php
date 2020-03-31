@@ -742,14 +742,14 @@ EOF;
         $html = <<<EOF
             <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Point #$point_id</p>
 
-            <table cellpadding="0" cellspacing="0" style="display: inline-table">
+            <table cellpadding="0" cellspacing="0" style="display: inline-block; float: left; margin-right: 30px">
                     <tr><td width="300" style="border: 1px solid #ececec">$corrosionMapHTML</td></tr>
                     <tr height="30"></tr>
                     <tr><td width="300" style="border: 1px solid #ececec">$img_dettaglioHTML</td></tr>
             </table>
 
                     
-            <table cellpadding="0" cellspacing="0" style="display: inline-table">
+            <table cellpadding="0" cellspacing="0" style="display: inline-block; float: left">
                     <tr><td width="350" valign="top">
                         <span style="font-weight: bold; color: #1f519b;">Latest update</span><br>
                         $task_type_status_str
