@@ -741,26 +741,28 @@ EOF;
 
         $html = <<<EOF
             <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Point #$point_id</p>
-
-            <table cellpadding="0" cellspacing="0" width="300" style="display: inline-table; float: left;">
-                    <tr><td width="300" style="border: 1px solid #ececec">$corrosionMapHTML</td></tr>
-                    <tr height="30"></tr>
-                    <tr><td width="300" style="border: 1px solid #ececec">$img_dettaglioHTML</td></tr>
-            </table>
-
-                    
-            <table cellpadding="0" cellspacing="0" width="350" style="display: inline-table; float: left">
-                    <tr><td width="350" valign="top">
-                        <span style="font-weight: bold; color: #1f519b;">Latest update</span><br>
-                        $task_type_status_str
+            <table cellpadding="0" cellspacing="0">
+                <tbody>
+                    <tr>
+                        <td width="300" style="border: 1px solid #ececec">$corrosionMapHTML</td>
+                        <td width="30"></td>
+                        <td width="350" valign="top">
+                            <span style="font-weight: bold; color: #1f519b;">Latest update</span><br>
+                            $task_type_status_str
                         </td>
                     </tr>
+
                     <tr height="30"></tr>
-                    <tr><td width="350" valign="top">
+
+                    <tr>
+                        <td width="300" style="border: 1px solid #ececec">$img_dettaglioHTML</td>
+                        <td width="30"></td>
+                        <td width="350" valign="top">
                             <span style="border: 1px solid #ececec; color: #1f519b; font-weight: bold">Overview</span><br>
                             $task_definition $author_comment
                         </td>
                     </tr>
+                </tbody>
             </table>
 
 
