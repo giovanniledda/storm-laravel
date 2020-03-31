@@ -740,7 +740,7 @@ EOF;
         }
 
         $html = <<<EOF
-            <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Point #$point_id</p>
+            <h3>Point #$point_id</h3>
             <table cellpadding="0" cellspacing="0">
                 <tbody>
                     <tr>
