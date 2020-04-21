@@ -76,5 +76,8 @@ Route::group(['middleware' => ['logoutBlocked']], function () {
         Route::get('/professions/{id}/confirm-destroy', 'ProfessionController@confirmDestroy')->name('professions.confirm.destroy');
         Route::get('/task_intervent_types/{id}/confirm-destroy', 'TaskInterventTypeController@confirmDestroy')->name('task_intervent_types.confirm.destroy');
         Route::get('/project_user/{id}/confirm-destroy', 'ProjectUserController@confirmDestroy')->name('project_user.confirm.destroy');
+
+        // Text Description Suggestions
+        Route::resource('suggestions', 'SuggestionController');
     });
 });
