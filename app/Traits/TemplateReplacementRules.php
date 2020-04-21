@@ -293,7 +293,8 @@ EOF;
             $bridgeImageInfo = getimagesize($deck_img_path);
             $max_w = max($max_w, $bridgeImageInfo[0]);
         }
-        $d_factor = $max_w/1236;
+//        $d_factor = $max_w/1236;
+        $d_factor = $max_w/696;
 
         /** @var Section $section */
         foreach ($sections as $section) {
