@@ -261,8 +261,8 @@ trait TemplateReplacementRules
             $point_id = $task->internal_progressive_number;
             $task_location = $task->section ? Utils::sanitizeTextsForPlaceholders($task->section->name) : '?';
             $html .= <<<EOF
-                    <tr>
-                        <td width="496" style="border-bottom: 1px solid #ececec; margin-bottom: 8px"><b>Task #$point_id</b> ($task_location)</td>
+                    <tr style="margin-bottom: 8px">
+                        <td width="496" style="border-bottom: 1px solid #ececec;"><b>Point #$point_id</b> ($task_location)</td>
                         <td width="200" style="border-bottom: 1px solid #ececec; text-align: right;">Pag. $index</td>
                     </tr>
 EOF;
@@ -310,7 +310,7 @@ EOF;
                         </td>
                     </tr> -->
                     <tr>
-                        <td width="696" style="border: 1px solid #ececec">
+                        <td width="696">
                             <img width="928" src="file://$overview_img" alt="Section Overview Image">
                         </td>
                     </tr>

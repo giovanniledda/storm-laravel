@@ -717,7 +717,7 @@ EOF;
         $task_type = $this->task_type;
 
         $first_history = $this->getFirstHistory();
-        $img_dettaglioHTML = '<div style="color: #666666; text-align: center; width: 100%;">No overview photo available</div>';
+        $img_dettaglioHTML = '<div style="color: #666666; text-align: center; width: 100%; line-height: 32px">No overview photo available</div>';
         if ($first_history && $first_history->getAdditionalPhotoPath()) {
             $img_dettaglio = $first_history->getAdditionalPhotoPath();
             $img_dettaglioHTML = <<<EOF
@@ -759,6 +759,7 @@ EOF;
                     <tr>
                         <td width="300" style="border: 1px solid #ececec">$img_dettaglioHTML</td>
                         <td width="30"></td>
+                        <td width="300"></td>
                     </tr>
                 </tbody>
             </table>
