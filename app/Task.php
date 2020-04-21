@@ -744,17 +744,17 @@ EOF;
             <table cellpadding="0" cellspacing="0">
                 <tbody>
                     <tr>
-                        <td>
+                        <td width="300">
                             <table cellpadding="0" cellspacing="0" valign="top">
                                 <tbody>
                                     <tr>
-                                        <td width="300" style="border: 1px solid #ececec">
+                                        <td width="150" style="border: 1px solid #ececec">
                                             $corrosionMapHTML
                                         </td>
                                     </tr>
 
                                     <tr>
-                                        <td width="300" style="border: 1px solid #ececec">
+                                        <td width="150" style="border: 1px solid #ececec">
                                             $img_dettaglioHTML
                                         </td>
                                     </tr>
@@ -762,7 +762,7 @@ EOF;
                             </table>
                         </td>
 
-                        <td width="30"></td>
+                        <td width="5"></td>
 
                         <td width="350" valign="top" rowspan="2">
                             <span style="font-weight: bold; color: #1f519b;">Latest update</span><br>
