@@ -36,7 +36,7 @@
                             <td>{{ $suggestion->use_counter }}</td>
                             <td>
                                 <a href="{{ route('suggestions.edit', ['suggestion' => $suggestion]) }}" class="btn btn-info pull-left" style="margin-right: 3px;">{{ __('Edit') }}</a>
-{{--                                <a href="{{ @route('suggestions.confirm.destroy', ['id' => $suggestion->id]) }}" class="btn btn-danger">{{ __('Delete') }}</a>--}}
+                                <a href="{{ @route('suggestions.confirm.destroy', ['suggestion' => $suggestion]) }}" class="btn btn-danger">{{ __('Delete') }}</a>
                             </td>
                         </tr>
                     @endforeach

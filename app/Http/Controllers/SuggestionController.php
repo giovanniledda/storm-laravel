@@ -51,7 +51,7 @@ class SuggestionController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Suggestion  $suggestion
+     * @param  Suggestion  $suggestion
      * @return \Illuminate\Http\Response
      */
     public function show(Suggestion $suggestion)
@@ -62,7 +62,7 @@ class SuggestionController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Suggestion  $suggestion
+     * @param  Suggestion  $suggestion
      * @return \Illuminate\Http\Response
      */
     public function edit(Suggestion $suggestion)
@@ -89,11 +89,25 @@ class SuggestionController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Suggestion  $suggestion
-     * @return \Illuminate\Http\Response
+     * @param  Suggestion  $suggestion
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Suggestion $suggestion)
     {
-        //
+        $suggestion->delete();
+
+        return redirect()->route('suggestions.index')->with(FLASH_SUCCESS, __('Suggestion deleted'));
+    }
+
+
+    /**
+     * Ask confirmation about the specified resource from storage to remove.
+     *
+     * @param Suggestion $suggestion
+     * @return mixed
+     */
+    public function confirmDestroy(Suggestion $suggestion)
+    {
+        return view('suggestions.delete')->withSuggestion($suggestion);
     }
 }

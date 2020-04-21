@@ -78,6 +78,7 @@ Route::group(['middleware' => ['logoutBlocked']], function () {
         Route::get('/project_user/{id}/confirm-destroy', 'ProjectUserController@confirmDestroy')->name('project_user.confirm.destroy');
 
         // Text Description Suggestions
+        Route::get('/suggestions/{suggestion}/confirm-destroy', 'SuggestionController@confirmDestroy')->name('suggestions.confirm.destroy');
         Route::resource('suggestions', 'SuggestionController');
     });
 });
