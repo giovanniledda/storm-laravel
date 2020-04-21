@@ -304,11 +304,11 @@ EOF;
             $section->drawOverviewImageWithTaskPoints($task_ids, $d_factor);
             $overview_img = $section->getPointsImageOverview();
             $html .= <<<EOF
-                    <!-- <tr>
-                        <td width="696" style="border: 1px solid #ececec">
+                    <tr>
+                        <td width="696" style="color: #999999" align="center">
                             $section_text
                         </td>
-                    </tr> -->
+                    </tr>
                     <tr>
                         <td width="696">
                             <img width="928" src="file://$overview_img" alt="Section Overview Image">
