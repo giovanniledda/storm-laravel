@@ -13,6 +13,8 @@ use Net7\EnvironmentalMeasurement\Models\EnvironmentalParameter;
 use Net7\EnvironmentalMeasurement\Models\Measurement;
 use Phpdocx\Create\CreateDocxFromTemplate;
 use Phpdocx\Elements\WordFragment;
+
+use function ceil;
 use function count;
 use function date;
 use function fclose;
@@ -243,21 +245,29 @@ trait TemplateReplacementRules
      */
     public function getCorrosionMapHtmlTableOfContents()
     {
-        $html = '<table cellpadding="0" cellspacing="0"><tbody>';
+        $html = '<p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Table of Contents</p>';
+        $html .= '<table cellpadding="0" cellspacing="0"><tbody>';
         $tasks = $this->getTasksToIncludeInReport();
+        $toc_pages = ceil(count($tasks)/46);
+        $task_ids = $this->_taskToIncludeInReport ?? $this->tasks()->pluck('id')->toArray();
+        $sections = Section::getSectionsStartingFromTasks($task_ids);
+        $section_overview_pages = ceil(count($sections)/4);
+        $index = 1 + $toc_pages + $section_overview_pages;
         /** @var Task $task */
         foreach ($tasks as $task) {
+            $this->_currentTask = $task;
+            $this->updateCurrentTaskPhotosArray();
+            $index = count($this->_currentTaskPhotos) > 4 ? ($index + 2) : ($index + 1);
             $point_id = $task->internal_progressive_number;
             $task_location = $task->section ? Utils::sanitizeTextsForPlaceholders($task->section->name) : '?';
-            $page = 3;
             $html .= <<<EOF
                     <tr>
                         <td width="300">Task #$point_id, location: $task_location</td>
-                        <td width="30">Pag. #$page</td>
+                        <td width="300">Pag. $index</td>
                     </tr>
 EOF;
         }
-        $html = "</tbody></table>";
+        $html .= "</tbody></table>";
         return $html;
     }
 
@@ -322,7 +332,7 @@ EOF;
             '$break_n1$' => null,  // riconosciuto dal sistema
             '$html_bloccoTask$' => 'getCorrosionMapHtmlBlock()',
             '$html_sectionImgsOverview$' => 'getCorrosionMapHtmlSectionImgsOverview()',
-            'html_tableOfContents' => 'getCorrosionMapHtmlTableOfContents()'
+            '$html_tableOfContents$' => 'getCorrosionMapHtmlTableOfContents()'
         ];
         $this->insertPlaceholders('corrosion_map', $placeholders, true);
     }
