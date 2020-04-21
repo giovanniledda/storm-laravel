@@ -261,7 +261,7 @@ trait TemplateReplacementRules
             $point_id = $task->internal_progressive_number;
             $task_location = $task->section ? Utils::sanitizeTextsForPlaceholders($task->section->name) : '?';
             $html .= <<<EOF
-                    <tr style="margin-bottom: 8px">
+                    <tr style="height: 32px">
                         <td width="496" style="border-bottom: 1px solid #ececec;"><b>Point #$point_id</b> ($task_location)</td>
                         <td width="200" style="border-bottom: 1px solid #ececec; text-align: right;">Pag. $index</td>
                     </tr>

@@ -717,7 +717,7 @@ EOF;
         $task_type = $this->task_type;
 
         $first_history = $this->getFirstHistory();
-        $img_dettaglioHTML = '<div style="color: #666666; text-align: center; width: 100%; line-height: 32px">No overview photo available</div>';
+        $img_dettaglioHTML = '<div style="color: #666666; text-align: center; width: 100%; padding: 8px">No overview photo available</div>';
         if ($first_history && $first_history->getAdditionalPhotoPath()) {
             $img_dettaglio = $first_history->getAdditionalPhotoPath();
             $img_dettaglioHTML = <<<EOF
@@ -744,7 +744,24 @@ EOF;
             <table cellpadding="0" cellspacing="0">
                 <tbody>
                     <tr>
-                        <td width="300" style="border: 1px solid #ececec">$corrosionMapHTML</td>
+                        <td width="300" style="border: 1px solid #ececec">
+                            <table cellpadding="0" cellspacing="0">
+                                <tbody>
+                                    <tr>
+                                        <td width="300" style="border: 1px solid #ececec">
+                                            $corrosionMapHTML
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td width="300" style="border: 1px solid #ececec">
+                                            $img_dettaglioHTML
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        
+                        </td>
                         <td width="30"></td>
                         <td width="350" valign="top" rowspan="2">
                             <span style="font-weight: bold; color: #1f519b;">Latest update</span><br>
@@ -752,14 +769,6 @@ EOF;
                             <span style="border: 1px solid #ececec; color: #1f519b; font-weight: bold">Overview</span><br>
                             $task_definition $author_comment
                         </td>
-                    </tr>
-
-                    <tr height="30"></tr>
-
-                    <tr>
-                        <td width="300" style="border: 1px solid #ececec">$img_dettaglioHTML</td>
-                        <td width="30"></td>
-                        <td width="300"></td>
                     </tr>
                 </tbody>
             </table>
