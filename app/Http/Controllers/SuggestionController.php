@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RequestSuggestion;
-use App\Profession;
-use App\Suggestion;
+use App\User;
+use DB;
 use Illuminate\Http\Request;
+use App\Suggestion;
 use StormUtils;
 
 use function __;
@@ -51,7 +52,7 @@ class SuggestionController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  Suggestion  $suggestion
+     * @param Suggestion $suggestion
      * @return \Illuminate\Http\Response
      */
     public function show(Suggestion $suggestion)
@@ -62,7 +63,7 @@ class SuggestionController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  Suggestion  $suggestion
+     * @param Suggestion $suggestion
      * @return \Illuminate\Http\Response
      */
     public function edit(Suggestion $suggestion)
@@ -89,7 +90,7 @@ class SuggestionController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  Suggestion  $suggestion
+     * @param Suggestion $suggestion
      * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Suggestion $suggestion)
@@ -98,7 +99,6 @@ class SuggestionController extends Controller
 
         return redirect()->route('suggestions.index')->with(FLASH_SUCCESS, __('Suggestion deleted'));
     }
-
 
     /**
      * Ask confirmation about the specified resource from storage to remove.
@@ -109,5 +109,18 @@ class SuggestionController extends Controller
     public function confirmDestroy(Suggestion $suggestion)
     {
         return view('suggestions.delete')->withSuggestion($suggestion);
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function searchContext(Request $request)
+    {
+        $query = $request->input('query');
+        $results = DB::select('select suggestions.* from suggestions where context like "%?%"', [$query]);
+        return response()->json($results);
+//        $users = User::where('surname', 'like', '%' . $query . '%')->get();
+//        return response()->json($users);
     }
 }
