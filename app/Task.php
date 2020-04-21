@@ -746,9 +746,11 @@ EOF;
                     <tr>
                         <td width="300" style="border: 1px solid #ececec">$corrosionMapHTML</td>
                         <td width="30"></td>
-                        <td width="350" valign="top">
+                        <td width="350" valign="top" rowspan="2">
                             <span style="font-weight: bold; color: #1f519b;">Latest update</span><br>
-                            $task_type_status_str
+                            $task_type_status_str <br><br>
+                            <span style="border: 1px solid #ececec; color: #1f519b; font-weight: bold">Overview</span><br>
+                            $task_definition $author_comment
                         </td>
                     </tr>
 
@@ -757,10 +759,6 @@ EOF;
                     <tr>
                         <td width="300" style="border: 1px solid #ececec">$img_dettaglioHTML</td>
                         <td width="30"></td>
-                        <td width="350" valign="top">
-                            <span style="border: 1px solid #ececec; color: #1f519b; font-weight: bold">Overview</span><br>
-                            $task_definition $author_comment
-                        </td>
                     </tr>
                 </tbody>
             </table>

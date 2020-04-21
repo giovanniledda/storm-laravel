@@ -262,8 +262,8 @@ trait TemplateReplacementRules
             $task_location = $task->section ? Utils::sanitizeTextsForPlaceholders($task->section->name) : '?';
             $html .= <<<EOF
                     <tr>
-                        <td width="300">Task #$point_id, location: $task_location</td>
-                        <td width="300">Pag. $index</td>
+                        <td width="496" style="border-bottom: 1px solid #ececec; margin-bottom: 8px"><b>Task #$point_id</b> ($task_location)</td>
+                        <td width="200" style="border-bottom: 1px solid #ececec; text-align: right;">Pag. $index</td>
                     </tr>
 EOF;
         }
@@ -304,14 +304,14 @@ EOF;
             $section->drawOverviewImageWithTaskPoints($task_ids, $d_factor);
             $overview_img = $section->getPointsImageOverview();
             $html .= <<<EOF
-                    <tr>
+                    <!-- <tr>
                         <td width="696" style="border: 1px solid #ececec">
                             $section_text
                         </td>
-                    </tr>
+                    </tr> -->
                     <tr>
                         <td width="696" style="border: 1px solid #ececec">
-                            <img src="file://$overview_img" alt="Section Overview Image">
+                            <img width="928" src="file://$overview_img" alt="Section Overview Image">
                         </td>
                     </tr>
 EOF;
