@@ -298,20 +298,21 @@ EOF;
 
         /** @var Section $section */
         foreach ($sections as $section) {
-            $section_text = "Section {$section->name}, id: {$section->id}, fattore divisione: $d_factor";
+            $section_text = "{$section->name}";
             // 2 - divido questo max per 1236 ed ottengo un fattore per cui dovrò andare a dividere la W (in realtà divido per il fattore * 2) di tutte le altre section per ottenere la dimensione corretta
             // 3 - passo il fattore ottenuto alla drawOverviewImageWithTaskPoints
             $section->drawOverviewImageWithTaskPoints($task_ids, $d_factor);
             $overview_img = $section->getPointsImageOverview();
-            $html .= <<<EOF
-                    <tr>
-                        <td width="696" style="color: #999999" align="center">
-                            $section_text
-                        </td>
-                    </tr>
+            $html .= <<<EOF                 
                     <tr>
                         <td width="696">
                             <img width="928" src="file://$overview_img" alt="Section Overview Image">
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td width="696" style="color: #999999" align="center">
+                            $section_text
                         </td>
                     </tr>
 EOF;
