@@ -350,7 +350,6 @@ class Section extends Model
                 imagepng($deck_with_pins_resized_img_dest, $final_file_path);
             }
 
-
             $this->addImagePhoto(
                 $final_file_path,
                 SECTION_IMAGE_POINTS_OVERVIEW,

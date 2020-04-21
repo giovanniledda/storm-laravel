@@ -234,6 +234,33 @@ trait TemplateReplacementRules
         return $html;
     }
 
+
+    /**
+     * Stampa nel docx l'htlm relativo all'indice
+     *
+     * @return string
+     * @throws \Throwable
+     */
+    public function getCorrosionMapHtmlTableOfContents()
+    {
+        $html = '<table cellpadding="0" cellspacing="0"><tbody>';
+        $tasks = $this->getTasksToIncludeInReport();
+        /** @var Task $task */
+        foreach ($tasks as $task) {
+            $point_id = $task->internal_progressive_number;
+            $task_location = $task->section ? Utils::sanitizeTextsForPlaceholders($task->section->name) : '?';
+            $page = 3;
+            $html .= <<<EOF
+                    <tr>
+                        <td width="300">Task #$point_id, location: $task_location</td>
+                        <td width="30">Pag. #$page</td>
+                    </tr>
+EOF;
+        }
+        $html = "</tbody></table>";
+        return $html;
+    }
+
     /**
      * Stampa nel docx l'htlm relativo alle immagini delle sezioni con tutti i pin sopra
      *
@@ -261,7 +288,7 @@ trait TemplateReplacementRules
         /** @var Section $section */
         foreach ($sections as $section) {
             $section_text = "Section {$section->name}, id: {$section->id}, fattore divisione: $d_factor";
-            // 2 - divido questo max per 1236 la W ed ottengo un fattore per cui dovrò andare a dividere la W (in realtà divido per il fattore * 2) di tutte le altre section per ottenere la dimensione corretta
+            // 2 - divido questo max per 1236 ed ottengo un fattore per cui dovrò andare a dividere la W (in realtà divido per il fattore * 2) di tutte le altre section per ottenere la dimensione corretta
             // 3 - passo il fattore ottenuto alla drawOverviewImageWithTaskPoints
             $section->drawOverviewImageWithTaskPoints($task_ids, $d_factor);
             $overview_img = $section->getPointsImageOverview();
@@ -294,7 +321,8 @@ EOF;
             '$boat_name$' => 'getBoatName()',
             '$break_n1$' => null,  // riconosciuto dal sistema
             '$html_bloccoTask$' => 'getCorrosionMapHtmlBlock()',
-            '$html_sectionImgsOverview$' => 'getCorrosionMapHtmlSectionImgsOverview()'
+            '$html_sectionImgsOverview$' => 'getCorrosionMapHtmlSectionImgsOverview()',
+            'html_tableOfContents' => 'getCorrosionMapHtmlTableOfContents()'
         ];
         $this->insertPlaceholders('corrosion_map', $placeholders, true);
     }
