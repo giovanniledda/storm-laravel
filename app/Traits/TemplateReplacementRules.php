@@ -303,7 +303,8 @@ EOF;
             // 3 - passo il fattore ottenuto alla drawOverviewImageWithTaskPoints
             $section->drawOverviewImageWithTaskPoints($task_ids, $d_factor);
             $overview_img = $section->getPointsImageOverview();
-            $html .= <<<EOF                 
+            $html .= <<<EOF
+                             
                     <tr>
                         <td width="696">
                             <img width="928" src="file://$overview_img" alt="Section Overview Image">
