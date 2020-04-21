@@ -744,8 +744,8 @@ EOF;
             <table cellpadding="0" cellspacing="0">
                 <tbody>
                     <tr>
-                        <td width="300" style="border: 1px solid #ececec">
-                            <table cellpadding="0" cellspacing="0">
+                        <td>
+                            <table cellpadding="0" cellspacing="0" valign="top">
                                 <tbody>
                                     <tr>
                                         <td width="300" style="border: 1px solid #ececec">
@@ -760,15 +760,17 @@ EOF;
                                     </tr>
                                 </tbody>
                             </table>
-                        
                         </td>
+
                         <td width="30"></td>
+
                         <td width="350" valign="top" rowspan="2">
                             <span style="font-weight: bold; color: #1f519b;">Latest update</span><br>
                             $task_type_status_str <br><br>
                             <span style="border: 1px solid #ececec; color: #1f519b; font-weight: bold">Overview</span><br>
                             $task_definition $author_comment
                         </td>
+
                     </tr>
                 </tbody>
             </table>
