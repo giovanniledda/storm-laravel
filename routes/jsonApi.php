@@ -218,5 +218,7 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
             });
 
         $api->resource('report-items');
+        $api->resource('suggestions');
+
     });
 });
