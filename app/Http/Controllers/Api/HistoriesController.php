@@ -38,7 +38,7 @@ class HistoriesController extends Controller
             return Utils::renderStandardJsonapiResponse([], 204);
 
         } catch (\Exception $e) {
-            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error incrementing counter", $e->getMessage());
+            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error removing image", $e->getMessage());
         }
     }
 
