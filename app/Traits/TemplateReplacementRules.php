@@ -307,7 +307,7 @@ EOF;
             $html .= <<<EOF
                     <tr>
                         <td align="center" width="696">
-                            <img align="center" src="file://$overview_img" alt="Section Overview Image">
+                            <img style="width:100%; margin:0 auto" align="center" src="file://$overview_img" alt="Section Overview Image">
                         </td>
                     </tr>
 
