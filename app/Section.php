@@ -241,16 +241,16 @@ class Section extends Model
             // Copy a part of src_im onto dst_im starting at the x,y coordinates src_x, src_y with a width of src_w and a height of src_h.
             // The portion defined will be copied onto the x,y coordinates, dst_x and dst_y.
             // In sostanza qua si copia l'immagine bianca sopra l'immagine trasparente del ponte
-//            imagecopy(
-//                $dst_deck_white_bkg_img,
-//                $original_deck_img_src,
-//                $bridge_w / 0.75,
-//                $bridge_h / 0.75,
-//                0,
-//                0,
-//                $bridge_w,
-//                $bridge_h
-//            );
+            imagecopy(
+                $dst_deck_white_bkg_img,
+                $original_deck_img_src,
+                $bridge_w / 0.75,
+                $bridge_h / 0.75,
+                0,
+                0,
+                $bridge_w,
+                $bridge_h
+            );
 
             // ridimensiono l'immagine del ponte e la fisso ad una larghezza fissa
             $iconInfo = getimagesize($deck_img_path);
