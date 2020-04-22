@@ -118,9 +118,6 @@ class SuggestionController extends Controller
     public function searchContext(Request $request)
     {
         $query = $request->input('query');
-//        $results = DB::select("select suggestions.context from suggestions where context like '%?%'", [$query]);
-//        return response()->json($results);
-//        $users = User::where('surname', 'like', '%' . $query . '%')->get();
         $users = Suggestion::selectRaw('distinct context')->where('context', 'like', "%$query%")->get();
         return response()->json($users);
     }

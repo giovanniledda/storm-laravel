@@ -217,8 +217,21 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
                 $histories->post('{record}/add-comment', 'addComment')->name('add-comment');
             });
 
+        /** REPORT-ITEMS */
+
         $api->resource('report-items');
+
+        /** SUGGESTIONS */
+
+        $api->resource('suggestions')
+            ->only('update-counter')
+            ->controller('SuggestionController') // uses the App\Http\Controllers\Api\SuggestionController
+            ->routes(function ($suggestions) {
+                $suggestions->post('/update-counter', 'updateCounter')->name('update-counter');
+            });
+
         $api->resource('suggestions');
+
 
     });
 });
