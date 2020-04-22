@@ -294,8 +294,8 @@ class Section extends Model
                 $pinPath = $task->getIcon(null, null, 'Active', true);
                 $iconInfo = getimagesize($pinPath);
                 if ($resize_pins) {
-                    $new_w = 10;
-                    $new_h = 14.5;
+                    $new_w = 20;
+                    $new_h = 48;
 //                    $pin_png_image_src = Utils::resize_image($pinPath, $new_w, $new_h);
                     $pin_png_image_src_orig = imagecreatefrompng($pinPath);
                     $pin_png_image_src = Utils::getPNGImageResized($pin_png_image_src_orig, $new_w, $new_h);
