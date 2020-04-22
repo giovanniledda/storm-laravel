@@ -372,7 +372,7 @@ class Section extends Model
      */
     public function getPointsImageOverview()
     {
-        $document = $this->documents->where('type', SECTION_IMAGE_POINTS_OVERVIEW)->first();
+        $document = $this->documents->where('type', SECTION_IMAGE_POINTS_OVERVIEW)->last();
         if ($document) {
             $media = $document->getRelatedMedia();
             return $media->getPath();
