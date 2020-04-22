@@ -295,7 +295,7 @@ class Section extends Model
                 $iconInfo = getimagesize($pinPath);
                 if ($resize_pins) {
                     $new_w = 20;
-                    $new_h = 48;
+                    $new_h = 32;
 //                    $pin_png_image_src = Utils::resize_image($pinPath, $new_w, $new_h);
                     $pin_png_image_src_orig = imagecreatefrompng($pinPath);
                     $pin_png_image_src = Utils::getPNGImageResized($pin_png_image_src_orig, $new_w, $new_h);
