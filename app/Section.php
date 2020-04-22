@@ -333,7 +333,7 @@ class Section extends Model
                 imagedestroy($pin_png_image_src);
             }
 
-            $crop_final_image = false;
+            $crop_final_image = true;
             if ($crop_final_image) {
                 $crop_w = ($sizeW / 2) * 1.5;
                 $crop_h = ($sizeH / 2) * 1.5;

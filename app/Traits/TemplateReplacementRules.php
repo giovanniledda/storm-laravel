@@ -293,7 +293,8 @@ EOF;
             $bridgeImageInfo = getimagesize($deck_img_path);
             $max_w = max($max_w, $bridgeImageInfo[0]);
         }
-        $d_factor = $max_w/1236;
+        $d_factor = $max_w/1648;
+//        $d_factor = $max_w/1236;
 //        $d_factor = $max_w/696;
 
         /** @var Section $section */
@@ -304,7 +305,6 @@ EOF;
             $section->drawOverviewImageWithTaskPoints($task_ids, $d_factor);
             $overview_img = $section->getPointsImageOverview();
             $html .= <<<EOF
-
                     <tr>
                         <td width="696">
                             <img src="file://$overview_img" alt="Section Overview Image">
