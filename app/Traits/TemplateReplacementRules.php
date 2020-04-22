@@ -293,8 +293,8 @@ EOF;
             $bridgeImageInfo = getimagesize($deck_img_path);
             $max_w = max($max_w, $bridgeImageInfo[0]);
         }
-//        $d_factor = $max_w/1236;
-        $d_factor = $max_w/696;
+        $d_factor = $max_w/1236;
+//        $d_factor = $max_w/696;
 
         /** @var Section $section */
         foreach ($sections as $section) {
@@ -307,7 +307,7 @@ EOF;
 
                     <tr>
                         <td width="696">
-                            <img width="928" src="file://$overview_img" alt="Section Overview Image">
+                            <img src="file://$overview_img" alt="Section Overview Image">
                         </td>
                     </tr>
 
