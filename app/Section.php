@@ -267,7 +267,7 @@ class Section extends Model
                 $sizeH = $iconInfo[1];
             }
             // copio l'immagine del ponte con lo sfondo bianco precedentemente applicato, nel file temporaneo $mapfilePath
-            imagepng($dst_deck_white_bkg_img, $deck_with_pins_f_path);
+            // imagepng($dst_deck_white_bkg_img, $deck_with_pins_f_path);
 
             // ridimensiono l'immagine secondo i calcoli sopra
             $deck_with_pins_resized_img_dest = Utils::resize_image($deck_with_pins_f_path, $sizeW, $sizeH);
