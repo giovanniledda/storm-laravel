@@ -269,6 +269,16 @@ class Section extends Model
             // copio l'immagine del ponte con lo sfondo bianco precedentemente applicato, nel file temporaneo $mapfilePath
             imagepng($dst_deck_white_bkg_img, $deck_with_pins_f_path);
 
+            $tmpfileHandle2 = tmpfile();
+            $final_file_path2 = stream_get_meta_data($tmpfileHandle2)['uri'];
+
+            $this->addImagePhoto(
+                $final_file_path2,
+                SECTION_IMAGE_POINTS_OVERVIEW.'Tmp',
+                "Deck with pins image for Section #{$this->id}",
+                'deck_with_pins_resized_img_dest_tmp.png'
+            );
+
             // ridimensiono l'immagine secondo i calcoli sopra
             $deck_with_pins_resized_img_dest = Utils::resize_image($deck_with_pins_f_path, $sizeW, $sizeH);
 
