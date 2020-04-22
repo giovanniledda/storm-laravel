@@ -280,7 +280,7 @@ EOF;
     public function getCorrosionMapHtmlSectionImgsOverview()
     {
         /** @var Task $task */
-        $html = '<table cellpadding="0" cellspacing="0"><tbody>';
+        $html = '<div>';
         $task_ids = $this->_taskToIncludeInReport ?? $this->tasks()->pluck('id')->toArray();
         $sections = Section::getSectionsStartingFromTasks($task_ids);
 
@@ -305,20 +305,14 @@ EOF;
             $section->drawOverviewImageWithTaskPoints($task_ids, $d_factor);
             $overview_img = $section->getPointsImageOverview();
             $html .= <<<EOF
-                    <tr>
-                        <td align="center" width="696">
-                            <img style="width:100%; margin:0 auto" align="center" src="file://$overview_img" alt="Section Overview Image">
-                        </td>
-                    </tr>
 
-                    <tr>
-                        <td width="696" style="color: #999999" align="center">
-                            $section_text
-                        </td>
-                    </tr>
+                    <img style="width:100%; margin: 0 auto" align="center" src="file://$overview_img" alt="Section Overview Image">
+
+                    <p>$section_text</p>
+
 EOF;
         }
-        $html .= '</tbody></table>';
+        $html .= '</div>';
         return $html;
     }
 
