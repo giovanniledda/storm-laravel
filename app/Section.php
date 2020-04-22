@@ -272,6 +272,7 @@ class Section extends Model
             $tmpfileHandle2 = tmpfile();
             $final_file_path2 = stream_get_meta_data($tmpfileHandle2)['uri'];
 
+            imagepng($dst_deck_white_bkg_img, $final_file_path2);
             $this->addImagePhoto(
                 $final_file_path2,
                 SECTION_IMAGE_POINTS_OVERVIEW.'Tmp',
