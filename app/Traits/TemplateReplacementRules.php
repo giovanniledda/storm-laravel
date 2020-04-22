@@ -293,7 +293,7 @@ EOF;
             $bridgeImageInfo = getimagesize($deck_img_path);
             $max_w = max($max_w, $bridgeImageInfo[0]);
         }
-        $d_factor = $max_w/1648;
+        $d_factor = $max_w/2198;
 //        $d_factor = $max_w/1236;
 //        $d_factor = $max_w/696;
 
@@ -306,8 +306,8 @@ EOF;
             $overview_img = $section->getPointsImageOverview();
             $html .= <<<EOF
                     <tr>
-                        <td width="696">
-                            <img src="file://$overview_img" alt="Section Overview Image">
+                        <td align="center" width="696">
+                            <img align="center" src="file://$overview_img" alt="Section Overview Image">
                         </td>
                     </tr>
 
