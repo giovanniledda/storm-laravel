@@ -634,7 +634,7 @@ class SeederUtils
                 'detections' => null
             ]);
             $this->updateDetectionBlock($d_ib_4, [
-                'thickness' => $this->faker->randomDigitNotNull
+                'hardness' => $this->faker->randomDigitNotNull
             ]);
         }
 

@@ -253,6 +253,8 @@ Artisan::command('update-phpdocx-templates', function () {
             $this->info("- Template CORROSION_MAP updated for Project [ID: {$project->id}]");
             $project->setupEnvironmentalReportTemplate();
             $this->info("- Template ENV_REPORT updated for Project [ID: {$project->id}]");
+            $project->setupApplicationLogTemplate();
+            $this->info("- Template APP_LOG_REPORT updated for Project [ID: {$project->id}]");
         }
     }
 

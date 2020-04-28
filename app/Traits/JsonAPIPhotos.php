@@ -52,7 +52,7 @@ trait JsonAPIPhotos
      * @param Document $photo_doc
      * @return array
      */
-    protected function extractJsonDocumentPhotoInfo(Document $photo_doc, $image_size = null)
+    public function extractJsonDocumentPhotoInfo(Document $photo_doc, $image_size = null)
     {
         $media = $photo_doc->getRelatedMedia();
         if ($media) {
@@ -63,6 +63,7 @@ trait JsonAPIPhotos
                     'id' => $photo_doc->id,
                     'attributes' => [
                         'doc_type' => $photo_doc->type,
+                        'file_path' => $file_path,
                         'base64' => base64_encode(file_get_contents($file_path))
                     ]
                 ];
