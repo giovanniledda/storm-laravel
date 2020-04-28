@@ -4,6 +4,7 @@
 
 namespace App\Traits;
 
+use App\ApplicationLog;
 use App\Section;
 use App\Task;
 use App\User;
@@ -43,6 +44,10 @@ trait TemplateReplacementRules
 //    protected $_current_date_end = '2018-01-08';
     protected $_current_data_source;
     protected $_current_min_tresholds;
+
+    // Usate con il DocsGenerator: per application_log_report
+    protected $_current_app_log;
+
 
     /**
      * *****************************
@@ -377,7 +382,6 @@ EOF;
             '$hum_avg$' => 'getEnvironmentalParamAvg()-humidity__app\_project',
             '$hum_std$' => 'getEnvironmentalParamStd()-humidity__app\_project',
             '$chart_humidityChart$' => null, // entra in gioco la funzione handlePhpdocxCharts che andrà implementata nel model User
-
         ];
         $this->insertPlaceholders('environmental_report', $placeholders, true);
     }
@@ -654,5 +658,79 @@ EOF;
         return date('Y-m-d', time());
     }
 
+
+
+    /**
+     * *****************************
+     * *****************************  TEMPLATE: application_log_report
+     * *****************************
+     *
+     */
+
+    /**
+     * Associate the "application_log_report" Template and its Placeholders to an object
+     */
+    public function setupApplicationLogTemplate()
+    {
+        $category = $this->persistAndAssignTemplateCategory('application_log_report');
+        $placeholders = [
+            '$date$' => 'currentDate()',
+            '$name$' => 'getCurrentAppLogName()',
+            '$typeOfAppReport$' => 'getCurrentAppLogType()',
+            '$zones$' => 'getCurrentAppLogZones()',
+            '$fullApplicationLog$' => 'getCurrentAppLogStructureHtml()',
+        ];
+        $this->insertPlaceholders('environmental_report', $placeholders, true);
+    }
+
+    /**
+     * @param $app_log
+     */
+    public function setCurrentAppLog($app_log)
+    {
+        $this->_current_app_log = $app_log;
+    }
+
+    /**
+     * @return ApplicationLog
+     */
+    public function getCurrentAppLog()
+    {
+        return $this->_current_app_log;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrentAppLogName()
+    {
+        return $this->_current_app_log->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrentAppLogType()
+    {
+        return $this->_current_app_log->application_type;
+    }
+
+    /**
+     * @return string
+     *
+     * Ex:. Zone name 1A; Zone long name 3A; Zone name 4C; Zone another long name 5D
+     */
+    public function getCurrentAppLogZones()
+    {
+
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrentAppLogStructureHtml()
+    {
+
+    }
 
 }
