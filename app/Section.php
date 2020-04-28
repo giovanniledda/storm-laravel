@@ -257,7 +257,7 @@ class Section extends Model
 
             // TODO: spostare tra le prop
             $resize_image = true;
-            $resize_pins = true;
+            $resize_pins = false;
 
             if ($resize_image) {
                 $sizeW = $division_factor ? ($bridge_w) / ($division_factor * 2) : 696;  // larghezza del foglio A4 (queste immagini sono create per il doc CorrosionMap)

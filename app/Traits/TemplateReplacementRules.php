@@ -308,7 +308,7 @@ EOF;
 
                     <img width="926" align="center" src="file://$overview_img" alt="Section Overview Image">
 
-                    <p style="text-align:center">$section_text</p>
+                    <div style="text-align:center">$section_text</div>
 
 EOF;
         }
