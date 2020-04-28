@@ -306,9 +306,9 @@ EOF;
             $overview_img = $section->getPointsImageOverview();
             $html .= <<<EOF
 
-                    <img style="width:100%; margin: 0 auto" align="center" src="file://$overview_img" alt="Section Overview Image">
+                    <img width="696" align="center" src="file://$overview_img" alt="Section Overview Image">
 
-                    <p>$section_text</p>
+                    <p style="text-align:center">$section_text</p>
 
 EOF;
         }
