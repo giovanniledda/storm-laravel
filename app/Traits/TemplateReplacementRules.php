@@ -271,7 +271,7 @@ trait TemplateReplacementRules
         $html = '<p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Table of Contents</p>';
         $html .= '<table cellpadding="0" cellspacing="0"><tbody>';
         $tasks = $this->getTasksToIncludeInReport();
-        $toc_pages = ceil(count($tasks)/46);
+        $toc_pages = ceil(count($tasks)/26);
         $task_ids = $this->_taskToIncludeInReport ?? $this->tasks()->pluck('id')->toArray();
         $sections = Section::getSectionsStartingFromTasks($task_ids);
         $section_overview_pages = ceil(count($sections)/4);
