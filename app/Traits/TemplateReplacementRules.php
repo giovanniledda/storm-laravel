@@ -741,7 +741,7 @@ EOF;
      */
     public function getCurrentAppLogZones()
     {
-        $zones_str = '-';
+        $zones_str = '';
         $app_log = $this->getCurrentAppLog();
         $zones_section = $app_log->getZonesSection();
         if ($zones_section) {
@@ -827,21 +827,21 @@ EOF;
     }
 
     /**
-     * @param DetectionsInfoBlock $surface_inspection
+     * @param DetectionsInfoBlock $detections_ib
      * @param $detection_param_keys
      * @return string
      */
-    public function renderDetections(DetectionsInfoBlock &$surface_inspection, $detection_param_keys) // 'surface_roughness', 'salts', 'other...
+    public function renderDetections(DetectionsInfoBlock &$detections_ib, $detection_param_keys) // 'surface_roughness', 'salts', 'other...
     {
         $html = '';
-        $detections_array = $surface_inspection->detections;
+        $detections_array = $detections_ib->detections;
         if (!empty($detections_array)) {
             $counter = 0;
             $detection_values = [];
             foreach ($detections_array as $key => $detection) {
                 $image_doc = Document::find($detection['image_doc_id']);
                 if ($image_doc) {
-                    $image_json = $surface_inspection->extractJsonDocumentPhotoInfo($image_doc);
+                    $image_json = $detections_ib->extractJsonDocumentPhotoInfo($image_doc);
                     $detection_values[$counter]['file_path'] = 'file://'.$image_json['attributes']['file_path'];
                 } else {
                     $placeholder_url = Storage::disk('public')->url('placeholder150.png');
