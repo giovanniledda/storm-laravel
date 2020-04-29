@@ -238,7 +238,7 @@ class ApplicationLog extends Model
         }
 
         return [
-            'name' => $faker->word,
+            'name' => $faker->colorName,
 //            'last_editor_id' => $last_editor->id,
             'application_type' => $faker->randomElement([
                 APPLICATION_TYPE_PRIMER,
