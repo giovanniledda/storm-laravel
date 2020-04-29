@@ -764,14 +764,14 @@ EOF;
     {
         return count($photos_paths) > 1 ?
             '<tr height="190">
-	                <td width="340" style=""><img height="255" src="file://'.$photos_paths[0].'"></td>
+	                <td width="340" style=""><img height="255" src="'.$photos_paths[0].'"></td>
 	                <td width="16" style=""></td>
-	                <td width="340" style=""><img height="255" src="file://'.$photos_paths[1].'"></td>
+	                <td width="340" style=""><img height="255" src="'.$photos_paths[1].'"></td>
 	        </tr>
 	        <tr style="height: 32px"><td width="696"></td></tr>'
             :
             '<tr height="190">
-	                <td width="340" style=""><img height="255" src="file://'.$photos_paths[0].'"></td>
+	                <td width="340" style=""><img height="255" src="'.$photos_paths[0].'"></td>
 	        </tr>
 	        <tr style="height: 32px"><td width="696"></td></tr>';
     }
@@ -788,7 +788,7 @@ EOF;
             $counter = 0;
             $photos_paths = [];
             foreach ($det_imgs as $key => $det_img) {
-                $photos_paths[$counter] = $det_img['attributes']['file_path'];
+                $photos_paths[$counter] = 'file://'.$det_img['attributes']['file_path'];
                 if ($counter == 1 || $key === array_key_last($det_imgs)) {
                     $counter = 0;
                     $html .= $this->renderPhotosBlock($photos_paths);
@@ -807,9 +807,9 @@ EOF;
     {
         return count($detection_values) > 1 ?
             '<tr height="190">
-	                <td width="340" style=""><img height="255" src="file://'.$detection_values[0]['file_path'].'"></td>
+	                <td width="340" style=""><img height="255" src="'.$detection_values[0]['file_path'].'"></td>
 	                <td width="16" style=""></td>
-	                <td width="340" style=""><img height="255" src="file://'.$detection_values[1]['file_path'].'"></td>
+	                <td width="340" style=""><img height="255" src="'.$detection_values[1]['file_path'].'"></td>
 	            </tr>
 	            <tr height="32">
 	                <td width="340" style="">Values: '.$detection_values[0]['det_value'].'</td>
@@ -819,7 +819,7 @@ EOF;
 	            <tr style="height: 32px"><td width="696"></td></tr>'
             :
             '<tr height="190">
-	                <td width="340" style=""><img height="255" src="file://'.$detection_values[0]['file_path'].'"></td>
+	                <td width="340" style=""><img height="255" src="'.$detection_values[0]['file_path'].'"></td>
 	            </tr>
 	            <tr height="32">
 	                <td width="340" style="">Values: '.$detection_values[0]['det_value'].'</td>
@@ -843,10 +843,9 @@ EOF;
                 $image_doc = Document::find($detection['image_doc_id']);
                 if ($image_doc) {
                     $image_json = $surface_inspection->extractJsonDocumentPhotoInfo($image_doc);
-                    $detection_values[$counter]['file_path'] = $image_json['attributes']['file_path'];
+                    $detection_values[$counter]['file_path'] = 'file://'.$image_json['attributes']['file_path'];
                 } else {
                     $detection_values[$counter]['file_path'] = 'https://via.placeholder.com/150';
-                    logger('Storm, generating app log report: Image DOC not found -> '.$detection['image_doc_id']);
                 }
                 $val = '';
                 foreach ($detection_param_keys as $detection_param_key) {
