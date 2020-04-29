@@ -352,28 +352,36 @@ class SeederUtils
     public function addCompleteListFakeApplicationLogsToProject(Project $project)
     {
         $application_logs_obj_array = [];
-        if ($project->application_logs()->count() == 0) {
-            $application_logs_obj_array[] = factory(ApplicationLog::class)->create([
+        $application_logs_obj_array[] = factory(ApplicationLog::class)->create(
+            [
                 'project_id' => $project->id,
                 'application_type' => APPLICATION_TYPE_COATING
-            ]);
-            $application_logs_obj_array[] = factory(ApplicationLog::class)->create([
+            ]
+        );
+        $application_logs_obj_array[] = factory(ApplicationLog::class)->create(
+            [
                 'project_id' => $project->id,
                 'application_type' => APPLICATION_TYPE_FILLER
-            ]);
-            $application_logs_obj_array[] = factory(ApplicationLog::class)->create([
+            ]
+        );
+        $application_logs_obj_array[] = factory(ApplicationLog::class)->create(
+            [
                 'project_id' => $project->id,
                 'application_type' => APPLICATION_TYPE_HIGHBUILD
-            ]);
-            $application_logs_obj_array[] = factory(ApplicationLog::class)->create([
+            ]
+        );
+        $application_logs_obj_array[] = factory(ApplicationLog::class)->create(
+            [
                 'project_id' => $project->id,
                 'application_type' => APPLICATION_TYPE_PRIMER
-            ]);
-            $application_logs_obj_array[] = factory(ApplicationLog::class)->create([
+            ]
+        );
+        $application_logs_obj_array[] = factory(ApplicationLog::class)->create(
+            [
                 'project_id' => $project->id,
                 'application_type' => APPLICATION_TYPE_UNDERCOAT
-            ]);
-        }
+            ]
+        );
         return $application_logs_obj_array;
     }
 
