@@ -30,6 +30,7 @@ use function factory;
 use function fclose;
 use function foo\func;
 use function getimagesize;
+use function logger;
 use function min;
 use function strtotime;
 use function throw_if;
@@ -844,7 +845,8 @@ EOF;
                     $image_json = $surface_inspection->extractJsonDocumentPhotoInfo($image_doc);
                     $detection_values[$counter]['file_path'] = $image_json['attributes']['file_path'];
                 } else {
-                    $detection_values[$counter]['file_path'] = '-';
+                    $detection_values[$counter]['file_path'] = 'https://via.placeholder.com/150';
+                    logger('Storm, generating app log report: Image DOC not found -> '.$detection['image_doc_id']);
                 }
                 $val = '';
                 foreach ($detection_param_keys as $detection_param_key) {
