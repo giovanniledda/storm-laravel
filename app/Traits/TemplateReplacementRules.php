@@ -715,7 +715,7 @@ EOF;
      */
     public function getCurrentAppLog()
     {
-        return $this->_current_app_log ?? ApplicationLog::find(1);
+        return $this->_current_app_log ?? ApplicationLog::first();
     }
 
     /**
