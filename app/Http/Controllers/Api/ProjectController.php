@@ -762,12 +762,12 @@ class ProjectController extends Controller
             return Utils::jsonAbortWithInternalError(422, 402, "Error generating report", "Mandatory parameter 'application_log_id' is missing!");
         }
 
-        $application_log_id = $request->input('application_log_id');
-        /** @var ApplicationLog $application_log */
-        $application_log = ApplicationLog::findOrFail($application_log_id);
-        $record->setCurrentAppLog($application_log);
-
         try {
+            $application_log_id = $request->input('application_log_id');
+            /** @var ApplicationLog $application_log */
+            $application_log = ApplicationLog::findOrFail($application_log_id);
+            $record->setCurrentAppLog($application_log);
+            
             $template = $request->input('template');
             $document = $this->reportGenerationProcess($template, $record, REPORT_APPLOG_SUBTYPE);
 
