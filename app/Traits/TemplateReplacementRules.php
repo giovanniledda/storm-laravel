@@ -870,6 +870,17 @@ EOF;
      */
     public function renderRegularDetectionInfoBlock(DetectionsInfoBlock &$detection_info_block, $block_title, $detection_param_keys)
     {
+        // se le detections sono vuote, non stampo nulla
+        $detections_array = $detection_info_block->detections;
+        if (!empty($detections_array)) {
+            foreach ($detections_array as $key => $detection) {
+                foreach ($detection_param_keys as $detection_param_key) {
+                    if (empty($detection[$detection_param_key])) {
+                        return '';
+                    };
+                }
+            }
+        }
         $short_description = $detection_info_block->short_description;
         /** @var Tool $tool */
         $tool = $detection_info_block->tool;
