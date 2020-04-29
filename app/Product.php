@@ -68,11 +68,11 @@ class Product extends Model
     public static function getSemiFakeData(Faker $faker)
     {
         return [
-            'name' => $faker->word,
+            'name' => $faker->colorName,
             'producer' => $faker->company,
             'p_type' => PRODUCT_TYPE_PAINTING,
             'sv_percentage' => $faker->randomFloat(3),
-            'components' => $faker->words(3),
+            'components' => [$faker->safeColorName, $faker->safeColorName, $faker->safeColorName],
         ];
     }
 

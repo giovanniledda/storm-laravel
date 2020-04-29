@@ -542,7 +542,7 @@ class SeederUtils
         $thinners = [];
         for ($i = 1; $i <= $this->faker->randomDigitNotNull; $i++) {
             $thinners[] = [
-                'name' => $this->faker->word,
+                'name' => $this->faker->colorName,
                 'number_of_tins' => $this->faker->randomDigitNotNull,
                 'tins_capacity' => $this->faker->randomFloat(2),
                 'tins_unity' => $this->faker->randomElement(['gallons', 'liters']),
