@@ -912,7 +912,7 @@ EOF;
         $application_log = $this->getCurrentAppLog();
         /** @var ApplicationLogSection $preparation_section */
         $preparation_section = $application_log->getPreparationSection();
-        $date = date('d/mm/Y', strtotime($preparation_section->date_hour));
+        $date = date('d/m/Y', strtotime($preparation_section->date_hour));
 
         $html = <<<EOF
             <p style="page-break-before: always;"></p>
@@ -998,7 +998,7 @@ EOF;
         $application_log = $this->getCurrentAppLog();
         /** @var ApplicationLogSection $application_section */
         $application_section = $application_log->getApplicationSection();
-        $date_hour = date('d/mm/Y H:i', strtotime($application_section->date_hour));
+        $date_hour = date('d/m/Y H:i', strtotime($application_section->date_hour));
 
         $html = <<<EOF
                 <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Product Application</p>
