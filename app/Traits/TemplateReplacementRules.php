@@ -762,17 +762,17 @@ EOF;
     public function renderPhotosBlock($photos_paths)
     {
         return count($photos_paths) > 1 ?
-            '<tr height="190">
+            '<tr height="190" style="border: 1px solid #DDDDDD">
 	                <td width="340" style=""><img height="255" src="'.$photos_paths[0].'"></td>
 	                <td width="16" style=""></td>
 	                <td width="340" style=""><img height="255" src="'.$photos_paths[1].'"></td>
 	        </tr>
-	        <tr style="height: 32px"><td width="696"></td></tr>'
+	        <tr style="height: 32px; border: 1px solid #DDDDDD"><td width="696"></td></tr>'
             :
-            '<tr height="190">
+            '<tr height="190" style="border: 1px solid #DDDDDD">
 	                <td width="340" style=""><img height="255" src="'.$photos_paths[0].'"></td>
 	        </tr>
-	        <tr style="height: 32px"><td width="696"></td></tr>';
+	        <tr style="height: 32px; border: 1px solid #DDDDDD"><td width="696"></td></tr>';
     }
 
     /**
@@ -805,25 +805,25 @@ EOF;
     public function renderDetectionBlock($detection_values)
     {
         return count($detection_values) > 1 ?
-            '<tr height="190">
-	                <td width="340" style=""><img height="255" src="'.$detection_values[0]['file_path'].'"></td>
-	                <td width="16" style=""></td>
-	                <td width="340" style=""><img height="255" src="'.$detection_values[1]['file_path'].'"></td>
-	            </tr>
-	            <tr height="32">
-	                <td width="340" style="">Values: '.$detection_values[0]['det_value'].'</td>
-	                <td width="16" style=""></td>
-	                <td width="340" style="">Values: '.$detection_values[1]['det_value'].'</td>
-	            </tr>
-	            <tr style="height: 32px"><td width="696"></td></tr>'
+            '<tr height="190" style="border: 1px solid #DDDDDD">
+                <td width="340" style=""><img height="255" src="'.$detection_values[0]['file_path'].'"></td>
+                <td width="16" style=""></td>
+                <td width="340" style=""><img height="255" src="'.$detection_values[1]['file_path'].'"></td>
+            </tr>
+            <tr style="border: 1px solid #DDDDDD">
+                <td width="340" style="">Values: '.$detection_values[0]['det_value'].'</td>
+                <td width="16" style=""></td>
+                <td width="340" style="">Values: '.$detection_values[1]['det_value'].'</td>
+            </tr>
+            <tr style="height: 32px"><td width="696"></td></tr>'
             :
-            '<tr height="190">
-	                <td width="340" style=""><img height="255" src="'.$detection_values[0]['file_path'].'"></td>
-	            </tr>
-	            <tr height="32">
-	                <td width="340" style="">Values: '.$detection_values[0]['det_value'].'</td>
-	            </tr>
-	            <tr style="height: 32px"><td width="696"></td></tr>';
+            '<tr height="190" style="border: 1px solid #DDDDDD">
+                <td width="340" style=""><img height="255" src="'.$detection_values[0]['file_path'].'"></td>
+            </tr>
+            <tr style="border: 1px solid #DDDDDD">
+                <td width="340" style="">Values: '.$detection_values[0]['det_value'].'</td>
+            </tr>
+            <tr style="height: 32px; border: 1px solid #DDDDDD"><td width="696"></td></tr>';
     }
 
     /**
