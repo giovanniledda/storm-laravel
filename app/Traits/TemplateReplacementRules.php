@@ -1154,7 +1154,7 @@ EOF;
         $application_log = $this->getCurrentAppLog();
         /** @var ApplicationLogSection $inspection_section */
         $inspection_section = $application_log->getInspectionSection();
-        $html .= <<<EOF
+        $html = <<<EOF
             <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Inspection</p>
 EOF;
 
