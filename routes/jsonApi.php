@@ -154,6 +154,12 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
             $project->get('{record}/tasks-statistics', 'getTasksStatistics')->name('tasks-statistics');
         });
 
+        // PR32
+        $api->resource('projects')->only('generate-application-log-report')->controller('ProjectController') //uses the App\Http\Controllers\Api\ProjectController
+        ->routes(function ($project) {
+            $project->post('{record}/generate-application-log-report', 'generateApplicationLogReport')->name('generate-application-log-report');
+        });
+
         $api->resource('projects')->relationships(function ($relations) {
             $relations->hasOne('boat'); // punta al methodo dell'adapter /app/jsonApi/Projects/Adapter non al modello
             $relations->hasMany('tasks');

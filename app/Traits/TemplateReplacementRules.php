@@ -1,7 +1,4 @@
 <?php
-
-
-
 namespace App\Traits;
 
 use App\ApplicationLog;
@@ -718,8 +715,7 @@ EOF;
      */
     public function getCurrentAppLog()
     {
-        return ApplicationLog::find(1);
-        return $this->_current_app_log;
+        return $this->_current_app_log ?? ApplicationLog::find(1);
     }
 
     /**
@@ -1080,8 +1076,7 @@ EOF;
             array_walk($thinner['batch_numbers'], function ($val, $key) use (&$batch_nums) {
                 $batch_nums .= "$key: $val, ";
             });
-            $batch_nums = trim($batch_nums, ', ');
-            $html .= <<<EOF
+            $batch_nums = trim($batch_nums, ', ');$html .= <<<EOF
                 <tr style="height: 32px">
                             <td width="696" style="border-bottom: 1px solid #ececec">T: $name</td>
                             <td width="696" style="border-bottom: 1px solid #ececec">$batch_nums</td>
