@@ -10,10 +10,9 @@ use App\ProductUseInfoBlock;
 use App\Section;
 use App\Task;
 use App\Tool;
-use App\User;
 use App\Zone;
 use App\ZoneAnalysisInfoBlock;
-use Faker\Factory as FakerFactory;
+use Illuminate\Support\Facades\Storage;
 use Net7\DocsGenerator\Utils;
 use Net7\Documents\Document;
 use Net7\EnvironmentalMeasurement\Models\EnvironmentalParameter;
@@ -845,7 +844,8 @@ EOF;
                     $image_json = $surface_inspection->extractJsonDocumentPhotoInfo($image_doc);
                     $detection_values[$counter]['file_path'] = 'file://'.$image_json['attributes']['file_path'];
                 } else {
-                    $detection_values[$counter]['file_path'] = 'https://via.placeholder.com/150';
+                    $placeholder_url = Storage::disk('public')->url('placeholder150.png');
+                    $detection_values[$counter]['file_path'] = 'file://'.$placeholder_url;
                 }
                 $val = '';
                 foreach ($detection_param_keys as $detection_param_key) {
