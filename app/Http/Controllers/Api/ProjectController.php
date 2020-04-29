@@ -767,7 +767,7 @@ class ProjectController extends Controller
             /** @var ApplicationLog $application_log */
             $application_log = ApplicationLog::findOrFail($application_log_id);
             $record->setCurrentAppLog($application_log);
-            
+
             $template = $request->input('template');
             $document = $this->reportGenerationProcess($template, $record, REPORT_APPLOG_SUBTYPE);
 
