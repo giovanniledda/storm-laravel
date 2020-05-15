@@ -895,7 +895,7 @@ EOF;
         $tool_exp_date = $tool ? $tool->calibration_expiration_date : '-';
 
         $html = <<<EOF
-	    <table cellpadding="0" cellspacing="0">
+	    <table width="340" cellpadding="0" cellspacing="0">
 	        <tbody>
 	            <tr style="height: 32px">
 	                <td width="696" style="font-weight: 700; color: black">$block_title</td>
