@@ -766,13 +766,13 @@ EOF;
 	                <td width="340" style=""><img height="255" src="'.$photos_paths[0].'"></td>
 	                <td width="16" style=""></td>
 	                <td width="340" style=""><img height="255" src="'.$photos_paths[1].'"></td>
-	        </tr>
-	        <tr style="height: 32px; border: 1px solid #DDDDDD"><td width="696"></td></tr>'
+	         </tr>
+	         <tr style="height: 32px; border: 1px solid #DDDDDD"><td width="696"></td></tr>'
             :
             '<tr height="190" style="border: 1px solid #DDDDDD">
 	                <td width="340" style=""><img height="255" src="'.$photos_paths[0].'"></td>
-	        </tr>
-	        <tr style="height: 32px; border: 1px solid #DDDDDD"><td width="696"></td></tr>';
+	         </tr>
+	         <tr style="height: 32px; border: 1px solid #DDDDDD"><td width="696"></td></tr>';
     }
 
     /**
@@ -806,14 +806,14 @@ EOF;
     public function renderDetectionBlock($detection_values)
     {
         return count($detection_values) > 1 ?
-            '<tr width="696" height="190" style="border: 1px solid #DDDDDD">
+            '<tr height="190" style="border: 1px solid #DDDDDD">
                 <td width="340" style=""><img height="255" src="'.$detection_values[0]['file_path'].'"></td>
                 <td width="16" style=""></td>
                 <td width="340" style=""><img height="255" src="'.$detection_values[1]['file_path'].'"></td>
             </tr>
-            <tr style="height: 32px"><td width="696"></td></tr>'
+            <tr style="height: 32px; border: 1px solid #DDDDDD"><td width="696"></td></tr>'
             :
-            '<tr width="340" height="190" style="border: 1px solid #DDDDDD">
+            '<tr height="190" style="border: 1px solid #DDDDDD">
                 <td width="340" style=""><img height="255" src="'.$detection_values[0]['file_path'].'"></td>
             </tr>
             <tr style="height: 32px; border: 1px solid #DDDDDD"><td width="696"></td></tr>';
