@@ -807,25 +807,22 @@ EOF;
     public function renderDetectionBlock($detection_values)
     {
         return count($detection_values) > 1 ?
-            '
-            <tr height="190" style="border: 1px solid #DDDDDD">
+            '<tr width="696" height="190" style="border: 1px solid #DDDDDD">
                 <td width="340" style=""><img height="255" src="'.$detection_values[0]['file_path'].'"></td>
-            </tr>
-            <tr style="border: 1px solid #DDDDDD">
-                <td width="340" style="">'.$detection_values[0]['det_value'].'</td>
-            </tr>
-            <tr height="190" style="border: 1px solid #DDDDDD">
+                <td width="16" style=""></td>
                 <td width="340" style=""><img height="255" src="'.$detection_values[1]['file_path'].'"></td>
             </tr>
-            <tr style="border: 1px solid #DDDDDD">
+            <tr width="696" style="border: 1px solid #DDDDDD">
+                <td width="340" style="">'.$detection_values[0]['det_value'].'</td>
+                <td width="16" style=""></td>
                 <td width="340" style="">'.$detection_values[1]['det_value'].'</td>
             </tr>
             <tr style="height: 32px"><td width="696"></td></tr>'
             :
-            '<tr height="190" style="border: 1px solid #DDDDDD">
+            '<tr width="340" height="190" style="border: 1px solid #DDDDDD">
                 <td width="340" style=""><img height="255" src="'.$detection_values[0]['file_path'].'"></td>
             </tr>
-            <tr style="border: 1px solid #DDDDDD">
+            <tr width="340" style="border: 1px solid #DDDDDD">
                 <td width="340" style="">'.$detection_values[0]['det_value'].'</td>
             </tr>
             <tr style="height: 32px; border: 1px solid #DDDDDD"><td width="696"></td></tr>';
@@ -909,11 +906,15 @@ EOF;
 	            <tr style="height: 32px">
 	                <td width="696" style="">Description: $short_description</td>
 	            </tr>
-	            <tr style="height: 32px"><td width="696"></td></tr>
+	        </tbody>
+	    </table>
 EOF;
 
+        $html .= <<<EOF
+	    <table cellpadding="0" cellspacing="0">
+	        <tbody>
+EOF;
         $html .= $this->renderDetections($detection_info_block, $detection_param_keys);
-
         $html .= <<<EOF
 	        </tbody>
 	    </table>
