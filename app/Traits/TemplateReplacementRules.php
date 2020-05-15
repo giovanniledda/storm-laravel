@@ -789,8 +789,9 @@ EOF;
             foreach ($det_imgs as $key => $det_img) {
                 $photos_paths[$counter] = 'file://'.$det_img['attributes']['file_path'];
                 if ($counter == 1 || $key === array_key_last($det_imgs)) {
-                    $counter = 0;
                     $html .= $this->renderPhotosBlock($photos_paths);
+                    $counter = 0;
+                    $photos_paths = [];
                 }
                 $counter++;
             }
