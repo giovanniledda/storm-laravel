@@ -791,6 +791,7 @@ EOF;
                 if ($counter == 1 || $key === array_key_last($det_imgs)) {
                     $html .= $this->renderPhotosBlock($photos_paths);
                     $counter = 0;
+                    $photos_paths = [];
                     continue;
                 }
                 $counter++;
@@ -874,7 +875,7 @@ EOF;
     {
         // come nascondere blocchi -> se le detections sono vuote, non stampo nulla
         $detections_array = $detection_info_block->detections;
-        if (0 && !empty($detections_array)) {
+        if (!empty($detections_array)) {
             foreach ($detections_array as $key => $detection) {
                 foreach ($detection_param_keys as $detection_param_key) {
                     if (empty($detection[$detection_param_key])) {
