@@ -791,7 +791,7 @@ EOF;
                 if ($counter == 1 || $key === array_key_last($det_imgs)) {
                     $html .= $this->renderPhotosBlock($photos_paths);
                     $counter = 0;
-                    $photos_paths = [];
+                    continue;
                 }
                 $counter++;
             }
@@ -854,8 +854,9 @@ EOF;
                 }
                 $detection_values[$counter]['det_value'] = trim($val, ', ');
                 if ($counter == 1 || $key === array_key_last($detections_array)) {
-                    $counter = 0;
                     $html .= $this->renderDetectionBlock($detection_values);
+                    $counter = 0;
+                    continue;
                 }
                 $counter++;
             }
