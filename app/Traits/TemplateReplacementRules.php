@@ -806,15 +806,23 @@ EOF;
     public function renderDetectionBlock($detection_values)
     {
         return count($detection_values) > 1 ?
-            '<tr height="190" style="border: 1px solid #DDDDDD">
+            '<tr width="696" height="190" style="border: 1px solid #DDDDDD">
                 <td width="340" style=""><img height="255" src="'.$detection_values[0]['file_path'].'"></td>
                 <td width="16" style=""></td>
                 <td width="340" style=""><img height="255" src="'.$detection_values[1]['file_path'].'"></td>
             </tr>
-            <tr style="height: 32px; border: 1px solid #DDDDDD"><td width="696"></td></tr>'
+            <tr width="696" style="border: 1px solid #DDDDDD">
+                <td width="340" style="">'.$detection_values[0]['det_value'].'</td>
+                <td width="16" style=""></td>
+                <td width="340" style="">'.$detection_values[1]['det_value'].'</td>
+            </tr>
+            <tr style="height: 32px"><td width="696"></td></tr>'
             :
-            '<tr height="190" style="border: 1px solid #DDDDDD">
+            '<tr width="340" height="190" style="border: 1px solid #DDDDDD">
                 <td width="340" style=""><img height="255" src="'.$detection_values[0]['file_path'].'"></td>
+            </tr>
+            <tr width="340" style="border: 1px solid #DDDDDD">
+                <td width="340" style="">'.$detection_values[0]['det_value'].'</td>
             </tr>
             <tr style="height: 32px; border: 1px solid #DDDDDD"><td width="696"></td></tr>';
     }
@@ -1032,7 +1040,7 @@ EOF;
         $product_name = $product->name;
         $sv_percentage = $product->sv_percentage;
         $viscosity = $application_product->viscosity;
-        // diluition: somma litri*barattoli dei thinner diviso somma dei litri*barattoli dei componenti
+        $diluition = 0;  // somma litri*barattoli dei thinner diviso somma dei litri*barattoli dei componenti
 
         // Product applied
         $html .= <<<EOF
@@ -1061,7 +1069,10 @@ EOF;
                     </tr>
 EOF;
 
+        $components_liters_sum = 0;
         foreach ($application_product->components as $component) {
+            $components_liters_sum += ($component['tins_capacity'] * $component['number_of_tins']);
+            $batch_nums = '';
             $name = $component['name'];
             array_walk($component['batch_numbers'], function ($val, $key) use (&$batch_nums) {
                  $batch_nums .= "$key: $val, ";
@@ -1075,17 +1086,25 @@ EOF;
 EOF;
         }
 
+        $thinners_liters_sum = 0;
         foreach ($application_product->thinners as $thinner) {
+            $thinners_liters_sum += ($thinner['tins_capacity'] * $thinner['number_of_tins']);
+            $batch_nums = '';
             $name = $thinner['name'];
             array_walk($thinner['batch_numbers'], function ($val, $key) use (&$batch_nums) {
                 $batch_nums .= "$key: $val, ";
             });
-            $batch_nums = trim($batch_nums, ', ');$html .= <<<EOF
+            $batch_nums = trim($batch_nums, ', ');
+            $html .= <<<EOF
                 <tr style="height: 32px">
                             <td width="696" style="border-bottom: 1px solid #ececec">T: $name</td>
                             <td width="696" style="border-bottom: 1px solid #ececec">$batch_nums</td>
 	            </tr>
 EOF;
+        }
+
+        if ($components_liters_sum) {
+            $diluition = ($thinners_liters_sum/$components_liters_sum)*100;
         }
 
         $html .= <<<EOF
@@ -1130,7 +1149,7 @@ EOF;
                         </tr>
 
                         <tr style="height: 32px">
-                            <td width="696" style="">Diluition %: $loss_factor</td>
+                            <td width="696" style="">Diluition %: $diluition</td>
                         </tr>
 
 //                        <tr style="height: 32px">
