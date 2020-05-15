@@ -811,18 +811,10 @@ EOF;
                 <td width="16" style=""></td>
                 <td width="340" style=""><img height="255" src="'.$detection_values[1]['file_path'].'"></td>
             </tr>
-            <tr width="696" style="border: 1px solid #DDDDDD">
-                <td width="340" style="">'.$detection_values[0]['det_value'].'</td>
-                <td width="16" style=""></td>
-                <td width="340" style="">'.$detection_values[1]['det_value'].'</td>
-            </tr>
             <tr style="height: 32px"><td width="696"></td></tr>'
             :
             '<tr width="340" height="190" style="border: 1px solid #DDDDDD">
                 <td width="340" style=""><img height="255" src="'.$detection_values[0]['file_path'].'"></td>
-            </tr>
-            <tr width="340" style="border: 1px solid #DDDDDD">
-                <td width="340" style="">'.$detection_values[0]['det_value'].'</td>
             </tr>
             <tr style="height: 32px; border: 1px solid #DDDDDD"><td width="696"></td></tr>';
     }
@@ -1040,6 +1032,7 @@ EOF;
         $product_name = $product->name;
         $sv_percentage = $product->sv_percentage;
         $viscosity = $application_product->viscosity;
+        // diluition: somma litri*barattoli dei thinner diviso somma dei litri*barattoli dei componenti
 
         // Product applied
         $html .= <<<EOF
@@ -1051,10 +1044,6 @@ EOF;
 
                     <tr style="height: 32px">
                         <td width="696" style="">$product_name</td>
-                    </tr>
-
-                    <tr style="height: 32px">
-                        <td width="696" style="">Viscosity: $sv_percentage</td>
                     </tr>
 
                     <tr style="height: 32px"><td width="696"></td></tr>
@@ -1141,8 +1130,12 @@ EOF;
                         </tr>
 
                         <tr style="height: 32px">
-                            <td width="696" style="">Loss factor: $loss_factor</td>
+                            <td width="696" style="">Diluition %: $loss_factor</td>
                         </tr>
+
+//                        <tr style="height: 32px">
+//                            <td width="696" style="">Loss factor: $loss_factor</td>
+//                        </tr>
 
                         <tr style="height: 32px">
                             <td width="696" style="">Nozzle & needle size: $nozzle</td>
