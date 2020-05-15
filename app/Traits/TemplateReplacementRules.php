@@ -866,7 +866,7 @@ EOF;
     {
         // come nascondere blocchi -> se le detections sono vuote, non stampo nulla
         $detections_array = $detection_info_block->detections;
-        if (!empty($detections_array)) {
+        if (0 && !empty($detections_array)) {
             foreach ($detections_array as $key => $detection) {
                 foreach ($detection_param_keys as $detection_param_key) {
                     if (empty($detection[$detection_param_key])) {
