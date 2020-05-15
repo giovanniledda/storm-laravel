@@ -857,6 +857,7 @@ EOF;
                 if ($counter == 1 || $key === array_key_last($detections_array)) {
                     $html .= $this->renderDetectionBlock($detection_values);
                     $counter = 0;
+                    $detection_values = [];
                     continue;
                 }
                 $counter++;
