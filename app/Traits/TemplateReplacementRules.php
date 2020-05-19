@@ -1176,7 +1176,7 @@ EOF;
         /** @var DetectionsInfoBlock $temp_hum */
         $temp_hum = $application_section->getTemperatureAndHumidityDetectionBlock();
         $html .= '<p style="font-weight: bold; color: black">AMBIENT CONDITIONS</p>'.
-                 $this->renderRegularDetectionInfoBlock($temp_hum, 'Temperature & humidity', ['Temperature', 'Humidity']);
+                 $this->renderRegularDetectionInfoBlock($temp_hum, 'Temperature & humidity', ['temperature', 'humidity']);
 
         return $html;
     }
@@ -1194,13 +1194,13 @@ EOF;
         if ($application_log->application_type == APPLICATION_TYPE_PRIMER) {
             /** @var DetectionsInfoBlock $adhesion */
             $adhesion = $inspection_section->getAdhesionDetectionBlock();
-            $html .= $this->renderRegularDetectionInfoBlock($adhesion, 'Adhesion', ['Adhesion']);
+            $html .= $this->renderRegularDetectionInfoBlock($adhesion, 'Adhesion', ['adhesion']);
         }
 
         // Thickness
         /** @var DetectionsInfoBlock $adhesion */
         $thickness = $inspection_section->getThicknessDetectionBlock();
-        $html .= $this->renderRegularDetectionInfoBlock($thickness, 'Thickness', ['Thickness']);
+        $html .= $this->renderRegularDetectionInfoBlock($thickness, 'Thickness', ['thickness']);
 
         // Fairness
         if (
@@ -1210,28 +1210,28 @@ EOF;
         ) {
             /** @var DetectionsInfoBlock $adhesion */
             $fairness = $inspection_section->getFairnessDetectionBlock();
-            $html .= $this->renderRegularDetectionInfoBlock($fairness, 'Fairness', ['Fairness']);
+            $html .= $this->renderRegularDetectionInfoBlock($fairness, 'Fairness', ['fairness']);
         }
 
         // Hardness
         if ($application_log->application_type == APPLICATION_TYPE_FILLER) {
             /** @var DetectionsInfoBlock $hardness */
             $hardness = $inspection_section->getHardnessDetectionBlock();
-            $html .= $this->renderRegularDetectionInfoBlock($hardness, 'Hardness', ['Hardness']);
+            $html .= $this->renderRegularDetectionInfoBlock($hardness, 'Hardness', ['hardness']);
         }
 
         // Gloss / DOI / Haze / Rspec
         if ($application_log->application_type == APPLICATION_TYPE_COATING) {
             /** @var DetectionsInfoBlock $gl_do_ha_rs */
             $gl_do_ha_rs = $inspection_section->getGlassDoiHazeRspecDetectionBlock();
-            $html .= $this->renderRegularDetectionInfoBlock($gl_do_ha_rs, 'Gloss / DOI / Haze / Rspec', ['Gloss', 'DOI', 'Haze', 'Rspec']);
+            $html .= $this->renderRegularDetectionInfoBlock($gl_do_ha_rs, 'Gloss / DOI / Haze / Rspec', ['gloss', 'doi', 'haze', 'rspec']);
         }
 
         // Orange Peel
         if ($application_log->application_type == APPLICATION_TYPE_COATING) {
             /** @var DetectionsInfoBlock $orange_peel */
             $orange_peel = $inspection_section->getOrangePeelDetectionBlock();
-            $html .= $this->renderRegularDetectionInfoBlock($orange_peel, 'Orange peel', ['Orange_peel']);
+            $html .= $this->renderRegularDetectionInfoBlock($orange_peel, 'Orange peel', ['orange_peel']);
         }
 
         return $html;
