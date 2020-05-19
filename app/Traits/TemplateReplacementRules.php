@@ -1231,7 +1231,7 @@ EOF;
         if ($application_log->application_type == APPLICATION_TYPE_COATING) {
             /** @var DetectionsInfoBlock $orange_peel */
             $orange_peel = $inspection_section->getOrangePeelDetectionBlock();
-            $html .= $this->renderRegularDetectionInfoBlock($orange_peel, 'Orange peel', ['Orange peel']);
+            $html .= $this->renderRegularDetectionInfoBlock($orange_peel, 'Orange peel', ['Orange_peel']);
         }
 
         return $html;
