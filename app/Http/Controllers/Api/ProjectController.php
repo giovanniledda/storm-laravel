@@ -788,6 +788,7 @@ class ProjectController extends Controller
                     [
                         'id' => $document->id,
                         'app_log_type' => $record->getCurrentAppLogType(),
+                        'app_log_name' => $application_log->name,
                         'zones' => $record->getCurrentAppLogZones()
                     ]
                 );
