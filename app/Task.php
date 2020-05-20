@@ -16,9 +16,14 @@ use Net7\Documents\Document;
 use Net7\Documents\DocumentableTrait;
 use Faker\Generator as Faker;
 use function array_push;
+use function date;
 use function explode;
+use function file_exists;
 use function in_array;
 use function is_object;
+use function strtotime;
+use function strtoupper;
+use const DIRECTORY_SEPARATOR;
 use const PROJECT_STATUS_CLOSED;
 use const TASK_TYPE_PRIMARY;
 use const TASK_TYPE_REMARK;
@@ -164,6 +169,17 @@ class Task extends Model
     public function scopeRemark($query)
     {
         return $query->where('task_type', '=', TASK_TYPE_REMARK);
+    }
+
+    /**
+     * Scope a query to only include only primary
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopePrimary($query)
+    {
+        return $query->where('task_type', '=', TASK_TYPE_PRIMARY);
     }
 
     /**
@@ -639,22 +655,33 @@ class Task extends Model
         }
     }
 
-    private function getIcon($status, $isOpen, $icon = 'Active')
+    /**
+     * @param null $p_status
+     * @param null $p_isOpen
+     * @param string $icon
+     * @param bool $miniature
+     * @return string
+     */
+    public function getIcon($p_status = null, $p_isOpen = null, $icon = 'Active', $miniature = false)
     {
-        /* return storage_path() .
-          DIRECTORY_SEPARATOR . 'storm-pins'.DIRECTORY_SEPARATOR.'Active.png';
-         */
-        $icon = $icon . '.png';
+        $status = $p_status ?? $this->task_status;
+        $isOpen = $p_isOpen ?? $this->is_open;
+//        $ext = in_array($status, ['monitored', 'completed', 'denied']) ? '.svg' : '.png';
+        $ext = '.png';
+        $icon = $icon . $ext;
         $status = str_replace(' ', '_', $status);
-        $path = storage_path() . DIRECTORY_SEPARATOR . 'storm-pins';
-        if (!$isOpen) {
-            return $path . DIRECTORY_SEPARATOR . $status . DIRECTORY_SEPARATOR . $icon;
+        $dir = $miniature ? 'storm-pins-half' : 'storm-pins';
+        $path = storage_path() . DIRECTORY_SEPARATOR . $dir;
+        if (!$isOpen && file_exists($path . DIRECTORY_SEPARATOR . $status . DIRECTORY_SEPARATOR . 'closed' . DIRECTORY_SEPARATOR . $icon)) {
+            return $path . DIRECTORY_SEPARATOR . $status . DIRECTORY_SEPARATOR . 'closed' . DIRECTORY_SEPARATOR . $icon;
         }
         return $path . DIRECTORY_SEPARATOR . $status . DIRECTORY_SEPARATOR . $icon;
     }
 
 
     /**
+     * FIXME: non ha senso questa funzione privata e non statica. Va fatta statica e messa fuori da un Model specifico. ZIOBE'
+     *
      * Ridimensiona un'immagine da un path
      * @param $file
      * @param $w
@@ -664,30 +691,7 @@ class Task extends Model
      */
     private function resize_image($file, $w, $h, $crop = FALSE)
     {
-        list($width, $height) = getimagesize($file);
-        $r = $width / $height;
-        if ($crop) {
-            if ($width > $height) {
-                $width = ceil($width - ($width * abs($r - $w / $h)));
-            } else {
-                $height = ceil($height - ($height * abs($r - $w / $h)));
-            }
-            $newwidth = $w;
-            $newheight = $h;
-        } else {
-            if ($w / $h > $r) {
-                $newwidth = $h * $r;
-                $newheight = $h;
-            } else {
-                $newheight = $w / $r;
-                $newwidth = $w;
-            }
-        }
-        $src = imagecreatefrompng($file);
-        $dst = imagecreatetruecolor($newwidth, $newheight);
-        imagecopyresampled($dst, $src, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
-
-        return $dst;
+        return \App\Utils\Utils::resize_image($file, $w, $h, $crop); // vedi il FIXME sopra
     }
 
     /**
@@ -699,52 +703,63 @@ class Task extends Model
         $corrosionMapHTML = '';
         if ($corrosionMapFilePath = $this->getCorrosionMapFilePath()) {
             $corrosionMapHTML = <<<EOF
-                <img height="200" src="file://$corrosionMapFilePath" alt="Corrosion Map">
+                <img width="400" src="file://$corrosionMapFilePath" alt="Corrosion Map">
 EOF;
         }
 
         $point_id = $this->internal_progressive_number;
         $task_location = $this->section ? Utils::sanitizeTextsForPlaceholders($this->section->name) : '?';
-        $task_type = $this->intervent_type ? Utils::sanitizeTextsForPlaceholders($this->intervent_type->name) : '?';
+        $task_intervent_type = $this->intervent_type ? Utils::sanitizeTextsForPlaceholders($this->intervent_type->name) : '?';
         //         'task_status' => Utils::sanitizeTextsForPlaceholders($task->task_status),
-        $description = Utils::sanitizeTextsForPlaceholders($this->description);
-        $created_at = $this->created_at;
-        $updated_at = $this->updated_at;
+        $created_at = date('d M Y', strtotime($this->created_at));
+        $updated_at = date('d M Y', strtotime($this->updated_at));
+        $status = $this->task_status;
+        $task_type = $this->task_type;
 
         $first_history = $this->getFirstHistory();
-        $img_dettaglioHTML = '<h1>No photo available</h1>';
+        $img_dettaglioHTML = '<div style="color: #666666; text-align: center; width: 100%;">No overview photo available</div>';
         if ($first_history && $first_history->getAdditionalPhotoPath()) {
             $img_dettaglio = $first_history->getAdditionalPhotoPath();
             $img_dettaglioHTML = <<<EOF
-                <img height="200" src="file://$img_dettaglio" alt="Overview image">
+                <img src="file://$img_dettaglio" alt="Overview image">
 EOF;
+        }
+
+        $author_comment = '';
+        $description = Utils::sanitizeTextsForPlaceholders($this->description);
+        if ($description) {
+            $author_comment = "<br><br>The author added this comment:</span><br><span style='color: #666666; width: 100%; padding: 8px'>$description</span>";
+        }
+
+        if ($task_type == TASK_TYPE_PRIMARY) {
+            $task_type_status_str = "<span>This task <span style='color:'>(#$point_id)</span> is currently <b>$status</b>, and was last updated on $updated_at.</span><span>";
+            $task_definition = "<span style='line-height: 20px'>This task was created on $created_at. The task is located on<b> $task_location </b> and was classified as <b> $task_intervent_type.</b>";
+        } else {
+            $task_type_status_str = "<span>This remark <span style='opacity: 0.6'>(#$point_id)</span> is classified as <b>$status</b>, and was last updated on $updated_at.</span><span>";
+            $task_definition = "<span style='line-height: 20px'>This remark was created on $created_at. The remark is located on<b> $task_location.</b>";
         }
 
         $html = <<<EOF
             <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Point #$point_id</p>
-
             <table cellpadding="0" cellspacing="0">
                 <tbody>
                     <tr>
-                        <td width="300">$corrosionMapHTML</td>
-                        <td width="50"></td>
-                        <td width="300" valign="top">
-                            <span style="font-weight: bold">Type: </span>$task_type
-                            <br>
-                            <span style="font-weight: bold;">Description: </span>$description
+                        <td width="300" style="border: 1px solid #ececec">$corrosionMapHTML</td>
+                        <td width="30"></td>
+                        <td width="350" valign="top">
+                            <span style="font-weight: bold; color: #1f519b;">Latest update</span><br>
+                            $task_type_status_str
                         </td>
                     </tr>
 
                     <tr height="30"></tr>
 
                     <tr>
-                        <td width="300">$img_dettaglioHTML</td>
-                        <td width="50"></td>
-                        <td width="300" valign="top"><span style="border-right: 10px solid white; font-weight: bold">Location: </span>$task_location
-                            <br>
-                            <span style="font-weight: bold;">Created: </span>$created_at
-                            <br>
-                            <span style="font-weight: bold;">Last edited: </span>$updated_at
+                        <td width="300" style="border: 1px solid #ececec">$img_dettaglioHTML</td>
+                        <td width="30"></td>
+                        <td width="350" valign="top">
+                            <span style="border: 1px solid #ececec; color: #1f519b; font-weight: bold">Overview</span><br>
+                            $task_definition $author_comment
                         </td>
                     </tr>
                 </tbody>
@@ -756,14 +771,14 @@ EOF;
         // creo la tabella a seconda delle immagini che ho
         if (!empty($photos_array) && count($photos_array) > 1) {
             $tds_1 = <<<EOF
-                    <td width="300">
-                        <img width="400" src="file://$photos_array[1]" alt="Corrosion img 1">
+                    <td width="174">
+                        <img width="232" src="file://$photos_array[1]" alt="Corrosion img 1">
                     </td>
 EOF;
             if (isset($photos_array[2])) {
                 $tds_1 .= <<<EOF
-                    <td width="300">
-                        <img width="400" src="file://$photos_array[2]" alt="Corrosion img 2">
+                    <td width="174">
+                        <img width="232" src="file://$photos_array[2]" alt="Corrosion img 2">
                     </td>
 EOF;
             }
@@ -772,15 +787,15 @@ EOF;
 
             if (isset($photos_array[3])) {
                 $tds_2 = <<<EOF
-                    <td width="300">
-                        <img width="400" src="file://$photos_array[3]" alt="Corrosion img 3">
+                    <td width="174">
+                        <img width="232" src="file://$photos_array[3]" alt="Corrosion img 3">
                     </td>
 EOF;
 
                 if (isset($photos_array[4])) {
                     $tds_2 .= <<<EOF
-                        <td width="300">
-                            <img width="400"  src="file://$photos_array[4]" alt="Corrosion img 4">
+                        <td width="174">
+                            <img width="232"  src="file://$photos_array[4]" alt="Corrosion img 4">
                         </td>
 EOF;
                 }
@@ -788,12 +803,13 @@ EOF;
                 $trs = '<tr>' . $tds_1 .$tds_2 . '</tr>';
             }
 
-            $images_table = '<p style="text-align: left;font-size: 16px;font-weight: bold; font-family: Raleway, sans-serif;">Detail photos</p>
+            $images_table = '<br><br><span style="text-align: left;font-size: 16px;font-weight: bold; font-family: Raleway, sans-serif; color: #1f519b;">Detail photos</span>
                                <table><tbody>' . $trs . '</tbody></table>';
 
             $html .= $images_table;
+        } else {
+            $html .= '<br><br><span style="text-align: left;font-size: 16px;font-weight: bold; font-family: Raleway, sans-serif; color: #1f519b;">Detail photos</span><br><span style="color: #666666">No photos available.</span>';
         }
-
 
         $html .= <<<EOF
 

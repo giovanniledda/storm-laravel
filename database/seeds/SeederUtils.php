@@ -251,7 +251,7 @@ class SeederUtils
     {
 //        return;
         if (Storage::disk('local-seeder')->exists($filepath)) {
-            $section->addImagePhoto($filepath, $type);
+            $section->addImagePhoto('./storage/seeder/' . $filepath, $type);
         }
     }
 
@@ -352,28 +352,36 @@ class SeederUtils
     public function addCompleteListFakeApplicationLogsToProject(Project $project)
     {
         $application_logs_obj_array = [];
-        if ($project->application_logs()->count() == 0) {
-            $application_logs_obj_array[] = factory(ApplicationLog::class)->create([
+        $application_logs_obj_array[] = factory(ApplicationLog::class)->create(
+            [
                 'project_id' => $project->id,
                 'application_type' => APPLICATION_TYPE_COATING
-            ]);
-            $application_logs_obj_array[] = factory(ApplicationLog::class)->create([
+            ]
+        );
+        $application_logs_obj_array[] = factory(ApplicationLog::class)->create(
+            [
                 'project_id' => $project->id,
                 'application_type' => APPLICATION_TYPE_FILLER
-            ]);
-            $application_logs_obj_array[] = factory(ApplicationLog::class)->create([
+            ]
+        );
+        $application_logs_obj_array[] = factory(ApplicationLog::class)->create(
+            [
                 'project_id' => $project->id,
                 'application_type' => APPLICATION_TYPE_HIGHBUILD
-            ]);
-            $application_logs_obj_array[] = factory(ApplicationLog::class)->create([
+            ]
+        );
+        $application_logs_obj_array[] = factory(ApplicationLog::class)->create(
+            [
                 'project_id' => $project->id,
                 'application_type' => APPLICATION_TYPE_PRIMER
-            ]);
-            $application_logs_obj_array[] = factory(ApplicationLog::class)->create([
+            ]
+        );
+        $application_logs_obj_array[] = factory(ApplicationLog::class)->create(
+            [
                 'project_id' => $project->id,
                 'application_type' => APPLICATION_TYPE_UNDERCOAT
-            ]);
-        }
+            ]
+        );
         return $application_logs_obj_array;
     }
 
@@ -542,7 +550,7 @@ class SeederUtils
         $thinners = [];
         for ($i = 1; $i <= $this->faker->randomDigitNotNull; $i++) {
             $thinners[] = [
-                'name' => $this->faker->word,
+                'name' => $this->faker->colorName,
                 'number_of_tins' => $this->faker->randomDigitNotNull,
                 'tins_capacity' => $this->faker->randomFloat(2),
                 'tins_unity' => $this->faker->randomElement(['gallons', 'liters']),
@@ -634,7 +642,7 @@ class SeederUtils
                 'detections' => null
             ]);
             $this->updateDetectionBlock($d_ib_4, [
-                'thickness' => $this->faker->randomDigitNotNull
+                'hardness' => $this->faker->randomDigitNotNull
             ]);
         }
 

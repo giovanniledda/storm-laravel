@@ -12,6 +12,10 @@
 <a href="{{ route('professions.index') }}"><i class="fa fa-btn fa-user-tie"></i> Professions</a>
 <a href="{{ route('task_intervent_types.index') }}"><i class="fa fa-btn fa-hammer"></i> Intervent types</a>
 
+<hr />
+<h4>Text descriptions</h4>
+<a href="{{ route('suggestions.index') }}"><i class="fa fa-btn fa-comment-alt"></i> Suggestions</a>
+
 @if(Route::has('docs-gen-be-index'))
     <hr />
     <h4>Reports</h4>

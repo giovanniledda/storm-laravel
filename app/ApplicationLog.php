@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 use function array_map;
 use function env;
 use function factory;
+
+use const APPLICATION_LOG_SECTION_TYPE_APPLICATION;
+use const APPLICATION_LOG_SECTION_TYPE_INSPECTION;
 use const APPLICATION_LOG_SECTION_TYPE_ZONES;
 use const APPLICATION_TYPE_COATING;
 use const APPLICATION_TYPE_FILLER;
@@ -84,6 +87,30 @@ class ApplicationLog extends Model
     public function getZonesSection()
     {
         return $this->getSectionsByTypeQuery(APPLICATION_LOG_SECTION_TYPE_ZONES)->first();
+    }
+
+    /**
+     * @return Model|\Illuminate\Database\Eloquent\Relations\HasMany|object|null
+     */
+    public function getPreparationSection()
+    {
+        return $this->getSectionsByTypeQuery(APPLICATION_LOG_SECTION_TYPE_PREPARATION)->first();
+    }
+
+    /**
+     * @return Model|\Illuminate\Database\Eloquent\Relations\HasMany|object|null
+     */
+    public function getApplicationSection()
+    {
+        return $this->getSectionsByTypeQuery(APPLICATION_LOG_SECTION_TYPE_APPLICATION)->first();
+    }
+
+    /**
+     * @return Model|\Illuminate\Database\Eloquent\Relations\HasMany|object|null
+     */
+    public function getInspectionSection()
+    {
+        return $this->getSectionsByTypeQuery(APPLICATION_LOG_SECTION_TYPE_INSPECTION)->first();
     }
 
     /**
@@ -211,7 +238,7 @@ class ApplicationLog extends Model
         }
 
         return [
-            'name' => $faker->word,
+            'name' => $faker->colorName,
 //            'last_editor_id' => $last_editor->id,
             'application_type' => $faker->randomElement([
                 APPLICATION_TYPE_PRIMER,

@@ -176,5 +176,25 @@ Breadcrumbs::for('site.addresses.new', function ($trail, $site) {
 
 Breadcrumbs::for('site.address', function ($trail, $site, $address) {
     $trail->parent('site.addresses', $site);
-    $trail->push($address->street, route('sites.addresses.edit', ['site_id' => $site->id, 'address_id' => $address->id,]));
+    $trail->push($address->street, route('sites.addresses.edit', ['site_id' => $site->id, 'address_id' => $address->id]));
+});
+
+
+/** Suggestions **/
+
+/** Professions **/
+
+Breadcrumbs::for('suggestions', function ($trail) {
+    $trail->parent('dashboard');
+    $trail->push(__('Suggestions'), route('suggestions.index'));
+});
+
+Breadcrumbs::for('suggestions.new', function ($trail) {
+    $trail->parent('suggestions');
+    $trail->push(__('New Suggestion'), route('suggestions.create'));
+});
+
+Breadcrumbs::for('suggestions.show', function ($trail, $suggestion) {
+    $trail->parent('suggestions');
+    $trail->push($suggestion->id, route('suggestions.edit', $suggestion));
 });

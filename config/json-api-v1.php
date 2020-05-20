@@ -76,6 +76,7 @@ return [
         'project-tools' => \App\ProjectTool::class,
         'application-logs' => \App\ApplicationLog::class,
         'report-items' => \App\ReportItem::class,
+        'suggestions' => \App\Suggestion::class,
     ],
 
     /*

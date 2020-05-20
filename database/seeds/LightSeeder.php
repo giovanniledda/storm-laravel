@@ -52,7 +52,7 @@ class LightSeeder extends Seeder
         $this->command->warn(" ------ BOATS & SECTIONS --------");
 
         $boats = [];
-        for ($i = 0; $i < 1; $i++) {
+        for ($i = 0; $i < 2; $i++) {
             $boats[$i] = $this->utils->createBoat();
 
             // aggiungo delle immagini alle barche in base al loro tipo
@@ -68,14 +68,14 @@ class LightSeeder extends Seeder
 
             $this->command->info("Boat {$boats[$i]->name} created");
 
-            // ... e 5 sezioni per ciascuna
+            // ... e n sezioni per ciascuna
 
+            $section_names = ['sundeck', 'mast', 'maindeck', 'lowerdeck', 'topdeck', 'wheelhousedeck'];
             $sections[$boats[$i]->id] = [];
             $left_done = $right_done = false;
-            for ($s = 0; $s < 5; $s++) {
+            for ($s = 0; $s <= 5; $s++) {
 
                 $sections[$boats[$i]->id] = $this->utils->createSection($boats[$i]);
-
 
                 // Creare un left, un right e gli altri deck
                 if (0 && !$left_done) {
@@ -104,7 +104,8 @@ class LightSeeder extends Seeder
                     continue;
                 }
 
-                $name = $this->faker->randomElement(['sundeck', 'mast', 'maindeck', 'lowerdeck', 'topdeck', 'wheelhousedeck']);
+//                $name = $this->faker->randomElement($section_names);
+                $name = $section_names[$s];
                 $sections[$boats[$i]->id]->update([
                     'section_type' => SECTION_TYPE_DECK,
                     'name' => ucfirst($name)]);
@@ -175,7 +176,7 @@ class LightSeeder extends Seeder
             $this->command->warn(" ------ PROJECTS FOR BOAT {$boat->name} --------");
 
             $open = $closed = $imported = 0;
-            for ($p = 0; $p < 2; $p++) {
+            for ($p = 0; $p < 3; $p++) {
                 $project = $this->utils->createProject($site, $boat);
 
                 $this->command->info("Project {$project->name} for Boat {$boat->name}, created");

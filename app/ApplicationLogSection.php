@@ -65,6 +65,76 @@ class ApplicationLogSection extends Model
         return $this->hasMany('App\DetectionsInfoBlock', 'application_log_section_id');
     }
 
+    /**
+     * @return Model|\Illuminate\Database\Eloquent\Relations\HasMany|object|null
+     */
+    public function getSurfaceInspectionDetectionBlock(){
+        return $this->detections_info_blocks()->where('name', '=', 'Surface inspection')->first();
+    }
+
+    /**
+     * @return Model|\Illuminate\Database\Eloquent\Relations\HasMany|object|null
+     */
+    public function getSaltDetectionBlock()
+    {
+        return $this->detections_info_blocks()->where('name', '=', 'Salt - Bresle test')->first();
+    }
+
+    /**
+     * @return Model|\Illuminate\Database\Eloquent\Relations\HasMany|object|null
+     */
+    public function getTemperatureAndHumidityDetectionBlock()
+    {
+        return $this->detections_info_blocks()->where('name', '=', 'Temperature & Humidity')->first();
+    }
+
+    /**
+     * @return Model|\Illuminate\Database\Eloquent\Relations\HasMany|object|null
+     */
+    public function getAdhesionDetectionBlock()
+    {
+        return $this->detections_info_blocks()->where('name', '=', 'Adhesion')->first();
+    }
+
+    /**
+     * @return Model|\Illuminate\Database\Eloquent\Relations\HasMany|object|null
+     */
+    public function getFairnessDetectionBlock()
+    {
+        return $this->detections_info_blocks()->where('name', '=', 'Fairness')->first();
+    }
+
+    /**
+     * @return Model|\Illuminate\Database\Eloquent\Relations\HasMany|object|null
+     */
+    public function getHardnessDetectionBlock()
+    {
+        return $this->detections_info_blocks()->where('name', '=', 'Hardness')->first();
+    }
+
+    /**
+     * @return Model|\Illuminate\Database\Eloquent\Relations\HasMany|object|null
+     */
+    public function getThicknessDetectionBlock()
+    {
+        return $this->detections_info_blocks()->where('name', '=', 'Thickness')->first();
+    }
+
+    /**
+     * @return Model|\Illuminate\Database\Eloquent\Relations\HasMany|object|null
+     */
+    public function getGlassDoiHazeRspecDetectionBlock()
+    {
+        return $this->detections_info_blocks()->where('name', '=', 'Gloss / DOI / Haze / Rspec')->first();
+    }
+
+    /**
+     * @return Model|\Illuminate\Database\Eloquent\Relations\HasMany|object|null
+     */
+    public function getOrangePeelDetectionBlock()
+    {
+        return $this->detections_info_blocks()->where('name', '=', 'Orange peel')->first();
+    }
 
     /**
      * Returns an array of data with values for each field
@@ -105,6 +175,7 @@ class ApplicationLogSection extends Model
      */
     public function toJsonApi()
     {
+        // chiamare questi campi/metodi così mi serve per caricarli in memoria e rendrli quindi disponibili nella parent::toArray()
         $this->zone_analysis_info_blocks;
         $this->product_use_info_blocks;
         $this->detections_info_blocks;

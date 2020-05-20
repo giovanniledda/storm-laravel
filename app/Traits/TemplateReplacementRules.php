@@ -1,24 +1,47 @@
 <?php
-
-
-
 namespace App\Traits;
 
+use App\ApplicationLog;
+use App\ApplicationLogSection;
+use App\DetectionsInfoBlock;
+use App\GenericDataInfoBlock;
+use App\Product;
+use App\ProductUseInfoBlock;
+use App\Section;
 use App\Task;
-use App\User;
-use Faker\Factory as FakerFactory;
+use App\Tool;
+use App\Zone;
+use App\ZoneAnalysisInfoBlock;
+use Illuminate\Support\Facades\Storage;
 use Net7\DocsGenerator\Utils;
+use Net7\Documents\Document;
 use Net7\EnvironmentalMeasurement\Models\EnvironmentalParameter;
 use Net7\EnvironmentalMeasurement\Models\Measurement;
 use Phpdocx\Create\CreateDocxFromTemplate;
 use Phpdocx\Elements\WordFragment;
+
+use function array_reduce;
+use function array_walk;
+use function ceil;
 use function count;
 use function date;
+use function factory;
 use function fclose;
+use function foo\func;
+use function getimagesize;
+use function logger;
 use function min;
+use function strtotime;
 use function throw_if;
 use function time;
+use function trim;
 use function unlink;
+
+use const APPLICATION_TYPE_COATING;
+use const APPLICATION_TYPE_FILLER;
+use const APPLICATION_TYPE_HIGHBUILD;
+use const APPLICATION_TYPE_PRIMER;
+use const APPLICATION_TYPE_UNDERCOAT;
 
 defined('MEASUREMENT_DEFAULT_DATA_SOURCE') or define('MEASUREMENT_DEFAULT_DATA_SOURCE', 'STORM - Web App Frontend');
 
@@ -39,6 +62,10 @@ trait TemplateReplacementRules
 //    protected $_current_date_end = '2018-01-08';
     protected $_current_data_source;
     protected $_current_min_tresholds;
+
+    // Usate con il DocsGenerator: per application_log_report
+    protected $_current_app_log;
+
 
     /**
      * *****************************
@@ -213,6 +240,12 @@ trait TemplateReplacementRules
         }
     }
 
+    /**
+     * Stampa nel docx l'htlm relativo ai task
+     *
+     * @return string
+     * @throws \Throwable
+     */
     public function getCorrosionMapHtmlBlock()
     {
         /** @var Task $task */
@@ -223,6 +256,86 @@ trait TemplateReplacementRules
             $this->updateCurrentTaskPhotosArray();
             $html .= $task->getCorrosionMapHtml($this->_currentTaskPhotos);
         }
+        return $html;
+    }
+
+
+    /**
+     * Stampa nel docx l'htlm relativo all'indice
+     *
+     * @return string
+     * @throws \Throwable
+     */
+    public function getCorrosionMapHtmlTableOfContents()
+    {
+        $html = '<p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Table of Contents</p>';
+        $html .= '<table cellpadding="0" cellspacing="0"><tbody>';
+        $tasks = $this->getTasksToIncludeInReport();
+        $toc_pages = ceil(count($tasks)/26);
+        $task_ids = $this->_taskToIncludeInReport ?? $this->tasks()->pluck('id')->toArray();
+        $sections = Section::getSectionsStartingFromTasks($task_ids);
+        $section_overview_pages = ceil(count($sections)/4);
+        $index = 1 + $toc_pages + $section_overview_pages;
+        /** @var Task $task */
+        foreach ($tasks as $task) {
+            $this->_currentTask = $task;
+            $this->updateCurrentTaskPhotosArray();
+            $index = count($this->_currentTaskPhotos) > 4 ? ($index + 2) : ($index + 1);
+            $point_id = $task->internal_progressive_number;
+            $task_location = $task->section ? Utils::sanitizeTextsForPlaceholders($task->section->name) : '?';
+            $html .= <<<EOF
+                    <tr style="height: 32px">
+                        <td width="496" style="border-bottom: 1px solid #ececec;"><b>Point #$point_id</b> ($task_location)</td>
+                        <td width="200" style="border-bottom: 1px solid #ececec; text-align: right;">Pag. $index</td>
+                    </tr>
+EOF;
+        }
+        $html .= "</tbody></table>";
+        return $html;
+    }
+
+    /**
+     * Stampa nel docx l'htlm relativo alle immagini delle sezioni con tutti i pin sopra
+     *
+     * @return string
+     * @throws \Throwable
+     */
+    public function getCorrosionMapHtmlSectionImgsOverview()
+    {
+        /** @var Task $task */
+        $html = '<div>';
+        $task_ids = $this->_taskToIncludeInReport ?? $this->tasks()->pluck('id')->toArray();
+        $sections = Section::getSectionsStartingFromTasks($task_ids);
+
+        // 1 - prendo l'img di section con la W maggiore
+        $max_w = 0;
+        /** @var Section $section */
+        foreach ($sections as $section) {
+            $deck_media = $section->generic_images->last();
+            $deck_img_path = $deck_media->getPathBySize('');
+            $bridgeImageInfo = getimagesize($deck_img_path);
+            $max_w = max($max_w, $bridgeImageInfo[0]);
+        }
+        $d_factor = $max_w/2198;
+//        $d_factor = $max_w/1236;
+//        $d_factor = $max_w/696;
+
+        /** @var Section $section */
+        foreach ($sections as $section) {
+            $section_text = "{$section->name}";
+            // 2 - divido questo max per 1236 ed ottengo un fattore per cui dovrò andare a dividere la W (in realtà divido per il fattore * 2) di tutte le altre section per ottenere la dimensione corretta
+            // 3 - passo il fattore ottenuto alla drawOverviewImageWithTaskPoints
+            $section->drawOverviewImageWithTaskPoints($task_ids, $d_factor);
+            $overview_img = $section->getPointsImageOverview();
+            $html .= <<<EOF
+
+                    <img width="926" align="center" src="file://$overview_img" alt="Section Overview Image">
+
+                    <p style="text-align:center; color: #999999">$section_text</p>
+
+EOF;
+        }
+        $html .= '</div>';
         return $html;
     }
 
@@ -237,7 +350,9 @@ trait TemplateReplacementRules
             '$boat_type$' => 'getBoatType()',
             '$boat_name$' => 'getBoatName()',
             '$break_n1$' => null,  // riconosciuto dal sistema
-            '$html_bloccoTask$' => 'getCorrosionMapHtmlBlock()'
+            '$html_bloccoTask$' => 'getCorrosionMapHtmlBlock()',
+            '$html_sectionImgsOverview$' => 'getCorrosionMapHtmlSectionImgsOverview()',
+            '$html_tableOfContents$' => 'getCorrosionMapHtmlTableOfContents()'
         ];
         $this->insertPlaceholders('corrosion_map', $placeholders, true);
     }
@@ -285,7 +400,6 @@ trait TemplateReplacementRules
             '$hum_avg$' => 'getEnvironmentalParamAvg()-humidity__app\_project',
             '$hum_std$' => 'getEnvironmentalParamStd()-humidity__app\_project',
             '$chart_humidityChart$' => null, // entra in gioco la funzione handlePhpdocxCharts che andrà implementata nel model User
-
         ];
         $this->insertPlaceholders('environmental_report', $placeholders, true);
     }
@@ -562,5 +676,583 @@ trait TemplateReplacementRules
         return date('Y-m-d', time());
     }
 
+
+
+    /**
+     * *****************************
+     * *****************************  TEMPLATE: application_log_report
+     * *****************************
+     *
+     */
+
+    /**
+     * Associate the "application_log_report" Template and its Placeholders to an object
+     */
+    public function setupApplicationLogTemplate()
+    {
+        $category = $this->persistAndAssignTemplateCategory('application_log_report');
+        $placeholders = [
+            '$date$' => 'currentDate()',
+            '$name$' => 'getCurrentAppLogName()',
+            '$typeOfAppReport$' => 'getCurrentAppLogType()',
+            '$zones$' => 'getCurrentAppLogZones()',
+            '$break_n1$' => null,  // riconosciuto dal sistema
+            '$html_fullApplicationLog$' => 'getCurrentAppLogStructureHtml()',
+        ];
+        $this->insertPlaceholders('environmental_report', $placeholders, true);
+    }
+
+    /**
+     * @param $app_log
+     */
+    public function setCurrentAppLog($app_log)
+    {
+        $this->_current_app_log = $app_log;
+    }
+
+    /**
+     * @return ApplicationLog
+     */
+    public function getCurrentAppLog()
+    {
+        return $this->_current_app_log ?? $this->application_logs()->first();
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrentAppLogName()
+    {
+        return $this->getCurrentAppLog()->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrentAppLogType()
+    {
+        return $this->getCurrentAppLog()->application_type;
+    }
+
+    /**
+     * @return string
+     *
+     * Ex:. Zone name 1A; Zone long name 3A; Zone name 4C; Zone another long name 5D
+     */
+    public function getCurrentAppLogZones()
+    {
+        $zones_str = '';
+        $app_log = $this->getCurrentAppLog();
+        $zones_section = $app_log->getZonesSection();
+        if ($zones_section) {
+            $zone_ib = $zones_section->zone_analysis_info_blocks;
+            /** @var ZoneAnalysisInfoBlock $item */
+            foreach ($zone_ib as $item) {
+                /** @var Zone $zone */
+                $zones_str .= $item->zone->description.' '.$item->zone->code.',';
+            }
+        }
+        return trim($zones_str, ',');
+    }
+
+    /**
+     * @param $photos_paths
+     * @return string
+     */
+    public function renderPhotosBlock($photos_paths)
+    {
+        return count($photos_paths) > 1 ?
+            '<tr height="190">
+	                <td width="340" style=""><img height="255" src="'.$photos_paths[0].'"></td>
+	                <td width="16" style=""></td>
+	                <td width="340" style=""><img height="255" src="'.$photos_paths[1].'"></td>
+	         </tr>
+	         <tr style="height: 32px;"><td width="696"></td></tr>'
+            :
+            '<tr height="190">
+	                <td width="340" style=""><img height="255" src="'.$photos_paths[0].'"></td>
+	         </tr>
+	         <tr style="height: 32px;"><td width="696"></td></tr>';
+    }
+
+    /**
+     * @param $photos
+     * @return string
+     */
+    public function renderPhotos($photos)
+    {
+        $html = '';
+        if (!empty($photos) && !empty($photos['data']['detailed_images'])) {
+            $det_imgs = $photos['data']['detailed_images'];
+            $counter = 0;
+            $photos_paths = [];
+            foreach ($det_imgs as $key => $det_img) {
+                $photos_paths[$counter] = 'file://'.$det_img['attributes']['file_path'];
+                if ($counter == 1 || $key === array_key_last($det_imgs)) {
+                    $html .= $this->renderPhotosBlock($photos_paths);
+                    $counter = 0;
+                    $photos_paths = [];
+                    continue;
+                }
+                $counter++;
+            }
+        }
+        return $html;
+    }
+
+    /**
+     * @param $photos_paths
+     * @return string
+     */
+    public function renderDetectionBlock($detection_values)
+    {
+        return count($detection_values) > 1 ?
+            '<tr width="696" height="190">
+                <td width="340" style=""><img height="255" src="'.$detection_values[0]['file_path'].'"></td>
+                <td width="16" style=""></td>
+                <td width="340" style=""><img height="255" src="'.$detection_values[1]['file_path'].'"></td>
+            </tr>
+            <tr width="696">
+                <td width="340" style="">'.$detection_values[0]['det_value'].'</td>
+                <td width="16" style=""></td>
+                <td width="340" style="">'.$detection_values[1]['det_value'].'</td>
+            </tr>
+            <tr style="height: 32px"><td width="696"></td></tr>'
+            :
+            '<tr width="340" height="190">
+                <td width="340" style=""><img height="255" src="'.$detection_values[0]['file_path'].'"></td>
+            </tr>
+            <tr width="340">
+                <td width="340" style="">'.$detection_values[0]['det_value'].'</td>
+            </tr>
+            <tr style="height: 32px;"><td width="696"></td></tr>';
+    }
+
+    /**
+     * @param DetectionsInfoBlock $detections_ib
+     * @param $detection_param_keys
+     * @return string
+     */
+    public function renderDetections(DetectionsInfoBlock &$detections_ib, $detection_param_keys) // 'surface_roughness', 'salts', 'other...
+    {
+        $html = '';
+        $detections_array = $detections_ib->detections;
+        if (!empty($detections_array)) {
+            $counter = 0;
+            $detection_values = [];
+            foreach ($detections_array as $key => $detection) {
+                $image_doc = Document::find($detection['image_doc_id']);
+                if ($image_doc) {
+                    $image_json = $detections_ib->extractJsonDocumentPhotoInfo($image_doc);
+                    $detection_values[$counter]['file_path'] = 'file://'.$image_json['attributes']['file_path'];
+                } else {
+                    $placeholder_url = Storage::disk('public')->url('placeholder150.png');
+                    $detection_values[$counter]['file_path'] = 'file://'.$placeholder_url;
+                }
+                $val = '';
+                foreach ($detection_param_keys as $detection_param_key) {
+                    $val .= $detection_param_key.': '.$detection[$detection_param_key].', ';
+                }
+                $detection_values[$counter]['det_value'] = trim($val, ', ');
+                if ($counter == 1 || $key === array_key_last($detections_array)) {
+                    $html .= $this->renderDetectionBlock($detection_values);
+                    $counter = 0;
+                    $detection_values = [];
+                    continue;
+                }
+                $counter++;
+            }
+        }
+        return $html;
+    }
+
+    /**
+     * @param DetectionsInfoBlock $detection_info_block
+     * @param $block_title
+     * @param $detection_param_keys
+     * @return string
+     */
+    public function renderRegularDetectionInfoBlock(DetectionsInfoBlock &$detection_info_block, $block_title, $detection_param_keys)
+    {
+        // come nascondere blocchi -> se le detections sono vuote, non stampo nulla
+        $detections_array = $detection_info_block->detections;
+        if (!empty($detections_array)) {
+            foreach ($detections_array as $key => $detection) {
+                foreach ($detection_param_keys as $detection_param_key) {
+                    if (empty($detection[$detection_param_key])) {
+                        return '';
+                    };
+                }
+            }
+        }
+        $short_description = $detection_info_block->short_description;
+        /** @var Tool $tool */
+        $tool = $detection_info_block->tool;
+        $tool_name = $tool ? $tool->name : '-';
+        $tool_exp_date = $tool ? $tool->calibration_expiration_date : '-';
+
+        $html = <<<EOF
+	    <table width="340" cellpadding="0" cellspacing="0">
+	        <tbody>
+	            <tr style="height: 32px">
+	                <td width="696" style="font-weight: 700; color: black">$block_title</td>
+	            </tr>
+	            <tr style="height: 32px">
+	                <td width="696" style="">Tool: $tool_name</td>
+	            </tr>
+	            <tr style="height: 32px">
+	                <td width="696" style="">Tool expiration date: $tool_exp_date</td>
+	            </tr>
+	            <tr style="height: 32px">
+	                <td width="696" style="">Description: $short_description</td>
+	            </tr>
+	        </tbody>
+	    </table>
+EOF;
+
+        $html .= <<<EOF
+	    <table cellpadding="0" cellspacing="0">
+	        <tbody>
+EOF;
+        $html .= $this->renderDetections($detection_info_block, $detection_param_keys);
+        $html .= <<<EOF
+	        </tbody>
+	    </table>
+    <p style="page-break-before: always;"></p>
+EOF;
+        return $html;
+    }
+
+    /**
+     * @return string
+     */
+    public function renderPreparationSection()
+    {
+        $application_log = $this->getCurrentAppLog();
+        /** @var ApplicationLogSection $preparation_section */
+        $preparation_section = $application_log->getPreparationSection();
+        $date = date('d/m/Y', strtotime($preparation_section->date_hour));
+
+        $html = <<<EOF
+            <p style="page-break-before: always;"></p>
+            <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Surface Preparation</p>
+
+            <table cellpadding="0" cellspacing="0">
+                <tbody>
+                    <tr style="height: 32px">
+                        <td width="696" style="font-weight: 700; color: black">Date</td>
+                    </tr>
+                    <tr style="height: 32px">
+                        <td width="696" style="">$date</td>
+                    </tr>
+                    <tr style="height: 32px"><td width="696"></td></tr>
+                </tbody>
+            </table>
+EOF;
+
+        /** @var ProductUseInfoBlock $substrate */
+        $substrate = $preparation_section->product_use_info_blocks()->first();
+        $product_name = $substrate ? ($substrate->product ? $substrate->product->name : '-') : '-';
+
+        /** @var GenericDataInfoBlock $surface_preparation */
+        $surface_preparation = $preparation_section->generic_data_info_blocks()->first();
+        $kv_infos = $surface_preparation->key_value_infos;
+        $paper_grain = $short_desc = '-';
+        if (!empty($kv_infos)) {
+            $paper_grain = $kv_infos['paper_grain'] ?? '-';
+            $short_desc = $kv_infos['short_description'] ?? '-';
+        }
+
+        // Substrate preparation
+        $html .= <<<EOF
+	    <table cellpadding="0" cellspacing="0">
+	        <tbody>
+	            <tr style="height: 32px">
+	                <td width="696" style="font-weight: 700; color: black">Preparation of substrate</td>
+	            </tr>
+	            <tr style="height: 32px">
+	                <td width="696" style="">Visual inspection of surfaces</td>
+	            </tr>
+EOF;
+
+        // Immagini
+        $photos = $surface_preparation->getPhotosApi(); // detailed_images + additional_images
+        $html .= $this->renderPhotos($photos);
+
+        $html .= <<<EOF
+	            <tr style="height: 32px">
+	                <td width="696" style="">Substrate product: $product_name</td>
+	            </tr>
+	            <tr style="height: 32px">
+	                <td width="696" style="">Paper grain: $paper_grain</td>
+	            </tr>
+	            <tr style="height: 32px">
+	                <td width="696" style="">Description: $short_desc</td>
+	            </tr>
+	        </tbody>
+	    </table>
+	    <p style="page-break-before: always;"></p>
+EOF;
+
+        // Surface inspection
+        /** @var DetectionsInfoBlock $surface_inspection */
+        $surface_inspection = $preparation_section->getSurfaceInspectionDetectionBlock();
+        $html .= $this->renderRegularDetectionInfoBlock($surface_inspection, 'Roughness', ['Surface roughness']);
+
+        // Salt
+        if ($application_log->application_type == APPLICATION_TYPE_PRIMER) {
+            /** @var DetectionsInfoBlock $salt */
+            $salt = $preparation_section->getSaltDetectionBlock();
+            $html .= $this->renderRegularDetectionInfoBlock($salt, 'Salt', ['salts']);
+        }
+
+        return $html;
+    }
+
+    /**
+     * @return string
+     */
+    public function renderApplicationSection()
+    {
+        $application_log = $this->getCurrentAppLog();
+        /** @var ApplicationLogSection $application_section */
+        $application_section = $application_log->getApplicationSection();
+        $date_hour = date('d/m/Y H:i', strtotime($application_section->date_hour));
+
+        $html = <<<EOF
+                <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Product Application</p>
+
+                <!-- Application date and hour -->
+                <table cellpadding="0" cellspacing="0">
+                    <tbody>
+                        <tr style="height: 32px">
+                            <td width="696" style="font-weight: 700; color: black">Application date and hour</td>
+                        </tr>
+
+                        <tr style="height: 32px">
+                            <td width="696" style="">$date_hour</td>
+                        </tr>
+
+                        <tr style="height: 32px"><td width="696"></td></tr>
+                    </tbody>
+                </table>
+EOF;
+
+        /** @var ProductUseInfoBlock $application_product */
+        $application_product = $application_section->product_use_info_blocks()->first();
+
+        /** @var Product $product */
+        $product = $application_product->product;
+        $product_name = $product->name;
+        $sv_percentage = $product->sv_percentage;
+        $viscosity = $application_product->viscosity;
+        $diluition = 0;  // somma litri*barattoli dei thinner diviso somma dei litri*barattoli dei componenti
+
+        // Product applied
+        $html .= <<<EOF
+            <table cellpadding="0" cellspacing="0">
+                <tbody>
+                    <tr style="height: 32px">
+                        <td width="696" style="font-weight: 700; color: black">Product applied</td>
+                    </tr>
+
+                    <tr style="height: 32px">
+                        <td width="696" style="">$product_name</td>
+                    </tr>
+
+                    <tr style="height: 32px"><td width="696"></td></tr>
+                </tbody>
+            </table>
+EOF;
+
+        // Components & thinners
+        $html .= <<<EOF
+            <table cellpadding="0" cellspacing="0">
+                <tbody>
+                    <tr style="height: 32px">
+                        <td width="348" style="font-weight: 700; color: black">Components & thinners</td>
+                        <td width="348" style="font-weight: 700; color: black">Batch number</td>
+                    </tr>
+EOF;
+
+        $components_liters_sum = 0;
+        foreach ($application_product->components as $component) {
+            $components_liters_sum += ($component['tins_capacity'] * $component['number_of_tins']);
+            $batch_nums = '';
+            $name = $component['name'];
+            array_walk($component['batch_numbers'], function ($val, $key) use (&$batch_nums) {
+                 $batch_nums .= "$key: $val, ";
+            });
+            $batch_nums = trim($batch_nums, ', ');
+            $html .= <<<EOF
+                <tr style="height: 32px">
+                            <td width="696" style="border-bottom: 1px solid #ececec">C: $name</td>
+                            <td width="696" style="border-bottom: 1px solid #ececec">$batch_nums</td>
+	            </tr>
+EOF;
+        }
+
+        $thinners_liters_sum = 0;
+        foreach ($application_product->thinners as $thinner) {
+            $thinners_liters_sum += ($thinner['tins_capacity'] * $thinner['number_of_tins']);
+            $batch_nums = '';
+            $name = $thinner['name'];
+            array_walk($thinner['batch_numbers'], function ($val, $key) use (&$batch_nums) {
+                $batch_nums .= "$key: $val, ";
+            });
+            $batch_nums = trim($batch_nums, ', ');
+            $html .= <<<EOF
+                <tr style="height: 32px">
+                            <td width="696" style="border-bottom: 1px solid #ececec">T: $name</td>
+                            <td width="696" style="border-bottom: 1px solid #ececec">$batch_nums</td>
+	            </tr>
+EOF;
+        }
+
+        if ($components_liters_sum) {
+            $diluition = ($thinners_liters_sum/$components_liters_sum)*100;
+        }
+
+        $html .= <<<EOF
+	            <tr style="height: 32px"><td width="696"></td></tr>
+	        </tbody>
+	    </table>
+EOF;
+
+        /** @var GenericDataInfoBlock $application_method */
+        $application_method = $application_section->generic_data_info_blocks()->first();
+        $kv_infos = $application_method->key_value_infos;
+        if (!empty($kv_infos)) {
+            $app_method = $kv_infos['method'] ?? '-';
+            $nozzle = $kv_infos['nozzle_needle_size'] ?? '-';
+            $loss_factor = $kv_infos['loss_factor'] ?? '-';
+            // TODO: La diluizione percentuale sarebbe il totale dei litri di "thinner" diviso i litri di pittura totale (quindi la somma dei litri inseriti tra thinner e components)
+            $html .= <<<EOF
+                <!-- Application method -->
+                <table cellpadding="0" cellspacing="0">
+                    <tbody>
+                        <tr style="height: 32px">
+                            <td width="696" style="font-weight: 700; color: black">Application method</td>
+                        </tr>
+
+                        <tr style="height: 32px">
+                            <td width="696" style="">$app_method</td>
+                        </tr>
+
+                        <tr style="height: 32px"><td width="696"></td></tr>
+                    </tbody>
+                </table>
+
+                <!-- Application details -->
+                <table cellpadding="0" cellspacing="0">
+                    <tbody>
+                        <tr style="height: 32px">
+                            <td width="696" style="font-weight: 700; color: black">Application details</td>
+                        </tr>
+
+                        <tr style="height: 32px">
+                            <td width="696" style="">Product viscosity: $viscosity</td>
+                        </tr>
+
+                        <tr style="height: 32px">
+                            <td width="696" style="">Diluition %: $diluition</td>
+                        </tr>
+
+                        <tr style="height: 32px">
+                            <td width="696" style="">Loss factor: $loss_factor</td>
+                        </tr>
+
+                        <tr style="height: 32px">
+                            <td width="696" style="">Nozzle & needle size: $nozzle</td>
+                        </tr>
+
+                        <tr style="height: 32px"><td width="696"></td></tr>
+                    </tbody>
+                </table>
+                <p style="page-break-before: always;"></p>
+EOF;
+        }
+
+        /** @var DetectionsInfoBlock $temp_hum */
+        $temp_hum = $application_section->getTemperatureAndHumidityDetectionBlock();
+        $html .= '<p style="font-weight: bold; color: black">AMBIENT CONDITIONS</p>'.
+                 $this->renderRegularDetectionInfoBlock($temp_hum, 'Temperature & humidity', ['temperature', 'humidity']);
+
+        return $html;
+    }
+
+    public function renderInspectionSection()
+    {
+        $application_log = $this->getCurrentAppLog();
+        /** @var ApplicationLogSection $inspection_section */
+        $inspection_section = $application_log->getInspectionSection();
+        $html = <<<EOF
+            <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Inspection</p>
+EOF;
+
+        // Adhesion
+        if ($application_log->application_type == APPLICATION_TYPE_PRIMER) {
+            /** @var DetectionsInfoBlock $adhesion */
+            $adhesion = $inspection_section->getAdhesionDetectionBlock();
+            $html .= $this->renderRegularDetectionInfoBlock($adhesion, 'Adhesion', ['adhesion']);
+        }
+
+        // Thickness
+        /** @var DetectionsInfoBlock $adhesion */
+        $thickness = $inspection_section->getThicknessDetectionBlock();
+        $html .= $this->renderRegularDetectionInfoBlock($thickness, 'Thickness', ['thickness']);
+
+        // Fairness
+        if (
+            $application_log->application_type == APPLICATION_TYPE_FILLER ||
+            $application_log->application_type == APPLICATION_TYPE_HIGHBUILD ||
+            $application_log->application_type == APPLICATION_TYPE_UNDERCOAT
+        ) {
+            /** @var DetectionsInfoBlock $adhesion */
+            $fairness = $inspection_section->getFairnessDetectionBlock();
+            $html .= $this->renderRegularDetectionInfoBlock($fairness, 'Fairness', ['fairness']);
+        }
+
+        // Hardness
+        if ($application_log->application_type == APPLICATION_TYPE_FILLER) {
+            /** @var DetectionsInfoBlock $hardness */
+            $hardness = $inspection_section->getHardnessDetectionBlock();
+            $html .= $this->renderRegularDetectionInfoBlock($hardness, 'Hardness', ['hardness']);
+        }
+
+        // Gloss / DOI / Haze / Rspec
+        if ($application_log->application_type == APPLICATION_TYPE_COATING) {
+            /** @var DetectionsInfoBlock $gl_do_ha_rs */
+            $gl_do_ha_rs = $inspection_section->getGlassDoiHazeRspecDetectionBlock();
+            $html .= $this->renderRegularDetectionInfoBlock($gl_do_ha_rs, 'Gloss / DOI / Haze / Rspec', ['gloss', 'doi', 'haze', 'rspec']);
+        }
+
+        // Orange Peel
+        if ($application_log->application_type == APPLICATION_TYPE_COATING) {
+            /** @var DetectionsInfoBlock $orange_peel */
+            $orange_peel = $inspection_section->getOrangePeelDetectionBlock();
+            $html .= $this->renderRegularDetectionInfoBlock($orange_peel, 'Orange peel', ['orange_peel']);
+        }
+
+        return $html;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrentAppLogStructureHtml()
+    {
+        $preparation_section_html = $this->renderPreparationSection();
+        $application_section_html = $this->renderApplicationSection();
+        $inspection_section_html = $this->renderInspectionSection();
+        $html = <<<EOF
+            $preparation_section_html
+
+            $application_section_html
+
+            $inspection_section_html
+EOF;
+        return $html;
+    }
 
 }

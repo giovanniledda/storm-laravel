@@ -8,6 +8,7 @@
 defined('SECTION_TYPE_LEFT_SIDE') or define('SECTION_TYPE_LEFT_SIDE', 'left_side');
 defined('SECTION_TYPE_RIGHT_SIDE') or define('SECTION_TYPE_RIGHT_SIDE',  'right_side');
 defined('SECTION_TYPE_DECK') or define('SECTION_TYPE_DECK', 'deck');
+defined('SECTION_IMAGE_POINTS_OVERVIEW') or define('SECTION_IMAGE_POINTS_OVERVIEW', 'points_overview_image');
 
 
 /*
@@ -248,6 +249,7 @@ defined('USER_PHOTO_API_NO_DOC_MSG') or define('USER_PHOTO_API_NO_DOC_MSG', 'Som
  */
 defined('REPORT_CORROSION_MAP_SUBTYPE') or define('REPORT_CORROSION_MAP_SUBTYPE', 'corrosion_map');
 defined('REPORT_ENVIRONMENTAL_SUBTYPE') or define('REPORT_ENVIRONMENTAL_SUBTYPE', 'environmental_report');
+defined('REPORT_APPLOG_SUBTYPE') or define('REPORT_APPLOG_SUBTYPE', 'application_log_report');
 
 
 /*

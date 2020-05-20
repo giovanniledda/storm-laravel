@@ -3,7 +3,7 @@
 namespace App;
 
 use App\Observers\ProjectObserver;
-use App\Traits\EnvParamsInputOutputTransations;
+use App\Traits\EnvParamsInputOutputTranslations;
 use App\Traits\TemplateReplacementRules;
 use Net7\EnvironmentalMeasurement\Traits\HasMeasurements;
 use Illuminate\Database\Eloquent\Model;
@@ -43,7 +43,7 @@ class Project extends Model
         SerializesModels,
         HasMeasurements,
         TemplateReplacementRules,
-        EnvParamsInputOutputTransations;
+        EnvParamsInputOutputTranslations;
 
     protected $table = 'projects';
     protected $fillable = [

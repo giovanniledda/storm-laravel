@@ -744,4 +744,61 @@ class ProjectController extends Controller
             return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error uploading application log", $e->getMessage());
         }
     }
+
+
+    /**
+     *
+     * #PR32  api/v1/projects/{record_id}/generate-application-log-report
+     * API used to generate a report from the project
+     *
+     * @param Request $request
+     * @param $record
+     *
+     * @return mixed
+     */
+    public function generateApplicationLogReport(Request $request, $record)
+    {
+        if (!$request->has('application_log_id')) {
+            return Utils::jsonAbortWithInternalError(422, 402, "Error generating report", "Mandatory parameter 'application_log_id' is missing!");
+        }
+
+        try {
+            $application_log_id = $request->input('application_log_id');
+            /** @var ApplicationLog $application_log */
+            $application_log = ApplicationLog::findOrFail($application_log_id);
+            $record->setCurrentAppLog($application_log);
+
+            $template = $request->input('template');
+            $document = $this->reportGenerationProcess($template, $record, REPORT_APPLOG_SUBTYPE);
+
+            if ($document) {
+                // TODO: refact not DRY
+                if (\Auth::check()) {
+                    $auth_user = \Auth::user();
+                    $user_id = $auth_user->id;
+                } else {
+                    $user_id = $document->author_id ?? 1; // admin
+                }
+
+                ReportItem::touchForNewDocument(
+                    $document,
+                    REPORT_APPLOG_SUBTYPE,
+                    $user_id,
+                    $record->id,
+                    [
+                        'id' => $document->id,
+                        'app_log_type' => $record->getCurrentAppLogType(),
+                        'app_log_name' => $application_log->name,
+                        'zones' => $record->getCurrentAppLogZones()
+                    ]
+                );
+            }
+        } catch (\Exception $e) {
+            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error generating report", $e->getMessage());
+        }
+
+        // $filepath = $dg->getRealFinalFilePath();
+        // $filename = $dg->getFinalFileName()
+        return $this->renderJsonOrDownloadFile($request, $document);
+    }
 }

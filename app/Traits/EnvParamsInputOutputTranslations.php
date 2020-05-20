@@ -18,7 +18,7 @@ use function date;
 use function throw_if;
 use function time;
 
-trait EnvParamsInputOutputTransations
+trait EnvParamsInputOutputTranslations
 {
 
     /**

@@ -2,6 +2,7 @@
 
 use App\Comment;
 use App\History;
+use App\Project;
 use App\Services\InternalProgNumHandler;
 use App\Task;
 use Illuminate\Foundation\Inspiring;
@@ -23,6 +24,7 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->describe('Display an inspiring quote');
 
+
 // Aggiornamento ID interni di Task, Project e ApplicationLog su base "Boat"
 Artisan::command('update-internal-ids', function (InternalProgNumHandler $ipn_handler) {
 
@@ -31,6 +33,7 @@ Artisan::command('update-internal-ids', function (InternalProgNumHandler $ipn_ha
     $this->comment('...done!');
 
 })->describe('Update (and sync) internal_progressive_number field for many Models');
+
 
 // Spostamento immagini da Task a History
 Artisan::command('move-task-images', function () {
@@ -237,3 +240,22 @@ Artisan::command('move-task-descriptions', function () {
     }
 
 })->describe('Takes description from Tasks and assign them as a comment to the first History instance of each Task');
+
+
+// aggiornamento dei template in uso, con nuovi placeholders
+Artisan::command('update-phpdocx-templates', function () {
+    if ($this->confirm('Do you wish to continue?')) {
+        $projects = Project::all();
+        foreach ($projects as $project) {
+            // Doc Generator from template
+            $this->info("\n");
+            $project->setupCorrosionMapTemplate();
+            $this->info("- Template CORROSION_MAP updated for Project [ID: {$project->id}]");
+            $project->setupEnvironmentalReportTemplate();
+            $this->info("- Template ENV_REPORT updated for Project [ID: {$project->id}]");
+            $project->setupApplicationLogTemplate();
+            $this->info("- Template APP_LOG_REPORT updated for Project [ID: {$project->id}]");
+        }
+    }
+
+})->describe('Display an inspiring quote');

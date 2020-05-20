@@ -136,6 +136,50 @@ class ModelTaskTest extends TestCase
         $this->assertEquals($zone->id, $task1->zone->id);
         $this->assertEquals($zone->id, $task2->zone->id);
         $this->assertEquals($zone->id, $task3->zone->id);
+    }
+
+
+    function test_related_sections() {
+
+        $boat = factory(Boat::class)->create();
+        $this->assertInstanceOf(Boat::class, $boat);
+
+        // creo 3 sezioni
+        $sections_a = factory(Section::class, 3)->create();
+        $boat->sections()->saveMany($sections_a);
+
+        // verifico che l'estrazione degli id funzioni
+        $sections_a_ids = $sections_a->pluck('id');
+        foreach ($sections_a as $section) {
+            $this->assertContains($section->id, $sections_a_ids);
+        }
+
+        // assegno 5 task ad ogni sezione e raccolgo tutti gli id dei task
+        $all_tasks_a_ids = [];
+        foreach ($sections_a as $section) {
+            $tasks_a = factory(Task::class, 5)->create();
+            $section->tasks()->saveMany($tasks_a);
+
+            foreach ($tasks_a as $task) {
+                $all_tasks_a_ids[] = $task->id;
+            }
+        }
+
+        $this->assertCount(15, $all_tasks_a_ids);
+
+        // recupero le sezioni a partire dai task id raccolti
+        $probably_sections_a = Section::getSectionsStartingFromTasks($all_tasks_a_ids);
+        $this->assertNotEmpty($probably_sections_a);
+
+        /** @var Section $section */
+        foreach ($probably_sections_a as $section) {
+            $this->assertContains($section->id, $sections_a_ids);
+
+            // testo il filtraggio dei task "propri"
+            $my_tasks = $section->getOnlyMyTasks($all_tasks_a_ids);
+            $this->assertCount(5, $my_tasks);
+        }
 
     }
+
 }
