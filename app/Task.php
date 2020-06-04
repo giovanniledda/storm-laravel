@@ -499,7 +499,7 @@ class Task extends Model
 
     public function getCorrosionMapFilePath()
     {
-        $document = $this->documents->where('type', self::CORROSION_MAP_DOCUMENT_TYPE)->first();
+        $document = $this->documents->where('type', self::CORROSION_MAP_DOCUMENT_TYPE)->last();
         if ($document) {
             $media = $document->getRelatedMedia();
             return $media->getPath();
@@ -775,6 +775,7 @@ EOF;
                         <img width="232" src="file://$photos_array[1]" alt="Corrosion img 1">
                     </td>
 EOF;
+
             if (isset($photos_array[2])) {
                 $tds_1 .= <<<EOF
                     <td width="174">
@@ -783,7 +784,7 @@ EOF;
 EOF;
             }
 
-//            $trs = '<tr>' . $tds_1 . '</tr><tr height=30></tr>';
+            $trs = '<tr>' . $tds_1 . '</tr><tr height=30></tr>';
 
             if (isset($photos_array[3])) {
                 $tds_2 = <<<EOF
@@ -800,7 +801,7 @@ EOF;
 EOF;
                 }
 
-                $trs = '<tr>' . $tds_1 .$tds_2 . '</tr>';
+                $trs = '<tr>' . $tds_1 . $tds_2 . '</tr>';
             }
 
             $images_table = '<br><br><span style="text-align: left;font-size: 16px;font-weight: bold; font-family: Raleway, sans-serif; color: #1f519b;">Detail photos</span>
