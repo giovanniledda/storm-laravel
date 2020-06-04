@@ -257,5 +257,45 @@ Artisan::command('update-phpdocx-templates', function () {
             $this->info("- Template APP_LOG_REPORT updated for Project [ID: {$project->id}]");
         }
     }
-
 })->describe('Display an inspiring quote');
+
+
+// Per ogni Task aggiorna l'immaginina della sua posizione (con pin) sul ritaglio di ponte
+Artisan::command('update-task-map {limit?} {--id=*}', function ($limit = null) {
+
+    if ($this->confirm('Do you wish to continue?')) {
+
+        $this->comment("Running task updating map...");
+
+        $ids = $this->option('id');
+        if (empty($ids)) {
+            $this->comment("1 - limit $limit");
+            $tasks = $limit ? App\Task::limit($limit)->get() : App\Task::all();
+        } else {
+            $this->comment("2 - limit $limit");
+            foreach ($ids as $id) {
+                $this->comment("2 - ID: $id");
+            }
+            $tasks_q = App\Task::whereIn('id', $ids);
+            $tasks = $limit ? $tasks_q->limit($limit)->get() : $tasks_q->get();
+        }
+
+        $bar = $this->output->createProgressBar(count($tasks));
+
+        $bar->start();
+
+        /** @var Task $task */
+        foreach ($tasks as $task) {
+
+            $this->info("\n");
+            $this->info("- Task ({$task->created_at}) {$task->name} [ID: {$task->id}]...");
+            $task->updateMap();
+            $this->info("...map updated!");
+            $bar->advance();
+        }
+
+        $bar->finish();
+        $this->comment("\n...done!");
+    }
+
+})->describe('Runs updateMap for each Task');
