@@ -499,7 +499,7 @@ class Task extends Model
 
     public function getCorrosionMapFilePath()
     {
-        $document = $this->documents->where('type', self::CORROSION_MAP_DOCUMENT_TYPE)->first();
+        $document = $this->documents->where('type', self::CORROSION_MAP_DOCUMENT_TYPE)->last();
         if ($document) {
             $media = $document->getRelatedMedia();
             return $media->getPath();
