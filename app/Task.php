@@ -800,7 +800,7 @@ EOF;
 EOF;
                 }
 
-                $trs = '<tr>' . $tds_1 .$tds_2 . '</tr>';
+                $trs = '<tr>' . $tds_1 . $tds_2 . '</tr>';
             }
 
             $images_table = '<br><br><span style="text-align: left;font-size: 16px;font-weight: bold; font-family: Raleway, sans-serif; color: #1f519b;">Detail photos</span>
