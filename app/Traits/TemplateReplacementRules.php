@@ -1042,7 +1042,7 @@ EOF;
         $temp_hum = $application_section->getTemperatureAndHumidityDetectionBlock();
         $html .= '<p style="font-weight: bold; color: black">AMBIENT CONDITIONS</p>'.
             $this->renderRegularDetectionInfoBlock($temp_hum, 'Temperature & humidity', ['temperature', 'humidity']);
-        
+
         /** @var ProductUseInfoBlock $application_product */
         $application_product = $application_section->product_use_info_blocks()->first();
 
@@ -1091,7 +1091,7 @@ EOF;
             $batch_nums = trim($batch_nums, ', ');
             $html .= <<<EOF
                 <tr style="height: 32px">
-                            <td width="696" style="border-bottom: 1px solid #ececec">C: $name</td>
+                            <td width="696" style="border-bottom: 1px solid #ececec">Comp.: $name</td>
                             <td width="696" style="border-bottom: 1px solid #ececec">$batch_nums</td>
 	            </tr>
 EOF;
@@ -1108,7 +1108,7 @@ EOF;
             $batch_nums = trim($batch_nums, ', ');
             $html .= <<<EOF
                 <tr style="height: 32px">
-                            <td width="696" style="border-bottom: 1px solid #ececec">T: $name</td>
+                            <td width="696" style="border-bottom: 1px solid #ececec">Thin.: $name</td>
                             <td width="696" style="border-bottom: 1px solid #ececec">$batch_nums</td>
 	            </tr>
 EOF;
