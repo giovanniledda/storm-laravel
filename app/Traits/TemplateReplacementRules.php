@@ -881,7 +881,7 @@ EOF;
                 foreach ($detection_param_keys as $detection_param_key) {
                     if (empty($detection[$detection_param_key])) {
                         return '';
-                    };
+                    }
                 }
             }
         }
@@ -997,9 +997,9 @@ EOF;
         // Surface inspection
         /** @var DetectionsInfoBlock $surface_inspection */
         $surface_inspection = $preparation_section->getSurfaceInspectionDetectionBlock();
-        $html .= $this->renderRegularDetectionInfoBlock($surface_inspection, 'Roughness', ['Surface roughness']);
+        $html .= $this->renderRegularDetectionInfoBlock($surface_inspection, 'Roughness', ['surface_roughness']);
 
-        // Salt
+        // Salt (Il cliente lo chiama "Bresle Test": https://en.wikipedia.org/wiki/Bresle_method)
         if ($application_log->application_type == APPLICATION_TYPE_PRIMER) {
             /** @var DetectionsInfoBlock $salt */
             $salt = $preparation_section->getSaltDetectionBlock();
@@ -1037,6 +1037,11 @@ EOF;
                     </tbody>
                 </table>
 EOF;
+
+        /** @var DetectionsInfoBlock $temp_hum */
+        $temp_hum = $application_section->getTemperatureAndHumidityDetectionBlock();
+        $html .= '<p style="font-weight: bold; color: black">AMBIENT CONDITIONS</p>'.
+            $this->renderRegularDetectionInfoBlock($temp_hum, 'Temperature & humidity', ['temperature', 'humidity']);
 
         /** @var ProductUseInfoBlock $application_product */
         $application_product = $application_section->product_use_info_blocks()->first();
@@ -1173,10 +1178,10 @@ EOF;
 EOF;
         }
 
-        /** @var DetectionsInfoBlock $temp_hum */
-        $temp_hum = $application_section->getTemperatureAndHumidityDetectionBlock();
-        $html .= '<p style="font-weight: bold; color: black">AMBIENT CONDITIONS</p>'.
-                 $this->renderRegularDetectionInfoBlock($temp_hum, 'Temperature & humidity', ['temperature', 'humidity']);
+//        /** @var DetectionsInfoBlock $temp_hum */
+//        $temp_hum = $application_section->getTemperatureAndHumidityDetectionBlock();
+//        $html .= '<p style="font-weight: bold; color: black">AMBIENT CONDITIONS</p>'.
+//                 $this->renderRegularDetectionInfoBlock($temp_hum, 'Temperature & humidity', ['temperature', 'humidity']);
 
         return $html;
     }
@@ -1198,7 +1203,7 @@ EOF;
         }
 
         // Thickness
-        /** @var DetectionsInfoBlock $adhesion */
+        /** @var DetectionsInfoBlock $thickness */
         $thickness = $inspection_section->getThicknessDetectionBlock();
         $html .= $this->renderRegularDetectionInfoBlock($thickness, 'Thickness', ['thickness']);
 
