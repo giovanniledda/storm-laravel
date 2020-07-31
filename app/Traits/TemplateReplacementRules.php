@@ -997,7 +997,7 @@ EOF;
         // Surface inspection
         /** @var DetectionsInfoBlock $surface_inspection */
         $surface_inspection = $preparation_section->getSurfaceInspectionDetectionBlock();
-        $html .= $this->renderRegularDetectionInfoBlock($surface_inspection, 'Roughness', ['Surface roughness']);
+        $html .= $this->renderRegularDetectionInfoBlock($surface_inspection, 'Roughness', ['surface_roughness']);
 
         // Salt
         if ($application_log->application_type == APPLICATION_TYPE_PRIMER) {
@@ -1038,6 +1038,11 @@ EOF;
                 </table>
 EOF;
 
+        /** @var DetectionsInfoBlock $temp_hum */
+        $temp_hum = $application_section->getTemperatureAndHumidityDetectionBlock();
+        $html .= '<p style="font-weight: bold; color: black">AMBIENT CONDITIONS</p>'.
+            $this->renderRegularDetectionInfoBlock($temp_hum, 'Temperature & humidity', ['temperature', 'humidity']);
+        
         /** @var ProductUseInfoBlock $application_product */
         $application_product = $application_section->product_use_info_blocks()->first();
 
@@ -1172,11 +1177,6 @@ EOF;
                 <p style="page-break-before: always;"></p>
 EOF;
         }
-
-        /** @var DetectionsInfoBlock $temp_hum */
-        $temp_hum = $application_section->getTemperatureAndHumidityDetectionBlock();
-        $html .= '<p style="font-weight: bold; color: black">AMBIENT CONDITIONS</p>'.
-                 $this->renderRegularDetectionInfoBlock($temp_hum, 'Temperature & humidity', ['temperature', 'humidity']);
 
         return $html;
     }
