@@ -23,9 +23,6 @@ php artisan db:seed --class="CountriesSeeder"
 # crea qualche barca con progetti e task ma in misura minore rispetto agli altri seeder
 php artisan db:seed --class="LightSeeder"
 
-# crea n zone (4 padri con 5 figli) per ogni progetto
-php artisan db:seed --class="ZonesSeeder"
-
 # crea AppLog completi per ogni progetto
 php artisan db:seed --class="ApplicationLogSeeder"
 
