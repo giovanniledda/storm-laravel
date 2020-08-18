@@ -124,7 +124,8 @@ class Adapter extends AbstractAdapter
 
     protected function tasks()
     {
-        return $this->hasMany('tasksWithVisibility');
+//        return $this->hasMany('tasksWithVisibility');
+        return $this->hasMany('tasksNotDraftWithVisibility');
     }
 
     protected function products()
