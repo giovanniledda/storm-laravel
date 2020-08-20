@@ -9,6 +9,9 @@ use Neomerx\JsonApi\Contracts\Encoder\Parameters\EncodingParametersInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
+use function explode;
+use function request;
+
 class Adapter extends AbstractAdapter
 {
 

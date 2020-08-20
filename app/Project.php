@@ -17,9 +17,14 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Queue\SerializesModels;
 use App\Jobs\SendDocumentsToGoogleDrive;
 use Illuminate\Support\Facades\DB;
+
+use function array_key_exists;
 use function array_map;
+use function explode;
 use function json_decode;
 use function preg_replace;
+use function request;
+
 use const MEASUREMENT_FILE_TYPE;
 use const TASKS_STATUS_ACCEPTED;
 use const TASKS_STATUS_DRAFT;
@@ -659,7 +664,20 @@ class Project extends Model
      */
     public function tasksNotDraftWithVisibility()
     {
-        return $this->tasksWithVisibilityExcludedStatus(TASKS_STATUS_DRAFT);
+        $tasksQuery = $this->tasksWithVisibilityExcludedStatus(TASKS_STATUS_DRAFT);
+        if (request() && request()->has('filter')) {
+            $filters = request('filter');
+            if (array_key_exists('task_type', $filters)) {
+                $tasksQuery = $tasksQuery->where('task_type', $filters['task_type']);
+            }
+            if (array_key_exists('is_open', $filters)) {
+                $tasksQuery = $tasksQuery->where('is_open', '=', $filters['is_open']);
+            }
+            if ($status = $filters['status']) {
+                $tasksQuery = $tasksQuery->whereIn('task_status', explode('|', $status));
+            }
+        }
+        return $tasksQuery;
     }
 
 
