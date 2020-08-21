@@ -17,11 +17,17 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Queue\SerializesModels;
 use App\Jobs\SendDocumentsToGoogleDrive;
 use Illuminate\Support\Facades\DB;
+
+use function array_key_exists;
 use function array_map;
+use function explode;
 use function json_decode;
 use function preg_replace;
+use function request;
+
 use const MEASUREMENT_FILE_TYPE;
 use const TASKS_STATUS_ACCEPTED;
+use const TASKS_STATUS_DRAFT;
 
 // use Illuminate\Support\Facades\Queue;
 
@@ -652,6 +658,28 @@ class Project extends Model
         return $this->tasks();
     }
 
+    /**
+     * Se utente non è storm, non vedrà i task privati
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function tasksNotDraftWithVisibility()
+    {
+        $tasksQuery = $this->tasksWithVisibilityExcludedStatus(TASKS_STATUS_DRAFT);
+        if (request() && request()->has('filter')) {
+            $filters = request('filter');
+            if (array_key_exists('task_type', $filters)) {
+                $tasksQuery = $tasksQuery->where('task_type', $filters['task_type']);
+            }
+            if (array_key_exists('is_open', $filters)) {
+                $tasksQuery = $tasksQuery->where('is_open', '=', $filters['is_open']);
+            }
+            if ($status = $filters['status']) {
+                $tasksQuery = $tasksQuery->whereIn('task_status', explode('|', $status));
+            }
+        }
+        return $tasksQuery;
+    }
+
 
     /**
      * Se utente non è storm, non vedrà i task privati
@@ -664,6 +692,19 @@ class Project extends Model
             return $this->tasks()->where('task_status', '=', $status)->public();
         }
         return $this->tasks()->where('task_status', '=', $status);
+    }
+
+    /**
+     * Se utente non è storm, non vedrà i task privati
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function tasksWithVisibilityExcludedStatus($status)
+    {
+        $user = \Auth::user();
+        if ($user && !$user->is_storm) {
+            return $this->tasks()->where('task_status', '!=', $status)->public();
+        }
+        return $this->tasks()->where('task_status', '!=', $status);
     }
 
     /**

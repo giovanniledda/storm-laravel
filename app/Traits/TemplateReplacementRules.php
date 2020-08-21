@@ -881,7 +881,7 @@ EOF;
                 foreach ($detection_param_keys as $detection_param_key) {
                     if (empty($detection[$detection_param_key])) {
                         return '';
-                    };
+                    }
                 }
             }
         }
@@ -999,7 +999,7 @@ EOF;
         $surface_inspection = $preparation_section->getSurfaceInspectionDetectionBlock();
         $html .= $this->renderRegularDetectionInfoBlock($surface_inspection, 'Roughness', ['surface_roughness']);
 
-        // Salt
+        // Salt (Il cliente lo chiama "Bresle Test": https://en.wikipedia.org/wiki/Bresle_method)
         if ($application_log->application_type == APPLICATION_TYPE_PRIMER) {
             /** @var DetectionsInfoBlock $salt */
             $salt = $preparation_section->getSaltDetectionBlock();
@@ -1198,7 +1198,7 @@ EOF;
         }
 
         // Thickness
-        /** @var DetectionsInfoBlock $adhesion */
+        /** @var DetectionsInfoBlock $thickness */
         $thickness = $inspection_section->getThicknessDetectionBlock();
         $html .= $this->renderRegularDetectionInfoBlock($thickness, 'Thickness', ['thickness']);
 

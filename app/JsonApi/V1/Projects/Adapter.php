@@ -9,6 +9,9 @@ use Neomerx\JsonApi\Contracts\Encoder\Parameters\EncodingParametersInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
+use function explode;
+use function request;
+
 class Adapter extends AbstractAdapter
 {
 
@@ -124,7 +127,8 @@ class Adapter extends AbstractAdapter
 
     protected function tasks()
     {
-        return $this->hasMany('tasksWithVisibility');
+//        return $this->hasMany('tasksWithVisibility');
+        return $this->hasMany('tasksNotDraftWithVisibility');
     }
 
     protected function products()
