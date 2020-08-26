@@ -673,8 +673,11 @@ class Project extends Model
             if (array_key_exists('is_open', $filters)) {
                 $tasksQuery = $tasksQuery->where('is_open', '=', $filters['is_open']);
             }
-            if ($status = $filters['status']) {
-                $tasksQuery = $tasksQuery->whereIn('task_status', explode('|', $status));
+            if (array_key_exists('status', $filters)) {
+                $tasksQuery = $tasksQuery->whereIn('task_status', explode('|', $filters['status']));
+            }
+            if (array_key_exists('intervent_types', $filters)) {
+                $tasksQuery = $tasksQuery->whereIn('intervent_type_id', explode('|', $filters['intervent_types']));
             }
         }
         return $tasksQuery;
