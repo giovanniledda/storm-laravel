@@ -665,7 +665,7 @@ class Project extends Model
     public function tasksNotDraftWithVisibility()
     {
         $tasksQuery = $this->tasksWithVisibilityExcludedStatus(TASKS_STATUS_DRAFT);
-        if (request() && request()->has('filter')) {
+        if (request() && request()->has('filter')) { // todo_ viola l'mvc, ma tanto viene chiamata solo dalle API questa funzione
             $filters = request('filter');
             if (array_key_exists('task_type', $filters)) {
                 $tasksQuery = $tasksQuery->where('task_type', $filters['task_type']);
