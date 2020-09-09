@@ -95,7 +95,6 @@ class Adapter extends AbstractAdapter {
 
             $remarkStatuses = explode('|', $filters->get('remark_status'));
             $matchThese = [
-                ['task_status', 'IN', $remarkStatuses],
                 ['task_type', '=', TASK_TYPE_REMARK],
                 ['is_open', '=', 1]
             ];
@@ -107,14 +106,12 @@ class Adapter extends AbstractAdapter {
 
             if (in_array('closed', $remarkStatuses)) {
                 unset($remarkStatuses['closed']);
-                $query->where('task_type', '=', TASK_TYPE_REMARK)
-                    ->where('is_open', '=', 1)
+                $query->where($matchThese)
                     ->whereIn('task_status', $remarkStatuses)
                     ->orWhere($orThose);
 
             } else {
-                $query->where('task_type', '=', TASK_TYPE_REMARK)
-                    ->where('is_open', '=', 1)
+                $query->where($matchThese)
                     ->whereIn('task_status', $remarkStatuses);
             }
         }
