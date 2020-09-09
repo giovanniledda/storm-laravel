@@ -113,7 +113,9 @@ class Adapter extends AbstractAdapter {
                 });
 
             } else {
-                $query->where($matchThese);
+                $query->where('task_type', '=', TASK_TYPE_REMARK)
+                    ->where('is_open', '=', 1)
+                    ->whereIn('task_status', $remarkStatuses);
             }
         }
 
