@@ -90,28 +90,29 @@ class Adapter extends AbstractAdapter {
         $skipFilters = [];
 
         // Tipo filters['remark_status'] = 'open|no_actions|local_repaint|total_repaint|closed';
+        // se però abbiamo "closed" lo dobbiamo trattare come se si richiedessero tutti i remark chiusi a prescindere dalllo status
         if ($filters->get('remark_status')) {
             $skipFilters = ['status', 'task_type', 'is_open'];
 
             $remarkStatuses = explode('|', $filters->get('remark_status'));
-            $matchThese = [
+            $openRemarks = [
                 ['task_type', '=', TASK_TYPE_REMARK],
                 ['is_open', '=', 1]
             ];
 
-            $orThose = [
+            $closedRemarks = [
                 ['task_type', '=', TASK_TYPE_REMARK],
                 ['is_open', '=', 0]
             ];
 
             if (in_array('closed', $remarkStatuses)) {
                 unset($remarkStatuses['closed']);
-                $query->where($matchThese)
+                $query->where($openRemarks)
                     ->whereIn('task_status', $remarkStatuses)
-                    ->orWhere($orThose);
+                    ->orWhere($closedRemarks);
 
             } else {
-                $query->where($matchThese)
+                $query->where($openRemarks)
                     ->whereIn('task_status', $remarkStatuses);
             }
         }
