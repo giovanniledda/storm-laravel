@@ -4,6 +4,8 @@ namespace App\JsonApi\V1\Tasks;
 
 use App\ApplicationLog;
 use App\Task;
+use App\TaskStatus;
+use Carbon\Carbon;
 use CloudCreativity\LaravelJsonApi\Eloquent\AbstractAdapter;
 use CloudCreativity\LaravelJsonApi\Pagination\StandardStrategy;
 use Illuminate\Support\Arr;
@@ -17,7 +19,11 @@ use function array_keys;
 use function array_map;
 use function array_merge;
 use function explode;
+use function in_array;
+
 use const ROLE_BOAT_MANAGER;
+use const TASK_TYPE_PRIMARY;
+use const TASK_TYPE_REMARK;
 
 class Adapter extends AbstractAdapter {
 
@@ -81,8 +87,49 @@ class Adapter extends AbstractAdapter {
      */
     protected function filter($query, Collection $filters) {
 
-        if ($status = $filters->get('status')) {
+        $skipFilters = [];
+
+        // Tipo filters['remark_status'] = 'open|no_actions|local_repaint|total_repaint|closed';
+        if ($filters->get('remark_status')) {
+            $skipFilters = ['status', 'task_type', 'is_open'];
+
+            $remarkStatuses = explode('|', $filters->get('remark_status'));
+            $matchThese = [
+                ['task_status', 'IN', $remarkStatuses],
+                ['task_type', '=', TASK_TYPE_REMARK],
+                ['is_open', '=', 1]
+            ];
+
+            $orThose = [
+                ['task_type', '=', TASK_TYPE_REMARK],
+                ['is_open', '=', 0]
+            ];
+
+            if (in_array('closed', $remarkStatuses)) {
+                unset($remarkStatuses['closed']);
+                $query->where(function($query) use ($remarkStatuses, $matchThese, $orThose) {
+                    $query->where($matchThese)
+                        ->orWhere($orThose);
+                });
+
+            } else {
+                $query->where(function($query) use ($remarkStatuses, $matchThese) {
+                    $query->where($matchThese);
+                });
+            }
+        }
+
+        if ((!in_array('status', $skipFilters)) && ($status = $filters->get('status'))) {
             $query->whereIn('task_status', explode('|', $status));
+        }
+
+        if ((!in_array('task_type', $skipFilters)) && ($task_type = $filters->get('task_type'))) {
+            $query->where('task_type', '=', $task_type);
+        }
+
+        if ((!in_array('is_open', $skipFilters)) && $filters->has('is_open')) {
+            $isOpen = $filters->get('is_open');
+            $query->where('is_open', '=', $isOpen);
         }
 
         if ($project_id = $filters->get('project_id')) {
@@ -141,10 +188,6 @@ class Adapter extends AbstractAdapter {
             $query->whereIn('internal_progressive_number', $numbers);
         }
 
-        if ($task_type = $filters->get('task_type')) {
-            $query->where('task_type', '=', $task_type);
-        }
-
         if ($zone_id = $filters->get('zone_id')) {
             $query->where('zone_id', '=', $zone_id);
         }
@@ -162,12 +205,6 @@ class Adapter extends AbstractAdapter {
             $application_log = ApplicationLog::findOrFail($exclude_opener_application_log_id);
             $other_tasks_ids = $application_log->getExternallyOpenedRemarksRelatedToMyZones(true);
             $query->whereIn('tasks.id', $other_tasks_ids);
-        }
-
-        // ricerca is_open
-        if ($filters->has('is_open')) {
-            $isOpen = $filters->get('is_open');
-            $query->where('is_open', '=', $isOpen);
         }
 
         $user = \Auth::user();
