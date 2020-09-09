@@ -113,9 +113,7 @@ class Adapter extends AbstractAdapter {
                 });
 
             } else {
-                $query->where(function($query) use ($remarkStatuses, $matchThese) {
-                    $query->where($matchThese);
-                });
+                $query->where($matchThese);
             }
         }
 
