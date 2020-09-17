@@ -870,13 +870,14 @@ EOF;
      * @param DetectionsInfoBlock $detection_info_block
      * @param $block_title
      * @param $detection_param_keys
+     * @param bool $skipIfNoData
      * @return string
      */
-    public function renderRegularDetectionInfoBlock(DetectionsInfoBlock &$detection_info_block, $block_title, $detection_param_keys)
+    public function renderRegularDetectionInfoBlock(DetectionsInfoBlock &$detection_info_block, $block_title, $detection_param_keys, $skipIfNoData = false)
     {
         // come nascondere blocchi -> se le detections sono vuote, non stampo nulla
         $detections_array = $detection_info_block->detections;
-        if (!empty($detections_array)) {
+        if ($skipIfNoData && !empty($detections_array)) {
             foreach ($detections_array as $key => $detection) {
                 foreach ($detection_param_keys as $detection_param_key) {
                     if (empty($detection[$detection_param_key])) {
@@ -1240,17 +1241,42 @@ EOF;
     /**
      * @return string
      */
+    public function renderRemarkSection()
+    {
+        $html = '';
+        /** @var ApplicationLog $application_log */
+        $application_log = $this->getCurrentAppLog();
+        $remarks = $application_log->opened_tasks;
+        if (count($remarks)) {
+            $html = <<<EOF
+                <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Remarks</p>
+    EOF;
+            foreach ($remarks as $task) {
+                $this->_currentTask = $task;
+                $this->updateCurrentTaskPhotosArray();
+                $html .= $task->getCorrosionMapHtml($this->_currentTaskPhotos);
+            }
+        }
+        return $html;
+    }
+
+    /**
+     * @return string
+     */
     public function getCurrentAppLogStructureHtml()
     {
         $preparation_section_html = $this->renderPreparationSection();
         $application_section_html = $this->renderApplicationSection();
         $inspection_section_html = $this->renderInspectionSection();
+        $remark_section_html = $this->renderRemarkSection();
         $html = <<<EOF
             $preparation_section_html
 
             $application_section_html
 
             $inspection_section_html
+
+            $remark_section_html
 EOF;
         return $html;
     }
