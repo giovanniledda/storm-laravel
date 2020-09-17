@@ -728,15 +728,26 @@ EOF;
         $author_comment = '';
         $description = Utils::sanitizeTextsForPlaceholders($this->description);
         if ($description) {
-            $author_comment = "<br><br>The author added this comment:</span><br><span style='color: #666666; width: 100%; padding: 8px'>$description</span>";
+//            $author_comment = "<br><br>The author added this comment:</span><br><span style='color: #666666; width: 100%; padding: 8px'>$description</span>";
+            $taskDescription = "<br><br><span style='color: #666666; width: 100%; padding: 8px'>$description</span>";
         }
 
+        /*
+         * vecchio schema di presentazione informazioni, modificato dopo call del 17/09
         if ($task_type == TASK_TYPE_PRIMARY) {
             $task_type_status_str = "<span>This task <span style='color:'>(#$point_id)</span> is currently <b>$status</b>, and was last updated on $updated_at.</span><span>";
             $task_definition = "<span style='line-height: 20px'>This task was created on $created_at. The task is located on<b> $task_location </b> and was classified as <b> $task_intervent_type.</b>";
         } else {
             $task_type_status_str = "<span>This remark <span style='opacity: 0.6'>(#$point_id)</span> is classified as <b>$status</b>, and was last updated on $updated_at.</span><span>";
             $task_definition = "<span style='line-height: 20px'>This remark was created on $created_at. The remark is located on<b> $task_location.</b>";
+        }
+        */
+
+        // location (sundec), type (damage), status (in progress)
+        if ($task_type == TASK_TYPE_PRIMARY) {
+            $pointInfo = "<span><ul><li>Location: <b>$task_location</b></li> <li>Type: <b>$task_intervent_type</b></li> <li>Status: <b>$status</b></li></ul><span>";
+        } else {
+            $pointInfo = "<span><ul><li>Location: <b>$task_location</b></li> <li>Type: <b>Remark</b></li> <li>Status: <b>$status</b></li></ul><span>";
         }
 
         $html = <<<EOF
@@ -747,19 +758,25 @@ EOF;
                         <td width="300" style="border: 1px solid #ececec">$corrosionMapHTML</td>
                         <td width="30"></td>
                         <td width="350" valign="top">
-                            <span style="font-weight: bold; color: #1f519b;">Latest update</span><br>
-                            $task_type_status_str
+                            <span style="font-weight: bold; color: #1f519b;">Point info</span>
+                            <br>
+                            <br>
+                            $pointInfo
                         </td>
                     </tr>
 
                     <tr height="30"></tr>
 
                     <tr>
-                        <td width="300" style="border: 1px solid #ececec">$img_dettaglioHTML</td>
-                        <td width="30"></td>
-                        <td width="350" valign="top">
-                            <span style="border: 1px solid #ececec; color: #1f519b; font-weight: bold">Overview</span><br>
-                            $task_definition $author_comment
+                        <td width="680" style="border: 1px solid #ececec">$img_dettaglioHTML</td>
+                    </tr>
+
+                    <tr height="30"></tr>
+
+                    <tr>
+                        <td width="680" valign="top">
+                            <span style="border: 1px solid #ececec; color: #1f519b; font-weight: bold">Description</span><br>
+                            $taskDescription
                         </td>
                     </tr>
                 </tbody>
