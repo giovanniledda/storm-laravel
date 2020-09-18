@@ -1281,4 +1281,30 @@ EOF;
         return $html;
     }
 
+
+    /**
+     * *****************************
+     * *****************************  TEMPLATE: corrosion_map_overview_only
+     * *****************************
+     *
+     */
+
+
+    /**
+     * Associate the "corrosion_map_overview_only" Template and its Placeholders to an object
+     */
+    public function setupCorrosionMapOverviewOnlyTemplate()
+    {
+        $category = $this->persistAndAssignTemplateCategory('corrosion_map_overview_only');
+        $placeholders = [
+            '$date$' => 'currentDate()',
+            '$boat_type$' => 'getBoatType()',
+            '$boat_name$' => 'getBoatName()',
+            '$break_n1$' => null,  // riconosciuto dal sistema
+            '$html_sectionImgsOverview$' => 'getCorrosionMapHtmlSectionImgsOverview()',
+        ];
+        $this->insertPlaceholders('corrosion_map_overview_only', $placeholders, true);
+    }
+
+
 }

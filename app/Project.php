@@ -5,6 +5,7 @@ namespace App;
 use App\Observers\ProjectObserver;
 use App\Traits\EnvParamsInputOutputTranslations;
 use App\Traits\TemplateReplacementRules;
+use Illuminate\Support\Facades\Log;
 use Net7\EnvironmentalMeasurement\Traits\HasMeasurements;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -271,6 +272,7 @@ class Project extends Model
 
         // now we have the full path made of directory Ids, we can upload our file there.
         $path .= '/' . $filename;
+        Log::info('CIAO, sono il GOOGLE PATTO: '.$path);
         Storage::cloud()->put($path, $content);
 
         //TODO: check errors?

@@ -248,6 +248,7 @@ defined('USER_PHOTO_API_NO_DOC_MSG') or define('USER_PHOTO_API_NO_DOC_MSG', 'Som
  * REPORTS
  */
 defined('REPORT_CORROSION_MAP_SUBTYPE') or define('REPORT_CORROSION_MAP_SUBTYPE', 'corrosion_map');
+defined('REPORT_CORROSION_MAP_OVERVIEW_SUBTYPE') or define('REPORT_CORROSION_MAP_OVERVIEW_SUBTYPE', 'corrosion_map_overview_only');
 defined('REPORT_ENVIRONMENTAL_SUBTYPE') or define('REPORT_ENVIRONMENTAL_SUBTYPE', 'environmental_report');
 defined('REPORT_APPLOG_SUBTYPE') or define('REPORT_APPLOG_SUBTYPE', 'application_log_report');
 
