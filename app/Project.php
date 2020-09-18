@@ -272,7 +272,6 @@ class Project extends Model
 
         // now we have the full path made of directory Ids, we can upload our file there.
         $path .= '/' . $filename;
-        Log::info('CIAO, sono il GOOGLE PATTO: '.$path);
         Storage::cloud()->put($path, $content);
 
         //TODO: check errors?
