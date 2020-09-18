@@ -30,6 +30,7 @@ use App\Jobs\ProjectGoogleSync;
 use Net7\DocsGenerator\DocsGenerator;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use const PROJECT_STATUSES;
+use const REPORT_CORROSION_MAP_SUBTYPE;
 use const REPORT_ENVIRONMENTAL_SUBTYPE;
 use const MEASUREMENT_FILE_TYPE;
 use const PROJECT_STATUS_CLOSED;
@@ -280,7 +281,8 @@ class ProjectController extends Controller
 
             // $template = 'corrosion_map';
             $template = $request->template;
-            $document = $this->reportGenerationProcess($template, $project, REPORT_CORROSION_MAP_SUBTYPE);
+            $subtype = $request->has('subtype') ? $request->subtype : REPORT_CORROSION_MAP_SUBTYPE;
+            $document = $this->reportGenerationProcess($template, $project, $subtype);
 
             if ($document) {
                 // TODO: refact not DRY
