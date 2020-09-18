@@ -759,8 +759,6 @@ EOF;
                         <td width="30"></td>
                         <td width="350" valign="top">
                             <span style="font-weight: bold; color: #1f519b;">Point info</span>
-                            <br>
-                            <br>
                             $pointInfo
                         </td>
                     </tr>
