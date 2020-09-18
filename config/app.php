@@ -228,7 +228,6 @@ return [
         Barryvdh\Cors\ServiceProvider::class,
 
         // google
-
         App\Providers\GoogleDriveServiceProvider::class,
     ],
 
