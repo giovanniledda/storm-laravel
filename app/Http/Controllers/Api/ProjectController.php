@@ -769,6 +769,7 @@ class ProjectController extends Controller
             /** @var ApplicationLog $application_log */
             $application_log = ApplicationLog::findOrFail($application_log_id);
             $record->setCurrentAppLog($application_log);
+            $record->setTasksToIncludeInReport($application_log->opened_tasks()->pluck('id')->toArray());
 
             $template = $request->input('template');
             $document = $this->reportGenerationProcess($template, $record, REPORT_APPLOG_SUBTYPE);

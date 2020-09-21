@@ -192,6 +192,14 @@ class ApplicationLog extends Model
         return $this->belongsToMany('App\Task', 'App\ApplicationLogTask')->wherePivot('action', '=', 'open');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function tasks()
+    {
+        return $this->opened_tasks();
+    }
+
     public function openTask(Task $task)
     {
         $this->opened_tasks()->attach($task->id, ['action' => 'open']);

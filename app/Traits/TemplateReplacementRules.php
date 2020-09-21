@@ -303,8 +303,11 @@ EOF;
     public function getCorrosionMapHtmlSectionImgsOverview()
     {
         /** @var Task $task */
-        $html = '<div>';
         $task_ids = $this->_taskToIncludeInReport ?? $this->tasks()->pluck('id')->toArray();
+        if (empty($task_ids)) {
+            return '';
+        }
+        $html = '<div>';
         $sections = Section::getSectionsStartingFromTasks($task_ids);
 
         // 1 - prendo l'img di section con la W maggiore
@@ -697,9 +700,10 @@ EOF;
             '$typeOfAppReport$' => 'getCurrentAppLogType()',
             '$zones$' => 'getCurrentAppLogZones()',
             '$break_n1$' => null,  // riconosciuto dal sistema
+            '$html_sectionImgsOverview$' => 'getCorrosionMapHtmlSectionImgsOverview()',
             '$html_fullApplicationLog$' => 'getCurrentAppLogStructureHtml()',
         ];
-        $this->insertPlaceholders('environmental_report', $placeholders, true);
+        $this->insertPlaceholders('application_log_report', $placeholders, true);
     }
 
     /**
