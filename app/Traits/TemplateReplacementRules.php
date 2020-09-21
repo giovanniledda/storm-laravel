@@ -305,7 +305,7 @@ EOF;
         /** @var Task $task */
         $task_ids = $this->_taskToIncludeInReport ?? $this->tasks()->pluck('id')->toArray();
         if (empty($task_ids)) {
-            return '';
+            return '<div></div>';
         }
         $html = '<div>';
         $sections = Section::getSectionsStartingFromTasks($task_ids);
