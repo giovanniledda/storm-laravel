@@ -766,8 +766,7 @@ EOF;
                     <tr height="30"></tr>
 
                     <tr>
-<!--                        <td width="680" style="border: 1px solid #ececec">$img_dettaglioHTML</td>-->
-                        <td>$img_dettaglioHTML</td>
+                        <td colspan="4">$img_dettaglioHTML</td>
                     </tr>
 
                     <tr height="30"></tr>
