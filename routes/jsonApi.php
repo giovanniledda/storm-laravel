@@ -97,6 +97,11 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
             $project->post('{record}/generate-report', 'generateReport')->name('generate-report');
         });
 
+        $api->resource('projects')->only('generate-report-queued')->controller('ProjectController') //uses the App\Http\Controllers\Api\ProjectController
+        ->routes(function ($project) {
+            $project->post('{record}/generate-report-queued', 'generateReportQueued')->name('generate-report-queued');
+        });
+
         $api->resource('projects')->only('upload-env-measurement-log')->controller('ProjectController') //uses the App\Http\Controllers\Api\ProjectController
         ->routes(function ($project) {
             $project->post('{record}/upload-env-measurement-log', 'uploadEnvMeasurementLog')->name('upload-env-measurement-log');
