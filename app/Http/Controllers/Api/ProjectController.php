@@ -283,8 +283,6 @@ class ProjectController extends Controller
             $tasksToIncludeInReport = $request->has('tasks') ? explode(',', $request->tasks) : [];
             $project->setTasksToIncludeInReport($tasksToIncludeInReport, $request->input('only_public'));
 
-//            $project->getTasksToIncludeInReport();
-
             $template = $request->template;
             $subtype = $request->has('subtype') ? $request->subtype : REPORT_CORROSION_MAP_SUBTYPE;
             $document = $reportGenerator->reportGenerationProcess($template, $project, $subtype);

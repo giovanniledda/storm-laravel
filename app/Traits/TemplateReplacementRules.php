@@ -295,6 +295,22 @@ EOF;
     }
 
     /**
+     * @return mixed
+     */
+    public function getTaskIdsArray()
+    {
+        return $this->tasks()->pluck('id')->toArray();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTasksToIncludeOrAll()
+    {
+        return !empty($this->_taskToIncludeInReport) ? $this->_taskToIncludeInReport : $this->getTaskIdsArray();
+    }
+
+    /**
      * Stampa nel docx l'htlm relativo alle immagini delle sezioni con tutti i pin sopra
      *
      * @return string
@@ -303,7 +319,7 @@ EOF;
     public function getCorrosionMapHtmlSectionImgsOverview()
     {
         /** @var Task $task */
-        $task_ids = $this->_taskToIncludeInReport ?? $this->tasks()->pluck('id')->toArray();
+        $task_ids = $this->getTasksToIncludeOrAll();
         if (empty($task_ids)) {
             return '<div></div>';
         }
@@ -353,6 +369,8 @@ EOF;
             '$boat_type$' => 'getBoatType()',
             '$boat_name$' => 'getBoatName()',
             '$break_n1$' => null,  // riconosciuto dal sistema
+            '$break_n2$' => null,  // riconosciuto dal sistema
+            '$break_n3$' => null,  // riconosciuto dal sistema
             '$html_bloccoTask$' => 'getCorrosionMapHtmlBlock()',
             '$html_sectionImgsOverview$' => 'getCorrosionMapHtmlSectionImgsOverview()',
             '$html_tableOfContents$' => 'getCorrosionMapHtmlTableOfContents()'
