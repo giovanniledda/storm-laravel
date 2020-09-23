@@ -18,7 +18,7 @@ class ReportGenerator
      * @return Response|mixed
      * @throws \Exception
      */
-    public function reportGenerationProcess(string $template, Project $project, $subtype = null)
+    public static function reportGenerationProcess(string $template, Project $project, $subtype = null)
     {
         $dg = new DocsGenerator($template, $project);
 

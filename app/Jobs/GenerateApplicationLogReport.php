@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\ApplicationLog;
 use App\Project;
 use App\ReportItem;
 use App\Services\ReportGenerator;
@@ -11,15 +12,15 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\SerializesModels;
 
+use const REPORT_APPLOG_SUBTYPE;
 use const REPORT_ITEM_TYPE_CORR_MAP_DOC;
 
-class GenerateCorrosionMapReport implements ShouldQueue
+class GenerateApplicationLogReport implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $projectId;
-    protected $tasksToIncludeInReport;
-    protected $selectOnlyPublicTasks;
+    protected $applicationLogId;
     protected $template;
     protected $subtype;
     protected $userId;
@@ -48,16 +49,14 @@ class GenerateCorrosionMapReport implements ShouldQueue
 
     public function __construct(
         $projectId,
-        $tasksToIncludeInReport,
-        $selectOnlyPublicTasks,
+        $applicationLogId,
         $template,
         $subtype,
         $userId,
         $reportItemId
     ) {
         $this->projectId = $projectId;
-        $this->tasksToIncludeInReport = $tasksToIncludeInReport;
-        $this->selectOnlyPublicTasks = $selectOnlyPublicTasks;
+        $this->applicationLogId = $applicationLogId;
         $this->template = $template;
         $this->subtype = $subtype;
         $this->userId = $userId;
@@ -66,10 +65,15 @@ class GenerateCorrosionMapReport implements ShouldQueue
 
     public function handle(): bool
     {
+
+        /** @var Project $project */
         $project = Project::findOrFail($this->projectId);
-        $project->setTasksToIncludeInReport($this->tasksToIncludeInReport, $this->selectOnlyPublicTasks);
-//        $reportGenerator = new ReportGenerator();
-//        $document = $reportGenerator->reportGenerationProcess($this->template, $project, $this->subtype);
+
+        /** @var ApplicationLog $applicationLog */
+        $applicationLog = ApplicationLog::findOrFail($this->applicationLogId);
+        $project->setCurrentAppLog($applicationLog);
+        $project->setTasksToIncludeInReport($applicationLog->opened_tasks()->pluck('id')->toArray());
+
         $document = ReportGenerator::reportGenerationProcess($this->template, $project, $this->subtype);
 
         if ($document) {
@@ -77,16 +81,19 @@ class GenerateCorrosionMapReport implements ShouldQueue
             $reportItem = ReportItem::findOrFail($this->reportItemId);
             $reportItem->updateForDocument(
                 $document,
-                ReportItem::getTypeByTemplate($this->template),
+                REPORT_APPLOG_SUBTYPE,
                 $this->userId,
                 $project->id,
                 [
                     'id' => $document->id,
+                    'app_log_type' => $project->getCurrentAppLogType(),
+                    'app_log_name' => $applicationLog->name,
+                    'zones' => $project->getCurrentAppLogZones()
                 ]
             );
         }
-
         $project->closeAllTasksTemporaryFiles();
+
         return true;
     }
 }

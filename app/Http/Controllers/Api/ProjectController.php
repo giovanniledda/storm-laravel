@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\ApplicationLog;
 use App\ApplicationLogSection;
 use App\Http\Requests\RequestApplicationLog;
+use App\Jobs\GenerateApplicationLogReport;
 use App\Jobs\GenerateCorrosionMapReport;
 use App\Jobs\ProjectLoadEnvironmentalData;
 use App\ReportItem;
@@ -32,6 +33,7 @@ use App\Jobs\ProjectGoogleSync;
 use Net7\DocsGenerator\DocsGenerator;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use const PROJECT_STATUSES;
+use const REPORT_APPLOG_SUBTYPE;
 use const REPORT_CORROSION_MAP_SUBTYPE;
 use const REPORT_ENVIRONMENTAL_SUBTYPE;
 use const MEASUREMENT_FILE_TYPE;
@@ -354,15 +356,7 @@ class ProjectController extends Controller
             $reportItem->id
         );
 
-        $ret = [
-//            'data' => [
-//                'type' => 'documents',
-//                'id' => $document->id,
-//                'attributes' => $document
-//            ]
-        ];
-
-        return Utils::renderStandardJsonapiResponse($ret, 200);
+        return Utils::renderStandardJsonapiResponse([], 200);
     }
 
     /**
@@ -475,7 +469,7 @@ class ProjectController extends Controller
 
     /**
      *
-     * #PR19  api/v1/projects/{record_id}/generate-environmental-report
+     * #PR19-a  api/v1/projects/{record_id}/generate-environmental-report
      * API used to generate a report from the project
      *
      * @param Request $request
@@ -485,6 +479,83 @@ class ProjectController extends Controller
      * @return mixed
      */
     public function generateEnvironmentalReport(Request $request, $record, ReportGenerator $reportGenerator)
+    {
+        if (!$request->has('data_source')) {
+            return Utils::jsonAbortWithInternalError(
+                422,
+                402,
+                "Error generating report",
+                "Mandatory parameter 'data_source' is missing!"
+            );
+        }
+
+        /** @var Project $project */
+        $project = Project::findOrFail($record->id);
+
+        $template = $request->input('template');
+        $data_source = $request->input('data_source');
+        $date_start = $request->input('date_start');
+        $date_end = $request->input('date_end');
+        $min_thresholds = [
+            'Celsius' => $request->has('temp_min_threshold') ? $request->input('temp_min_threshold') : null,
+            'Dew Point' => $request->has('dp_min_threshold') ? $request->input('dp_min_threshold') : null,
+            'Humidity' => $request->has('hum_min_threshold') ? $request->input('hum_min_threshold') : null,
+        ];
+
+        $project->setCurrentDateStart($date_start);
+        $project->setCurrentDateEnd($date_end);
+        $project->setCurrentMinThresholds($min_thresholds);
+        $project->setCurrentDataSource($data_source);
+
+        try {
+            $document = $reportGenerator->reportGenerationProcess($template, $project, REPORT_ENVIRONMENTAL_SUBTYPE);
+
+            if ($document) {
+                // TODO: refact not DRY
+                if (\Auth::check()) {
+                    $auth_user = \Auth::user();
+                    $user_id = $auth_user->id;
+                } else {
+                    $user_id = $document->author_id ?? 1; // admin
+                }
+
+                ReportItem::touchForNewDocument(
+                    $document,
+                    REPORT_ITEM_TYPE_ENVIRONM_DOC,
+                    $user_id,
+                    $project->id,
+                    [
+                        'id' => $document->id,
+                        'area' => $data_source,
+                        'measurement_interval_dates' => [
+                            'min' => $date_start,
+                            'max' => $date_end
+                        ]
+                    ]
+                );
+            }
+        } catch (\Exception $e) {
+            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error generating report", $e->getMessage());
+        }
+
+        // $filepath = $dg->getRealFinalFilePath();
+        // $filename = $dg->getFinalFileName()
+        return $this->renderJsonOrDownloadFile($request, $document);
+    }
+
+
+    /**
+     *
+     * #PR19-b  api/v1/projects/{record_id}/generate-environmental-report-queued
+     * API used to generate a report from the project
+     *
+     * @param Request $request
+     * @param $record
+     * @param ReportGenerator $reportGenerator
+     *
+     * @return mixed
+     */
+    public function generateEnvironmentalReportQueued(Request $request, $record, ReportGenerator $reportGenerator)
     {
         if (!$request->has('data_source')) {
             return Utils::jsonAbortWithInternalError(
@@ -839,7 +910,7 @@ class ProjectController extends Controller
 
     /**
      *
-     * #PR32  api/v1/projects/{record_id}/generate-application-log-report
+     * #PR32-a  api/v1/projects/{record_id}/generate-application-log-report
      * API used to generate a report from the project
      *
      * @param Request $request
@@ -898,5 +969,54 @@ class ProjectController extends Controller
         // $filepath = $dg->getRealFinalFilePath();
         // $filename = $dg->getFinalFileName()
         return $this->renderJsonOrDownloadFile($request, $document);
+    }
+
+
+    /**
+     *
+     * #PR32-b  api/v1/projects/{record_id}/generate-application-log-report-queued
+     * API used to generate a report from the project
+     *
+     * @param Request $request
+     * @param $record
+     *
+     * @return mixed
+     */
+    public function generateApplicationLogReportQueued(Request $request, $record)
+    {
+        if (!$request->has('application_log_id')) {
+            return Utils::jsonAbortWithInternalError(
+                422,
+                402,
+                "Error generating report",
+                "Mandatory parameter 'application_log_id' is missing!"
+            );
+        }
+
+        $projectId = $record->id;
+        $userId = null;
+        if (\Auth::check()) {
+            $auth_user = \Auth::user();
+            $userId = $auth_user->id;
+        }
+
+        $document = null;
+        $reportItem = ReportItem::touchForNewDocument(
+            $document,
+            REPORT_APPLOG_SUBTYPE,
+            $userId,
+            $projectId
+        );
+
+        GenerateApplicationLogReport::dispatch(
+            $projectId,
+            $request->get('application_log_id'),
+            $request->input('template'),
+            REPORT_APPLOG_SUBTYPE,
+            $userId,
+            $reportItem->id
+        );
+
+        return Utils::renderStandardJsonapiResponse([], 200);
     }
 }
