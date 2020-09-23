@@ -9,7 +9,10 @@ use function get_class;
 use function method_exists;
 use function property_exists;
 use const MEASUREMENT_FILE_TYPE;
+use const REPORT_CORROSION_MAP_SUBTYPE;
 use const REPORT_ITEM_TYPE_APPLICATION_LOG;
+use const REPORT_ITEM_TYPE_CORR_MAP_DOC;
+use const REPORT_ITEM_TYPE_CORR_MAP_OV_DOC;
 use const REPORT_ITEM_TYPE_ENVIRONM_LOG;
 
 class ReportItem extends Model
@@ -84,6 +87,15 @@ class ReportItem extends Model
     }
 
     /**
+     * @param $template
+     * @return string
+     */
+    public static function getTypeByTemplate($template)
+    {
+       return ($template == REPORT_CORROSION_MAP_SUBTYPE) ? REPORT_ITEM_TYPE_CORR_MAP_DOC : REPORT_ITEM_TYPE_CORR_MAP_OV_DOC;
+    }
+
+    /**
      * @param ApplicationLog $application_log
      * @param int|null $author_id
      */
@@ -128,15 +140,40 @@ class ReportItem extends Model
     }
 
     /**
+     * @param Document|null $document
+     * @param string $type
+     * @param int|null $author_id
+     * @param int|null $project_id
+     * @param array|null $data_attributes
+     * @return mixed
+     */
+    public static function touchForNewDocument(Document &$document = null, string $type = '', int $author_id = null, int $project_id = null, array $data_attributes = null)
+    {
+        return self::create([
+            'report_type' => $type,
+            'report_id' => $document ? $document->id : null,
+            'report_name' => $document ? $document->title : 'Report document in progress...',
+            'report_create_date' => $document ? $document->created_at : null,
+            'report_update_date' => $document ? $document->updated_at : null,
+            'author_id' => $author_id ? $author_id : $document->author_id,
+            'data_attributes' => $data_attributes,
+            'report_links' => $document ? self::getGdriveInfoForDocument($document) : null,
+            'project_id' => $project_id,
+            'reportable_type' => Document::class,
+            'reportable_id' => $document ? $document->id : null,
+        ]);
+    }
+
+    /**
      * @param Document $document
      * @param string $type
      * @param int|null $author_id
      * @param int|null $project_id
      * @param array|null $data_attributes
      */
-    public static function touchForNewDocument(Document &$document, string $type, int $author_id = null, int $project_id = null, array $data_attributes = null)
+    public function updateForDocument(Document &$document, string $type, int $author_id = null, int $project_id = null, array $data_attributes = null)
     {
-        self::create([
+        $this->update([
             'report_type' => $type,
             'report_id' => $document->id,
             'report_name' => $document->title,
@@ -152,15 +189,15 @@ class ReportItem extends Model
     }
 
     /**
-     * @param Document $document
+     * @param Document|null $document
      * @return array
      */
-    protected static function getGdriveInfoForDocument(Document $document)
+    protected static function getGdriveInfoForDocument(Document $document = null)
     {
-        return [
+        return $document ? [
             'gdrive_url' => $document->getGDriveLink(),
             'gdrive_filename' => $document->getGDriveFilename()
-        ];
+        ] : [];
     }
 
     /**
@@ -170,7 +207,7 @@ class ReportItem extends Model
     public function getReportLinks()
     {
         $object = $this->reportable;
-        if (get_class($object) == ApplicationLog::class) {
+        if ($object && get_class($object) == ApplicationLog::class) {
             // get-app-log-structure
             return [
 //                'edit_url' => '/api/v1/projects/'.$this->project_id.'/app-log-structure/'.$object->id

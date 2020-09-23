@@ -330,12 +330,19 @@ class ProjectController extends Controller
         $selectOnlyPublicTasks = $request->input('only_public');
         $template = $request->template;
         $subtype = $request->has('subtype') ? $request->subtype : REPORT_CORROSION_MAP_SUBTYPE;
+        $userId = null;
         if (\Auth::check()) {
             $auth_user = \Auth::user();
             $userId = $auth_user->id;
-        } else {
-            $userId = $document->author_id ?? 1; // admin
         }
+
+        $document = null;
+        $reportItem = ReportItem::touchForNewDocument(
+            $document,
+            ReportItem::getTypeByTemplate($template),
+            $userId,
+            $projectId
+        );
 
         GenerateCorrosionMapReport::dispatch(
             $projectId,
@@ -343,7 +350,8 @@ class ProjectController extends Controller
             $selectOnlyPublicTasks,
             $template,
             $subtype,
-            $userId
+            $userId,
+            $reportItem->id
         );
 
         $ret = [

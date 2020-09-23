@@ -23,6 +23,7 @@ class GenerateCorrosionMapReport implements ShouldQueue
     protected $template;
     protected $subtype;
     protected $userId;
+    protected $reportItemId;
 
     /**
      * The number of times the job may be attempted.
@@ -51,7 +52,8 @@ class GenerateCorrosionMapReport implements ShouldQueue
         $selectOnlyPublicTasks,
         $template,
         $subtype,
-        $userId
+        $userId,
+        $reportItemId
     ) {
         $this->projectId = $projectId;
         $this->tasksToIncludeInReport = $tasksToIncludeInReport;
@@ -59,6 +61,7 @@ class GenerateCorrosionMapReport implements ShouldQueue
         $this->template = $template;
         $this->subtype = $subtype;
         $this->userId = $userId;
+        $this->reportItemId = $reportItemId;
     }
 
     public function handle(): bool
@@ -69,9 +72,11 @@ class GenerateCorrosionMapReport implements ShouldQueue
         $document = $reportGenerator->reportGenerationProcess($this->template, $project, $this->subtype);
 
         if ($document) {
-            ReportItem::touchForNewDocument(
+            /** @var ReportItem $reportItem */
+            $reportItem = ReportItem::findOrFail($this->reportItemId);
+            $reportItem->updateForDocument(
                 $document,
-                REPORT_ITEM_TYPE_CORR_MAP_DOC,
+                ReportItem::getTypeByTemplate($this->template),
                 $this->userId,
                 $project->id,
                 [
