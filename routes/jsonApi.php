@@ -188,6 +188,7 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
 
         $api->resource('comments');
 
+        $api->resource('documents')->only('delete');
 
         $api->resource('documents')->only('show')->controller('DocumentsController') // uses the App\Http\Controllers\Api\DocumentController
         ->routes(function ($docs) {
