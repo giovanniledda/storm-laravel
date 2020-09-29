@@ -787,7 +787,9 @@ EOF;
                         </td>
                     </tr>
 
-                    <tr height="30">
+                    <tr height="30"></tr>
+
+                    <tr>
                         <td width="680" valign="top">
                             <span style="border: 1px solid #ececec; color: #1f519b; font-weight: bold">Overview</span><br>
                         </td>
