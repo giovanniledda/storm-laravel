@@ -21,7 +21,7 @@ class Schema extends SchemaProvider
      */
     public function getId($resource)
     {
-        return (string) $resource->getRouteKey();
+        return (string)$resource->getRouteKey();
     }
 
 
@@ -31,13 +31,14 @@ class Schema extends SchemaProvider
      *
      * @return string
      */
-    public function getImageName($resource) {
-         $image = $resource->generic_images->last();
-         if ($image) {
-              $media = $image->getRelatedMedia();
-              return ($media['file_name']);
-         }
-         return null;
+    public function getImageName($resource)
+    {
+        $image = $resource->generic_images->last();
+        if ($image) {
+            $media = $image->getRelatedMedia();
+            return ($media['file_name']);
+        }
+        return null;
     }
 
 
@@ -47,7 +48,8 @@ class Schema extends SchemaProvider
      *
      * @return string
      */
-    public function getImageId($resource) {
+    public function getImageId($resource)
+    {
         $image = $resource->generic_images->last();
         if ($image) {
             $media = $image->getRelatedMedia();
@@ -56,18 +58,18 @@ class Schema extends SchemaProvider
         return null;
     }
 
-     public function getPrimaryMeta($resource)
+    public function getPrimaryMeta($resource)
     {
         $generic_documents = $resource->generic_documents;
 
         $gdu = [];
-        foreach ($generic_documents as $i){
-            $tmp =[
+        foreach ($generic_documents as $i) {
+            $tmp = [
                 'uri' => $i->getShowApiUrl(),
                 'title' => $i->title,
                 'mime_type' => $i->media->first()->mime_type
             ];
-            $gdu []= $tmp;
+            $gdu [] = $tmp;
         }
         $image = $resource->generic_images->last();
 
@@ -92,10 +94,7 @@ class Schema extends SchemaProvider
     public function getAttributes($resource)
     {
         $boat = Boat::find($resource->boat_id);
-
-        $dimension_fraction =   ($boat->length > 0) && ($boat->draft > 0)  ? $boat->length/$boat->draft : null;
-
-
+        $dimension_fraction = ($boat->length > 0) && ($boat->draft > 0) ? $boat->length / $boat->draft : null;
         return [
             'name' => $resource->name,
             'section_type' => $resource->section_type,
