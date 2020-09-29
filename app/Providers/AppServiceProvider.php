@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Services\AppLogEntitiesPersister;
+use App\Services\ReportGenerator;
 use CloudCreativity\LaravelJsonApi\LaravelJsonApi;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;

@@ -97,6 +97,11 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
             $project->post('{record}/generate-report', 'generateReport')->name('generate-report');
         });
 
+        $api->resource('projects')->only('generate-report-queued')->controller('ProjectController') //uses the App\Http\Controllers\Api\ProjectController
+        ->routes(function ($project) {
+            $project->post('{record}/generate-report-queued', 'generateReportQueued')->name('generate-report-queued');
+        });
+
         $api->resource('projects')->only('upload-env-measurement-log')->controller('ProjectController') //uses the App\Http\Controllers\Api\ProjectController
         ->routes(function ($project) {
             $project->post('{record}/upload-env-measurement-log', 'uploadEnvMeasurementLog')->name('upload-env-measurement-log');
@@ -154,10 +159,16 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
             $project->get('{record}/tasks-statistics', 'getTasksStatistics')->name('tasks-statistics');
         });
 
-        // PR32
+        // PR32-a
         $api->resource('projects')->only('generate-application-log-report')->controller('ProjectController') //uses the App\Http\Controllers\Api\ProjectController
         ->routes(function ($project) {
             $project->post('{record}/generate-application-log-report', 'generateApplicationLogReport')->name('generate-application-log-report');
+        });
+
+        // PR32-b
+        $api->resource('projects')->only('generate-application-log-report-queued')->controller('ProjectController') //uses the App\Http\Controllers\Api\ProjectController
+        ->routes(function ($project) {
+            $project->post('{record}/generate-application-log-report-queued', 'generateApplicationLogReportQueued')->name('generate-application-log-report-queued');
         });
 
         $api->resource('projects')->relationships(function ($relations) {
@@ -177,6 +188,7 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
 
         $api->resource('comments');
 
+        $api->resource('documents')->only('delete');
 
         $api->resource('documents')->only('show')->controller('DocumentsController') // uses the App\Http\Controllers\Api\DocumentController
         ->routes(function ($docs) {

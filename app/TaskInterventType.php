@@ -5,6 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Faker\Generator as Faker;
 
+use function ucfirst;
+
 class TaskInterventType extends Model
 {
     protected $fillable = [
@@ -33,5 +35,13 @@ class TaskInterventType extends Model
         );
         $tit->save();
         return $tit;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNameLabelAttribute()
+    {
+        return ucfirst($this->name);
     }
 }

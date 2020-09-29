@@ -172,6 +172,8 @@ class Section extends Model
     {
         return Section::query()
             ->select('*')
+            ->orderBy('position')
+            ->orderBy('section_type')
             ->distinct()
             ->whereIn(
                 'id',

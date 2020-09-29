@@ -745,9 +745,23 @@ EOF;
 
         // location (sundec), type (damage), status (in progress)
         if ($task_type == TASK_TYPE_PRIMARY) {
-            $pointInfo = "<span><ul><li>Location: <b>$task_location</b></li> <li>Type: <b>$task_intervent_type</b></li> <li>Status: <b>$status</b></li></ul><span>";
+            $pointInfo = <<<EOF
+                    <span>
+                        <p>Location: <b>$task_location</b></p> <br />
+                        <p>Type: <b>$task_intervent_type</b></p> <br />
+                        <p>Status: <b>$status</b></p>
+                    <span>;
+EOF;
         } else {
-            $pointInfo = "<span><ul><li>Location: <b>$task_location</b></li> <li>Type: <b>Remark</b></li> <li>Status: <b>$status</b></li></ul><span>";
+            $pointInfo = <<<EOF
+                    <span>
+                      <ul>
+                        <li>Location: <b>$task_location</b></li>
+                        <li>Type: <b>Remark</b></li>
+                        <li>Status: <b>$status</b></li>
+                      </ul>
+                    <span>;
+EOF;
         }
 
         $html = <<<EOF
@@ -755,15 +769,29 @@ EOF;
             <table cellpadding="0" cellspacing="0">
                 <tbody>
                     <tr>
-                        <td width="300" style="border: 1px solid #ececec">$corrosionMapHTML</td>
+                        <td width="350" valign="top">
+                            <span style="font-weight: bold; color: #1f519b;">Position</span>
+                        </td>
                         <td width="30"></td>
                         <td width="350" valign="top">
-                            <span style="font-weight: bold; color: #1f519b;">Point info</span>
+                                <span style="font-weight: bold; color: #1f519b;">Point info</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="300" style="border: 1px solid #ececec">
+                            $corrosionMapHTML
+                        </td>
+                        <td width="30"></td>
+                        <td width="350" valign="top">
                             $pointInfo
                         </td>
                     </tr>
 
-                    <tr height="30"></tr>
+                    <tr height="30">
+                        <td width="680" valign="top">
+                            <span style="border: 1px solid #ececec; color: #1f519b; font-weight: bold">Overview</span><br>
+                        </td>
+                    </tr>
 
                     <tr>
                         <td colspan="4">$img_dettaglioHTML</td>
@@ -779,10 +807,8 @@ EOF;
                     </tr>
                 </tbody>
             </table>
-
-
-
 EOF;
+
         // creo la tabella a seconda delle immagini che ho
         if (!empty($photos_array) && count($photos_array) > 1) {
             $tds_1 = <<<EOF

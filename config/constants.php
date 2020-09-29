@@ -270,4 +270,5 @@ defined('REPORT_ITEM_TYPE_APPLICATION_LOG') or define('REPORT_ITEM_TYPE_APPLICAT
 defined('REPORT_ITEM_TYPE_ENVIRONM_LOG') or define('REPORT_ITEM_TYPE_ENVIRONM_LOG', 'environmental_log_data');
 defined('REPORT_ITEM_TYPE_ENVIRONM_DOC') or define('REPORT_ITEM_TYPE_ENVIRONM_DOC', 'environmental_log_document');
 defined('REPORT_ITEM_TYPE_CORR_MAP_DOC') or define('REPORT_ITEM_TYPE_CORR_MAP_DOC', 'corrosion_map_document');
+defined('REPORT_ITEM_TYPE_CORR_MAP_OV_DOC') or define('REPORT_ITEM_TYPE_CORR_MAP_OV_DOC', 'corrosion_map_overview_document');
 

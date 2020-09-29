@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Api;
 use App\ApplicationLog;
 use App\ApplicationLogSection;
 use App\Http\Requests\RequestApplicationLog;
+use App\Jobs\GenerateApplicationLogReport;
+use App\Jobs\GenerateCorrosionMapReport;
 use App\Jobs\ProjectLoadEnvironmentalData;
 use App\ReportItem;
 use App\Services\AppLogEntitiesPersister;
+use App\Services\ReportGenerator;
 use App\Services\ZonesPersister;
 use App\Task;
 use App\Zone;
@@ -30,6 +33,7 @@ use App\Jobs\ProjectGoogleSync;
 use Net7\DocsGenerator\DocsGenerator;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use const PROJECT_STATUSES;
+use const REPORT_APPLOG_SUBTYPE;
 use const REPORT_CORROSION_MAP_SUBTYPE;
 use const REPORT_ENVIRONMENTAL_SUBTYPE;
 use const MEASUREMENT_FILE_TYPE;
@@ -59,10 +63,15 @@ class ProjectController extends Controller
      */
     public function statuses(Request $request)
     {
-        return Utils::renderStandardJsonapiResponse(['data' => [
-            "type" => "projects",
-            "attributes" => ["statuses" => PROJECT_STATUSES]
-        ]], 200);
+        return Utils::renderStandardJsonapiResponse(
+            [
+                'data' => [
+                    "type" => "projects",
+                    "attributes" => ["statuses" => PROJECT_STATUSES]
+                ]
+            ],
+            200
+        );
     }
 
     /**
@@ -77,9 +86,13 @@ class ProjectController extends Controller
         $histories = Project::find($project['id'])->history()->get()->toArray();
         $data = [];
         foreach ($histories as $history) {
-            array_push($data, [
-                "type" => "projects",
-                "attributes" => ['event' => $history['event_body']]]);
+            array_push(
+                $data,
+                [
+                    "type" => "projects",
+                    "attributes" => ['event' => $history['event_body']]
+                ]
+            );
         }
         return Utils::renderStandardJsonapiResponse(['data' => $data], 200);
         //  exit();
@@ -99,29 +112,32 @@ class ProjectController extends Controller
          */
 
         if ($closeResponse['success']) {
-            $ret = ['data' => [
-                'type' => 'projects',
-                'id' => $data['id'],
-                'attributes' => [
-                    'status' => PROJECT_STATUS_CLOSED,
-                    'force' => $force,
-                    'tasks' => $closeResponse['tasks']
+            $ret = [
+                'data' => [
+                    'type' => 'projects',
+                    'id' => $data['id'],
+                    'attributes' => [
+                        'status' => PROJECT_STATUS_CLOSED,
+                        'force' => $force,
+                        'tasks' => $closeResponse['tasks']
+                    ]
                 ]
-            ]];
+            ];
             return Response($ret, 202);
         } else {
-            $ret = ['data' => [
-                'type' => 'projects',
-                'id' => $data['id'],
-                'attributes' => [
-                    'status' => $data['project_status'],
-                    'force' => $force,
-                    'tasks' => $closeResponse['tasks']
+            $ret = [
+                'data' => [
+                    'type' => 'projects',
+                    'id' => $data['id'],
+                    'attributes' => [
+                        'status' => $data['project_status'],
+                        'force' => $force,
+                        'tasks' => $closeResponse['tasks']
+                    ]
                 ]
-            ]];
+            ];
             return Response($ret, 200);
         }
-
     }
 
     /**
@@ -137,7 +153,12 @@ class ProjectController extends Controller
         /** @var Project $project */
         $project = Project::findOrFail($record->id);
         if ($project->project_status == PROJECT_STATUS_CLOSED) {
-            return Utils::jsonAbortWithInternalError(422, 130, PROJECT_TYPE_API_VALIDATION_TITLE, PROJECT_TYPE_API_PROJECT_CLOSED_MSG);
+            return Utils::jsonAbortWithInternalError(
+                422,
+                130,
+                PROJECT_TYPE_API_VALIDATION_TITLE,
+                PROJECT_TYPE_API_PROJECT_CLOSED_MSG
+            );
         }
         if ($type = $request->input('data.attributes.type')) {
             if ($type != $project->project_type) {
@@ -157,18 +178,29 @@ class ProjectController extends Controller
                 // archivio il vecchio
                 $project->close(1);
 
-                $ret = ['data' => [
-                    'type' => 'projects',
-                    'id' => $newProject->id,
-                    'attributes' => $newProject
-                ]];
+                $ret = [
+                    'data' => [
+                        'type' => 'projects',
+                        'id' => $newProject->id,
+                        'attributes' => $newProject
+                    ]
+                ];
                 return Utils::renderStandardJsonapiResponse($ret, 200);
-
             } else {
-                return Utils::jsonAbortWithInternalError(422, 130, PROJECT_TYPE_API_VALIDATION_TITLE, PROJECT_TYPE_API_NO_ACTION_MSG);
+                return Utils::jsonAbortWithInternalError(
+                    422,
+                    130,
+                    PROJECT_TYPE_API_VALIDATION_TITLE,
+                    PROJECT_TYPE_API_NO_ACTION_MSG
+                );
             }
         }
-        return Utils::jsonAbortWithInternalError(422, 130, PROJECT_TYPE_API_VALIDATION_TITLE, PROJECT_TYPE_API_VALIDATION_MSG);
+        return Utils::jsonAbortWithInternalError(
+            422,
+            130,
+            PROJECT_TYPE_API_VALIDATION_TITLE,
+            PROJECT_TYPE_API_VALIDATION_MSG
+        );
     }
 
     /**
@@ -182,57 +214,25 @@ class ProjectController extends Controller
 
     public function cloudSync(Request $request, $record)
     {
-
         $project = Project::findOrFail($record->id);
 
         // $project->checkForUpdatedFilesOnGoogleDrive();
         ProjectGoogleSync::dispatch($project);
 
-        $resp = Response(['data' => [
-            'type' => 'projects',
-            'id' => $project->id,
-            "attributes" => ["syncronized" => "queued"]
-        ]], 200);
+        $resp = Response(
+            [
+                'data' => [
+                    'type' => 'projects',
+                    'id' => $project->id,
+                    "attributes" => ["syncronized" => "queued"]
+                ]
+            ],
+            200
+        );
 
         $resp->header('Content-Type', 'application/vnd.api+json');
 
         return $resp;
-    }
-
-    /**
-     * @param string $template
-     * @param Project $project
-     * @param null $subtype
-     * @return Response|mixed
-     * @throws \Exception
-     */
-    private function reportGenerationProcess(string $template, Project $project, $subtype = null)
-    {
-        $dg = new DocsGenerator($template, $project);
-
-        if (isset($dg) && !$dg->checkTemplateCategory()) {
-            $msg = __("Template :name not valid (there's no such a Model on DB)!", ['name' => $template]);
-            throw new \Exception($msg);
-        }
-
-        // ...e che ci sia il template associato nel filesystem.
-        try {
-            $dg->checkIfTemplateFileExistsWithTemplateObjectCheck(true);
-        } catch (FileNotFoundException $e) {
-            $msg = __("Template :name not found (you're searching on ':e_msg')!", ['name' => $template, 'e_msg' => $e->getMessage()]);
-            throw new \Exception($msg);
-        }
-
-        try {
-            $document = $dg->startProcess();
-        } catch (\Exception $e) {
-            $msg = __("Error generating report (':e_msg')!", ['e_msg' => $e->getMessage()]);
-            throw new \Exception($msg);
-        }
-
-        $document->subtype = $subtype;
-
-        return $document;
     }
 
     /**
@@ -249,14 +249,19 @@ class ProjectController extends Controller
                 $filepath = $document->getPathBySize('');
                 $filename = $document->file_name;
 
-                $headers = ['Cache-Control' => 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0', "Content-Type" => "application/octet-stream"];
+                $headers = [
+                    'Cache-Control' => 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0',
+                    "Content-Type" => "application/octet-stream"
+                ];
                 return response()->download($filepath, $filename, $headers);
             } else {
-                $ret = ['data' => [
-                    'type' => 'documents',
-                    'id' => $document->id,
-                    'attributes' => $document
-                ]];
+                $ret = [
+                    'data' => [
+                        'type' => 'documents',
+                        'id' => $document->id,
+                        'attributes' => $document
+                    ]
+                ];
 
                 return Utils::renderStandardJsonapiResponse($ret, 200);
             }
@@ -264,25 +269,25 @@ class ProjectController extends Controller
     }
 
     /**
-     * #PR16: API used to generate a report from the project
+     * #PR16-a: API used to generate a report from the project
      *
      * @param Request $request
      * @param $record
+     * @param ReportGenerator $reportGenerator
      *
      * @return mixed
      */
-    public function generateReport(Request $request, $record)
+    public function generateReport(Request $request, $record, ReportGenerator $reportGenerator)
     {
-
         try {
             /** @var Project $project */
             $project = Project::findOrFail($record->id);
-            $project->setTasksToIncludeInReport($request->has('tasks') ? explode(',', $request->tasks) : [], $request->input('only_public'));
+            $tasksToIncludeInReport = $request->has('tasks') ? explode(',', $request->tasks) : [];
+            $project->setTasksToIncludeInReport($tasksToIncludeInReport, $request->input('only_public'));
 
-            // $template = 'corrosion_map';
             $template = $request->template;
             $subtype = $request->has('subtype') ? $request->subtype : REPORT_CORROSION_MAP_SUBTYPE;
-            $document = $this->reportGenerationProcess($template, $project, $subtype);
+            $document = $reportGenerator->reportGenerationProcess($template, $project, $subtype);
 
             if ($document) {
                 // TODO: refact not DRY
@@ -310,6 +315,48 @@ class ProjectController extends Controller
         $project->closeAllTasksTemporaryFiles();
 
         return $this->renderJsonOrDownloadFile($request, $document);
+    }
+
+    /**
+     * #PR16-b: API used to generate a report from the project (queued)
+     *
+     * @param Request $request
+     * @param $record
+     *
+     * @return mixed
+     */
+    public function generateReportQueued(Request $request, $record)
+    {
+        $projectId = $record->id;
+        $tasksToIncludeInReport = $request->has('tasks') ? explode(',', $request->tasks) : [];
+        $selectOnlyPublicTasks = $request->input('only_public');
+        $template = $request->template;
+        $subtype = $request->has('subtype') ? $request->subtype : REPORT_CORROSION_MAP_SUBTYPE;
+        $userId = null;
+        if (\Auth::check()) {
+            $auth_user = \Auth::user();
+            $userId = $auth_user->id;
+        }
+
+        $document = null;
+        $reportItem = ReportItem::touchForNewDocument(
+            $document,
+            ReportItem::getTypeByTemplate($template),
+            $userId,
+            $projectId
+        );
+
+        GenerateCorrosionMapReport::dispatch(
+            $projectId,
+            $tasksToIncludeInReport,
+            $selectOnlyPublicTasks,
+            $template,
+            $subtype,
+            $userId,
+            $reportItem->id
+        );
+
+        return Utils::renderStandardJsonapiResponse([], 200);
     }
 
     /**
@@ -367,17 +414,24 @@ class ProjectController extends Controller
             $filename = $request->data['attributes']['filename'];
             $file = Document::createUploadedFileFromBase64($base64File, $filename);
             if ($file) {
-                $data_source = isset($request->data['attributes']['data_source']) ? utf8_encode(trim($request->data['attributes']['data_source'])) : null;
+                $data_source = isset($request->data['attributes']['data_source']) ? utf8_encode(
+                    trim($request->data['attributes']['data_source'])
+                ) : null;
 
                 $arr = [
                     'data_source' => $data_source
                 ];
 
                 $additional_data = json_encode($arr);
-                $document = $project->addDocumentFileDirectly($file, $filename, MEASUREMENT_FILE_TYPE, REPORT_ENVIRONMENTAL_SUBTYPE, $additional_data);
+                $document = $project->addDocumentFileDirectly(
+                    $file,
+                    $filename,
+                    MEASUREMENT_FILE_TYPE,
+                    REPORT_ENVIRONMENTAL_SUBTYPE,
+                    $additional_data
+                );
                 // $document = $project->getDocument(MEASUREMENT_FILE_TYPE);
                 if ($document) {
-
                     ProjectLoadEnvironmentalData::dispatch(
                         $project,
                         $document,
@@ -391,11 +445,16 @@ class ProjectController extends Controller
                         $user_id = $document->author_id ?? 1; // admin
                     }
 
-                    ReportItem::touchForNewEnvironmentalLog($document, $user_id, $project->id, [
-                        'id' => $document->id,
-                        'area' => $data_source,
-                        'measurement_interval_dates' => null,
-                    ]);
+                    ReportItem::touchForNewEnvironmentalLog(
+                        $document,
+                        $user_id,
+                        $project->id,
+                        [
+                            'id' => $document->id,
+                            'area' => $data_source,
+                            'measurement_interval_dates' => null,
+                        ]
+                    );
 
                     return $this->renderJsonOrDownloadFile($request, $document);
                 }
@@ -410,18 +469,24 @@ class ProjectController extends Controller
 
     /**
      *
-     * #PR19  api/v1/projects/{record_id}/generate-environmental-report
+     * #PR19-a  api/v1/projects/{record_id}/generate-environmental-report
      * API used to generate a report from the project
      *
      * @param Request $request
      * @param $record
+     * @param ReportGenerator $reportGenerator
      *
      * @return mixed
      */
-    public function generateEnvironmentalReport(Request $request, $record)
+    public function generateEnvironmentalReport(Request $request, $record, ReportGenerator $reportGenerator)
     {
         if (!$request->has('data_source')) {
-            return Utils::jsonAbortWithInternalError(422, 402, "Error generating report", "Mandatory parameter 'data_source' is missing!");
+            return Utils::jsonAbortWithInternalError(
+                422,
+                402,
+                "Error generating report",
+                "Mandatory parameter 'data_source' is missing!"
+            );
         }
 
         /** @var Project $project */
@@ -443,7 +508,84 @@ class ProjectController extends Controller
         $project->setCurrentDataSource($data_source);
 
         try {
-            $document = $this->reportGenerationProcess($template, $project, REPORT_ENVIRONMENTAL_SUBTYPE);
+            $document = $reportGenerator->reportGenerationProcess($template, $project, REPORT_ENVIRONMENTAL_SUBTYPE);
+
+            if ($document) {
+                // TODO: refact not DRY
+                if (\Auth::check()) {
+                    $auth_user = \Auth::user();
+                    $user_id = $auth_user->id;
+                } else {
+                    $user_id = $document->author_id ?? 1; // admin
+                }
+
+                ReportItem::touchForNewDocument(
+                    $document,
+                    REPORT_ITEM_TYPE_ENVIRONM_DOC,
+                    $user_id,
+                    $project->id,
+                    [
+                        'id' => $document->id,
+                        'area' => $data_source,
+                        'measurement_interval_dates' => [
+                            'min' => $date_start,
+                            'max' => $date_end
+                        ]
+                    ]
+                );
+            }
+        } catch (\Exception $e) {
+            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error generating report", $e->getMessage());
+        }
+
+        // $filepath = $dg->getRealFinalFilePath();
+        // $filename = $dg->getFinalFileName()
+        return $this->renderJsonOrDownloadFile($request, $document);
+    }
+
+
+    /**
+     *
+     * #PR19-b  api/v1/projects/{record_id}/generate-environmental-report-queued
+     * API used to generate a report from the project
+     *
+     * @param Request $request
+     * @param $record
+     * @param ReportGenerator $reportGenerator
+     *
+     * @return mixed
+     */
+    public function generateEnvironmentalReportQueued(Request $request, $record, ReportGenerator $reportGenerator)
+    {
+        if (!$request->has('data_source')) {
+            return Utils::jsonAbortWithInternalError(
+                422,
+                402,
+                "Error generating report",
+                "Mandatory parameter 'data_source' is missing!"
+            );
+        }
+
+        /** @var Project $project */
+        $project = Project::findOrFail($record->id);
+
+        $template = $request->input('template');
+        $data_source = $request->input('data_source');
+        $date_start = $request->input('date_start');
+        $date_end = $request->input('date_end');
+        $min_thresholds = [
+            'Celsius' => $request->has('temp_min_threshold') ? $request->input('temp_min_threshold') : null,
+            'Dew Point' => $request->has('dp_min_threshold') ? $request->input('dp_min_threshold') : null,
+            'Humidity' => $request->has('hum_min_threshold') ? $request->input('hum_min_threshold') : null,
+        ];
+
+        $project->setCurrentDateStart($date_start);
+        $project->setCurrentDateEnd($date_end);
+        $project->setCurrentMinThresholds($min_thresholds);
+        $project->setCurrentDataSource($data_source);
+
+        try {
+            $document = $reportGenerator->reportGenerationProcess($template, $project, REPORT_ENVIRONMENTAL_SUBTYPE);
 
             if ($document) {
                 // TODO: refact not DRY
@@ -488,7 +630,6 @@ class ProjectController extends Controller
      */
     public function envMeasurementsLogs(Request $request, $project)
     {
-
         /** @var Project $project */
         $reports_data = $project->getMeasurementLogsData($request->input('page'));
         $data = $reports_data['data'];
@@ -541,7 +682,6 @@ class ProjectController extends Controller
             }
             $ret = ['data' => $data_array];
             return Utils::renderStandardJsonapiResponse($ret, 200);
-
         } catch (\Exception $e) {
             return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error generating report", $e->getMessage());
         }
@@ -568,7 +708,12 @@ class ProjectController extends Controller
                 // ..prima rimuovo le misurazioni associate ad un documento...
                 $project->deleteMeasurementsByDocument($document_id);
             } else {
-                return Utils::jsonAbortWithInternalError(422, 100, 'Error removing data', 'No measurements for this document!');
+                return Utils::jsonAbortWithInternalError(
+                    422,
+                    100,
+                    'Error removing data',
+                    'No measurements for this document!'
+                );
             }
 
             // ...poi rimuovo il documento stesso
@@ -578,7 +723,6 @@ class ProjectController extends Controller
             // $document->destroyMe();
 
             return Utils::renderStandardJsonapiResponse([], 204);
-
         } catch (\Exception $e) {
             return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error generating report", $e->getMessage());
         }
@@ -600,7 +744,6 @@ class ProjectController extends Controller
             $this->_zones_persister->persistZones($record, $zones);
 
             return Utils::renderStandardJsonapiResponse([], 204);
-
         } catch (\Exception $e) {
             return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error creating zones", $e->getMessage());
         }
@@ -626,7 +769,6 @@ class ProjectController extends Controller
             }
 
             return Utils::renderStandardJsonapiResponse([], 204);
-
         } catch (\Exception $e) {
             return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error deleting zones", $e->getMessage());
         }
@@ -643,13 +785,16 @@ class ProjectController extends Controller
     public function getApplicationLogStructure(Request $request, $record, $app_log_id)
     {
         try {
-
             /** @var ApplicationLog $app_log */
             $app_log = $record->application_logs()->findOrFail($app_log_id);
             return Utils::renderStandardJsonapiResponse(['data' => $app_log->toJsonApi()], 200);
-
         } catch (\Exception $e) {
-            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error retrieving application log", $e->getMessage());
+            return Utils::jsonAbortWithInternalError(
+                422,
+                $e->getCode(),
+                "Error retrieving application log",
+                $e->getMessage()
+            );
         }
     }
 
@@ -664,7 +809,6 @@ class ProjectController extends Controller
     public function getApplicationLogNextProgressiveNumber(Request $request, $record)
     {
         try {
-
             /** @var Project $record */
             $boat = $record->boat;
             abort_if(is_null($boat), 500, 'This project is not related to any boat');
@@ -677,9 +821,13 @@ class ProjectController extends Controller
                 ]
             ];
             return Utils::renderStandardJsonapiResponse(['data' => $data], 200);
-
         } catch (\Exception $e) {
-            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error retrieving application log next ID", $e->getMessage());
+            return Utils::jsonAbortWithInternalError(
+                422,
+                $e->getCode(),
+                "Error retrieving application log next ID",
+                $e->getMessage()
+            );
         }
     }
 
@@ -695,19 +843,24 @@ class ProjectController extends Controller
     public function postApplicationLogStructure(RequestApplicationLog $request, $record)
     {
         try {
-
             /** @var ApplicationLog $app_log */
             $app_log = $record->application_logs()->find($request->input('data.id'));
             if (!$app_log) {
-                $app_log = ApplicationLog::create([
-                    'name' => $request->input('data.attributes.name'),
-                    'application_type' => $request->input('data.attributes.application_type'),
-                    'project_id' => $record->id
-                ]);
-            } else if ($app_log->name != $request->input('data.attributes.name')) {
-                $app_log->update([
-                    'name' => $request->input('data.attributes.name'),
-                ]);
+                $app_log = ApplicationLog::create(
+                    [
+                        'name' => $request->input('data.attributes.name'),
+                        'application_type' => $request->input('data.attributes.application_type'),
+                        'project_id' => $record->id
+                    ]
+                );
+            } else {
+                if ($app_log->name != $request->input('data.attributes.name')) {
+                    $app_log->update(
+                        [
+                            'name' => $request->input('data.attributes.name'),
+                        ]
+                    );
+                }
             }
             // dobbiamo distinguere tra l'app_log appena creato/recuperato ed il malloppone json passato in POST
             $sections = $request->input('data.attributes.application_log_sections');
@@ -717,9 +870,13 @@ class ProjectController extends Controller
             }
 
             return Utils::renderStandardJsonapiResponse(['data' => $app_log->toJsonApi()], 200);
-
         } catch (\Exception $e) {
-            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error uploading application log", $e->getMessage());
+            return Utils::jsonAbortWithInternalError(
+                422,
+                $e->getCode(),
+                "Error uploading application log",
+                $e->getMessage()
+            );
         }
     }
 
@@ -735,33 +892,42 @@ class ProjectController extends Controller
     public function getTasksStatistics(Request $request, $record)
     {
         try {
-
             $ret = [
                 'tasks_num' => $record->getAllTaskNumGroupedByStatus(),
                 'authors' => Task::getAllAuthors($record->id)
             ];
             return Utils::renderStandardJsonapiResponse(['data' => $ret], 200);
-
         } catch (\Exception $e) {
-            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error uploading application log", $e->getMessage());
+            return Utils::jsonAbortWithInternalError(
+                422,
+                $e->getCode(),
+                "Error uploading application log",
+                $e->getMessage()
+            );
         }
     }
 
 
     /**
      *
-     * #PR32  api/v1/projects/{record_id}/generate-application-log-report
+     * #PR32-a  api/v1/projects/{record_id}/generate-application-log-report
      * API used to generate a report from the project
      *
      * @param Request $request
      * @param $record
+     * @param ReportGenerator $reportGenerator
      *
      * @return mixed
      */
-    public function generateApplicationLogReport(Request $request, $record)
+    public function generateApplicationLogReport(Request $request, $record, ReportGenerator $reportGenerator)
     {
         if (!$request->has('application_log_id')) {
-            return Utils::jsonAbortWithInternalError(422, 402, "Error generating report", "Mandatory parameter 'application_log_id' is missing!");
+            return Utils::jsonAbortWithInternalError(
+                422,
+                402,
+                "Error generating report",
+                "Mandatory parameter 'application_log_id' is missing!"
+            );
         }
 
         try {
@@ -772,7 +938,7 @@ class ProjectController extends Controller
             $record->setTasksToIncludeInReport($application_log->opened_tasks()->pluck('id')->toArray());
 
             $template = $request->input('template');
-            $document = $this->reportGenerationProcess($template, $record, REPORT_APPLOG_SUBTYPE);
+            $document = $reportGenerator->reportGenerationProcess($template, $record, REPORT_APPLOG_SUBTYPE);
 
             if ($document) {
                 // TODO: refact not DRY
@@ -803,5 +969,54 @@ class ProjectController extends Controller
         // $filepath = $dg->getRealFinalFilePath();
         // $filename = $dg->getFinalFileName()
         return $this->renderJsonOrDownloadFile($request, $document);
+    }
+
+
+    /**
+     *
+     * #PR32-b  api/v1/projects/{record_id}/generate-application-log-report-queued
+     * API used to generate a report from the project
+     *
+     * @param Request $request
+     * @param $record
+     *
+     * @return mixed
+     */
+    public function generateApplicationLogReportQueued(Request $request, $record)
+    {
+        if (!$request->has('application_log_id')) {
+            return Utils::jsonAbortWithInternalError(
+                422,
+                402,
+                "Error generating report",
+                "Mandatory parameter 'application_log_id' is missing!"
+            );
+        }
+
+        $projectId = $record->id;
+        $userId = null;
+        if (\Auth::check()) {
+            $auth_user = \Auth::user();
+            $userId = $auth_user->id;
+        }
+
+        $document = null;
+        $reportItem = ReportItem::touchForNewDocument(
+            $document,
+            REPORT_APPLOG_SUBTYPE,
+            $userId,
+            $projectId
+        );
+
+        GenerateApplicationLogReport::dispatch(
+            $projectId,
+            $request->get('application_log_id'),
+            $request->input('template'),
+            REPORT_APPLOG_SUBTYPE,
+            $userId,
+            $reportItem->id
+        );
+
+        return Utils::renderStandardJsonapiResponse([], 200);
     }
 }

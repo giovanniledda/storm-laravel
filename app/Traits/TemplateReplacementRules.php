@@ -270,28 +270,51 @@ trait TemplateReplacementRules
     {
         $html = '<p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Table of Contents</p>';
         $html .= '<table cellpadding="0" cellspacing="0"><tbody>';
+        $html .= <<<EOF
+                    <tr style="height: 32px">
+                        <td width="496" style="border-bottom: 1px solid #ececec;"><b>General view</b></td>
+                        <td width="200" style="border-bottom: 1px solid #ececec; text-align: right;">Pag. 3</td>
+                    </tr>
+EOF;
         $tasks = $this->getTasksToIncludeInReport();
         $toc_pages = ceil(count($tasks)/26);
         $task_ids = $this->_taskToIncludeInReport ?? $this->tasks()->pluck('id')->toArray();
         $sections = Section::getSectionsStartingFromTasks($task_ids);
         $section_overview_pages = ceil(count($sections)/4);
-        $index = 1 + $toc_pages + $section_overview_pages;
+        $index = 2 + $toc_pages + $section_overview_pages;
         /** @var Task $task */
         foreach ($tasks as $task) {
             $this->_currentTask = $task;
+            $interventTypeName = $task->intervent_type ? $task->intervent_type->name_label : 'Point';
             $this->updateCurrentTaskPhotosArray();
             $index = count($this->_currentTaskPhotos) > 4 ? ($index + 2) : ($index + 1);
             $point_id = $task->internal_progressive_number;
             $task_location = $task->section ? Utils::sanitizeTextsForPlaceholders($task->section->name) : '?';
             $html .= <<<EOF
                     <tr style="height: 32px">
-                        <td width="496" style="border-bottom: 1px solid #ececec;"><b>Point #$point_id</b> ($task_location)</td>
+                        <td width="496" style="border-bottom: 1px solid #ececec;"><b>$interventTypeName #$point_id</b> ($task_location)</td>
                         <td width="200" style="border-bottom: 1px solid #ececec; text-align: right;">Pag. $index</td>
                     </tr>
 EOF;
         }
         $html .= "</tbody></table>";
         return $html;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTaskIdsArray()
+    {
+        return $this->tasks()->pluck('id')->toArray();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTasksToIncludeOrAll()
+    {
+        return !empty($this->_taskToIncludeInReport) ? $this->_taskToIncludeInReport : $this->getTaskIdsArray();
     }
 
     /**
@@ -303,11 +326,12 @@ EOF;
     public function getCorrosionMapHtmlSectionImgsOverview()
     {
         /** @var Task $task */
-        $task_ids = $this->_taskToIncludeInReport ?? $this->tasks()->pluck('id')->toArray();
+        $task_ids = $this->getTasksToIncludeOrAll();
         if (empty($task_ids)) {
             return '<div></div>';
         }
-        $html = '<div>';
+        $html = '<div><p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">General view</p>';
+
         $sections = Section::getSectionsStartingFromTasks($task_ids);
 
         // 1 - prendo l'img di section con la W maggiore
@@ -331,11 +355,8 @@ EOF;
             $section->drawOverviewImageWithTaskPoints($task_ids, $d_factor);
             $overview_img = $section->getPointsImageOverview();
             $html .= <<<EOF
-
                     <img width="926" align="center" src="file://$overview_img" alt="Section Overview Image">
-
                     <p style="text-align:center; color: #999999">$section_text</p>
-
 EOF;
         }
         $html .= '</div>';
@@ -353,6 +374,8 @@ EOF;
             '$boat_type$' => 'getBoatType()',
             '$boat_name$' => 'getBoatName()',
             '$break_n1$' => null,  // riconosciuto dal sistema
+            '$break_n2$' => null,  // riconosciuto dal sistema
+            '$break_n3$' => null,  // riconosciuto dal sistema
             '$html_bloccoTask$' => 'getCorrosionMapHtmlBlock()',
             '$html_sectionImgsOverview$' => 'getCorrosionMapHtmlSectionImgsOverview()',
             '$html_tableOfContents$' => 'getCorrosionMapHtmlTableOfContents()'
