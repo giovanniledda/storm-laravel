@@ -755,11 +755,9 @@ EOF;
         } else {
             $pointInfo = <<<EOF
                     <span>
-                      <ul>
-                        <li>Location: <b>$task_location</b></li>
-                        <li>Type: <b>Remark</b></li>
-                        <li>Status: <b>$status</b></li>
-                      </ul>
+                        <p>Location: <b>$task_location</b></p> <br />
+                        <p>Type: <b>Remark</b></p> <br />
+                        <p>Status: <b>$status</b></p>
                     <span>;
 EOF;
         }
