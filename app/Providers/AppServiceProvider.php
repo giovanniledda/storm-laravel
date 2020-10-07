@@ -2,12 +2,11 @@
 
 namespace App\Providers;
 
-use App\Services\AppLogEntitiesPersister;
-use App\Services\ReportGenerator;
+use Illuminate\Queue\Events\JobFailed;
+use Illuminate\Support\Facades\Queue;
 use CloudCreativity\LaravelJsonApi\LaravelJsonApi;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Str;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -102,5 +101,10 @@ class AppServiceProvider extends ServiceProvider
             return "<?php echo {$expression} == 1  ? '$yes' : '$no'; ?>";
         });
 
+        Queue::failing(function (JobFailed $event) {
+            // $event->connectionName
+            // $event->job
+            // $event->exception
+        });
     }
 }

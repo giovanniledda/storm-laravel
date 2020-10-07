@@ -8,6 +8,7 @@ use App\Task;
 use Illuminate\Foundation\Inspiring;
 use Net7\Documents\Document;
 use Illuminate\Support\Str;
+use Symfony\Component\Process\Process;
 
 /*
 |--------------------------------------------------------------------------
@@ -301,3 +302,17 @@ Artisan::command('update-task-map {limit?} {--id=*}', function ($limit = null) {
     }
 
 })->describe('Runs updateMap for each Task');
+
+
+// SOLO PER LA PROD: Riavvia il container Docker che gestisce la coda degli invii a Google e rilancia i job falliti
+Artisan::command('reload-gdrive-jobs', function () {
+
+    Artisan::call('queue retry:all', [
+        '--queue' => QUEUE_GDRIVE_SEND_DOCS
+    ]);
+
+    $gdriveQueueDockerContainer = 'laravel_storm_queue';
+    $process = new Process(["docker restart $gdriveQueueDockerContainer"]);
+    $process->run();
+
+})->describe('Restarts docker container and retry gdrive-jobs queue jobs');

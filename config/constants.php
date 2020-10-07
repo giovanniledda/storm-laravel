@@ -272,3 +272,8 @@ defined('REPORT_ITEM_TYPE_ENVIRONM_DOC') or define('REPORT_ITEM_TYPE_ENVIRONM_DO
 defined('REPORT_ITEM_TYPE_CORR_MAP_DOC') or define('REPORT_ITEM_TYPE_CORR_MAP_DOC', 'corrosion_map_document');
 defined('REPORT_ITEM_TYPE_CORR_MAP_OV_DOC') or define('REPORT_ITEM_TYPE_CORR_MAP_OV_DOC', 'corrosion_map_overview_document');
 
+/**
+ * QUEUES
+ */
+defined('QUEUE_PERFORM_CONVERSIONS') or define('QUEUE_PERFORM_CONVERSIONS', 'conversions-jobs');
+defined('QUEUE_GDRIVE_SEND_DOCS') or define('QUEUE_GDRIVE_SEND_DOCS', 'gdrive-jobs');
