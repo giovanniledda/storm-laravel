@@ -755,11 +755,9 @@ EOF;
         } else {
             $pointInfo = <<<EOF
                     <span>
-                      <ul>
-                        <li>Location: <b>$task_location</b></li>
-                        <li>Type: <b>Remark</b></li>
-                        <li>Status: <b>$status</b></li>
-                      </ul>
+                        <p>Location: <b>$task_location</b></p> <br />
+                        <p>Type: <b>Remark</b></p> <br />
+                        <p>Status: <b>$status</b></p>
                     <span>;
 EOF;
         }
@@ -787,7 +785,9 @@ EOF;
                         </td>
                     </tr>
 
-                    <tr height="30">
+                    <tr height="30"></tr>
+
+                    <tr>
                         <td width="680" valign="top">
                             <span style="border: 1px solid #ececec; color: #1f519b; font-weight: bold">Overview</span><br>
                         </td>

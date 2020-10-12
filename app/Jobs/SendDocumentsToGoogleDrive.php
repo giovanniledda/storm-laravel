@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use Exception;
 use App\Project;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
@@ -48,6 +49,7 @@ class SendDocumentsToGoogleDrive implements ShouldQueue
     {
         $this->project = $project;
         $this->document = $document;
+        $this->queue = QUEUE_GDRIVE_SEND_DOCS;
     }
 
     /**
@@ -58,5 +60,16 @@ class SendDocumentsToGoogleDrive implements ShouldQueue
     public function handle()
     {
         $this->project->sendDocumentToGoogleDrive($this->document);
+    }
+
+    /**
+     * The job failed to process.
+     *
+     * @param  Exception $exception
+     * @return void
+     */
+    public function failed(Exception $exception)
+    {
+        // Artisan::call('comando che rimette in coda questi job con php artisan queue:retry all --queue='gdrive-jobs' e riavvia docker');
     }
 }
