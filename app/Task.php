@@ -750,7 +750,7 @@ EOF;
                         <p>Location: <b>$task_location</b></p> <br />
                         <p>Type: <b>$task_intervent_type</b></p> <br />
                         <p>Status: <b>$status</b></p>
-                    <span>;
+                    <span>
 EOF;
         } else {
             $pointInfo = <<<EOF
@@ -758,7 +758,7 @@ EOF;
                         <p>Location: <b>$task_location</b></p> <br />
                         <p>Type: <b>Remark</b></p> <br />
                         <p>Status: <b>$status</b></p>
-                    <span>;
+                    <span>
 EOF;
         }
 
