@@ -723,7 +723,7 @@ EOF;
             $img_dettaglioHTML = <<<EOF
                 <img src="file://$img_dettaglio" alt="Overview image"
                 style="max-width: 480px;
-                       height: auto;
+                       max-height: 360px;
                        float: left;" >
 EOF;
         }
@@ -810,6 +810,7 @@ EOF;
                         $taskDescription
                     </p>
             </div>
+            <div style="clear: both"></div>
 EOF;
 
         // creo la tabella a seconda delle immagini che ho
