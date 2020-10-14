@@ -721,7 +721,7 @@ EOF;
         if ($first_history && $first_history->getAdditionalPhotoPath()) {
             $img_dettaglio = $first_history->getAdditionalPhotoPath();
             $img_dettaglioHTML = <<<EOF
-                <img width="60%" style="width: 60%;" src="file://$img_dettaglio" alt="Overview image">
+                <img style="width: 440px; height: auto" src="file://$img_dettaglio" alt="Overview image">
 EOF;
         }
 
@@ -772,7 +772,7 @@ EOF;
                         </td>
                         <td width="30"></td>
                         <td width="350" valign="top">
-                                <span style="font-weight: bold; color: #1f519b;">Point info</span>
+                            <span style="font-weight: bold; color: #1f519b;">Point info</span>
                         </td>
                     </tr>
                     <tr>
@@ -791,22 +791,17 @@ EOF;
                         <td colspan="2" valign="top">
                             <span style="border: 1px solid #ececec; color: #1f519b; font-weight: bold">Overview</span><br>
                         </td>
-                        <td colspan="2" valign="top">
+                        <td colspan="2" valign="top" style="margin-left: 80px">
                             <span style="border: 1px solid #ececec; color: #1f519b; font-weight: bold; margin-left: 50px">Description</span><br>
                         </td>
                     </tr>
 
                     <tr>
-                        <td width="60%" colspan="2">$img_dettaglioHTML</td>
-                        <td valign="top">
-                            <span style="padding-left: 10px">
-                                $taskDescription
-                            </span>
+                        <td colspan="2" style="border: 1px solid #ececec;">$img_dettaglioHTML</td>
+                        <td valign="top" style="margin-left: 80px">
+                            $taskDescription
                         </td>
                     </tr>
-
-<!--                    <tr height="30"></tr>-->
-
                 </tbody>
             </table>
 EOF;
