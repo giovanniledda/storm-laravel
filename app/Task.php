@@ -722,7 +722,7 @@ EOF;
             $img_dettaglio = $first_history->getAdditionalPhotoPath();
             $img_dettaglioHTML = <<<EOF
                 <img src="file://$img_dettaglio" alt="Overview image"
-                style="max-width: 480px;
+                style="max-width: 430px;
                        max-height: 360px;
                        float: left;" >
 EOF;
@@ -801,19 +801,23 @@ EOF;
                 </tbody>
             </table>
 
-            <div>
+<!--            <div>-->
+<!--                    <p style="padding: 10px;-->
+<!--                              float: left;-->
+<!--                              width: 80px;-->
+<!--                              height: 360px">-->
+<!--                        this is storm office-->
+<!--                    </p>-->
+<!--            </div>-->
+
+            <table><tbody><tr><td colspan="180">
                     $img_dettaglioHTML
-                    <p style="padding: 10px;
+                    <p style="padding: 50px;
                               float: left;
                               width: 80px;
                               height: 360px">
-                        this is storm office
-                    </p>
-            </div>
-            <p style="clear: both"></p>
-
-            <table><tbody><tr><td></td></tr></tbody></table>
-
+                        $taskDescription
+                    </p></td></tr></tbody></table>
 EOF;
 
         // creo la tabella a seconda delle immagini che ho
