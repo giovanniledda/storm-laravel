@@ -746,7 +746,7 @@ EOF;
                                 <p style="padding: 50px;
                                           float: left;
                                           width: 80px;
-                                          margin-left: 350px;
+                                          margin-left: 450px;
                                           margin-right: 10px;
                                           height: 360px">
                                     $taskDescription
