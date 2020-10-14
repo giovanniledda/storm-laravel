@@ -743,8 +743,10 @@ EOF;
                         <tr>
                             <td colspan="180">
                                 $overviewImgOnPoint
-                                <p style="float: left;
+                                <p style="padding-left: 50px;
+                                          float: left;
                                           width: 80px;
+                                          margin-top: -50px;
                                           margin-left: 450px;
                                           margin-right: 10px;
                                           height: 360px">
