@@ -792,10 +792,10 @@ EOF;
 
                     <tr>
                         <td colspan="2" valign="top">
-                            <span style="border: 1px solid #ececec; color: #1f519b; font-weight: bold">Overview</span><br>
+                            <span style="color: #1f519b; font-weight: bold">Overview</span><br>
                         </td>
-                        <td colspan="2" valign="top" style="margin-left: 80px">
-                            <span style="border: 1px solid #ececec; color: #1f519b; font-weight: bold; margin-left: 150px">Description</span><br>
+                        <td colspan="2" valign="top" style="margin-left: 200px">
+                            <span style="color: #1f519b; font-weight: bold; margin-left: 150px">Description</span><br>
                         </td>
                     </tr>
                 </tbody>
@@ -803,14 +803,13 @@ EOF;
 
             <div>
                     $img_dettaglioHTML
-                    <p style="border: 1px solid #ececec;
-                    		  padding: 10px;
+                    <p style="padding: 10px;
                               float: left;
                               width: 80px">
-                        $taskDescription
+                        this is storm office
                     </p>
             </div>
-            <div style="clear: both"></div>
+            <p style="clear: both"></p>
 EOF;
 
         // creo la tabella a seconda delle immagini che ho
@@ -849,9 +848,10 @@ EOF;
                 $trs = '<tr>' . $tds_1 . $tds_2 . '</tr>';
             }
 
-            $images_table = '<br><br><span style="text-align: left;font-size: 16px;font-weight: bold; font-family: Raleway, sans-serif; color: #1f519b;">Detail photos</span>
-                               <table><tbody>' . $trs . '</tbody></table>';
-
+            $theadContent = '<p style="text-align: left;font-size: 16px;font-weight: bold; font-family: Raleway, sans-serif; color: #1f519b;">Detail photos</p>';
+            $images_table = <<<EOF
+                            <table style="float: right"><thead>$theadContent</thead><tbody>$trs</tbody></table>
+EOF;
             $html .= $images_table;
         } else {
             $html .= '<br><br><span style="text-align: left;font-size: 16px;font-weight: bold; font-family: Raleway, sans-serif; color: #1f519b;">Detail photos</span><br><span style="color: #666666">No photos available.</span>';
