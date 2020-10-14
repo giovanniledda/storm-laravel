@@ -717,7 +717,7 @@ EOF;
         $task_type = $this->task_type;
 
         $first_history = $this->getFirstHistory();
-        $overviewImgOnPoint = '<div style="color: #666666; width: 100%;">Photo not available</div>';
+        $overviewImgOnPoint = '<div style="color: #666666; width: 100%;">Overview photo not available</div>';
         $hasOverviewImgOnPoint = false;
         if ($first_history && $first_history->getAdditionalPhotoPath()) {
             $hasOverviewImgOnPoint = true;
@@ -746,6 +746,8 @@ EOF;
                                 <p style="padding: 50px;
                                           float: left;
                                           width: 80px;
+                                          margin-left: 10px;
+                                          margin-right: 10px;
                                           height: 360px">
                                     $taskDescription
                                 </p>
