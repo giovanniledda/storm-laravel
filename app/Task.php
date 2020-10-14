@@ -717,10 +717,12 @@ EOF;
         $task_type = $this->task_type;
 
         $first_history = $this->getFirstHistory();
-        $img_dettaglioHTML = '<div style="color: #666666; text-align: center; width: 100%;">No overview photo available</div>';
+        $overviewImgOnPoint = '<div style="color: #666666; width: 100%;">Photo not available</div>';
+        $hasOverviewImgOnPoint = false;
         if ($first_history && $first_history->getAdditionalPhotoPath()) {
+            $hasOverviewImgOnPoint = true;
             $img_dettaglio = $first_history->getAdditionalPhotoPath();
-            $img_dettaglioHTML = <<<EOF
+            $overviewImgOnPoint = <<<EOF
                 <img src="file://$img_dettaglio" alt="Overview image"
                 style="max-width: 430px;
                        max-height: 360px;
@@ -728,11 +730,48 @@ EOF;
 EOF;
         }
 
-        $author_comment = '';
+        $taskDescription = '';
         $description = Utils::sanitizeTextsForPlaceholders($this->description);
         if ($description) {
-//            $author_comment = "<br><br>The author added this comment:</span><br><span style='color: #666666; width: 100%; padding: 8px'>$description</span>";
-            $taskDescription = "<br><br><span style='color: #666666; width: 100%; padding: 8px'>$description</span>";
+            $taskDescription = "<span style='color: #666666; width: 100%; padding: 8px'>$description</span>";
+        }
+
+        if ($hasOverviewImgOnPoint) {
+            $overviewImgTable = <<<EOT
+                <table>
+                    <tbody>
+                        <tr>
+                            <td colspan="180">
+                                $overviewImgOnPoint
+                                <p style="padding: 50px;
+                                          float: left;
+                                          width: 80px;
+                                          height: 360px">
+                                    $taskDescription
+                                </p>
+                            </td>
+                        </tr>
+                        </tbody>
+                </table>
+EOT;
+        } else {
+            $overviewImgTable = <<<EOT
+                <table>
+                    <tbody>
+                       <tr>
+                            <td width="350" valign="top">
+                                $overviewImgOnPoint
+<!--                                <span style="font-weight: bold; color: #1f519b;">$overviewImgOnPoint</span>-->
+                            </td>
+                            <td width="30"></td>
+                            <td width="350" valign="top">
+                                $taskDescription
+<!--                                <span style="font-weight: bold; color: #1f519b;">$taskDescription</span>-->
+                            </td>
+                        </tr>
+                        </tbody>
+                </table>
+EOT;
         }
 
         /*
@@ -801,23 +840,7 @@ EOF;
                 </tbody>
             </table>
 
-<!--            <div>-->
-<!--                    <p style="padding: 10px;-->
-<!--                              float: left;-->
-<!--                              width: 80px;-->
-<!--                              height: 360px">-->
-<!--                        this is storm office-->
-<!--                    </p>-->
-<!--            </div>-->
-
-            <table><tbody><tr><td colspan="180">
-                    $img_dettaglioHTML
-                    <p style="padding: 50px;
-                              float: left;
-                              width: 80px;
-                              height: 360px">
-                        $taskDescription
-                    </p></td></tr></tbody></table>
+            $overviewImgTable
 EOF;
 
         // creo la tabella a seconda delle immagini che ho
@@ -862,7 +885,7 @@ EOF;
 EOF;
             $html .= $images_table;
         } else {
-            $html .= '<br><br><span style="text-align: left;font-size: 16px;font-weight: bold; font-family: Raleway, sans-serif; color: #1f519b;">Detail photos</span><br><span style="color: #666666">No photos available.</span>';
+            $html .= '<br><br><span style="text-align: left;font-size: 16px;font-weight: bold; font-family: Raleway, sans-serif; color: #1f519b;">Detail photos</span><br><span style="color: #666666">Photos not available</span>';
         }
 
         $html .= <<<EOF
