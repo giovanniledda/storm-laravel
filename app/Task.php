@@ -746,7 +746,7 @@ EOF;
                                 <p style="padding: 50px;
                                           float: left;
                                           width: 80px;
-                                          margin-left: 100px;
+                                          margin-left: 700px;
                                           margin-right: 10px;
                                           height: 360px">
                                     $taskDescription
@@ -763,12 +763,10 @@ EOT;
                        <tr>
                             <td width="350" valign="top">
                                 $overviewImgOnPoint
-<!--                                <span style="font-weight: bold; color: #1f519b;">$overviewImgOnPoint</span>-->
                             </td>
                             <td width="30"></td>
                             <td width="350" valign="top">
                                 $taskDescription
-<!--                                <span style="font-weight: bold; color: #1f519b;">$taskDescription</span>-->
                             </td>
                         </tr>
                         </tbody>
