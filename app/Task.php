@@ -805,11 +805,15 @@ EOF;
                     $img_dettaglioHTML
                     <p style="padding: 10px;
                               float: left;
-                              width: 80px">
+                              width: 80px;
+                              height: 360px">
                         this is storm office
                     </p>
             </div>
             <p style="clear: both"></p>
+
+            <table><tbody><tr><td></td></tr></tbody></table>
+
 EOF;
 
         // creo la tabella a seconda delle immagini che ho
@@ -848,7 +852,7 @@ EOF;
                 $trs = '<tr>' . $tds_1 . $tds_2 . '</tr>';
             }
 
-            $theadContent = '<p style="text-align: left;font-size: 16px;font-weight: bold; font-family: Raleway, sans-serif; color: #1f519b;">Detail photos</p>';
+            $theadContent = '<p style="text-align: left;font-size: 15px;font-weight: bold; font-family: Raleway, sans-serif; color: #1f519b;">Detail photos</p>';
             $images_table = <<<EOF
                             <table style="float: right"><thead>$theadContent</thead><tbody>$trs</tbody></table>
 EOF;
