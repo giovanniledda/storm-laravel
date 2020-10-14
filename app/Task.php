@@ -795,7 +795,7 @@ EOF;
                             <span style="border: 1px solid #ececec; color: #1f519b; font-weight: bold">Overview</span><br>
                         </td>
                         <td colspan="2" valign="top" style="margin-left: 80px">
-                            <span style="border: 1px solid #ececec; color: #1f519b; font-weight: bold; margin-left: 50px">Description</span><br>
+                            <span style="border: 1px solid #ececec; color: #1f519b; font-weight: bold; margin-left: 150px">Description</span><br>
                         </td>
                     </tr>
                 </tbody>
