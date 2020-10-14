@@ -721,7 +721,7 @@ EOF;
         if ($first_history && $first_history->getAdditionalPhotoPath()) {
             $img_dettaglio = $first_history->getAdditionalPhotoPath();
             $img_dettaglioHTML = <<<EOF
-                <img src="file://$img_dettaglio" alt="Overview image">
+                <img width="60%" style="width: 60%;" src="file://$img_dettaglio" alt="Overview image">
 EOF;
         }
 
@@ -750,7 +750,7 @@ EOF;
                         <p>Location: <b>$task_location</b></p> <br />
                         <p>Type: <b>$task_intervent_type</b></p> <br />
                         <p>Status: <b>$status</b></p>
-                    <span>;
+                    <span>
 EOF;
         } else {
             $pointInfo = <<<EOF
@@ -758,7 +758,7 @@ EOF;
                         <p>Location: <b>$task_location</b></p> <br />
                         <p>Type: <b>Remark</b></p> <br />
                         <p>Status: <b>$status</b></p>
-                    <span>;
+                    <span>
 EOF;
         }
 
@@ -788,23 +788,23 @@ EOF;
                     <tr height="30"></tr>
 
                     <tr>
-                        <td width="680" valign="top">
+                        <td colspan="2" valign="top">
                             <span style="border: 1px solid #ececec; color: #1f519b; font-weight: bold">Overview</span><br>
+                        </td>
+                        <td colspan="2" valign="top">
+                            <span style="border: 1px solid #ececec; color: #1f519b; font-weight: bold">Description</span><br>
                         </td>
                     </tr>
 
                     <tr>
-                        <td colspan="4">$img_dettaglioHTML</td>
+                        <td width="60%" colspan="3">$img_dettaglioHTML</td>
+                        <td valign="top">
+                            $taskDescription
+                        </td>
                     </tr>
 
                     <tr height="30"></tr>
 
-                    <tr>
-                        <td width="680" valign="top">
-                            <span style="border: 1px solid #ececec; color: #1f519b; font-weight: bold">Description</span><br>
-                            $taskDescription
-                        </td>
-                    </tr>
                 </tbody>
             </table>
 EOF;
