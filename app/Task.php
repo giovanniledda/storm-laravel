@@ -792,18 +792,20 @@ EOF;
                             <span style="border: 1px solid #ececec; color: #1f519b; font-weight: bold">Overview</span><br>
                         </td>
                         <td colspan="2" valign="top">
-                            <span style="border: 1px solid #ececec; color: #1f519b; font-weight: bold">Description</span><br>
+                            <span style="border: 1px solid #ececec; color: #1f519b; font-weight: bold; margin-left: 50px">Description</span><br>
                         </td>
                     </tr>
 
                     <tr>
-                        <td width="60%" colspan="3">$img_dettaglioHTML</td>
+                        <td width="60%" colspan="2">$img_dettaglioHTML</td>
                         <td valign="top">
-                            $taskDescription
+                            <span style="padding-left: 10px">
+                                $taskDescription
+                            </span>
                         </td>
                     </tr>
 
-                    <tr height="30"></tr>
+<!--                    <tr height="30"></tr>-->
 
                 </tbody>
             </table>

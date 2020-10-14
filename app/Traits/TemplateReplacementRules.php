@@ -1270,7 +1270,7 @@ EOF;
      */
     public function renderRemarkSection()
     {
-        $html = '';
+        $html = '<p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">No remarks found</p>';
         /** @var ApplicationLog $application_log */
         $application_log = $this->getCurrentAppLog();
         $remarks = $application_log->opened_tasks;
