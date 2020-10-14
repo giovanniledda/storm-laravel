@@ -721,7 +721,10 @@ EOF;
         if ($first_history && $first_history->getAdditionalPhotoPath()) {
             $img_dettaglio = $first_history->getAdditionalPhotoPath();
             $img_dettaglioHTML = <<<EOF
-                <img style="width: 440px; height: auto" src="file://$img_dettaglio" alt="Overview image">
+                <img src="file://$img_dettaglio" alt="Overview image"
+                style="max-width: 480px;
+                       height: auto;
+                       float: left;" >
 EOF;
         }
 
@@ -795,15 +798,18 @@ EOF;
                             <span style="border: 1px solid #ececec; color: #1f519b; font-weight: bold; margin-left: 50px">Description</span><br>
                         </td>
                     </tr>
-
-                    <tr>
-                        <td colspan="2" style="border: 1px solid #ececec;">$img_dettaglioHTML</td>
-                        <td valign="top" style="margin-left: 80px">
-                            $taskDescription
-                        </td>
-                    </tr>
                 </tbody>
             </table>
+
+            <div>
+                    $img_dettaglioHTML
+                    <p style="border: 1px solid #ececec;
+                    		  padding: 10px;
+                              float: left;
+                              width: 80px">
+                        $taskDescription
+                    </p>
+            </div>
 EOF;
 
         // creo la tabella a seconda delle immagini che ho
