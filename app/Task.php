@@ -739,10 +739,10 @@ EOF;
 
         if ($hasOverviewImgOnPoint) {
             $overviewImgTable = <<<EOT
-                <table>
+                <table >
                     <tbody>
                         <tr>
-                            <td colspan="100">
+                            <td colspan="100" >
                                 $overviewImgOnPoint
                                 <p style="
                                           float: left;
@@ -834,7 +834,7 @@ EOF;
                         <td colspan="2" valign="top">
                             <span style="color: #1f519b; font-weight: bold">Overview</span><br>
                         </td>
-                        <td colspan="2" valign="top" style="margin-left: 150px;">
+                        <td colspan="2" valign="top" style="margin-left: 60px;">
                             <span style="color: #1f519b; font-weight: bold;">Description</span><br>
                         </td>
                     </tr>
