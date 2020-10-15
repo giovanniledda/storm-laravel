@@ -330,7 +330,7 @@ EOF;
         if (empty($task_ids)) {
             return '<div></div>';
         }
-        $html = '<div><p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">General view</p>';
+        $html = '<div><p style="text-align: center;font-size: 18px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">General view</p>';
 
         $sections = Section::getSectionsStartingFromTasks($task_ids);
 
@@ -355,8 +355,8 @@ EOF;
             $section->drawOverviewImageWithTaskPoints($task_ids, $d_factor);
             $overview_img = $section->getPointsImageOverview();
             $html .= <<<EOF
+                    <p style="text-align:center; color: #999999; margin-top: -400px">$section_text</p>&nbsp;
                     <img width="926" align="center" src="file://$overview_img" alt="Section Overview Image">
-                    <p style="text-align:center; color: #999999">$section_text</p>
 EOF;
         }
         $html .= '</div>';
