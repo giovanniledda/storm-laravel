@@ -723,9 +723,9 @@ EOF;
             $hasOverviewImgOnPoint = true;
             $img_dettaglio = $first_history->getAdditionalPhotoPath();
             $overviewImgOnPoint = <<<EOF
-                <img src="file://$img_dettaglio" alt="Overview image" height="360"
+                <img src="file://$img_dettaglio" alt="Overview image" height="370"
                      style="max-width: 430px;
-                            max-height: 360px;
+                            max-height: 370px;
                             float: left;" />
 EOF;
         }
@@ -741,15 +741,15 @@ EOF;
                 <table>
                     <tbody>
                         <tr>
-                            <td colspan="180">
+                            <td colspan="100">
                                 $overviewImgOnPoint
-                                <p style="padding-left: 50px;
+                                <p style="
                                           float: left;
                                           width: 40px;
-                                          margin-top: -90px;
-                                          margin-left: 450px;
+                                          margin-top: -280px;
+                                          margin-left: 390px;
                                           margin-right: 10px;
-                                          height: 360px">
+                                          height: 370px">
                                     $taskDescription
                                 </p>
                             </td>
