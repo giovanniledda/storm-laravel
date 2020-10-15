@@ -29,7 +29,9 @@ use function factory;
 use function fclose;
 use function foo\func;
 use function getimagesize;
+use function in_array;
 use function logger;
+use function max;
 use function min;
 use function strtotime;
 use function throw_if;
@@ -261,7 +263,11 @@ trait TemplateReplacementRules
 
 
     /**
-     * Stampa nel docx l'htlm relativo all'indice
+     * Stampa nel docx l'htlm relativo all'indice.
+     * Il calcolo non è precisissimo è fatto in maniera molto approssimativa tenendo conto di alcuni dati "empirici":
+     *  - ogni punto prende una pagina
+     *  - nell'indice si stampa una pagina ogni 26 circa
+     *  - etc.
      *
      * @return string
      * @throws \Throwable
@@ -347,6 +353,15 @@ EOF;
 //        $d_factor = $max_w/1236;
 //        $d_factor = $max_w/696;
 
+
+        // Riflessione: voglio evitare che nell'overview si abbia un'immagine in una pagina differente (successiva) a quella in cui viene stampato il proprio titolo (nome del ponte)
+        // devo calcolare a che punto sono arrivato con la stampa all'interno della pagina
+        // nella pagina, la parte "scrivibile (senza i bordi bianchi di margine sopra e sotto) è di 880px, 18px ce li mangia il titolo "General View", restano 860px arrotondando
+        // arrivato a circa 600px, valuto se immagine + testo ci stanno in pagina corrente, se no spingo e vado alla seguente
+        $heightPxLeft = 860;
+        $imageTitleHeightPx = 14; // pixels
+        $howManyHeightPxSoFar = 0;
+
         /** @var Section $section */
         foreach ($sections as $section) {
             $section_text = "{$section->name}";
@@ -354,14 +369,43 @@ EOF;
             // 3 - passo il fattore ottenuto alla drawOverviewImageWithTaskPoints
             $section->drawOverviewImageWithTaskPoints($task_ids, $d_factor);
             $overview_img = $section->getPointsImageOverview();
+
+            // calcolo se devo andare su una nuova pagina con l'overview
+            $overviewImageInfo = getimagesize($overview_img);
+            $imageAndTitleHeight = ($overviewImageInfo[1] + $imageTitleHeightPx);
+            $howManyPxExtra = 0;
+            $sbordaDi = '';
+            $spacer = '';
+            $howManyHeightPxSoFar += $imageAndTitleHeight;
+            $heightPxLeft -= $imageAndTitleHeight;
+            if ($heightPxLeft <= 0) {  // se entro qua, l'immagine sborda! Dobbiamo andare in nuova pagina.
+                $howManyPxExtra = $howManyHeightPxSoFar - 860;
+                $spacer = "<p style='border: white solid {$howManyPxExtra}px; '><br/><br/><br/><br/></p>
+                           <p style='border: white solid {$howManyPxExtra}px; '><br/><br/><br/><br/></p>
+                           <p style='border: white solid {$howManyPxExtra}px; '><br/><br/><br/><br/></p>";
+                $sbordaDi = 'SBORDO di ' . $howManyPxExtra;
+                $heightPxLeft = 860;
+                $howManyHeightPxSoFar = 0;
+            }
+
             $html .= <<<EOF
-                    <p style="height: 10px; text-align:center; color: #999999; margin-top: -400px">$section_text</p>&nbsp;
+                    $spacer
+                    <p style="text-align:center; font-size: 14px; color: #999999;">$section_text</p>&nbsp;
                     <img width="926" align="center" src="file://$overview_img" alt="Section Overview Image">
 EOF;
         }
         $html .= '</div>';
         return $html;
     }
+
+//    public function getCorrosionMapHtmlSectionImgsOverview()
+//    {
+//        $html = <<<EOF
+// <p style="border: 1px black solid; padding-bottom: 880px">content</p>
+// <p style="border: 1px black solid; ">content</p>
+// EOF;
+//        return $html;
+//    }
 
     /**
      * Associate the "corrosion_map" Template and its Placeholders to an object
