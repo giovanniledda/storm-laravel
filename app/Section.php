@@ -340,14 +340,14 @@ class Section extends Model
             $crop_final_image = true;
             if ($crop_final_image) {
                 $crop_w = ($sizeW / 2) * 1.5;
-                $crop_h = ($sizeH / 2) * 1.5;
+                $crop_h = ($sizeH / 2) * 1.9;
                 $im2 = imagecrop(
                     $deck_with_pins_resized_img_dest,
                     [
                         'x' => ($sizeW / 2) - $crop_w / 2,
                         'y' => ($sizeH / 2) - $crop_h / 2,
                         'width' => $crop_w,
-                        'height' => $crop_h
+                        'height' => $crop_h 
                     ]
                 );
                 if ($im2 !== false) {
