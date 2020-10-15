@@ -225,7 +225,8 @@ class Section extends Model
             $bridge_h = $bridgeImageInfo[1];
 
             // crea un immagine tutta bianca con W e H il doppio di quelle dell'immagine del ponte
-            $dst_deck_white_bkg_img = imagecreate($bridge_w * 2, $bridge_h * 2);
+            $extraUpperBorder = 20;
+            $dst_deck_white_bkg_img = imagecreate($bridge_w * 2, $bridge_h * 2 + $extraUpperBorder);
             imagecolorallocate($dst_deck_white_bkg_img, 255, 255, 255);
 
             if (exif_imagetype($deck_img_path) === IMAGETYPE_PNG) {
