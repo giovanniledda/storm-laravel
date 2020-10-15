@@ -248,7 +248,7 @@ class Section extends Model
                 $dst_deck_white_bkg_img,
                 $original_deck_img_src,
                 $bridge_w / 2,
-                $bridge_h / 2,
+                ($bridge_h + $extraUpperBorder)/ 2,
                 0,
                 0,
                 $bridge_w,
