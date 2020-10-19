@@ -723,7 +723,7 @@ EOF;
             $hasOverviewImgOnPoint = true;
             $img_dettaglio = $first_history->getAdditionalPhotoPath();
             $overviewImgOnPoint = <<<EOF
-		<img src="file://$img_dettaglio" alt="Overview image" 
+		<img src="file://$img_dettaglio" alt="Overview image"
                      height="370"
                      style="max-width: 430px;
                             max-height: 370px;
@@ -806,7 +806,7 @@ EOF;
         }
 
         $html = <<<EOF
-            <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Point #$point_id</p>
+            <p style="text-align: center;font-size: 19px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Point #$point_id</p>
             <table cellpadding="0" cellspacing="0">
                 <tbody>
                     <tr>

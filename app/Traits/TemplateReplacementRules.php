@@ -1323,13 +1323,13 @@ EOF;
      */
     public function renderRemarkSection()
     {
-        $html = '<p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">No remarks related to this Application Log</p>';
+        $html = '<p style="text-align: center;font-size: 18px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">No remarks related to this Application Log</p>';
         /** @var ApplicationLog $application_log */
         $application_log = $this->getCurrentAppLog();
         $remarks = $application_log->opened_tasks;
         if (count($remarks)) {
             $html = <<<EOF
-                <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Remarks</p>
+                <p style="text-align: center;font-size: 23px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Remarks</p>
     EOF;
             foreach ($remarks as $task) {
                 $this->_currentTask = $task;
