@@ -412,7 +412,8 @@ EOF;
     public function getApplicationLogHtmlSectionImgsOverview()
     {
         /** @var Task $task */
-        return $this->printHtmlSectionImgsOverview($this->_taskToIncludeInReport);
+        $noTasksMsg = '<p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">No remarks related to this Application Log</p>';
+        return $this->printHtmlSectionImgsOverview($this->_taskToIncludeInReport, $noTasksMsg);
     }
 
     /**
