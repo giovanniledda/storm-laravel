@@ -323,10 +323,10 @@ EOF;
         return !empty($this->_taskToIncludeInReport) ? $this->_taskToIncludeInReport : $this->getTaskIdsArray();
     }
 
-    public function printHtmlSectionImgsOverview($task_ids = [])
+    public function printHtmlSectionImgsOverview($task_ids = [], $noTasksMessage = '')
     {
         if (empty($task_ids)) {
-            return '<div></div>';
+            return "<div>$noTasksMessage</div>";
         }
         $html = '<div><p style="text-align: center;font-size: 18px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">General view</p>';
 
@@ -399,8 +399,20 @@ EOF;
     public function getCorrosionMapHtmlSectionImgsOverview()
     {
         /** @var Task $task */
-        $task_ids = $this->getTasksToIncludeOrAll(); // questo assunto non va bene per l'application log: se non ho remark là non devo mostrare nulla
+        $task_ids = $this->getTasksToIncludeOrAll();
         return $this->printHtmlSectionImgsOverview($task_ids);
+    }
+
+    /**
+     * Stampa nel docx l'htlm relativo alle immagini delle sezioni con tutti i pin sopra
+     *
+     * @return string
+     * @throws \Throwable
+     */
+    public function getApplicationLogHtmlSectionImgsOverview()
+    {
+        /** @var Task $task */
+        return $this->printHtmlSectionImgsOverview($this->_taskToIncludeInReport);
     }
 
     /**
@@ -763,7 +775,7 @@ EOF;
             '$typeOfAppReport$' => 'getCurrentAppLogType()',
             '$zones$' => 'getCurrentAppLogZones()',
             '$break_n1$' => null,  // riconosciuto dal sistema
-            '$html_sectionImgsOverview$' => 'getCorrosionMapHtmlSectionImgsOverview()',
+            '$html_sectionImgsOverview$' => 'getApplicationLogHtmlSectionImgsOverview()',
             '$html_fullApplicationLog$' => 'getCurrentAppLogStructureHtml()',
         ];
         $this->insertPlaceholders('application_log_report', $placeholders, true);
