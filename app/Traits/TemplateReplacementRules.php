@@ -372,16 +372,20 @@ EOF;
             $heightPxLeft -= $imageAndTitleHeight;
             if ($heightPxLeft <= 0) {  // se entro qua, l'immagine sborda! Dobbiamo andare in nuova pagina.
                 $howManyPxExtra = $howManyHeightPxSoFar - 860;
-                $spacer = "<p style='border: white solid {$howManyPxExtra}px; '><br/><br/><br/><br/></p>
-                           <p style='border: white solid {$howManyPxExtra}px; '><br/><br/><br/><br/></p>
-                           <p style='border: white solid {$howManyPxExtra}px; '><br/><br/><br/><br/></p>";
+                // non c'è verso di distanziare gli elementi con un'altezza fissa
+                // per questo, prendo n elementi e li duplico n volte per "spingere" in basso l'immagine
+                $howManySpacers = floor($howManyPxExtra/56);
+                $spacers = '';
+                for ($i = 0; $i < $howManySpacers; $i++) {
+                    $spacers .= "<p style='border: white solid 10px'><br/></p>"; // ognuno di questi blocchi è 1.5cm ossia 56px circa;
+                }
                 $sbordaDi = 'SBORDO di ' . $howManyPxExtra; // debug only
                 $heightPxLeft = 860;
                 $howManyHeightPxSoFar = 0;
             }
 
             $html .= <<<EOF
-                    $spacer
+                    $spacers
                     <p style="text-align:center; font-size: 14px; color: #999999;">$section_text</p>&nbsp;
                     <img width="926" align="center" src="file://$overview_img" alt="Section Overview Image">
 EOF;
