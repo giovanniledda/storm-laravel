@@ -383,7 +383,7 @@ EOF;
                 $spacer = "<p style='border: white solid {$howManyPxExtra}px; '><br/><br/><br/><br/></p>
                            <p style='border: white solid {$howManyPxExtra}px; '><br/><br/><br/><br/></p>
                            <p style='border: white solid {$howManyPxExtra}px; '><br/><br/><br/><br/></p>";
-                $sbordaDi = 'SBORDO di ' . $howManyPxExtra;
+                $sbordaDi = 'SBORDO di ' . $howManyPxExtra; // debug only
                 $heightPxLeft = 860;
                 $howManyHeightPxSoFar = 0;
             }
@@ -1314,7 +1314,7 @@ EOF;
      */
     public function renderRemarkSection()
     {
-        $html = '<p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">No remarks found</p>';
+        $html = '<p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">No remarks related to this Application Log</p>';
         /** @var ApplicationLog $application_log */
         $application_log = $this->getCurrentAppLog();
         $remarks = $application_log->opened_tasks;
