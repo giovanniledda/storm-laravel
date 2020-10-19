@@ -846,13 +846,11 @@ EOF;
 	                <td width="340" style=""><img height="255" src="'.$photos_paths[0].'"></td>
 	                <td width="16" style=""></td>
 	                <td width="340" style=""><img height="255" src="'.$photos_paths[1].'"></td>
-	         </tr>
-	         <tr style="height: 32px;"><td width="696"></td></tr>'
+	         </tr>'
             :
             '<tr height="190">
 	                <td width="340" style=""><img height="255" src="'.$photos_paths[0].'"></td>
-	         </tr>
-	         <tr style="height: 32px;"><td width="696"></td></tr>';
+	         </tr>';
     }
 
     /**
@@ -1026,7 +1024,7 @@ EOF;
                     <tr style="height: 32px">
                         <td width="696" style="">$date</td>
                     </tr>
-                    <tr style="height: 32px"><td width="696"></td></tr>
+<!--                    <tr style="height: 32px"><td width="696"></td></tr>-->
                 </tbody>
             </table>
 EOF;
