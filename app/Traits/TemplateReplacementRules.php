@@ -323,16 +323,8 @@ EOF;
         return !empty($this->_taskToIncludeInReport) ? $this->_taskToIncludeInReport : $this->getTaskIdsArray();
     }
 
-    /**
-     * Stampa nel docx l'htlm relativo alle immagini delle sezioni con tutti i pin sopra
-     *
-     * @return string
-     * @throws \Throwable
-     */
-    public function getCorrosionMapHtmlSectionImgsOverview()
+    public function printHtmlSectionImgsOverview($task_ids = [])
     {
-        /** @var Task $task */
-        $task_ids = $this->getTasksToIncludeOrAll();
         if (empty($task_ids)) {
             return '<div></div>';
         }
@@ -398,14 +390,18 @@ EOF;
         return $html;
     }
 
-//    public function getCorrosionMapHtmlSectionImgsOverview()
-//    {
-//        $html = <<<EOF
-// <p style="border: 1px black solid; padding-bottom: 880px">content</p>
-// <p style="border: 1px black solid; ">content</p>
-// EOF;
-//        return $html;
-//    }
+    /**
+     * Stampa nel docx l'htlm relativo alle immagini delle sezioni con tutti i pin sopra
+     *
+     * @return string
+     * @throws \Throwable
+     */
+    public function getCorrosionMapHtmlSectionImgsOverview()
+    {
+        /** @var Task $task */
+        $task_ids = $this->getTasksToIncludeOrAll(); // questo assunto non va bene per l'application log: se non ho remark là non devo mostrare nulla
+        return $this->printHtmlSectionImgsOverview($task_ids);
+    }
 
     /**
      * Associate the "corrosion_map" Template and its Placeholders to an object
