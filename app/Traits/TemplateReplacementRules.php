@@ -356,7 +356,8 @@ EOF;
         }
         $html = '<div><p style="text-align: center;font-size: 18px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">General view</p>';
 
-        $sections = Section::getSectionsStartingFromTasks($task_ids);
+//        $sections1 = Section::getSectionsStartingFromTasks($task_ids);
+        $sections = $this->boat->sections;
 
         // 1 - prendo l'img di section con la W maggiore
         $max_w = 0;

@@ -734,10 +734,23 @@ class Project extends Model
         return $this->morphMany('App\History', 'historyable');
     }
 
+//    public function sectionsOld()
+//    {
+//        return $this->belongsToMany('App\Section')
+//            ->using('App\ProjectSection')
+//            ->withPivot([
+//                'project_id',
+//                'section_id',
+//                'created_at',
+//                'updated_at'
+//            ]);
+//    }
+
     public function sections()
     {
-        return $this->belongsToMany('App\Section')
+        return $this->belongsToMany('App\Section', 'project_section', 'project_id', 'section_id')
             ->using('App\ProjectSection')
+            ->withTimestamps()
             ->withPivot([
                 'project_id',
                 'section_id',
