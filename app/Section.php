@@ -225,7 +225,8 @@ class Section extends Model
             $bridge_h = $bridgeImageInfo[1];
 
             // crea un immagine tutta bianca con W e H il doppio di quelle dell'immagine del ponte
-            $dst_deck_white_bkg_img = imagecreate($bridge_w * 2, $bridge_h * 2);
+            $extraUpperBorder = 20;
+            $dst_deck_white_bkg_img = imagecreate($bridge_w * 2, $bridge_h * 2 + $extraUpperBorder);
             imagecolorallocate($dst_deck_white_bkg_img, 255, 255, 255);
 
             if (exif_imagetype($deck_img_path) === IMAGETYPE_PNG) {
@@ -247,7 +248,7 @@ class Section extends Model
                 $dst_deck_white_bkg_img,
                 $original_deck_img_src,
                 $bridge_w / 2,
-                $bridge_h / 2,
+                ($bridge_h + $extraUpperBorder)/ 2,
                 0,
                 0,
                 $bridge_w,
@@ -339,7 +340,7 @@ class Section extends Model
             $crop_final_image = true;
             if ($crop_final_image) {
                 $crop_w = ($sizeW / 2) * 1.5;
-                $crop_h = ($sizeH / 2) * 1.5;
+                $crop_h = ($sizeH / 2) * 1.9;
                 $im2 = imagecrop(
                     $deck_with_pins_resized_img_dest,
                     [
@@ -387,6 +388,7 @@ class Section extends Model
      */
     public function getPointsImageOverview()
     {
+        /** @var Document $document */
         $document = $this->documents->where('type', SECTION_IMAGE_POINTS_OVERVIEW)->last();
         if ($document) {
             $media = $document->getRelatedMedia();

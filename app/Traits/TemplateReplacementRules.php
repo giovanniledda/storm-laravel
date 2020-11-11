@@ -29,7 +29,9 @@ use function factory;
 use function fclose;
 use function foo\func;
 use function getimagesize;
+use function in_array;
 use function logger;
+use function max;
 use function min;
 use function strtotime;
 use function throw_if;
@@ -261,7 +263,11 @@ trait TemplateReplacementRules
 
 
     /**
-     * Stampa nel docx l'htlm relativo all'indice
+     * Stampa nel docx l'htlm relativo all'indice.
+     * Il calcolo non è precisissimo è fatto in maniera molto approssimativa tenendo conto di alcuni dati "empirici":
+     *  - ogni punto prende una pagina
+     *  - nell'indice si stampa una pagina ogni 26 circa
+     *  - etc.
      *
      * @return string
      * @throws \Throwable
@@ -317,20 +323,12 @@ EOF;
         return !empty($this->_taskToIncludeInReport) ? $this->_taskToIncludeInReport : $this->getTaskIdsArray();
     }
 
-    /**
-     * Stampa nel docx l'htlm relativo alle immagini delle sezioni con tutti i pin sopra
-     *
-     * @return string
-     * @throws \Throwable
-     */
-    public function getCorrosionMapHtmlSectionImgsOverview()
+    public function printHtmlSectionImgsOverview($task_ids = [], $noTasksMessage = '')
     {
-        /** @var Task $task */
-        $task_ids = $this->getTasksToIncludeOrAll();
         if (empty($task_ids)) {
-            return '<div></div>';
+            return "<div>$noTasksMessage</div>";
         }
-        $html = '<div><p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">General view</p>';
+        $html = '<div><p style="text-align: center;font-size: 18px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">General view</p>';
 
         $sections = Section::getSectionsStartingFromTasks($task_ids);
 
@@ -347,6 +345,15 @@ EOF;
 //        $d_factor = $max_w/1236;
 //        $d_factor = $max_w/696;
 
+
+        // Riflessione: voglio evitare che nell'overview si abbia un'immagine in una pagina differente (successiva) a quella in cui viene stampato il proprio titolo (nome del ponte)
+        // devo calcolare a che punto sono arrivato con la stampa all'interno della pagina
+        // nella pagina, la parte "scrivibile (senza i bordi bianchi di margine sopra e sotto) è di 880px, 18px ce li mangia il titolo "General View", restano 860px arrotondando
+        // arrivato a circa 600px, valuto se immagine + testo ci stanno in pagina corrente, se no spingo e vado alla seguente
+        $heightPxLeft = 860;
+        $imageTitleHeightPx = 14; // pixels
+        $howManyHeightPxSoFar = 0;
+
         /** @var Section $section */
         foreach ($sections as $section) {
             $section_text = "{$section->name}";
@@ -354,13 +361,63 @@ EOF;
             // 3 - passo il fattore ottenuto alla drawOverviewImageWithTaskPoints
             $section->drawOverviewImageWithTaskPoints($task_ids, $d_factor);
             $overview_img = $section->getPointsImageOverview();
+
+            // calcolo se devo andare su una nuova pagina con l'overview
+            $overviewImageInfo = getimagesize($overview_img);
+            $imageAndTitleHeight = ($overviewImageInfo[1] + $imageTitleHeightPx);
+            $howManyPxExtra = 0;
+            $sbordaDi = '';
+            $spacer = '';
+            $howManyHeightPxSoFar += $imageAndTitleHeight;
+            $heightPxLeft -= $imageAndTitleHeight;
+            if ($heightPxLeft <= 0) {  // se entro qua, l'immagine sborda! Dobbiamo andare in nuova pagina.
+                $howManyPxExtra = $howManyHeightPxSoFar - 860;
+                // non c'è verso di distanziare gli elementi con un'altezza fissa
+                // per questo, prendo n elementi e li duplico n volte per "spingere" in basso l'immagine
+                $howManySpacers = floor($howManyPxExtra/56);
+                $spacers = '';
+                for ($i = 0; $i < $howManySpacers; $i++) {
+                    $spacers .= "<p style='border: white solid 10px'><br/></p>"; // ognuno di questi blocchi è 1.5cm ossia 56px circa;
+                }
+                $sbordaDi = 'SBORDO di ' . $howManyPxExtra; // debug only
+                $heightPxLeft = 860;
+                $howManyHeightPxSoFar = 0;
+            }
+
             $html .= <<<EOF
+                    $spacers
+                    <p style="text-align:center; font-size: 14px; color: #999999;">$section_text</p>&nbsp;
                     <img width="926" align="center" src="file://$overview_img" alt="Section Overview Image">
-                    <p style="text-align:center; color: #999999">$section_text</p>
 EOF;
         }
         $html .= '</div>';
         return $html;
+    }
+
+    /**
+     * Stampa nel docx l'htlm relativo alle immagini delle sezioni con tutti i pin sopra
+     *
+     * @return string
+     * @throws \Throwable
+     */
+    public function getCorrosionMapHtmlSectionImgsOverview()
+    {
+        /** @var Task $task */
+        $task_ids = $this->getTasksToIncludeOrAll();
+        return $this->printHtmlSectionImgsOverview($task_ids);
+    }
+
+    /**
+     * Stampa nel docx l'htlm relativo alle immagini delle sezioni con tutti i pin sopra
+     *
+     * @return string
+     * @throws \Throwable
+     */
+    public function getApplicationLogHtmlSectionImgsOverview()
+    {
+        /** @var Task $task */
+        $noTasksMsg = '<p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">No remarks related to this Application Log</p>';
+        return $this->printHtmlSectionImgsOverview($this->_taskToIncludeInReport, $noTasksMsg);
     }
 
     /**
@@ -723,7 +780,7 @@ EOF;
             '$typeOfAppReport$' => 'getCurrentAppLogType()',
             '$zones$' => 'getCurrentAppLogZones()',
             '$break_n1$' => null,  // riconosciuto dal sistema
-            '$html_sectionImgsOverview$' => 'getCorrosionMapHtmlSectionImgsOverview()',
+            '$html_sectionImgsOverview$' => 'getApplicationLogHtmlSectionImgsOverview()',
             '$html_fullApplicationLog$' => 'getCurrentAppLogStructureHtml()',
         ];
         $this->insertPlaceholders('application_log_report', $placeholders, true);
@@ -793,13 +850,11 @@ EOF;
 	                <td width="340" style=""><img height="255" src="'.$photos_paths[0].'"></td>
 	                <td width="16" style=""></td>
 	                <td width="340" style=""><img height="255" src="'.$photos_paths[1].'"></td>
-	         </tr>
-	         <tr style="height: 32px;"><td width="696"></td></tr>'
+	         </tr>'
             :
             '<tr height="190">
 	                <td width="340" style=""><img height="255" src="'.$photos_paths[0].'"></td>
-	         </tr>
-	         <tr style="height: 32px;"><td width="696"></td></tr>';
+	         </tr>';
     }
 
     /**
@@ -973,7 +1028,7 @@ EOF;
                     <tr style="height: 32px">
                         <td width="696" style="">$date</td>
                     </tr>
-                    <tr style="height: 32px"><td width="696"></td></tr>
+<!--                    <tr style="height: 32px"><td width="696"></td></tr>-->
                 </tbody>
             </table>
 EOF;
@@ -1270,13 +1325,13 @@ EOF;
      */
     public function renderRemarkSection()
     {
-        $html = '';
+        $html = '<p style="text-align: center;font-size: 18px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">No remarks related to this Application Log</p>';
         /** @var ApplicationLog $application_log */
         $application_log = $this->getCurrentAppLog();
         $remarks = $application_log->opened_tasks;
         if (count($remarks)) {
             $html = <<<EOF
-                <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Remarks</p>
+                <p style="text-align: center;font-size: 23px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Remarks</p>
     EOF;
             foreach ($remarks as $task) {
                 $this->_currentTask = $task;
