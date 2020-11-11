@@ -347,7 +347,7 @@ class Section extends Model
                         'x' => ($sizeW / 2) - $crop_w / 2,
                         'y' => ($sizeH / 2) - $crop_h / 2,
                         'width' => $crop_w,
-                        'height' => $crop_h 
+                        'height' => $crop_h
                     ]
                 );
                 if ($im2 !== false) {
@@ -388,6 +388,7 @@ class Section extends Model
      */
     public function getPointsImageOverview()
     {
+        /** @var Document $document */
         $document = $this->documents->where('type', SECTION_IMAGE_POINTS_OVERVIEW)->last();
         if ($document) {
             $media = $document->getRelatedMedia();
