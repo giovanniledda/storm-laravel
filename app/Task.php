@@ -702,9 +702,17 @@ class Task extends Model
     {
         $corrosionMapHTML = '';
         if ($corrosionMapFilePath = $this->getCorrosionMapFilePath()) {
+//            $corrosionMapHTML = <<<EOF
+//                <img width="400" src="file://$corrosionMapFilePath" alt="Corrosion Map">
+//EOF;
+
             $corrosionMapHTML = <<<EOF
-                <img width="400" src="file://$corrosionMapFilePath" alt="Corrosion Map">
+                <img src="file://$corrosionMapFilePath" alt="Overview image"
+                     width="432"
+                     style="max-height: 370px;
+                            float: left;" />
 EOF;
+
         }
 
         $point_id = $this->internal_progressive_number;
@@ -850,14 +858,14 @@ EOF;
         if (!empty($photos_array) && count($photos_array) > 1) {
             $tds_1 = <<<EOF
                     <td width="174">
-                        <img width="232" src="file://$photos_array[1]" alt="Corrosion img 1">
+                        <img width="174" src="file://$photos_array[1]" alt="Corrosion img 1">
                     </td>
 EOF;
 
             if (isset($photos_array[2])) {
                 $tds_1 .= <<<EOF
                     <td width="174">
-                        <img width="232" src="file://$photos_array[2]" alt="Corrosion img 2">
+                        <img width="174" src="file://$photos_array[2]" alt="Corrosion img 2">
                     </td>
 EOF;
             }
@@ -867,14 +875,14 @@ EOF;
             if (isset($photos_array[3])) {
                 $tds_2 = <<<EOF
                     <td width="174">
-                        <img width="232" src="file://$photos_array[3]" alt="Corrosion img 3">
+                        <img width="174" src="file://$photos_array[3]" alt="Corrosion img 3">
                     </td>
 EOF;
 
                 if (isset($photos_array[4])) {
                     $tds_2 .= <<<EOF
                         <td width="174">
-                            <img width="232"  src="file://$photos_array[4]" alt="Corrosion img 4">
+                            <img width="174"  src="file://$photos_array[4]" alt="Corrosion img 4">
                         </td>
 EOF;
                 }
