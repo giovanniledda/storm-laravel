@@ -796,11 +796,13 @@ EOT;
                     <span>
 EOF;
         } else {
+            $remarkedDate = $this->created_at->format('d-m-Y');
             $pointInfo = <<<EOF
                     <span>
                         <p>Location: <b>$task_location</b></p> <br />
                         <p>Type: <b>Remark</b></p> <br />
-                        <p>Status: <b>$status</b></p>
+                        <p>Status: <b>$status</b></p> <br />
+                        <p>Created at: <b>$remarkedDate</b></p> <br />
                     <span>
 EOF;
         }

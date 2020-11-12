@@ -1198,12 +1198,13 @@ EOF;
             $batch_nums = '';
             $name = $component['name'];
             array_walk($component['batch_numbers'], function ($val, $key) use (&$batch_nums) {
-                 $batch_nums .= "$key: $val, ";
+                 $batch_nums .= "$key: $val<br/>";
             });
             $batch_nums = trim($batch_nums, ', ');
             $html .= <<<EOF
                 <tr style="height: 32px">
-                            <td width="696" style="border-bottom: 1px solid #ececec">Comp.: $name</td>
+<!--                            <td width="696" style="border-bottom: 1px solid #ececec">Comp.: $name</td>-->
+                            <td width="696" style="border-bottom: 1px solid #ececec">$name</td>
                             <td width="696" style="border-bottom: 1px solid #ececec">$batch_nums</td>
 	            </tr>
 EOF;
@@ -1215,12 +1216,12 @@ EOF;
             $batch_nums = '';
             $name = $thinner['name'];
             array_walk($thinner['batch_numbers'], function ($val, $key) use (&$batch_nums) {
-                $batch_nums .= "$key: $val, ";
+                $batch_nums .= "$key: $val <br />";
             });
             $batch_nums = trim($batch_nums, ', ');
             $html .= <<<EOF
                 <tr style="height: 32px">
-                            <td width="696" style="border-bottom: 1px solid #ececec">Thin.: $name</td>
+                            <td width="696" style="border-bottom: 1px solid #ececec">Thinner: $name</td>
                             <td width="696" style="border-bottom: 1px solid #ececec">$batch_nums</td>
 	            </tr>
 EOF;
