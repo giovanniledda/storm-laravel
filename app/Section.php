@@ -212,7 +212,7 @@ class Section extends Model
         $deck_media = $this->generic_images->last();
         // i task di cui vogliamo stampare i pin
         $my_tasks = !empty($tasks_ids) ? $this->getOnlyMyTasks($tasks_ids) : $this->tasks;
-        if ($deck_media && count($my_tasks)) {
+        if ($deck_media) {
             $deck_with_pins_f_handler = tmpfile();
             $deck_with_pins_f_path = stream_get_meta_data($deck_with_pins_f_handler)['uri'];
 
@@ -291,50 +291,52 @@ class Section extends Model
                 );
             }
 
-            /** @var Task $task */
-            foreach ($my_tasks as $task) {
-                // creo l'immagine PNG del pin del Task
-                $pinPath = $task->getIcon(null, null, 'Active', true);
-                $iconInfo = getimagesize($pinPath);
-                if ($resize_pins) {
-                    $new_w = 20;
-                    $new_h = 32;
+            if (count($my_tasks)) {
+                /** @var Task $task */
+                foreach ($my_tasks as $task) {
+                    // creo l'immagine PNG del pin del Task
+                    $pinPath = $task->getIcon(null, null, 'Active', true);
+                    $iconInfo = getimagesize($pinPath);
+                    if ($resize_pins) {
+                        $new_w = 20;
+                        $new_h = 32;
 //                    $pin_png_image_src = Utils::resize_image($pinPath, $new_w, $new_h);
-                    $pin_png_image_src_orig = imagecreatefrompng($pinPath);
-                    $pin_png_image_src = Utils::getPNGImageResized($pin_png_image_src_orig, $new_w, $new_h);
-                } else {
-                    $new_w = $iconInfo[0]; // 20;
-                    $new_h = $iconInfo[1]; // 48;
+                        $pin_png_image_src_orig = imagecreatefrompng($pinPath);
+                        $pin_png_image_src = Utils::getPNGImageResized($pin_png_image_src_orig, $new_w, $new_h);
+                    } else {
+                        $new_w = $iconInfo[0]; // 20;
+                        $new_h = $iconInfo[1]; // 48;
 
-                    $pin_png_image_src = imagecreatefrompng($pinPath);
-                    imagealphablending($pin_png_image_src, false);
-                    imagesavealpha($pin_png_image_src, true);
-                }
+                        $pin_png_image_src = imagecreatefrompng($pinPath);
+                        imagealphablending($pin_png_image_src, false);
+                        imagesavealpha($pin_png_image_src, true);
+                    }
 
-                // Credo che questi calcoli siano fatti per invertire coordinate X e Y (è così, mi ha detto @miscali)
-                $x = $bridge_w / 2 + $task->y_coord;
-                $y = ($bridge_h - $task->x_coord) + $bridge_h / 2;
-                // ... e per riposizionare X e Y del pin in base al ridimensionamento dell'immagine
-                $xx = ($x * $sizeW) / ($bridge_w * 2);
-                $yy = ($y * $sizeH) / ($bridge_h * 2);
+                    // Credo che questi calcoli siano fatti per invertire coordinate X e Y (è così, mi ha detto @miscali)
+                    $x = $bridge_w / 2 + $task->y_coord;
+                    $y = ($bridge_h - $task->x_coord) + $bridge_h / 2;
+                    // ... e per riposizionare X e Y del pin in base al ridimensionamento dell'immagine
+                    $xx = ($x * $sizeW) / ($bridge_w * 2);
+                    $yy = ($y * $sizeH) / ($bridge_h * 2);
 
-                // copio il pin  sull'immagine del deck
+                    // copio il pin  sull'immagine del deck
 //                imagecopymerge($deck_with_pins_resized_img_dest, $pin_png_image_src, $xx - $new_w / 2, $yy - $new_h, 0, 0, $new_w, $new_h, 100);
-                Utils::imagecopymerge_alpha(
-                    $deck_with_pins_resized_img_dest,
-                    $pin_png_image_src,
-                    $xx - $new_w / 2,
-                    $yy - $new_h,
-                    0,
-                    0,
-                    $new_w,
-                    $new_h,
-                    100
-                );
+                    Utils::imagecopymerge_alpha(
+                        $deck_with_pins_resized_img_dest,
+                        $pin_png_image_src,
+                        $xx - $new_w / 2,
+                        $yy - $new_h,
+                        0,
+                        0,
+                        $new_w,
+                        $new_h,
+                        100
+                    );
 
-                imagealphablending($deck_with_pins_resized_img_dest, false);
-                imagesavealpha($deck_with_pins_resized_img_dest, true);
-                imagedestroy($pin_png_image_src);
+                    imagealphablending($deck_with_pins_resized_img_dest, false);
+                    imagesavealpha($deck_with_pins_resized_img_dest, true);
+                    imagedestroy($pin_png_image_src);
+                }
             }
 
             $crop_final_image = true;

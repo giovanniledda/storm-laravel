@@ -307,6 +307,32 @@ EOF;
         return $html;
     }
 
+
+
+    /**
+     * Stampa nel docx l'htlm relativo all'indice.
+     * Il calcolo non è precisissimo è fatto in maniera molto approssimativa tenendo conto di alcuni dati "empirici":
+     *  - ogni punto prende una pagina
+     *  - nell'indice si stampa una pagina ogni 26 circa
+     *  - etc.
+     *
+     * @return string
+     * @throws \Throwable
+     */
+    public function getApplicationLogHtmlTableOfContents()
+    {
+        $html = '<p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Table of Contents</p>';
+        $html .= '<table cellpadding="0" cellspacing="0"><tbody>';
+        $html .= <<<EOF
+                    <tr style="height: 32px">
+                        <td width="496" style="border-bottom: 1px solid #ececec;"><b>General view</b></td>
+                        <td width="200" style="border-bottom: 1px solid #ececec; text-align: right;">Pag. 3</td>
+                    </tr>
+EOF;
+        $html .= "</tbody></table>";
+        return $html;
+    }
+
     /**
      * @return mixed
      */
@@ -330,7 +356,8 @@ EOF;
         }
         $html = '<div><p style="text-align: center;font-size: 18px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">General view</p>';
 
-        $sections = Section::getSectionsStartingFromTasks($task_ids);
+//        $sections1 = Section::getSectionsStartingFromTasks($task_ids);
+        $sections = $this->boat->sections;
 
         // 1 - prendo l'img di section con la W maggiore
         $max_w = 0;
@@ -780,8 +807,10 @@ EOF;
             '$typeOfAppReport$' => 'getCurrentAppLogType()',
             '$zones$' => 'getCurrentAppLogZones()',
             '$break_n1$' => null,  // riconosciuto dal sistema
+            '$break_n2$' => null,  // riconosciuto dal sistema
             '$html_sectionImgsOverview$' => 'getApplicationLogHtmlSectionImgsOverview()',
             '$html_fullApplicationLog$' => 'getCurrentAppLogStructureHtml()',
+            '$html_tableOfContents$' => 'getApplicationLogHtmlTableOfContents()'
         ];
         $this->insertPlaceholders('application_log_report', $placeholders, true);
     }
@@ -1169,12 +1198,13 @@ EOF;
             $batch_nums = '';
             $name = $component['name'];
             array_walk($component['batch_numbers'], function ($val, $key) use (&$batch_nums) {
-                 $batch_nums .= "$key: $val, ";
+                 $batch_nums .= "$key: $val<br/>";
             });
             $batch_nums = trim($batch_nums, ', ');
             $html .= <<<EOF
                 <tr style="height: 32px">
-                            <td width="696" style="border-bottom: 1px solid #ececec">Comp.: $name</td>
+<!--                            <td width="696" style="border-bottom: 1px solid #ececec">Comp.: $name</td>-->
+                            <td width="696" style="border-bottom: 1px solid #ececec">$name</td>
                             <td width="696" style="border-bottom: 1px solid #ececec">$batch_nums</td>
 	            </tr>
 EOF;
@@ -1186,12 +1216,12 @@ EOF;
             $batch_nums = '';
             $name = $thinner['name'];
             array_walk($thinner['batch_numbers'], function ($val, $key) use (&$batch_nums) {
-                $batch_nums .= "$key: $val, ";
+                $batch_nums .= "$key: $val <br />";
             });
             $batch_nums = trim($batch_nums, ', ');
             $html .= <<<EOF
                 <tr style="height: 32px">
-                            <td width="696" style="border-bottom: 1px solid #ececec">Thin.: $name</td>
+                            <td width="696" style="border-bottom: 1px solid #ececec">Thinner: $name</td>
                             <td width="696" style="border-bottom: 1px solid #ececec">$batch_nums</td>
 	            </tr>
 EOF;
