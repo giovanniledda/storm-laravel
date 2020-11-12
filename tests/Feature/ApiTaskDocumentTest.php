@@ -24,7 +24,7 @@ use const PERMISSION_ADMIN;
 use const DOCUMENT_RELATED_ENTITY_TASK;
 
 
-class ApiTaskDocumenttTest extends TestApiCase
+class ApiTaskDocumentTest extends TestApiCase
 {
     /** create **/
     function test_can_associate_document_to_task()

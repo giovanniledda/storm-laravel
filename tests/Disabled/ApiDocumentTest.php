@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Disabled;
 
 use Net7\Documents\Document;
 use Tests\TestApiCase;

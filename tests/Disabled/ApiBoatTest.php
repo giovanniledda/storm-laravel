@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Disabled;
 
 use Tests\TestApiCase;
 use App\Boat;
@@ -128,7 +128,7 @@ class ApiBoatTest extends TestApiCase
         //    $user->givePermissionTo($adminPerm); // do il permesso all'utente di admin e deve vedere tutto
 
         // $this->getBoatList($user,  count($boats_for_bm1) + count($boats_for_bm2));
-        // do all'utente $user il permesso di 
+        // do all'utente $user il permesso di
 
     }
 
