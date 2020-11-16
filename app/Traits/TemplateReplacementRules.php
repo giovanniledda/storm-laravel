@@ -372,15 +372,6 @@ EOF;
 //        $d_factor = $max_w/1236;
 //        $d_factor = $max_w/696;
 
-
-        // Riflessione: voglio evitare che nell'overview si abbia un'immagine in una pagina differente (successiva) a quella in cui viene stampato il proprio titolo (nome del ponte)
-        // devo calcolare a che punto sono arrivato con la stampa all'interno della pagina
-        // nella pagina, la parte "scrivibile (senza i bordi bianchi di margine sopra e sotto) è di 880px, 18px ce li mangia il titolo "General View", restano 860px arrotondando
-        // arrivato a circa 600px, valuto se immagine + testo ci stanno in pagina corrente, se no spingo e vado alla seguente
-        $heightPxLeft = 860;
-        $imageTitleHeightPx = 14; // pixels
-        $howManyHeightPxSoFar = 0;
-
         /** @var Section $section */
         $sectionsCounter = 0;
         $totSections = count($sections);
