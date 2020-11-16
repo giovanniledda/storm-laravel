@@ -391,28 +391,6 @@ EOF;
             $section->drawOverviewImageWithTaskPoints($task_ids, $d_factor);
             $overview_img = $section->getPointsImageOverview();
 
-            // calcolo se devo andare su una nuova pagina con l'overview
-            $overviewImageInfo = getimagesize($overview_img);
-            $imageAndTitleHeight = ($overviewImageInfo[1] + $imageTitleHeightPx);
-            $howManyPxExtra = 0;
-            $sbordaDi = '';
-            $spacers = '';
-            $howManyHeightPxSoFar += $imageAndTitleHeight;
-            $heightPxLeft -= $imageAndTitleHeight;
-            if (0 && $heightPxLeft <= 0) {  // se entro qua, l'immagine sborda! Dobbiamo andare in nuova pagina.
-                $howManyPxExtra = $howManyHeightPxSoFar - 860;
-                // non c'è verso di distanziare gli elementi con un'altezza fissa
-                // per questo, prendo n elementi e li duplico n volte per "spingere" in basso l'immagine
-                $howManySpacers = floor($howManyPxExtra/56);
-                $spacers = '';
-                for ($i = 0; $i < $howManySpacers; $i++) {
-                    $spacers .= "<p style='border: white solid 10px'><br/></p>"; // ognuno di questi blocchi è 1.5cm ossia 56px circa;
-                }
-                $sbordaDi = 'SBORDO di ' . $howManyPxExtra; // debug only
-                $heightPxLeft = 860;
-                $howManyHeightPxSoFar = 0;
-            }
-
             $pageBreak = '';
             if (++$sectionsCounter%2 == 0 && $sectionsCounter < $totSections) {
                 $pageBreak = '<phpdocx_break data-type="page" data-number="1" />';
