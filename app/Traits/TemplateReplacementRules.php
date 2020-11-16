@@ -354,7 +354,7 @@ EOF;
         if (empty($task_ids)) {
             return "<div>$noTasksMessage</div>";
         }
-        $html = '<div><h1 style="text-align: center;font-size: 18px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">General view</h1>';
+        $html = '<h1 style="text-align: center;font-size: 18px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">General view</h1>';
 
 //        $sections1 = Section::getSectionsStartingFromTasks($task_ids);
         $sections = $this->boat->sections;
@@ -382,6 +382,7 @@ EOF;
         $howManyHeightPxSoFar = 0;
 
         /** @var Section $section */
+        $sectionsCounter = 0;
         foreach ($sections as $section) {
             $section_text = "{$section->name}";
             // 2 - divido questo max per 1236 ed ottengo un fattore per cui dovrò andare a dividere la W (in realtà divido per il fattore * 2) di tutte le altre section per ottenere la dimensione corretta
@@ -394,10 +395,10 @@ EOF;
             $imageAndTitleHeight = ($overviewImageInfo[1] + $imageTitleHeightPx);
             $howManyPxExtra = 0;
             $sbordaDi = '';
-            $spacer = '';
+            $spacers = '';
             $howManyHeightPxSoFar += $imageAndTitleHeight;
             $heightPxLeft -= $imageAndTitleHeight;
-            if ($heightPxLeft <= 0) {  // se entro qua, l'immagine sborda! Dobbiamo andare in nuova pagina.
+            if (0 && $heightPxLeft <= 0) {  // se entro qua, l'immagine sborda! Dobbiamo andare in nuova pagina.
                 $howManyPxExtra = $howManyHeightPxSoFar - 860;
                 // non c'è verso di distanziare gli elementi con un'altezza fissa
                 // per questo, prendo n elementi e li duplico n volte per "spingere" in basso l'immagine
@@ -411,13 +412,21 @@ EOF;
                 $howManyHeightPxSoFar = 0;
             }
 
+            $pageBreak = '';
+            if (++$sectionsCounter%2 == 0) {
+                $pageBreak = '<phpdocx_break data-type="page"/>';
+//                $pageBreak = '<phpdocx_break data-type="line" data-number="35" />';
+            }
+
             $html .= <<<EOF
-                    $spacers
-                    <p style="text-align:center; font-size: 14px; color: #999999;">$section_text</p>&nbsp;
-                    <img width="926" align="center" src="file://$overview_img" alt="Section Overview Image">
+                    <div>
+                        <p style="text-align:center; font-size: 14px; color: #999999;">$section_text
+                            <img width="926" align="center" src="file://$overview_img" alt="Section Overview Image">
+                        </p>
+                    </div>
+                    $pageBreak
 EOF;
         }
-        $html .= '</div>';
         return $html;
     }
 
