@@ -732,9 +732,8 @@ EOF;
             $img_dettaglio = $first_history->getAdditionalPhotoPath();
             $overviewImgOnPoint = <<<EOF
 		<img src="file://$img_dettaglio" alt="Overview image"
-                     height="370"
-                     style="max-width: 430px;
-                            max-height: 370px;
+                     width="432"
+                     style="max-height: 370px;
                             float: left;" />
 EOF;
         }
@@ -750,19 +749,15 @@ EOF;
                 <table >
                     <tbody>
                         <tr>
-                            <td colspan="100" >
+                            <td width="300">
                                 $overviewImgOnPoint
-                                <p style="
-                                          float: left;
-                                          margin-top: -300px;
-                                          margin-left: 390px;
-                                          margin-right: 10px;
-                                          height: 370px">
-                                    $taskDescription
-                                </p>
+                            </td>
+                            <td width="30"></td>
+                            <td width="350" valign="top">
+                                $taskDescription
                             </td>
                         </tr>
-                        </tbody>
+                    </tbody>
                 </table>
 EOT;
         } else {
@@ -778,7 +773,7 @@ EOT;
                                 $taskDescription
                             </td>
                         </tr>
-                        </tbody>
+                    </tbody>
                 </table>
 EOT;
         }
