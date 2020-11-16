@@ -354,7 +354,7 @@ EOF;
         if (empty($task_ids)) {
             return "<div>$noTasksMessage</div>";
         }
-        $html = '<div><p style="text-align: center;font-size: 18px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">General view</p>';
+        $html = '<div><h1 style="text-align: center;font-size: 18px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">General view</h1>';
 
 //        $sections1 = Section::getSectionsStartingFromTasks($task_ids);
         $sections = $this->boat->sections;
