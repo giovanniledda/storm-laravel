@@ -383,6 +383,7 @@ EOF;
 
         /** @var Section $section */
         $sectionsCounter = 0;
+        $totSections = count($sections);
         foreach ($sections as $section) {
             $section_text = "{$section->name}";
             // 2 - divido questo max per 1236 ed ottengo un fattore per cui dovrò andare a dividere la W (in realtà divido per il fattore * 2) di tutte le altre section per ottenere la dimensione corretta
@@ -413,9 +414,8 @@ EOF;
             }
 
             $pageBreak = '';
-            if (++$sectionsCounter%2 == 0) {
-                $pageBreak = '<phpdocx_break data-type="page"/>';
-//                $pageBreak = '<phpdocx_break data-type="line" data-number="35" />';
+            if (++$sectionsCounter%2 == 0 && $sectionsCounter < $totSections) {
+                $pageBreak = '<phpdocx_break data-type="page" data-number="1" />';
             }
 
             $html .= <<<EOF
