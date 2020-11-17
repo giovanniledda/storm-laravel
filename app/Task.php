@@ -700,21 +700,6 @@ class Task extends Model
      */
     public function getCorrosionMapHtml($photos_array)
     {
-        $corrosionMapHTML = '';
-        if ($corrosionMapFilePath = $this->getCorrosionMapFilePath()) {
-//            $corrosionMapHTML = <<<EOF
-//                <img width="400" src="file://$corrosionMapFilePath" alt="Corrosion Map">
-//EOF;
-
-            $corrosionMapHTML = <<<EOF
-                <img src="file://$corrosionMapFilePath" alt="Overview image"
-                     width="432"
-                     style="max-height: 370px;
-                            float: left;" />
-EOF;
-
-        }
-
         $point_id = $this->internal_progressive_number;
         $task_location = $this->section ? Utils::sanitizeTextsForPlaceholders($this->section->name) : '?';
         $task_intervent_type = $this->intervent_type ? Utils::sanitizeTextsForPlaceholders($this->intervent_type->name) : '?';
@@ -732,9 +717,8 @@ EOF;
             $img_dettaglio = $first_history->getAdditionalPhotoPath();
             $overviewImgOnPoint = <<<EOF
 		<img src="file://$img_dettaglio" alt="Overview image"
-                     height="370"
-                     style="max-width: 430px;
-                            max-height: 370px;
+                     width="442"
+                     style="max-height: 370px;
                             float: left;" />
 EOF;
         }
@@ -750,19 +734,15 @@ EOF;
                 <table >
                     <tbody>
                         <tr>
-                            <td colspan="100" >
+                            <td width="310">
                                 $overviewImgOnPoint
-                                <p style="
-                                          float: left;
-                                          margin-top: -300px;
-                                          margin-left: 390px;
-                                          margin-right: 10px;
-                                          height: 370px">
-                                    $taskDescription
-                                </p>
+                            </td>
+                            <td width="30"></td>
+                            <td width="340" valign="top">
+                                $taskDescription
                             </td>
                         </tr>
-                        </tbody>
+                    </tbody>
                 </table>
 EOT;
         } else {
@@ -778,21 +758,10 @@ EOT;
                                 $taskDescription
                             </td>
                         </tr>
-                        </tbody>
+                    </tbody>
                 </table>
 EOT;
         }
-
-        /*
-         * vecchio schema di presentazione informazioni, modificato dopo call del 17/09
-        if ($task_type == TASK_TYPE_PRIMARY) {
-            $task_type_status_str = "<span>This task <span style='color:'>(#$point_id)</span> is currently <b>$status</b>, and was last updated on $updated_at.</span><span>";
-            $task_definition = "<span style='line-height: 20px'>This task was created on $created_at. The task is located on<b> $task_location </b> and was classified as <b> $task_intervent_type.</b>";
-        } else {
-            $task_type_status_str = "<span>This remark <span style='opacity: 0.6'>(#$point_id)</span> is classified as <b>$status</b>, and was last updated on $updated_at.</span><span>";
-            $task_definition = "<span style='line-height: 20px'>This remark was created on $created_at. The remark is located on<b> $task_location.</b>";
-        }
-        */
 
         // location (sundec), type (damage), status (in progress)
         if ($task_type == TASK_TYPE_PRIMARY) {
@@ -815,8 +784,18 @@ EOF;
 EOF;
         }
 
+        $corrosionMapHTML = '';
+        if ($corrosionMapFilePath = $this->getCorrosionMapFilePath()) {
+            $corrosionMapHTML = <<<EOF
+                <img src="file://$corrosionMapFilePath" alt="Overview image"
+                     width="442"
+                     style="max-height: 370px;
+                            float: left;" />
+EOF;
+        }
+
         $html = <<<EOF
-            <p style="text-align: center;font-size: 19px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Point #$point_id</p>
+            <h2 style="text-align: center;font-size: 19px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Point #$point_id</h2>
             <table cellpadding="0" cellspacing="0">
                 <tbody>
                     <tr>
@@ -829,11 +808,11 @@ EOF;
                         </td>
                     </tr>
                     <tr>
-                        <td width="300" style="border: 1px solid #ececec">
+                        <td width="310" style="border: 1px solid #ececec">
                             $corrosionMapHTML
                         </td>
                         <td width="30"></td>
-                        <td width="350" valign="top">
+                        <td width="340" valign="top">
                             $pointInfo
                         </td>
                     </tr>

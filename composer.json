@@ -43,7 +43,7 @@
         "cloudcreativity/laravel-json-api": "^1.1",
         "net7/documents": "dev-develop",
         "net7/logging": "dev-develop",
-        "net7/docs-generator": "2.0",
+        "net7/docs-generator": "^2.0",
         "net7/env-measure": "dev-develop",
         "norse-blue/parentity": "dev-master",
         "predis/predis": "^1.1",

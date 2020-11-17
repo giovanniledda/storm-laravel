@@ -73,9 +73,11 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
             'statuses',
             'close',
             'history',
+            'closed-projects',
             'change-type')->controller('ProjectController') //uses the App\Http\Controllers\Api\ProjectsController
         ->routes(function ($projects) {
             $projects->get('/statuses', 'statuses')->name('statuses');
+            $projects->get('/closed', 'closedProjects')->name('closed-projects');
             $projects->post('/{record}/close', 'close')->name('close');
             $projects->get('{record}/history', 'history')->name('history');
             $projects->post('/{record}/change-type', 'changeType')->name('change-type');

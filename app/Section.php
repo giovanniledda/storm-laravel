@@ -260,7 +260,7 @@ class Section extends Model
 
             // TODO: spostare tra le prop
             $resize_image = true;
-            $resize_pins = true;
+            $resize_pins = false;
 
             if ($resize_image) {
                 $sizeW = $division_factor ? ($bridge_w) / ($division_factor * 2) : 696;  // larghezza del foglio A4 (queste immagini sono create per il doc CorrosionMap)
@@ -320,8 +320,7 @@ class Section extends Model
                     $yy = ($y * $sizeH) / ($bridge_h * 2);
 
                     // copio il pin  sull'immagine del deck
-//                imagecopymerge($deck_with_pins_resized_img_dest, $pin_png_image_src, $xx - $new_w / 2, $yy - $new_h, 0, 0, $new_w, $new_h, 100);
-                    Utils::imagecopymerge_alpha(
+                    imagecopymerge(
                         $deck_with_pins_resized_img_dest,
                         $pin_png_image_src,
                         $xx - $new_w / 2,
@@ -332,6 +331,7 @@ class Section extends Model
                         $new_h,
                         100
                     );
+//                    Utils::imagecopymerge_alpha($deck_with_pins_resized_img_dest, $pin_png_image_src, $xx - $new_w / 2, $yy - $new_h, 0, 0, $new_w, $new_h, 100);
 
                     imagealphablending($deck_with_pins_resized_img_dest, false);
                     imagesavealpha($deck_with_pins_resized_img_dest, true);

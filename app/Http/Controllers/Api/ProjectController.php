@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\ApplicationLog;
 use App\ApplicationLogSection;
+use App\Boat;
 use App\Http\Requests\RequestApplicationLog;
 use App\Jobs\GenerateApplicationLogReport;
 use App\Jobs\GenerateCorrosionMapReport;
@@ -32,6 +33,8 @@ use App\Utils\Utils;
 use App\Jobs\ProjectGoogleSync;
 use Net7\DocsGenerator\DocsGenerator;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
+use const PERMISSION_ADMIN;
+use const PERMISSION_BACKEND_MANAGER;
 use const PROJECT_STATUSES;
 use const REPORT_APPLOG_SUBTYPE;
 use const REPORT_CORROSION_MAP_SUBTYPE;
@@ -1018,5 +1021,22 @@ class ProjectController extends Controller
         );
 
         return Utils::renderStandardJsonapiResponse([], 200);
+    }
+
+
+    /**
+     * #PR33  /api/v1/closed-projects
+     * @param Request $request
+     *
+     * @return mixed
+     */
+    public function closedProjects(Request $request)
+    {
+        /** @var User $user */
+        $user = \Auth::user();
+        if ($user->can(PERMISSION_ADMIN) || $user->can(PERMISSION_BACKEND_MANAGER)) {
+            return Utils::renderStandardJsonapiResponse(Project::closedProjects(), 200);
+        }
+        return Utils::jsonAbortWithInternalError(401, 401, 'Authorization denied', "You're not allowed to access this resource.");
     }
 }

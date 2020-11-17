@@ -354,7 +354,7 @@ EOF;
         if (empty($task_ids)) {
             return "<div>$noTasksMessage</div>";
         }
-        $html = '<div><p style="text-align: center;font-size: 18px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">General view</p>';
+        $html = '<h1 style="text-align: center;font-size: 18px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">General view</h1>';
 
 //        $sections1 = Section::getSectionsStartingFromTasks($task_ids);
         $sections = $this->boat->sections;
@@ -372,16 +372,9 @@ EOF;
 //        $d_factor = $max_w/1236;
 //        $d_factor = $max_w/696;
 
-
-        // Riflessione: voglio evitare che nell'overview si abbia un'immagine in una pagina differente (successiva) a quella in cui viene stampato il proprio titolo (nome del ponte)
-        // devo calcolare a che punto sono arrivato con la stampa all'interno della pagina
-        // nella pagina, la parte "scrivibile (senza i bordi bianchi di margine sopra e sotto) è di 880px, 18px ce li mangia il titolo "General View", restano 860px arrotondando
-        // arrivato a circa 600px, valuto se immagine + testo ci stanno in pagina corrente, se no spingo e vado alla seguente
-        $heightPxLeft = 860;
-        $imageTitleHeightPx = 14; // pixels
-        $howManyHeightPxSoFar = 0;
-
         /** @var Section $section */
+        $sectionsCounter = 0;
+        $totSections = count($sections);
         foreach ($sections as $section) {
             $section_text = "{$section->name}";
             // 2 - divido questo max per 1236 ed ottengo un fattore per cui dovrò andare a dividere la W (in realtà divido per il fattore * 2) di tutte le altre section per ottenere la dimensione corretta
@@ -389,35 +382,20 @@ EOF;
             $section->drawOverviewImageWithTaskPoints($task_ids, $d_factor);
             $overview_img = $section->getPointsImageOverview();
 
-            // calcolo se devo andare su una nuova pagina con l'overview
-            $overviewImageInfo = getimagesize($overview_img);
-            $imageAndTitleHeight = ($overviewImageInfo[1] + $imageTitleHeightPx);
-            $howManyPxExtra = 0;
-            $sbordaDi = '';
-            $spacer = '';
-            $howManyHeightPxSoFar += $imageAndTitleHeight;
-            $heightPxLeft -= $imageAndTitleHeight;
-            if ($heightPxLeft <= 0) {  // se entro qua, l'immagine sborda! Dobbiamo andare in nuova pagina.
-                $howManyPxExtra = $howManyHeightPxSoFar - 860;
-                // non c'è verso di distanziare gli elementi con un'altezza fissa
-                // per questo, prendo n elementi e li duplico n volte per "spingere" in basso l'immagine
-                $howManySpacers = floor($howManyPxExtra/56);
-                $spacers = '';
-                for ($i = 0; $i < $howManySpacers; $i++) {
-                    $spacers .= "<p style='border: white solid 10px'><br/></p>"; // ognuno di questi blocchi è 1.5cm ossia 56px circa;
-                }
-                $sbordaDi = 'SBORDO di ' . $howManyPxExtra; // debug only
-                $heightPxLeft = 860;
-                $howManyHeightPxSoFar = 0;
+            $pageBreak = '';
+            if (++$sectionsCounter%2 == 0 && $sectionsCounter < $totSections) {
+                $pageBreak = '<phpdocx_break data-type="page" data-number="1" />';
             }
 
             $html .= <<<EOF
-                    $spacers
-                    <p style="text-align:center; font-size: 14px; color: #999999;">$section_text</p>&nbsp;
-                    <img width="926" align="center" src="file://$overview_img" alt="Section Overview Image">
+                    <div>
+                        <p style="text-align:center; font-size: 14px; color: #999999;">$section_text
+                            <img width="926" align="center" src="file://$overview_img" alt="Section Overview Image">
+                        </p>
+                    </div>
+                    $pageBreak
 EOF;
         }
-        $html .= '</div>';
         return $html;
     }
 
@@ -1103,7 +1081,7 @@ EOF;
 	            </tr>
 	        </tbody>
 	    </table>
-	    <p style="page-break-before: always;"></p>
+<!--	    <p style="page-break-before: always;"></p>-->
 EOF;
 
         // Surface inspection
