@@ -1081,7 +1081,7 @@ EOF;
 	            </tr>
 	        </tbody>
 	    </table>
-	    <p style="page-break-before: always;"></p>
+<!--	    <p style="page-break-before: always;"></p>-->
 EOF;
 
         // Surface inspection

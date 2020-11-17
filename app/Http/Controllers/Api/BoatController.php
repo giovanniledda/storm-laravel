@@ -12,6 +12,9 @@ use App\BoatUser;
 use Validator;
 use App\Utils\Utils;
 
+use const PERMISSION_ADMIN;
+use const PERMISSION_BACKEND_MANAGER;
+
 
 class BoatController extends Controller
 {
@@ -67,8 +70,14 @@ class BoatController extends Controller
      */
     public function closedProjects(Request $request, $record)
     {
-        $boat = Boat::findOrFail($record->id);
-        return Utils::renderStandardJsonapiResponse($boat->closedProjectsJsonApi(), 200);
+        /** @var User $user */
+        $user = \Auth::user();
+        if ($user->can(PERMISSION_ADMIN) || $user->can(PERMISSION_BACKEND_MANAGER)) {
+            /** @var Boat $boat */
+            $boat = Boat::findOrFail($record->id);
+            return Utils::renderStandardJsonapiResponse($boat->closedProjectsJsonApi(), 200);
+        }
+        return Utils::jsonAbortWithInternalError(401, 401, 'Authorization denied', "You're not allowed to access this resource.");
     }
 
     /**
