@@ -435,12 +435,6 @@ class ProjectController extends Controller
                 );
                 // $document = $project->getDocument(MEASUREMENT_FILE_TYPE);
                 if ($document) {
-                    ProjectLoadEnvironmentalData::dispatch(
-                        $project,
-                        $document,
-                        $data_source
-                    ); // default queue
-
                     if (\Auth::check()) {
                         $auth_user = \Auth::user();
                         $user_id = $auth_user->id;
@@ -458,6 +452,12 @@ class ProjectController extends Controller
                             'measurement_interval_dates' => null,
                         ]
                     );
+
+                    ProjectLoadEnvironmentalData::dispatch(
+                        $project,
+                        $document,
+                        $data_source
+                    ); // default queue
 
                     return $this->renderJsonOrDownloadFile($request, $document);
                 }
