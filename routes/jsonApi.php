@@ -45,7 +45,7 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
 
         $api->resource('users');
 
-        $api->resource('users')->only('closed-projects')->controller('UserController') //uses the App\Http\Controllers\Api\UserController
+        $api->resource('users')->only('update-photo')->controller('UserController') //uses the App\Http\Controllers\Api\UserController
         ->routes(function ($boats) {
             $boats->post('{record}/update-photo', 'updatePhoto')->name('update-photo');
         });

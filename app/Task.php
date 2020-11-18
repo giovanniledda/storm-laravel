@@ -188,9 +188,20 @@ class Task extends Model
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeOpen($query)
+    public function scopeOpened($query)
     {
         return $query->where('is_open', '=', 1);
+    }
+
+    /**
+     * Scope a query to only include only open Tasks
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeClosed($query)
+    {
+        return $query->where('is_open', '=', 0);
     }
 
     /**

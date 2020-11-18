@@ -30,6 +30,7 @@ use const MEASUREMENT_FILE_TYPE;
 use const PROJECT_STATUS_CLOSED;
 use const TASKS_STATUS_ACCEPTED;
 use const TASKS_STATUS_DRAFT;
+use const TASKS_STATUS_MONITORED;
 
 // use Illuminate\Support\Facades\Queue;
 
@@ -896,14 +897,15 @@ class Project extends Model
          *  TASKS_STATUS_DRAFT, TASKS_STATUS_IN_PROGRESS,
          *  TASKS_STATUS_ACCEPTED
          * * */
-        $foundTasks = $this->tasks()
-            ->where('is_open', '=', 1)
+        $projectOpenedTasks = $this->tasks()->opened();
+        $foundTasks = $projectOpenedTasks
             ->whereIn('task_status',
                 [
                     TASKS_STATUS_DRAFT,
                     TASKS_STATUS_SUBMITTED,
                     TASKS_STATUS_ACCEPTED,
                     TASKS_STATUS_IN_PROGRESS,
+//                    TASKS_STATUS_MONITORED,
 //                    TASKS_STATUS_REMARKED
                 ]);
 
@@ -915,12 +917,11 @@ class Project extends Model
 
         if ($foundTasks->count() && $force) {
             // chiudo tutti i ticket che trovo e metto il progetto in stato closed
-            $n = $foundTasks->count();
-            foreach ($foundTasks->get() as $task) {
+            foreach ($projectOpenedTasks->get() as $task) {
                 $task->update(['is_open' => 0]);
             }
             $this->_closeProject();
-            return ['success' => true, 'tasks' => $n];
+            return ['success' => true, 'tasks' => $projectOpenedTasks->count()];
         }
 
         if ($foundTasks->count() == 0) {
