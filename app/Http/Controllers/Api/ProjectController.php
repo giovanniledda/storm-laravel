@@ -113,13 +113,13 @@ class ProjectController extends Controller
         /**
          * @todo segnare nella history del progetto l'evento se serve.
          */
-
         if ($closeResponse['success']) {
             $ret = [
                 'data' => [
                     'type' => 'projects',
                     'id' => $data['id'],
                     'attributes' => [
+                        'success' => $closeResponse['success'],
                         'status' => PROJECT_STATUS_CLOSED,
                         'force' => $force,
                         'tasks' => $closeResponse['tasks']
@@ -133,6 +133,7 @@ class ProjectController extends Controller
                     'type' => 'projects',
                     'id' => $data['id'],
                     'attributes' => [
+                        'success' => $closeResponse['success'],
                         'status' => $data['project_status'],
                         'force' => $force,
                         'tasks' => $closeResponse['tasks']
