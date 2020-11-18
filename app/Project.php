@@ -917,11 +917,13 @@ class Project extends Model
 
         if ($foundTasks->count() && $force) {
             // chiudo tutti i ticket che trovo e metto il progetto in stato closed
+            $closed = 0;
             foreach ($projectOpenedTasks->get() as $task) {
                 $task->update(['is_open' => 0]);
+                $closed++;
             }
             $this->_closeProject();
-            return ['success' => true, 'tasks' => $projectOpenedTasks->count()];
+            return ['success' => true, 'tasks' => $closed];
         }
 
         if ($foundTasks->count() == 0) {
