@@ -1083,9 +1083,24 @@ class Project extends Model
         return Project::closed()->get();
     }
 
-    public static function closedProjectsFiltered()
+    public static function closedProjectsFiltered($filters = [])
     {
-        return Project::with('boat', 'location')->closed()->get();
+        $builder = Project::with('boat', 'location')->closed();
+        if (isset($filters['start_date'])) {
+            $builder->where('start_date', '>=', $filters['start_date']);
+        }
+        if (isset($filters['end_date'])) {
+            $builder->where('end_date', '<=', $filters['end_date']);
+        }
+        if (isset($filters['type'])) {
+            $builder->where('project_type', $filters['type']);
+        }
+        if (isset($filters['boat_name'])) {
+            $builder->whereHas('boat', function ($query) use ($filters) {
+                $query->where('name', 'like', '%'.$filters['boat_name'].'%');
+            });
+        }
+        return $builder->get();
     }
 
 

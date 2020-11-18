@@ -1036,7 +1036,7 @@ class ProjectController extends Controller
         $user = \Auth::user();
         if ($user->can(PERMISSION_ADMIN) || $user->can(PERMISSION_BACKEND_MANAGER)) {
             $data = [];
-            $closedProjects = Project::closedProjectsFiltered();
+            $closedProjects = Project::closedProjectsFiltered($request->get('filter'));
             if (!empty($closedProjects)) {
                 foreach ($closedProjects as $project) {
                     $data['data'][] = [
