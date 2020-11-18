@@ -909,22 +909,20 @@ class Project extends Model
                 ]);
 
 
-        if ($foundTasks->count() && !$force) {
-            // non posso chiudere il progetto ritorno false
-            return ['success' => false, 'tasks' => $foundTasks->count()];
-        }
+        if ($foundTasks->count()) {
+            if (!$force) {
+                // non posso chiudere il progetto ritorno false
+                return ['success' => false, 'tasks' => $foundTasks->count()];
+            }
 
-        if ($foundTasks->count() && $force) {
             // chiudo tutti i ticket che trovo e metto il progetto in stato closed
             foreach ($this->tasks()->opened()->get() as $task) {
                 $task->update(['is_open' => 0]);
             }
-            $this->_closeProject();
-            return ['success' => true, 'tasks' => $this->tasks()->opened()->count()];
         }
 
         $this->_closeProject();
-        return ['success' => true, 'tasks' => 0];
+        return ['success' => true, 'tasks' => $this->tasks()->opened()->count()];
     }
 
     /**
