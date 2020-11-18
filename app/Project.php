@@ -27,6 +27,7 @@ use function preg_replace;
 use function request;
 
 use const MEASUREMENT_FILE_TYPE;
+use const PROJECT_STATUS_CLOSED;
 use const TASKS_STATUS_ACCEPTED;
 use const TASKS_STATUS_DRAFT;
 
@@ -1062,14 +1063,26 @@ class Project extends Model
         $this->save();
     }
 
-
     /**
-     * Get all closed projects
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
      */
+    public function scopeClosed($query)
+    {
+        return $query->where('project_status', '=', PROJECT_STATUS_CLOSED);
+    }
+
     public static function closedProjects()
     {
-        return Project::where('project_status', '=', PROJECT_STATUS_CLOSED)->get();
+        return Project::closed()->get();
     }
+
+    public static function closedProjectsFiltered()
+    {
+        return Project::with('boat', 'site')->closed()->get();
+    }
+
+
 
     /**
      * Get all NOT closed projects

@@ -1036,13 +1036,15 @@ class ProjectController extends Controller
         $user = \Auth::user();
         if ($user->can(PERMISSION_ADMIN) || $user->can(PERMISSION_BACKEND_MANAGER)) {
             $data = [];
-            $closedProjects = Project::closedProjects();
-            foreach ($closedProjects as $project) {
-                $data['data'][] = [
-                    'id' => $project->id,
-                    'type' => 'projects',
-                    'attributes' => $project
-                ];
+            $closedProjects = Project::closedProjectsFiltered();
+            if (!empty($closedProjects)) {
+                foreach ($closedProjects as $project) {
+                    $data['data'][] = [
+                        'id' => $project->id,
+                        'type' => 'projects',
+                        'attributes' => $project
+                    ];
+                }
             }
             return Utils::renderStandardJsonapiResponse($data, 200);
         }
