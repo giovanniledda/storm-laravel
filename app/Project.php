@@ -914,13 +914,14 @@ class Project extends Model
                 // non posso chiudere il progetto ritorno false
                 return ['success' => false, 'tasks' => $foundTasks->count()];
             }
-
-            // chiudo tutti i ticket che trovo e metto il progetto in stato closed
-            foreach ($this->tasks()->opened()->get() as $task) {
-                $task->update(['is_open' => 0]);
-            }
         }
 
+        // se non trovo ticket negli stati sopra, chiudo tutti i ticket APERTI (a prescindere dallo stato)
+        foreach ($this->tasks()->opened()->get() as $task) {
+            $task->update(['is_open' => 0]);
+        }
+
+        // ...e metto il progetto in stato closed
         $this->_closeProject();
         return ['success' => true, 'tasks' => $this->tasks()->opened()->count()];
     }
