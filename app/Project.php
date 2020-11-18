@@ -639,6 +639,12 @@ class Project extends Model
         return $this->site()->select('sites.name', 'sites.location')->first();
     }
 
+    // Alias che mi serve per compatibilità con API custom PR33
+    public function location()
+    {
+        return $this->site();
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -1079,7 +1085,7 @@ class Project extends Model
 
     public static function closedProjectsFiltered()
     {
-        return Project::with('boat', 'site')->closed()->get();
+        return Project::with('boat', 'location')->closed()->get();
     }
 
 
