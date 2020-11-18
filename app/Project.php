@@ -897,8 +897,7 @@ class Project extends Model
          *  TASKS_STATUS_DRAFT, TASKS_STATUS_IN_PROGRESS,
          *  TASKS_STATUS_ACCEPTED
          * * */
-        $projectOpenedTasks = $this->tasks()->opened();
-        $foundTasks = $projectOpenedTasks
+        $foundTasks = $this->tasks()->opened()
             ->whereIn('task_status',
                 [
                     TASKS_STATUS_DRAFT,
@@ -917,18 +916,15 @@ class Project extends Model
 
         if ($foundTasks->count() && $force) {
             // chiudo tutti i ticket che trovo e metto il progetto in stato closed
-            foreach ($projectOpenedTasks->get() as $task) {
+            foreach ($this->tasks()->opened()->get() as $task) {
                 $task->update(['is_open' => 0]);
             }
             $this->_closeProject();
-            return ['success' => true, 'tasks' => $projectOpenedTasks->count()];
+            return ['success' => true, 'tasks' => $this->tasks()->opened()->count()];
         }
 
-        if ($foundTasks->count() == 0) {
-            // chiudo il progetto e ritorno true
-            $this->_closeProject();
-            return ['success' => true, 'tasks' => $foundTasks->count()];
-        }
+        $this->_closeProject();
+        return ['success' => true, 'tasks' => 0];
     }
 
     /**
