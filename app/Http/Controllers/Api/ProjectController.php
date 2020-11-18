@@ -1035,7 +1035,16 @@ class ProjectController extends Controller
         /** @var User $user */
         $user = \Auth::user();
         if ($user->can(PERMISSION_ADMIN) || $user->can(PERMISSION_BACKEND_MANAGER)) {
-            return Utils::renderStandardJsonapiResponse(Project::closedProjects(), 200);
+            $data = [];
+            $closedProjects = Project::closedProjects();
+            foreach ($closedProjects as $project) {
+                $data['data'][] = [
+                    'id' => $project->id,
+                    'type' => 'projects',
+                    'attributes' => $project
+                ];
+            }
+            return Utils::renderStandardJsonapiResponse($data, 200);
         }
         return Utils::jsonAbortWithInternalError(401, 401, 'Authorization denied', "You're not allowed to access this resource.");
     }
