@@ -349,10 +349,15 @@ EOF;
         return !empty($this->_taskToIncludeInReport) ? $this->_taskToIncludeInReport : $this->getTaskIdsArray();
     }
 
-    public function printHtmlSectionImgsOverview($task_ids = [], $noTasksMessage = '')
+    /**
+     * @param array $task_ids
+     * @param string $noTasksHtmlMessage
+     * @return mixed|string
+     */
+    public function printHtmlSectionImgsOverview($task_ids = [], $noTasksHtmlMessage = '')
     {
         if (empty($task_ids)) {
-            return "<div>$noTasksMessage</div>";
+            return $noTasksHtmlMessage;
         }
         $html = '<h1 style="text-align: center;font-size: 18px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">General view</h1>';
 
@@ -421,8 +426,8 @@ EOF;
     public function getApplicationLogHtmlSectionImgsOverview()
     {
         /** @var Task $task */
-        $noTasksMsg = '<p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">No remarks related to this Application Log</p>';
-        return $this->printHtmlSectionImgsOverview($this->_taskToIncludeInReport, $noTasksMsg);
+//        $noTasksMsg = '<p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">No remarks related to this Application Log</p>';
+        return $this->printHtmlSectionImgsOverview($this->_taskToIncludeInReport);
     }
 
     /**
@@ -1008,7 +1013,7 @@ EOF;
         $html .= <<<EOF
 	        </tbody>
 	    </table>
-    <p style="page-break-before: always;"></p>
+<!--    <p style="page-break-before: always;"></p>-->
 EOF;
         return $html;
     }
@@ -1110,6 +1115,7 @@ EOF;
         $date_hour = date('d/m/Y H:i', strtotime($application_section->date_hour));
 
         $html = <<<EOF
+                <p style="page-break-before: always;"></p>
                 <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Product Application</p>
 
                 <!-- Application date and hour -->
@@ -1278,6 +1284,7 @@ EOF;
         /** @var ApplicationLogSection $inspection_section */
         $inspection_section = $application_log->getInspectionSection();
         $html = <<<EOF
+            <p style="page-break-before: always;"></p>
             <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Inspection</p>
 EOF;
 
