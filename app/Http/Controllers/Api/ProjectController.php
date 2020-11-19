@@ -15,6 +15,7 @@ use App\Services\ReportGenerator;
 use App\Services\ZonesPersister;
 use App\Task;
 use App\Zone;
+use Illuminate\Support\Str;
 use function __;
 use function array_key_exists;
 use function explode;
@@ -1037,7 +1038,17 @@ class ProjectController extends Controller
         $user = \Auth::user();
         if ($user->can(PERMISSION_ADMIN) || $user->can(PERMISSION_BACKEND_MANAGER)) {
             $data = [];
-            $closedProjects = Project::closedProjectsFiltered($request->get('filter'));
+            $sortField = 'updated_at';
+            $sortDir = 'desc';
+            if ($request->has('sort')) {
+                $sortField = $request->get('sort');
+                if (!Str::startsWith($sortField, '-')) {
+                    $sortDir = 'asc';
+                } else {
+                    $sortField = substr($sortField, 1);
+                }
+            }
+            $closedProjects = Project::closedProjectsFiltered($request->get('filter'), $sortField, $sortDir);
             if (!empty($closedProjects)) {
                 foreach ($closedProjects as $project) {
                     $data['data'][] = [

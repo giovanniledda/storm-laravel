@@ -1079,7 +1079,7 @@ class Project extends Model
         return Project::closed()->get();
     }
 
-    public static function closedProjectsFiltered($filters = [])
+    public static function closedProjectsFiltered($filters = [], $sortField = 'updated_at', $sortDir = 'desc')
     {
         $builder = Project::with('boat', 'location')->closed();
         if (isset($filters['start_date'])) {
@@ -1096,7 +1096,7 @@ class Project extends Model
                 $query->where('name', 'like', '%'.$filters['boat_name'].'%');
             });
         }
-        return $builder->get();
+        return $builder->orderBy($sortField, $sortDir)->get();
     }
 
 
