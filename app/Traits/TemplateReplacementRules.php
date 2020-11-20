@@ -323,12 +323,14 @@ EOF;
     {
         $html = '<p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Table of Contents</p>';
         $html .= '<table cellpadding="0" cellspacing="0"><tbody>';
-        $html .= <<<EOF
-                    <tr style="height: 32px">
-                        <td width="496" style="border-bottom: 1px solid #ececec;"><b>General view</b></td>
-                        <td width="200" style="border-bottom: 1px solid #ececec; text-align: right;">Pag. 3</td>
-                    </tr>
+        if (!empty($this->_taskToIncludeInReport)) {
+            $html .= <<<EOF
+                        <tr style="height: 32px">
+                            <td width="496" style="border-bottom: 1px solid #ececec;"><b>General view</b></td>
+                            <td width="200" style="border-bottom: 1px solid #ececec; text-align: right;">Pag. 3</td>
+                        </tr>
 EOF;
+        }
         $html .= "</tbody></table>";
         return $html;
     }
@@ -1028,8 +1030,13 @@ EOF;
         $preparation_section = $application_log->getPreparationSection();
         $date = date('d/m/Y', strtotime($preparation_section->date_hour));
 
+        $pageBreakBefore = '';
+        if (!empty($this->_taskToIncludeInReport)) {
+            $pageBreakBefore = '<p style="page-break-before: always;"></p>';
+        }
+        
         $html = <<<EOF
-            <p style="page-break-before: always;"></p>
+            $pageBreakBefore
             <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Surface Preparation</p>
 
             <table cellpadding="0" cellspacing="0">
