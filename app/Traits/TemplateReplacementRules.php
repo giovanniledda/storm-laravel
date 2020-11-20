@@ -351,13 +351,13 @@ EOF;
 
     /**
      * @param array $task_ids
-     * @param string $noTasksHtmlMessage
-     * @return mixed|string
+     * @param string $noTasksHTMLMessage
+     * @return string
      */
-    public function printHtmlSectionImgsOverview($task_ids = [], $noTasksHtmlMessage = '')
+    public function printHtmlSectionImgsOverview($task_ids = [], $noTasksHTMLMessage = '')
     {
         if (empty($task_ids)) {
-            return $noTasksHtmlMessage;
+            return "<div>$noTasksHTMLMessage</div>";
         }
         $html = '<h1 style="text-align: center;font-size: 18px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">General view</h1>';
 
