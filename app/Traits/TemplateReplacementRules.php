@@ -330,6 +330,12 @@ EOF;
                             <td width="200" style="border-bottom: 1px solid #ececec; text-align: right;">Pag. 3</td>
                         </tr>
 EOF;
+        } else {
+            $html .= <<<EOF
+                        <tr style="height: 32px">
+                            <td width="496" style="border-bottom: 1px solid #ececec;"><b>Work in Progress</b></td>
+                        </tr>
+EOF;
         }
         $html .= "</tbody></table>";
         return $html;
@@ -1034,7 +1040,7 @@ EOF;
         if (!empty($this->_taskToIncludeInReport)) {
             $pageBreakBefore = '<p style="page-break-before: always;"></p>';
         }
-        
+
         $html = <<<EOF
             $pageBreakBefore
             <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Surface Preparation</p>
