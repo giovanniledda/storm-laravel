@@ -323,6 +323,7 @@ EOF;
     {
         $html = '<p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Table of Contents</p>';
         $html .= '<table cellpadding="0" cellspacing="0"><tbody>';
+
         if (!empty($this->_taskToIncludeInReport)) {
             $html .= <<<EOF
                         <tr style="height: 32px">
@@ -338,6 +339,8 @@ EOF;
 EOF;
         }
         $html .= "</tbody></table>";
+
+        $html = '<phpdocx_tablecontents data-autoUpdate="true" />';
         return $html;
     }
 
@@ -1043,7 +1046,7 @@ EOF;
 
         $html = <<<EOF
             $pageBreakBefore
-            <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Surface Preparation</p>
+            <h2 style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Surface Preparation</h2>
 
             <table cellpadding="0" cellspacing="0">
                 <tbody>
@@ -1129,7 +1132,7 @@ EOF;
 
         $html = <<<EOF
                 <p style="page-break-before: always;"></p>
-                <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Product Application</p>
+                <h2 style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Product Application</h2>
 
                 <!-- Application date and hour -->
                 <table cellpadding="0" cellspacing="0">
@@ -1297,7 +1300,7 @@ EOF;
         $inspection_section = $application_log->getInspectionSection();
         $html = <<<EOF
             <p style="page-break-before: always;"></p>
-            <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Inspection</p>
+            <h2 style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Inspection</h2>
 EOF;
 
         // Adhesion
