@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Utils\Utils;
+use Net7\Documents\Document;
 use function base64_encode;
 use function file_get_contents;
 use \Net7\Documents\DocumentsController as BaseController;
 use Illuminate\Http\Request;
+use function response;
 
 class DocumentsController extends BaseController
 {
@@ -65,4 +67,25 @@ class DocumentsController extends BaseController
         return Utils::jsonAbortWithInternalError(404, 404, 'Resource not found', "No document with ID {$request->record}");
     }
 
+    /**
+     * @param Request $request
+     * @return mixed
+     */
+    public function downloadDocumentWeb(Request $request)
+    {
+        /** @var Document $document */
+        $document = Document::findOrFail($request->documentId);
+        if ($request->size) {
+            try {
+                $path = $document->getPathBySize($request->size);
+            } catch( \Spatie\MediaLibrary\Exceptions\InvalidConversion $e) {
+                $contents_errors = [$e->getMessage()];
+                $resp = Response(['errors' =>$contents_errors], 404);
+                $resp->header('Content-Type', 'application/json');
+                return $resp;
+            }
+            return response()->download($path);
+        }
+        return $document->getRelatedMedia();
+    }
 }

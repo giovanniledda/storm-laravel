@@ -114,7 +114,7 @@ class GenericDataInfoBlock extends Model
             'id' => $this->id,
             'attributes' => parent::toArray()
         ];
-        $data['attributes']['photos'] = $this->getPhotosApi();
+        $data['attributes']['photos'] = $this->getPhotosApi('data', null, true);
 
         return $data;
     }

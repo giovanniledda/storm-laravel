@@ -2,6 +2,7 @@
 
 use CloudCreativity\LaravelJsonApi\Facades\JsonApi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,9 +24,13 @@ Route::group(['prefix' => 'auth'], function () {
 //    Route::post('signup', 'Api\AuthController@signup')->name('api.auth.signup');  // per ora, nella mobile app non servono
     Route::post('reset-password-request', 'Api\AuthController@resetPasswordRequest')->name('api.auth.password.reset');
 
+
     Route::group(['middleware' => 'auth:api'], function () {
         Route::get('logout', 'Api\AuthController@logout')->name('api.auth.logout');
         Route::get('user', 'Api\AuthController@user')->name('api.auth.user');
+
+        // recupero di un documento non pubblico
+        Route::get('download_document_web/{documentId}/{size?}', 'Api\DocumentsController@downloadDocumentWeb')->name('download_document_web');
     });
 });
 
