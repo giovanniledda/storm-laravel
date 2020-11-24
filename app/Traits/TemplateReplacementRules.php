@@ -340,7 +340,8 @@ EOF;
         }
         $html .= "</tbody></table>";
 
-        $html = '<phpdocx_tablecontents data-autoUpdate="true" />';
+        $html = '<p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Table of Contents</p>';
+        $html .= '<phpdocx_tablecontents data-autoUpdate="true" />';
         return $html;
     }
 
