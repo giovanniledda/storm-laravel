@@ -33,6 +33,7 @@ use function in_array;
 use function logger;
 use function max;
 use function min;
+use function storage_path;
 use function strtotime;
 use function throw_if;
 use function time;
@@ -307,7 +308,25 @@ EOF;
         return $html;
     }
 
-
+    /**
+     *
+     */
+    public function getCorrosionMapHtmlLegendaPointLifeCircle()
+    {
+        $imagePath = Storage::disk('public')->url('CicloTask.png');
+        $imagePath = storage_path('app/public/CicloTask.png');
+        $html = <<<EOF
+                    <div>
+                        <p style="text-align:center; font-size: 14px; color: #999999;">
+                            Point circle of life: <br />
+                        </p>
+                        <p>
+                            <img width="970" align="left" src="file://$imagePath" alt="Section Overview Image">
+                        </p>
+                    </div>
+EOF;
+        return $html;
+    }
 
     /**
      * Stampa nel docx l'htlm relativo all'indice.
@@ -457,7 +476,8 @@ EOF;
             '$break_n3$' => null,  // riconosciuto dal sistema
             '$html_bloccoTask$' => 'getCorrosionMapHtmlBlock()',
             '$html_sectionImgsOverview$' => 'getCorrosionMapHtmlSectionImgsOverview()',
-            '$html_tableOfContents$' => 'getCorrosionMapHtmlTableOfContents()'
+            '$html_tableOfContents$' => 'getCorrosionMapHtmlTableOfContents()',
+            '$html_legendaPointLifeCircle$' => 'getCorrosionMapHtmlLegendaPointLifeCircle()'
         ];
         $this->insertPlaceholders('corrosion_map', $placeholders, true);
     }
@@ -1049,7 +1069,7 @@ EOF;
             $pageBreakBefore
 
             <h2>Surface Preparation H2</h2>
-	    
+
             <phpdocx_heading data-text="Custom headingSurface Preparation 2" data-level="2" />
 
             <phpdocx_heading data-text="Custom headingSurface Preparation 1" data-level="1" />
