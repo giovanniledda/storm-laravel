@@ -275,7 +275,12 @@ trait TemplateReplacementRules
      */
     public function getCorrosionMapHtmlTableOfContents()
     {
-        $html = '<p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Table of Contents</p>';
+
+        $html = '<h2 style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Table of Contents</h2>';
+        $html .= '<phpdocx_tablecontents data-autoUpdate="true" />';
+        return $html;
+
+        $html = '<h2 style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Table of Contents</h2>';
         $html .= '<table cellpadding="0" cellspacing="0"><tbody>';
         $html .= <<<EOF
                     <tr style="height: 32px">
@@ -306,6 +311,7 @@ EOF;
         }
         $html .= "</tbody></table>";
         return $html;
+
     }
 
     /**
@@ -340,7 +346,7 @@ EOF;
      */
     public function getApplicationLogHtmlTableOfContents()
     {
-        $html = '<p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Table of Contents</p>';
+        $html = '<h2 style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Table of Contents</h2>';
         $html .= '<table cellpadding="0" cellspacing="0"><tbody>';
 
         if (!empty($this->_taskToIncludeInReport)) {
@@ -359,8 +365,8 @@ EOF;
         }
         $html .= "</tbody></table>";
 
-        $html = '<p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Table of Contents</p>';
-        $html .= '<phpdocx_tablecontents data-autoUpdate="false" />';
+        $html = '<h2 style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Table of Contents</h2>';
+        $html .= '<phpdocx_tablecontents data-autoUpdate="true" />';
         return $html;
     }
 
@@ -390,7 +396,7 @@ EOF;
         if (empty($task_ids)) {
             return "<div>$noTasksHTMLMessage</div>";
         }
-        $html = '<h1 style="text-align: center;font-size: 18px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">General view</h1>';
+        $html = '<h2 style="text-align: center;font-size: 18px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">General view</h2>';
 
 //        $sections1 = Section::getSectionsStartingFromTasks($task_ids);
         $sections = $this->boat->sections;
@@ -1067,16 +1073,7 @@ EOF;
 
         $html = <<<EOF
             $pageBreakBefore
-
-            <h2>Surface Preparation H2</h2>
-
-            <phpdocx_heading data-text="Custom headingSurface Preparation 2" data-level="2" />
-
-            <phpdocx_heading data-text="Custom headingSurface Preparation 1" data-level="1" />
-
-            <phpdocx_heading data-text="Custom headingSurface Preparation 3" data-level="3" />
-
-<h2 style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Surface Preparation</h2>
+            <h2 style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Surface Preparation</h2>
 
             <table cellpadding="0" cellspacing="0">
                 <tbody>
@@ -1392,7 +1389,7 @@ EOF;
         if (count($remarks)) {
             $html = <<<EOF
                 <p style="page-break-before: always;"></p>
-                <p style="text-align: center;font-size: 23px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Remarks</p>
+                <h2 style="text-align: center;font-size: 23px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Remarks</h2>
     EOF;
             foreach ($remarks as $task) {
                 $this->_currentTask = $task;
