@@ -341,7 +341,7 @@ EOF;
         $html .= "</tbody></table>";
 
         $html = '<p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Table of Contents</p>';
-        $html .= '<phpdocx_tablecontents data-autoUpdate="true" />';
+        $html .= '<phpdocx_tablecontents data-autoUpdate="false" />';
         return $html;
     }
 
@@ -1047,7 +1047,16 @@ EOF;
 
         $html = <<<EOF
             $pageBreakBefore
-            <h2 style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Surface Preparation</h2>
+
+            <h2>Surface Preparation H2</h2>
+	    
+            <phpdocx_heading data-text="Custom headingSurface Preparation 2" data-level="2" />
+
+            <phpdocx_heading data-text="Custom headingSurface Preparation 1" data-level="1" />
+
+            <phpdocx_heading data-text="Custom headingSurface Preparation 3" data-level="3" />
+
+<h2 style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Surface Preparation</h2>
 
             <table cellpadding="0" cellspacing="0">
                 <tbody>
