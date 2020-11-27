@@ -318,7 +318,7 @@ class ApplicationLog extends Model
      */
     public function toJsonApi()
     {
-        $this->application_log_sections;
+        $this->application_log_sections; // con questa chiamata mi carica tutte le section dentro $this. Probabilmente avrei risolto comunque con un "with" a monte.
         $data = [
             'type' => $this->table,
             'id' => $this->id,

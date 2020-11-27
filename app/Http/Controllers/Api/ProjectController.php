@@ -15,6 +15,7 @@ use App\Services\ReportGenerator;
 use App\Services\ZonesPersister;
 use App\Task;
 use App\Zone;
+use Illuminate\Support\Str;
 use function __;
 use function array_key_exists;
 use function explode;
@@ -113,13 +114,13 @@ class ProjectController extends Controller
         /**
          * @todo segnare nella history del progetto l'evento se serve.
          */
-
         if ($closeResponse['success']) {
             $ret = [
                 'data' => [
                     'type' => 'projects',
                     'id' => $data['id'],
                     'attributes' => [
+                        'success' => $closeResponse['success'],
                         'status' => PROJECT_STATUS_CLOSED,
                         'force' => $force,
                         'tasks' => $closeResponse['tasks']
@@ -133,6 +134,7 @@ class ProjectController extends Controller
                     'type' => 'projects',
                     'id' => $data['id'],
                     'attributes' => [
+                        'success' => $closeResponse['success'],
                         'status' => $data['project_status'],
                         'force' => $force,
                         'tasks' => $closeResponse['tasks']
@@ -435,12 +437,6 @@ class ProjectController extends Controller
                 );
                 // $document = $project->getDocument(MEASUREMENT_FILE_TYPE);
                 if ($document) {
-                    ProjectLoadEnvironmentalData::dispatch(
-                        $project,
-                        $document,
-                        $data_source
-                    ); // default queue
-
                     if (\Auth::check()) {
                         $auth_user = \Auth::user();
                         $user_id = $auth_user->id;
@@ -458,6 +454,12 @@ class ProjectController extends Controller
                             'measurement_interval_dates' => null,
                         ]
                     );
+
+                    ProjectLoadEnvironmentalData::dispatch(
+                        $project,
+                        $document,
+                        $data_source
+                    ); // default queue
 
                     return $this->renderJsonOrDownloadFile($request, $document);
                 }
@@ -1035,7 +1037,28 @@ class ProjectController extends Controller
         /** @var User $user */
         $user = \Auth::user();
         if ($user->can(PERMISSION_ADMIN) || $user->can(PERMISSION_BACKEND_MANAGER)) {
-            return Utils::renderStandardJsonapiResponse(Project::closedProjects(), 200);
+            $data = [];
+            $sortField = 'updated_at';
+            $sortDir = 'desc';
+            if ($request->has('sort')) {
+                $sortField = $request->get('sort');
+                if (!Str::startsWith($sortField, '-')) {
+                    $sortDir = 'asc';
+                } else {
+                    $sortField = substr($sortField, 1);
+                }
+            }
+            $closedProjects = Project::closedProjectsFiltered($request->get('filter'), $sortField, $sortDir);
+            if (!empty($closedProjects)) {
+                foreach ($closedProjects as $project) {
+                    $data['data'][] = [
+                        'id' => $project->id,
+                        'type' => 'projects',
+                        'attributes' => $project
+                    ];
+                }
+            }
+            return Utils::renderStandardJsonapiResponse($data, 200);
         }
         return Utils::jsonAbortWithInternalError(401, 401, 'Authorization denied', "You're not allowed to access this resource.");
     }

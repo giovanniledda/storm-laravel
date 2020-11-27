@@ -27,8 +27,10 @@ use function preg_replace;
 use function request;
 
 use const MEASUREMENT_FILE_TYPE;
+use const PROJECT_STATUS_CLOSED;
 use const TASKS_STATUS_ACCEPTED;
 use const TASKS_STATUS_DRAFT;
+use const TASKS_STATUS_MONITORED;
 
 // use Illuminate\Support\Facades\Queue;
 
@@ -638,6 +640,12 @@ class Project extends Model
         return $this->site()->select('sites.name', 'sites.location')->first();
     }
 
+    // Alias che mi serve per compatibilità con API custom PR33
+    public function location()
+    {
+        return $this->site();
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -889,38 +897,33 @@ class Project extends Model
          *  TASKS_STATUS_DRAFT, TASKS_STATUS_IN_PROGRESS,
          *  TASKS_STATUS_ACCEPTED
          * * */
-        $foundTasks = $this->tasks()
-            ->where('is_open', '=', 1)
+        $foundTasks = $this->tasks()->opened()
             ->whereIn('task_status',
                 [
                     TASKS_STATUS_DRAFT,
                     TASKS_STATUS_SUBMITTED,
                     TASKS_STATUS_ACCEPTED,
                     TASKS_STATUS_IN_PROGRESS,
+//                    TASKS_STATUS_MONITORED,
 //                    TASKS_STATUS_REMARKED
                 ]);
 
 
-        if ($foundTasks->count() && !$force) {
-            // non posso chiudere il progetto ritorno false
-            return ['success' => false, 'tasks' => $foundTasks->count()];
-        }
-
-        if ($foundTasks->count() && $force) {
-            // chiudo tutti i ticket che trovo e metto il progetto in stato closed
-            $n = $foundTasks->count();
-            foreach ($foundTasks->get() as $task) {
-                $task->update(['is_open' => 0]);
+        if ($foundTasks->count()) {
+            if (!$force) {
+                // non posso chiudere il progetto ritorno false
+                return ['success' => false, 'tasks' => $foundTasks->count()];
             }
-            $this->_closeProject();
-            return ['success' => true, 'tasks' => $n];
         }
 
-        if ($foundTasks->count() == 0) {
-            // chiudo il progetto e ritorno true
-            $this->_closeProject();
-            return ['success' => true, 'tasks' => $foundTasks->count()];
+        // se non trovo ticket negli stati sopra, chiudo tutti i ticket APERTI (a prescindere dallo stato)
+        foreach ($this->tasks()->opened()->get() as $task) {
+            $task->update(['is_open' => 0]);
         }
+
+        // ...e metto il progetto in stato closed
+        $this->_closeProject();
+        return ['success' => true, 'tasks' => $this->tasks()->opened()->count()];
     }
 
     /**
@@ -1062,14 +1065,41 @@ class Project extends Model
         $this->save();
     }
 
-
     /**
-     * Get all closed projects
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
      */
+    public function scopeClosed($query)
+    {
+        return $query->where('project_status', '=', PROJECT_STATUS_CLOSED);
+    }
+
     public static function closedProjects()
     {
-        return Project::where('project_status', '=', PROJECT_STATUS_CLOSED)->get();
+        return Project::closed()->get();
     }
+
+    public static function closedProjectsFiltered($filters = [], $sortField = 'updated_at', $sortDir = 'desc')
+    {
+        $builder = Project::with('boat', 'location')->closed();
+        if (isset($filters['start_date'])) {
+            $builder->where('start_date', '>=', $filters['start_date']);
+        }
+        if (isset($filters['end_date'])) {
+            $builder->where('end_date', '<=', $filters['end_date']);
+        }
+        if (isset($filters['type'])) {
+            $builder->where('project_type', $filters['type']);
+        }
+        if (isset($filters['boat_name'])) {
+            $builder->whereHas('boat', function ($query) use ($filters) {
+                $query->where('name', 'like', '%'.$filters['boat_name'].'%');
+            });
+        }
+        return $builder->orderBy($sortField, $sortDir)->get();
+    }
+
+
 
     /**
      * Get all NOT closed projects

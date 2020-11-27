@@ -81,6 +81,10 @@
 
             <div class="content">
                 <div class="title m-b-md">
+                    @php
+                        $imagePath = storage_path('app/public/CicloTask.png');
+                    @endphp
+                    <img width="926" align="center" src="file:{{$imagePath}}" alt="Section Overview Image">
                     @component('components.gobbo', ['foo' => 'Oggi: '])
                         @slot('title')
                             Welcome to STORM

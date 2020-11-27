@@ -188,9 +188,20 @@ class Task extends Model
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeOpen($query)
+    public function scopeOpened($query)
     {
         return $query->where('is_open', '=', 1);
+    }
+
+    /**
+     * Scope a query to only include only open Tasks
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeClosed($query)
+    {
+        return $query->where('is_open', '=', 0);
     }
 
     /**
@@ -795,7 +806,7 @@ EOF;
         }
 
         $html = <<<EOF
-            <h2 style="text-align: center;font-size: 19px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Point #$point_id</h2>
+            <h3 style="text-align: center;font-size: 19px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Point #$point_id</h3>
             <table cellpadding="0" cellspacing="0">
                 <tbody>
                     <tr>

@@ -33,6 +33,7 @@ use function in_array;
 use function logger;
 use function max;
 use function min;
+use function storage_path;
 use function strtotime;
 use function throw_if;
 use function time;
@@ -274,40 +275,63 @@ trait TemplateReplacementRules
      */
     public function getCorrosionMapHtmlTableOfContents()
     {
-        $html = '<p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Table of Contents</p>';
-        $html .= '<table cellpadding="0" cellspacing="0"><tbody>';
-        $html .= <<<EOF
-                    <tr style="height: 32px">
-                        <td width="496" style="border-bottom: 1px solid #ececec;"><b>General view</b></td>
-                        <td width="200" style="border-bottom: 1px solid #ececec; text-align: right;">Pag. 3</td>
-                    </tr>
-EOF;
-        $tasks = $this->getTasksToIncludeInReport();
-        $toc_pages = ceil(count($tasks)/26);
-        $task_ids = $this->_taskToIncludeInReport ?? $this->tasks()->pluck('id')->toArray();
-        $sections = Section::getSectionsStartingFromTasks($task_ids);
-        $section_overview_pages = ceil(count($sections)/4);
-        $index = 2 + $toc_pages + $section_overview_pages;
-        /** @var Task $task */
-        foreach ($tasks as $task) {
-            $this->_currentTask = $task;
-            $interventTypeName = $task->intervent_type ? $task->intervent_type->name_label : 'Point';
-            $this->updateCurrentTaskPhotosArray();
-            $index = count($this->_currentTaskPhotos) > 4 ? ($index + 2) : ($index + 1);
-            $point_id = $task->internal_progressive_number;
-            $task_location = $task->section ? Utils::sanitizeTextsForPlaceholders($task->section->name) : '?';
-            $html .= <<<EOF
-                    <tr style="height: 32px">
-                        <td width="496" style="border-bottom: 1px solid #ececec;"><b>$interventTypeName #$point_id</b> ($task_location)</td>
-                        <td width="200" style="border-bottom: 1px solid #ececec; text-align: right;">Pag. $index</td>
-                    </tr>
-EOF;
-        }
-        $html .= "</tbody></table>";
+        $html = '<h2 style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Table of Contents</h2>';
+        $html .= '<phpdocx_tablecontents data-autoUpdate="true" />';
         return $html;
+
+//        $html = '<h2 style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Table of Contents</h2>';
+//        $html .= '<table cellpadding="0" cellspacing="0"><tbody>';
+//        $html .= <<<EOF
+//                    <tr style="height: 32px">
+//                        <td width="496" style="border-bottom: 1px solid #ececec;"><b>General view</b></td>
+//                        <td width="200" style="border-bottom: 1px solid #ececec; text-align: right;">Pag. 3</td>
+//                    </tr>
+//EOF;
+//        $tasks = $this->getTasksToIncludeInReport();
+//        $toc_pages = ceil(count($tasks)/26);
+//        $task_ids = $this->_taskToIncludeInReport ?? $this->tasks()->pluck('id')->toArray();
+//        $sections = Section::getSectionsStartingFromTasks($task_ids);
+//        $section_overview_pages = ceil(count($sections)/4);
+//        $index = 2 + $toc_pages + $section_overview_pages;
+//        /** @var Task $task */
+//        foreach ($tasks as $task) {
+//            $this->_currentTask = $task;
+//            $interventTypeName = $task->intervent_type ? $task->intervent_type->name_label : 'Point';
+//            $this->updateCurrentTaskPhotosArray();
+//            $index = count($this->_currentTaskPhotos) > 4 ? ($index + 2) : ($index + 1);
+//            $point_id = $task->internal_progressive_number;
+//            $task_location = $task->section ? Utils::sanitizeTextsForPlaceholders($task->section->name) : '?';
+//            $html .= <<<EOF
+//                    <tr style="height: 32px">
+//                        <td width="496" style="border-bottom: 1px solid #ececec;"><b>$interventTypeName #$point_id</b> ($task_location)</td>
+//                        <td width="200" style="border-bottom: 1px solid #ececec; text-align: right;">Pag. $index</td>
+//                    </tr>
+//EOF;
+//        }
+//        $html .= "</tbody></table>";
+//        return $html;
+
     }
 
-
+    /**
+     *
+     */
+    public function getCorrosionMapHtmlLegendaPointLifeCircle()
+    {
+        $imagePath = Storage::disk('public')->url('CicloTask.png');
+        $imagePath = storage_path('app/public/CicloTask.png');
+        $html = <<<EOF
+                    <div>
+                        <p style="text-align:center; font-size: 14px; color: #999999;">
+                            Point circle of life: <br />
+                        </p>
+                        <p>
+                            <img width="970" align="left" src="file://$imagePath" alt="Section Overview Image">
+                        </p>
+                    </div>
+EOF;
+        return $html;
+    }
 
     /**
      * Stampa nel docx l'htlm relativo all'indice.
@@ -321,15 +345,27 @@ EOF;
      */
     public function getApplicationLogHtmlTableOfContents()
     {
-        $html = '<p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Table of Contents</p>';
-        $html .= '<table cellpadding="0" cellspacing="0"><tbody>';
-        $html .= <<<EOF
-                    <tr style="height: 32px">
-                        <td width="496" style="border-bottom: 1px solid #ececec;"><b>General view</b></td>
-                        <td width="200" style="border-bottom: 1px solid #ececec; text-align: right;">Pag. 3</td>
-                    </tr>
-EOF;
-        $html .= "</tbody></table>";
+//        $html = '<h2 style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Table of Contents</h2>';
+//        $html .= '<table cellpadding="0" cellspacing="0"><tbody>';
+//
+//        if (!empty($this->_taskToIncludeInReport)) {
+//            $html .= <<<EOF
+//                        <tr style="height: 32px">
+//                            <td width="496" style="border-bottom: 1px solid #ececec;"><b>General view</b></td>
+//                            <td width="200" style="border-bottom: 1px solid #ececec; text-align: right;">Pag. 3</td>
+//                        </tr>
+//EOF;
+//        } else {
+//            $html .= <<<EOF
+//                        <tr style="height: 32px">
+//                            <td width="496" style="border-bottom: 1px solid #ececec;"><b>Work in Progress</b></td>
+//                        </tr>
+//EOF;
+//        }
+//        $html .= "</tbody></table>";
+
+        $html = '<h2 style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Table of Contents</h2>';
+        $html .= '<phpdocx_tablecontents data-autoUpdate="true" />';
         return $html;
     }
 
@@ -349,12 +385,17 @@ EOF;
         return !empty($this->_taskToIncludeInReport) ? $this->_taskToIncludeInReport : $this->getTaskIdsArray();
     }
 
-    public function printHtmlSectionImgsOverview($task_ids = [], $noTasksMessage = '')
+    /**
+     * @param array $task_ids
+     * @param string $noTasksHTMLMessage
+     * @return string
+     */
+    public function printHtmlSectionImgsOverview($task_ids = [], $noTasksHTMLMessage = '')
     {
         if (empty($task_ids)) {
-            return "<div>$noTasksMessage</div>";
+            return "<div>$noTasksHTMLMessage</div>";
         }
-        $html = '<h1 style="text-align: center;font-size: 18px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">General view</h1>';
+        $html = '<h2 style="text-align: center;font-size: 18px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">General view</h2>';
 
 //        $sections1 = Section::getSectionsStartingFromTasks($task_ids);
         $sections = $this->boat->sections;
@@ -421,8 +462,8 @@ EOF;
     public function getApplicationLogHtmlSectionImgsOverview()
     {
         /** @var Task $task */
-        $noTasksMsg = '<p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">No remarks related to this Application Log</p>';
-        return $this->printHtmlSectionImgsOverview($this->_taskToIncludeInReport, $noTasksMsg);
+//        $noTasksMsg = '<p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">No remarks related to this Application Log</p>';
+        return $this->printHtmlSectionImgsOverview($this->_taskToIncludeInReport);
     }
 
     /**
@@ -440,7 +481,8 @@ EOF;
             '$break_n3$' => null,  // riconosciuto dal sistema
             '$html_bloccoTask$' => 'getCorrosionMapHtmlBlock()',
             '$html_sectionImgsOverview$' => 'getCorrosionMapHtmlSectionImgsOverview()',
-            '$html_tableOfContents$' => 'getCorrosionMapHtmlTableOfContents()'
+            '$html_tableOfContents$' => 'getCorrosionMapHtmlTableOfContents()',
+            '$html_legendaPointLifeCircle$' => 'getCorrosionMapHtmlLegendaPointLifeCircle()'
         ];
         $this->insertPlaceholders('corrosion_map', $placeholders, true);
     }
@@ -1008,7 +1050,7 @@ EOF;
         $html .= <<<EOF
 	        </tbody>
 	    </table>
-    <p style="page-break-before: always;"></p>
+<!--    <p style="page-break-before: always;"></p>-->
 EOF;
         return $html;
     }
@@ -1023,9 +1065,14 @@ EOF;
         $preparation_section = $application_log->getPreparationSection();
         $date = date('d/m/Y', strtotime($preparation_section->date_hour));
 
+        $pageBreakBefore = '';
+        if (!empty($this->_taskToIncludeInReport)) {
+            $pageBreakBefore = '<p style="page-break-before: always;"></p>';
+        }
+
         $html = <<<EOF
-            <p style="page-break-before: always;"></p>
-            <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Surface Preparation</p>
+            $pageBreakBefore
+            <h2 style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Surface Preparation</h2>
 
             <table cellpadding="0" cellspacing="0">
                 <tbody>
@@ -1110,7 +1157,8 @@ EOF;
         $date_hour = date('d/m/Y H:i', strtotime($application_section->date_hour));
 
         $html = <<<EOF
-                <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Product Application</p>
+                <p style="page-break-before: always;"></p>
+                <h2 style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Product Application</h2>
 
                 <!-- Application date and hour -->
                 <table cellpadding="0" cellspacing="0">
@@ -1265,7 +1313,6 @@ EOF;
                         <tr style="height: 32px"><td width="696"></td></tr>
                     </tbody>
                 </table>
-                <p style="page-break-before: always;"></p>
 EOF;
         }
 
@@ -1278,7 +1325,8 @@ EOF;
         /** @var ApplicationLogSection $inspection_section */
         $inspection_section = $application_log->getInspectionSection();
         $html = <<<EOF
-            <p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Inspection</p>
+            <p style="page-break-before: always;"></p>
+            <h2 style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Inspection</h2>
 EOF;
 
         // Adhesion
@@ -1339,7 +1387,8 @@ EOF;
         $remarks = $application_log->opened_tasks;
         if (count($remarks)) {
             $html = <<<EOF
-                <p style="text-align: center;font-size: 23px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Remarks</p>
+                <p style="page-break-before: always;"></p>
+                <h2 style="text-align: center;font-size: 23px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Remarks</h2>
     EOF;
             foreach ($remarks as $task) {
                 $this->_currentTask = $task;

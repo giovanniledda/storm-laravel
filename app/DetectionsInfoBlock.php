@@ -125,7 +125,7 @@ class DetectionsInfoBlock extends Model
             'attributes' => parent::toArray()
         ];
         $data['attributes']['tool'] = $this->tool;
-        $data['attributes']['photos'] = $this->getPhotosApi();
+        $data['attributes']['photos'] = $this->getPhotosApi('data', null, true);
 
         return $data;
     }
