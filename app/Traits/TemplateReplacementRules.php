@@ -275,42 +275,41 @@ trait TemplateReplacementRules
      */
     public function getCorrosionMapHtmlTableOfContents()
     {
-
         $html = '<h2 style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Table of Contents</h2>';
         $html .= '<phpdocx_tablecontents data-autoUpdate="true" />';
         return $html;
 
-        $html = '<h2 style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Table of Contents</h2>';
-        $html .= '<table cellpadding="0" cellspacing="0"><tbody>';
-        $html .= <<<EOF
-                    <tr style="height: 32px">
-                        <td width="496" style="border-bottom: 1px solid #ececec;"><b>General view</b></td>
-                        <td width="200" style="border-bottom: 1px solid #ececec; text-align: right;">Pag. 3</td>
-                    </tr>
-EOF;
-        $tasks = $this->getTasksToIncludeInReport();
-        $toc_pages = ceil(count($tasks)/26);
-        $task_ids = $this->_taskToIncludeInReport ?? $this->tasks()->pluck('id')->toArray();
-        $sections = Section::getSectionsStartingFromTasks($task_ids);
-        $section_overview_pages = ceil(count($sections)/4);
-        $index = 2 + $toc_pages + $section_overview_pages;
-        /** @var Task $task */
-        foreach ($tasks as $task) {
-            $this->_currentTask = $task;
-            $interventTypeName = $task->intervent_type ? $task->intervent_type->name_label : 'Point';
-            $this->updateCurrentTaskPhotosArray();
-            $index = count($this->_currentTaskPhotos) > 4 ? ($index + 2) : ($index + 1);
-            $point_id = $task->internal_progressive_number;
-            $task_location = $task->section ? Utils::sanitizeTextsForPlaceholders($task->section->name) : '?';
-            $html .= <<<EOF
-                    <tr style="height: 32px">
-                        <td width="496" style="border-bottom: 1px solid #ececec;"><b>$interventTypeName #$point_id</b> ($task_location)</td>
-                        <td width="200" style="border-bottom: 1px solid #ececec; text-align: right;">Pag. $index</td>
-                    </tr>
-EOF;
-        }
-        $html .= "</tbody></table>";
-        return $html;
+//        $html = '<h2 style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Table of Contents</h2>';
+//        $html .= '<table cellpadding="0" cellspacing="0"><tbody>';
+//        $html .= <<<EOF
+//                    <tr style="height: 32px">
+//                        <td width="496" style="border-bottom: 1px solid #ececec;"><b>General view</b></td>
+//                        <td width="200" style="border-bottom: 1px solid #ececec; text-align: right;">Pag. 3</td>
+//                    </tr>
+//EOF;
+//        $tasks = $this->getTasksToIncludeInReport();
+//        $toc_pages = ceil(count($tasks)/26);
+//        $task_ids = $this->_taskToIncludeInReport ?? $this->tasks()->pluck('id')->toArray();
+//        $sections = Section::getSectionsStartingFromTasks($task_ids);
+//        $section_overview_pages = ceil(count($sections)/4);
+//        $index = 2 + $toc_pages + $section_overview_pages;
+//        /** @var Task $task */
+//        foreach ($tasks as $task) {
+//            $this->_currentTask = $task;
+//            $interventTypeName = $task->intervent_type ? $task->intervent_type->name_label : 'Point';
+//            $this->updateCurrentTaskPhotosArray();
+//            $index = count($this->_currentTaskPhotos) > 4 ? ($index + 2) : ($index + 1);
+//            $point_id = $task->internal_progressive_number;
+//            $task_location = $task->section ? Utils::sanitizeTextsForPlaceholders($task->section->name) : '?';
+//            $html .= <<<EOF
+//                    <tr style="height: 32px">
+//                        <td width="496" style="border-bottom: 1px solid #ececec;"><b>$interventTypeName #$point_id</b> ($task_location)</td>
+//                        <td width="200" style="border-bottom: 1px solid #ececec; text-align: right;">Pag. $index</td>
+//                    </tr>
+//EOF;
+//        }
+//        $html .= "</tbody></table>";
+//        return $html;
 
     }
 
@@ -346,24 +345,24 @@ EOF;
      */
     public function getApplicationLogHtmlTableOfContents()
     {
-        $html = '<h2 style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Table of Contents</h2>';
-        $html .= '<table cellpadding="0" cellspacing="0"><tbody>';
-
-        if (!empty($this->_taskToIncludeInReport)) {
-            $html .= <<<EOF
-                        <tr style="height: 32px">
-                            <td width="496" style="border-bottom: 1px solid #ececec;"><b>General view</b></td>
-                            <td width="200" style="border-bottom: 1px solid #ececec; text-align: right;">Pag. 3</td>
-                        </tr>
-EOF;
-        } else {
-            $html .= <<<EOF
-                        <tr style="height: 32px">
-                            <td width="496" style="border-bottom: 1px solid #ececec;"><b>Work in Progress</b></td>
-                        </tr>
-EOF;
-        }
-        $html .= "</tbody></table>";
+//        $html = '<h2 style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Table of Contents</h2>';
+//        $html .= '<table cellpadding="0" cellspacing="0"><tbody>';
+//
+//        if (!empty($this->_taskToIncludeInReport)) {
+//            $html .= <<<EOF
+//                        <tr style="height: 32px">
+//                            <td width="496" style="border-bottom: 1px solid #ececec;"><b>General view</b></td>
+//                            <td width="200" style="border-bottom: 1px solid #ececec; text-align: right;">Pag. 3</td>
+//                        </tr>
+//EOF;
+//        } else {
+//            $html .= <<<EOF
+//                        <tr style="height: 32px">
+//                            <td width="496" style="border-bottom: 1px solid #ececec;"><b>Work in Progress</b></td>
+//                        </tr>
+//EOF;
+//        }
+//        $html .= "</tbody></table>";
 
         $html = '<h2 style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Table of Contents</h2>';
         $html .= '<phpdocx_tablecontents data-autoUpdate="true" />';
