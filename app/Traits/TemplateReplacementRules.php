@@ -1383,7 +1383,8 @@ EOF;
      */
     public function renderRemarkSection()
     {
-        $html = '<p style="text-align: center;font-size: 18px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">No remarks related to this Application Log</p>';
+        $html = '';
+//        $html = '<p style="text-align: center;font-size: 18px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">No remarks related to this Application Log</p>';
         /** @var ApplicationLog $application_log */
         $application_log = $this->getCurrentAppLog();
         $remarks = $application_log->opened_tasks;
@@ -1391,6 +1392,7 @@ EOF;
             $html = <<<EOF
                 <h2 style="text-align: center;font-size: 12px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Remarks</h2>
     EOF;
+            $html = '';
             foreach ($remarks as $task) {
                 $this->_currentTask = $task;
                 $this->updateCurrentTaskPhotosArray();
