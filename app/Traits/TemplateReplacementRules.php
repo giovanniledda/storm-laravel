@@ -1417,6 +1417,7 @@ EOF;
 
             $inspection_section_html
 
+            <p style="page-break-before: always;"></p>
             $general_view_section_html
             <p style="page-break-before: always;"></p>
             $remark_section_html
