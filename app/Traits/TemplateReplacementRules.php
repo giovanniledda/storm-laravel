@@ -27,7 +27,6 @@ use function count;
 use function date;
 use function factory;
 use function fclose;
-use function file_exists;
 use function foo\func;
 use function getimagesize;
 use function in_array;
@@ -412,8 +411,9 @@ EOF;
         /** @var Section $section */
         foreach ($sections as $section) {
             $deck_media = $section->generic_images->last();
-            $deck_img_path_large = $deck_media->getPathBySize('large');
-            $deck_img_path = file_exists($deck_img_path_large) ? $deck_img_path_large : $deck_media->getPathBySize('');
+//            $deck_img_path_large = $deck_media->getPathBySize('');
+            //            $deck_img_path = file_exists($deck_img_path_large) ? $deck_img_path_large : $deck_media->getPathBySize('');
+            $deck_img_path = $deck_media->getPathBySize('');
             $bridgeImageInfo = getimagesize($deck_img_path);
             $max_w = max($max_w, $bridgeImageInfo[0]);
         }
