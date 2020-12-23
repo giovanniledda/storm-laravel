@@ -1417,8 +1417,8 @@ EOF;
 
             $inspection_section_html
 
-            $general_view_section_html
             <phpdocx_break data-type="page" data-number="1" />
+            $general_view_section_html
             $remark_section_html
 EOF;
         return $html;
