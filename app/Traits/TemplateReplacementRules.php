@@ -318,19 +318,21 @@ trait TemplateReplacementRules
      */
     public function getCorrosionMapHtmlLegendaPointLifeCircle()
     {
-        $imagePath = Storage::disk('public')->url('CicloTask.png');
         $imagePath = storage_path('app/public/CicloTask.png');
+        $imageTag = "<phpdocx_image data-src='file://$imagePath' data-imageAlign='left'  data-scaling='32'  data-spacingLeft='-10'  />";
         $html = <<<EOF
                     <div>
                         <p style="text-align:center; font-size: 14px; color: #999999;">
                             Point circle of life: <br />
                         </p>
-                        <p>
-                            <img width="970" align="left" src="file://$imagePath" alt="Section Overview Image">
-                        </p>
+                        $imageTag
                     </div>
 EOF;
         return $html;
+
+//        <p>
+//                            <img width="1000" align="left" src="file://$imagePath" alt="Section Overview Image">
+//                        </p>
     }
 
     /**
@@ -828,7 +830,7 @@ EOF;
             '$zones$' => 'getCurrentAppLogZones()',
             '$break_n1$' => null,  // riconosciuto dal sistema
             '$break_n2$' => null,  // riconosciuto dal sistema
-            '$html_sectionImgsOverview$' => 'getApplicationLogHtmlSectionImgsOverview()',
+//            '$html_sectionImgsOverview$' => 'getApplicationLogHtmlSectionImgsOverview()', // sposto dentro getCurrentAppLogStructureHtml
             '$html_fullApplicationLog$' => 'getCurrentAppLogStructureHtml()',
             '$html_tableOfContents$' => 'getApplicationLogHtmlTableOfContents()'
         ];
@@ -1387,7 +1389,6 @@ EOF;
         $remarks = $application_log->opened_tasks;
         if (count($remarks)) {
             $html = <<<EOF
-                <p style="page-break-before: always;"></p>
                 <h2 style="text-align: center;font-size: 23px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Remarks</h2>
     EOF;
             foreach ($remarks as $task) {
@@ -1407,6 +1408,7 @@ EOF;
         $preparation_section_html = $this->renderPreparationSection();
         $application_section_html = $this->renderApplicationSection();
         $inspection_section_html = $this->renderInspectionSection();
+        $general_view_section_html = $this->getApplicationLogHtmlSectionImgsOverview();
         $remark_section_html = $this->renderRemarkSection();
         $html = <<<EOF
             $preparation_section_html
@@ -1415,6 +1417,7 @@ EOF;
 
             $inspection_section_html
 
+            $general_view_section_html
             $remark_section_html
 EOF;
         return $html;
