@@ -1389,7 +1389,7 @@ EOF;
         $remarks = $application_log->opened_tasks;
         if (count($remarks)) {
             $html = <<<EOF
-                <h2 style="text-align: center;font-size: 14px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Remarks</h2>
+                <h2 style="text-align: center;font-size: 12px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Remarks</h2>
     EOF;
             foreach ($remarks as $task) {
                 $this->_currentTask = $task;
@@ -1418,7 +1418,7 @@ EOF;
             $inspection_section_html
 
             $general_view_section_html
-            <p style="page-break-before: always;"></p>
+            <phpdocx_break data-type="page" data-number="1" />
             $remark_section_html
 EOF;
         return $html;
