@@ -390,14 +390,18 @@ EOF;
     /**
      * @param array $task_ids
      * @param string $noTasksHTMLMessage
+     * @param bool $forceBlankBefore
      * @return string
      */
-    public function printHtmlSectionImgsOverview($task_ids = [], $noTasksHTMLMessage = '')
+    public function printHtmlSectionImgsOverview($task_ids = [], $noTasksHTMLMessage = '', $forceBlankBefore = false)
     {
         if (empty($task_ids)) {
             return "<div>$noTasksHTMLMessage</div>";
         }
         $html = '<h2 style="text-align: center;font-size: 18px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">General view</h2>';
+        if ($forceBlankBefore) {
+            $html = '<phpdocx_break data-type="page" data-number="1" />'.$html;
+        }
 
 //        $sections1 = Section::getSectionsStartingFromTasks($task_ids);
         $sections = $this->boat->sections;
@@ -465,7 +469,11 @@ EOF;
     {
         /** @var Task $task */
 //        $noTasksMsg = '<p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">No remarks related to this Application Log</p>';
-        return $this->printHtmlSectionImgsOverview($this->_taskToIncludeInReport);
+        $forceBlankBefore = false;
+        if (!empty($this->_taskToIncludeInReport)) {
+            $forceBlankBefore = true;
+        }
+        return $this->printHtmlSectionImgsOverview($this->_taskToIncludeInReport, '', $forceBlankBefore);
     }
 
     /**
@@ -1392,7 +1400,7 @@ EOF;
             $html = <<<EOF
                 <h2 style="text-align: center;font-size: 12px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Remarks</h2>
     EOF;
-            $html = '';
+            $html = '<phpdocx_break data-type="page" data-number="1" />';
             foreach ($remarks as $task) {
                 $this->_currentTask = $task;
                 $this->updateCurrentTaskPhotosArray();
@@ -1419,9 +1427,7 @@ EOF;
 
             $inspection_section_html
 
-            <phpdocx_break data-type="page" data-number="1" />
             $general_view_section_html
-            <phpdocx_break data-type="page" data-number="1" />
             $remark_section_html
 EOF;
         return $html;
