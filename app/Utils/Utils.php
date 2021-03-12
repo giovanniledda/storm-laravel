@@ -6,6 +6,7 @@ use Exception;
 use App\Profession;
 use App\User;
 use Faker\Factory as Faker;
+use League\Csv\Writer;
 use Webpatser\Countries\Countries;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -327,4 +328,23 @@ class Utils
         imagecopymerge($dst_im, $cut, $dst_x, $dst_y, 0, 0, $src_w, $src_h, $pct);
     }
 
+    /**
+     * @param $header
+     * @param $records
+     * @return Writer
+     * @throws \League\Csv\CannotInsertRecord
+     */
+    public static function createCsvFileFromHeadersAndRecords($header, $records)
+    {
+        //load the CSV document from a string
+        $csv = Writer::createFromString();
+
+        //insert the header
+        $csv->insertOne($header);
+
+        //insert all the records
+        $csv->insertAll($records);
+
+        return $csv;
+    }
 }

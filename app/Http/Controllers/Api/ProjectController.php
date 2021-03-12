@@ -1062,4 +1062,33 @@ class ProjectController extends Controller
         }
         return Utils::jsonAbortWithInternalError(401, 401, 'Authorization denied', "You're not allowed to access this resource.");
     }
+
+
+    /**
+     * #PR34
+     * @param Request $request
+     * @param $record
+     * @param ReportGenerator $reportGenerator
+     * @return Response|void
+     */
+    public function downloadCsv(Request $request, $record, ReportGenerator $reportGenerator)
+    {
+        try {
+            /** @var Project $project */
+            $project = Project::findOrFail($record->id);
+            $tasksToIncludeInReport = $request->has('tasks') ? explode(',', $request->tasks) : [];
+            $filename = $request->get('filename') ?: 'project-'.$record->id.'-csv-report-'.date('Y-m-d-His');
+            $project->setTasksToIncludeInReport($tasksToIncludeInReport, $request->input('only_public'));
+            $csv = $project->extractCsvFile();
+//            $csv->output("$filename.csv");
+            return response((string) $csv, 200, [
+                'Content-Type' => 'text/csv',
+                'Content-Transfer-Encoding' => 'binary',
+                'Content-Disposition' => 'attachment; filename="'.$filename.'.csv"',
+            ]);
+        } catch (\Exception $e) {
+            return Utils::jsonAbortWithInternalError(422, 402, "Error generating report", $e->getMessage());
+        }
+
+    }
 }

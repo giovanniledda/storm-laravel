@@ -5,7 +5,7 @@ namespace App;
 use App\Observers\ProjectObserver;
 use App\Traits\EnvParamsInputOutputTranslations;
 use App\Traits\TemplateReplacementRules;
-use Illuminate\Support\Facades\Log;
+use Net7\DocsGenerator\Utils;
 use Net7\EnvironmentalMeasurement\Traits\HasMeasurements;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -18,16 +18,23 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Queue\SerializesModels;
 use App\Jobs\SendDocumentsToGoogleDrive;
 use Illuminate\Support\Facades\DB;
+use App\Utils\Utils as StormUtils;
+use League\Csv\Writer;
 
 use function array_key_exists;
 use function array_map;
+use function collect;
+use function date;
 use function explode;
 use function json_decode;
 use function preg_replace;
 use function request;
 
+use function strtotime;
+
 use const MEASUREMENT_FILE_TYPE;
 use const PROJECT_STATUS_CLOSED;
+use const TASK_TYPE_PRIMARY;
 use const TASKS_STATUS_ACCEPTED;
 use const TASKS_STATUS_DRAFT;
 use const TASKS_STATUS_MONITORED;
@@ -1428,6 +1435,32 @@ class Project extends Model
                 $this->update(['internal_progressive_number' => ++$highest_internal_pn]);
             }
         }
+    }
+
+    /**
+     * @return Writer
+     * @throws \League\Csv\CannotInsertRecord
+     */
+    public function extractCsvFile()
+    {
+        $header = [
+            'Point ID',
+            'Description',
+            'Location',
+            'Type',
+            'Status',
+            'Created At',
+        ];
+        $records = collect($this->getTasksToIncludeInReport())->map(fn($task) => [
+            $task->internal_progressive_number,
+            Utils::sanitizeTextsForPlaceholders($task->description),
+            $task->section ? Utils::sanitizeTextsForPlaceholders($task->section->name) : '?',
+            ($task->task_type == TASK_TYPE_PRIMARY) ? ($task->intervent_type ? Utils::sanitizeTextsForPlaceholders($task->intervent_type->name) : '?') : 'Remark',
+            $task->task_status,
+            ($task->task_type == TASK_TYPE_PRIMARY) ? date('d M Y', strtotime($task->created_at)) : $task->created_at->format('d M Y')
+        ]);
+
+        return StormUtils::createCsvFileFromHeadersAndRecords($header, $records);
     }
 }
 
