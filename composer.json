@@ -41,6 +41,7 @@
         "laravel/telescope": "^2.0",
         "laravel/tinker": "^1.0",
         "lcobucci/jwt": "3.3.3",
+        "league/csv": "^9.6",
         "lecturize/laravel-addresses": "^0.1.1",
         "nao-pon/flysystem-google-drive": "~1.1",
         "net7/docs-generator": "dev-develop",

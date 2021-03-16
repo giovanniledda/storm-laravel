@@ -173,6 +173,11 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
             $project->post('{record}/generate-application-log-report-queued', 'generateApplicationLogReportQueued')->name('generate-application-log-report-queued');
         });
 
+        $api->resource('projects')->only('download-csv')->controller('ProjectController') //uses the App\Http\Controllers\Api\ProjectController
+            ->routes(function ($project) {
+                $project->post('{record}/download-csv', 'downloadCsv')->name('download-csv');
+            });
+
         $api->resource('projects')->relationships(function ($relations) {
             $relations->hasOne('boat'); // punta al methodo dell'adapter /app/jsonApi/Projects/Adapter non al modello
             $relations->hasMany('tasks');

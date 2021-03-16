@@ -2,8 +2,6 @@
 
 namespace App;
 
-use Auth;
-use DB;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Net7\DocsGenerator\Utils;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -15,14 +13,13 @@ use Venturecraft\Revisionable\RevisionableTrait;
 use Net7\Documents\Document;
 use Net7\Documents\DocumentableTrait;
 use Faker\Generator as Faker;
-use function array_push;
+
 use function date;
 use function explode;
 use function file_exists;
 use function in_array;
 use function is_object;
 use function strtotime;
-use function strtoupper;
 use const DIRECTORY_SEPARATOR;
 use const PROJECT_STATUS_CLOSED;
 use const TASK_TYPE_PRIMARY;
@@ -322,6 +319,15 @@ class Task extends Model
     public function zone()
     {
         return $this->belongsTo('App\Zone', 'zone_id');
+    }
+
+    /**
+     * ->zone_text
+     * @return string|null
+     */
+    public function getZoneTextAttribute()
+    {
+        return $this->zone ? $this->zone->code.' - '.$this->zone->description : null;
     }
 
 
@@ -702,7 +708,7 @@ class Task extends Model
      */
     private function resize_image($file, $w, $h, $crop = FALSE)
     {
-        return \App\Utils\Utils::resize_image($file, $w, $h, $crop); // vedi il FIXME sopra
+        return StormUtils::resize_image($file, $w, $h, $crop); // vedi il FIXME sopra
     }
 
     /**
