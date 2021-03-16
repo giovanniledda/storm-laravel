@@ -321,6 +321,15 @@ class Task extends Model
         return $this->belongsTo('App\Zone', 'zone_id');
     }
 
+    /**
+     * ->zone_text
+     * @return string|null
+     */
+    public function getZoneTextAttribute()
+    {
+        return $this->zone ? $this->zone->code.' - '.$this->zone->description : null;
+    }
+
 
     /**
      * Application Log from where the Task has been closed

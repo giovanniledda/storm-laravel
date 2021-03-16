@@ -26,6 +26,7 @@ use function array_map;
 use function collect;
 use function date;
 use function explode;
+use function implode;
 use function json_decode;
 use function preg_replace;
 use function request;
@@ -1450,14 +1451,27 @@ class Project extends Model
             'Type',
             'Status',
             'Created At',
+            'Application log - opened',
+            'Application log - closed',
+            'Zone',
         ];
+        // per ogni application log, devo verificare se il task fa parte dei task inclusi
+//        $applicationLogs = $this->application_logs;
+//        ApplicationLog::where('project_id', '=', $this->id)
+//            ->whereHas('opened_tasks', function () {
+//
+//            });
+
         $records = collect($this->getTasksToIncludeInReport())->map(fn($task) => [
             $task->internal_progressive_number,
             Utils::sanitizeTextsForPlaceholders($task->description),
             $task->section ? Utils::sanitizeTextsForPlaceholders($task->section->name) : '?',
             ($task->task_type == TASK_TYPE_PRIMARY) ? ($task->intervent_type ? Utils::sanitizeTextsForPlaceholders($task->intervent_type->name) : '?') : 'Remark',
             $task->task_status,
-            ($task->task_type == TASK_TYPE_PRIMARY) ? date('d M Y', strtotime($task->created_at)) : $task->created_at->format('d M Y')
+            ($task->task_type == TASK_TYPE_PRIMARY) ? date('d M Y', strtotime($task->created_at)) : $task->created_at->format('d M Y'),
+            implode('|', $task->opener_application_log()->pluck('id')->toArray()),
+            implode('|', $task->closer_application_log()->pluck('id')->toArray()),
+            $task->zone_text
         ]);
 
         return StormUtils::createCsvFileFromHeadersAndRecords($header, $records);
