@@ -1469,8 +1469,8 @@ class Project extends Model
             ($task->task_type == TASK_TYPE_PRIMARY) ? ($task->intervent_type ? Utils::sanitizeTextsForPlaceholders($task->intervent_type->name) : '?') : 'Remark',
             $task->task_status,
             ($task->task_type == TASK_TYPE_PRIMARY) ? date('d M Y', strtotime($task->created_at)) : $task->created_at->format('d M Y'),
-            implode('|', $task->opener_application_log()->pluck('id')->toArray()),
-            implode('|', $task->closer_application_log()->pluck('id')->toArray()),
+            implode('|', $task->opener_application_log()->pluck('name')->toArray()),
+            implode('|', $task->closer_application_log()->pluck('name')->toArray()),
             $task->zone_text
         ]);
 
