@@ -520,9 +520,8 @@ class Task extends Model
         if ($document) {
             $media = $document->getRelatedMedia();
             return $media->getPath();
-        } else {
-            return '';
         }
+        return '';
     }
 
     public function updateMap()
@@ -721,16 +720,14 @@ class Task extends Model
         $task_location = $this->section ? Utils::sanitizeTextsForPlaceholders($this->section->name) : '?';
         $task_intervent_type = $this->intervent_type ? Utils::sanitizeTextsForPlaceholders($this->intervent_type->name) : '?';
         //         'task_status' => Utils::sanitizeTextsForPlaceholders($task->task_status),
-        $created_at = date('d M Y', strtotime($this->created_at));
-        $updated_at = date('d M Y', strtotime($this->updated_at));
+//        $created_at = date('d M Y', strtotime($this->created_at));
+//        $updated_at = date('d M Y', strtotime($this->updated_at));
         $status = $this->task_status;
         $task_type = $this->task_type;
 
         $first_history = $this->getFirstHistory();
         $overviewImgOnPoint = '<span style="color: #666666; width: 100%;">Overview photo not available</span>';
-        $hasOverviewImgOnPoint = false;
         if ($first_history && $first_history->getAdditionalPhotoPath()) {
-            $hasOverviewImgOnPoint = true;
             $img_dettaglio = $first_history->getAdditionalPhotoPath();
             $overviewImgOnPoint = <<<EOF
 		<img src="file://$img_dettaglio" alt="Overview image"
@@ -756,13 +753,12 @@ EOF;
                         </td>
                     </tr>';
 
-        if ($hasOverviewImgOnPoint) {
-            $overviewImgTable = <<<EOT
+        $overviewImgTable = <<<EOT
                 <table >
                     <tbody>
                         $overviewAndDescriptionRow
                         <tr>
-                            <td width="310">
+                            <td width="310" valign="top">
                                 $overviewImgOnPoint
                             </td>
                             <td width="30"></td>
@@ -773,24 +769,6 @@ EOF;
                     </tbody>
                 </table>
 EOT;
-        } else {
-            $overviewImgTable = <<<EOT
-                <table>
-                    <tbody>
-                       $overviewAndDescriptionRow
-                       <tr>
-                            <td width="310" valign="top">
-                                $overviewImgOnPoint
-                            </td>
-                            <td width="30"></td>
-                            <td width="350" valign="top">
-                                $taskDescription
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-EOT;
-        }
 
         // location (sundec), type (damage), status (in progress)
         if ($task_type == TASK_TYPE_PRIMARY) {
