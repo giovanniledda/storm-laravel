@@ -727,7 +727,7 @@ class Task extends Model
         $task_type = $this->task_type;
 
         $first_history = $this->getFirstHistory();
-        $overviewImgOnPoint = '<div style="color: #666666; width: 100%;">Overview photo not available</div>';
+        $overviewImgOnPoint = '<span style="color: #666666; width: 100%;">Overview photo not available</span>';
         $hasOverviewImgOnPoint = false;
         if ($first_history && $first_history->getAdditionalPhotoPath()) {
             $hasOverviewImgOnPoint = true;
@@ -767,7 +767,7 @@ EOT;
                 <table>
                     <tbody>
                        <tr>
-                            <td width="350" valign="top">
+                            <td width="310" valign="top">
                                 $overviewImgOnPoint
                             </td>
                             <td width="30"></td>
@@ -837,10 +837,13 @@ EOF;
                     <tr height="30"></tr>
 
                     <tr>
-                        <td colspan="2" valign="top">
+                        <td width="350" valign="top">
+<!--                        <td colspan="2" valign="top">-->
                             <span style="color: #1f519b; font-weight: bold">Overview</span><br>
                         </td>
-                        <td colspan="2" valign="top" style="margin-left: 60px;">
+                        <td width="30"></td>
+                        <td width="350" valign="top">
+<!--                        <td colspan="2" valign="top" style="margin-left: 60px;">-->
                             <span style="color: #1f519b; font-weight: bold;">Description</span><br>
                         </td>
                     </tr>
