@@ -4,15 +4,13 @@ Installazione di un nuovo progetto "base".
 I comandi da lanciare saranno preceduti da un asterisco (*).
 Le azioni da intraprendere (creazione file, compilazione istruzioni, etc) saranno precedute da un trattino (-).
 
-Sezione base
+ == Getting Started ==
 
 - Creare un DB con i dati inseriti nel file .env alle righe "DB_*"
 
-
-
 * php artisan key:generate
 
-Il comando crea una entry nel file .env:
+Il comando crea una entry nel fileApp\Jobs\GenerateCorrosionMapReport .env:
 
 APP_KEY=base64:wAw8OnEiCvNtIkLIZ5iW6E1jjhEMr2STsWSFWdrpUbQ=
 
@@ -33,7 +31,7 @@ DB_PASSWORD=storm
 - Creare il DB di testing di conseguenza, con i dati sopra
 
 
-Sezione autenticazione (Passport)
+ == Autenticazione (Passport) ==
 
 * php artisan passport:install
 
@@ -53,8 +51,7 @@ PASSPORT_PASSWORD_AC_ID=2   (reale)
 PASSPORT_PASSWORD_AC_NAME="Storm-Laravel Password Grant Client"   (esempio)
 PASSPORT_PASSWORD_AC_SECRET=zYh5HANGdBBNkOAxVGtKqPAcSYgBpUDqeNqBJtnc     (esempio)
 
-
-Sezione Ruoli e Permessi
+ == Sezione Ruoli e Permessi ==
 
 - Nel file .env creare le credenziali per l'Admin, in questo modo:
 
@@ -76,7 +73,15 @@ In caso di ambiente di staging avviare anche il seeder di stage con dati fake :
 * php artisan db:seed --class="StageSeeder"
 
 
+ == Come creare un nuovo Template per Storm ==
 
+ 1 - generare il nuovo template in formato .docx (utilizzando Google Docs e sfruttando quelli già pronti reperibili qua: https://drive.google.com/drive/folders/1vN6YmLqIY4rit9O5K1iNtx3VgKG53kbX?usp=sharing)
+
+ 2 - scaricare il template e salvarne una copia in _storage/app/docs-generator/templates_
+
+ 3 - In _app/Traits/TemplateReplacementRules.php_ inserire una nuova funzione **setupNomeTemplate()** al cui interno viene richiamata la **persistAndAssignTemplateCategory($template)** a cui dovremo passare il nome esatto del file che abbiamo salvato al punto 2
+
+ 4 - Una volta pronta la funzione di cui al punto 3 ed una volta implementate tutte le funzioni che in questa si occupano di popolare tutti i placeholders, procedere lanciando il comando "**php artisan update-phpdocx-templates**"
 
 
 

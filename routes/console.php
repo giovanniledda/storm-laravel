@@ -243,24 +243,29 @@ Artisan::command('move-task-descriptions', function () {
 })->describe('Takes description from Tasks and assign them as a comment to the first History instance of each Task');
 
 
-// aggiornamento dei template in uso, con nuovi placeholders
+// Aggiornamento dei template in uso, con nuovi placeholders
 Artisan::command('update-phpdocx-templates', function () {
     if ($this->confirm('Do you wish to continue?')) {
         $projects = Project::all();
         foreach ($projects as $project) {
             // Doc Generator from template
             $this->info("\n");
+
             $project->setupCorrosionMapTemplate();
             $this->info("- Template CORROSION_MAP updated for Project [ID: {$project->id}]");
+
             $project->setupCorrosionMapOverviewOnlyTemplate();
             $this->info("- Template CORROSION_MAP (overview only) updated for Project [ID: {$project->id}]");
+
             $project->setupEnvironmentalReportTemplate();
             $this->info("- Template ENV_REPORT updated for Project [ID: {$project->id}]");
+
             $project->setupApplicationLogTemplate();
             $this->info("- Template APP_LOG_REPORT updated for Project [ID: {$project->id}]");
+
         }
     }
-})->describe('Display an inspiring quote');
+})->describe('Update of used templates, with new placeholders');
 
 
 // Per ogni Task aggiorna l'immaginina della sua posizione (con pin) sul ritaglio di ponte
