@@ -824,6 +824,7 @@ EOF;
                             <span style="font-weight: bold; color: #1f519b;">Point info</span>
                         </td>
                     </tr>
+
                     <tr>
                         <td width="310" style="border: 1px solid #ececec">
                             $corrosionMapHTML
