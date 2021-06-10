@@ -746,10 +746,21 @@ EOF;
             $taskDescription = "<span style='color: #666666; width: 100%; padding: 8px'>$description</span>";
         }
 
+        $overviewAndDescriptionRow = '<tr>
+                        <td width="350" valign="top">
+                            <span style="color: #1f519b; font-weight: bold">Overview</span><br>
+                        </td>
+                        <td width="30"></td>
+                        <td width="350" valign="top">
+                            <span style="color: #1f519b; font-weight: bold;">Description</span><br>
+                        </td>
+                    </tr>';
+
         if ($hasOverviewImgOnPoint) {
             $overviewImgTable = <<<EOT
                 <table >
                     <tbody>
+                        $overviewAndDescriptionRow
                         <tr>
                             <td width="310">
                                 $overviewImgOnPoint
@@ -766,6 +777,7 @@ EOT;
             $overviewImgTable = <<<EOT
                 <table>
                     <tbody>
+                       $overviewAndDescriptionRow
                        <tr>
                             <td width="310" valign="top">
                                 $overviewImgOnPoint
@@ -831,20 +843,6 @@ EOF;
                         <td width="30"></td>
                         <td width="340" valign="top">
                             $pointInfo
-                        </td>
-                    </tr>
-
-                    <tr height="30"></tr>
-
-                    <tr>
-                        <td width="350" valign="top">
-<!--                        <td colspan="2" valign="top">-->
-                            <span style="color: #1f519b; font-weight: bold">Overview</span><br>
-                        </td>
-                        <td width="30"></td>
-                        <td width="350" valign="top">
-<!--                        <td colspan="2" valign="top" style="margin-left: 60px;">-->
-                            <span style="color: #1f519b; font-weight: bold;">Description</span><br>
                         </td>
                     </tr>
                 </tbody>
