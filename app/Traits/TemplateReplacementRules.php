@@ -27,9 +27,11 @@ use function count;
 use function date;
 use function factory;
 use function fclose;
+use function floatval;
 use function foo\func;
 use function getimagesize;
 use function in_array;
+use function intval;
 use function logger;
 use function max;
 use function min;
@@ -1199,9 +1201,9 @@ EOF;
         /** @var Product $product */
         $product = $application_product->product;
         $product_name = $product->name;
-        $sv_percentage = $product->sv_percentage;
+        $svPercentage = $product->sv_percentage;
         $viscosity = $application_product->viscosity;
-        $diluition = 0;  // somma litri*barattoli dei thinner diviso somma dei litri*barattoli dei componenti
+        $dilution = 0;  // somma litri*barattoli dei thinner diviso somma dei litri*barattoli dei componenti
 
         // Product applied
         $html .= <<<EOF
@@ -1232,11 +1234,11 @@ EOF;
 
         $components_liters_sum = 0;
         foreach ($application_product->components as $component) {
-            $components_liters_sum += ($component['tins_capacity'] * $component['number_of_tins']);
+            $components_liters_sum += floatval($component['tins_capacity'] * $component['number_of_tins']);
             $batch_nums = '';
             $name = $component['name'];
             array_walk($component['batch_numbers'], function ($val, $key) use (&$batch_nums) {
-                 $batch_nums .= "$key: $val<br/>";
+                 $batch_nums .= "$key: $val <br/>";
             });
             $batch_nums = trim($batch_nums, ', ');
             $html .= <<<EOF
@@ -1250,7 +1252,7 @@ EOF;
 
         $thinners_liters_sum = 0;
         foreach ($application_product->thinners as $thinner) {
-            $thinners_liters_sum += ($thinner['tins_capacity'] * $thinner['number_of_tins']);
+            $thinners_liters_sum += floatval($thinner['tins_capacity'] * $thinner['number_of_tins']);
             $batch_nums = '';
             $name = $thinner['name'];
             array_walk($thinner['batch_numbers'], function ($val, $key) use (&$batch_nums) {
@@ -1265,10 +1267,6 @@ EOF;
 EOF;
         }
 
-        if ($components_liters_sum) {
-            $diluition = ($thinners_liters_sum/$components_liters_sum)*100;
-        }
-
         $html .= <<<EOF
 	            <tr style="height: 32px"><td width="696"></td></tr>
 	        </tbody>
@@ -1279,10 +1277,48 @@ EOF;
         $application_method = $application_section->generic_data_info_blocks()->first();
         $kv_infos = $application_method->key_value_infos;
         if (!empty($kv_infos)) {
+
+            $dilution = 0;
+            if ($components_liters_sum) {
+                $dilution = ($thinners_liters_sum/$components_liters_sum)*100;
+            }
+
+            $svStandard = $svPercentage;
+//            (SV%standard / (100+Dilution %))*100
+            $svDiluted = ($svStandard / (100 + $dilution)) * 100;
+
+            // Utilizzo totale (somma di tutti i componenti + thinners)
+            $totalPaintConsumption = ($thinners_liters_sum + $components_liters_sum); // ?? chiamarla
+
+
             $app_method = $kv_infos['method'] ?? '-';
             $nozzle = $kv_infos['nozzle_needle_size'] ?? '-';
             $loss_factor = $kv_infos['loss_factor'] ?? '-';
-            // TODO: La diluizione percentuale sarebbe il totale dei litri di "thinner" diviso i litri di pittura totale (quindi la somma dei litri inseriti tra thinner e components)
+            $numOfCoat = $kv_infos['num_of_coat'] ?? '-';
+
+            $area = 0;
+            $zones_section = $application_log->getZonesSection();
+            if ($zones_section) {
+                $zone_ib = $zones_section->zone_analysis_info_blocks;
+                /** @var ZoneAnalysisInfoBlock $item */
+                foreach ($zone_ib as $item) {
+                    /** @var Zone $zone */
+                    $area += floatval(($item->zone->extension / 100)*$item->percentage_in_work); // mq * utilizzo %
+                }
+            }
+
+            $dftEstimated = $coverage = 0;
+
+            // DFT estimated (Dry Feel Tickness - "spessore secco"): SV% (diluted)*100%*Total paint *(1-Loss factor%) *n°mani /(10*superficie m2)
+            if ($area && $loss_factor != '-' && $numOfCoat != '-') {
+                $dftEstimated = ($svDiluted * 100 * $totalPaintConsumption * (1 - floatval($loss_factor)) * intval($numOfCoat))  / (10 * $area);
+            }
+
+            // Coverage (m2/litro): : superficie m2 / Total paint (litre
+            if ($totalPaintConsumption) {
+                $coverage = $area / $totalPaintConsumption;
+            }
+
             $html .= <<<EOF
                 <!-- Application method -->
                 <table cellpadding="0" cellspacing="0">
@@ -1311,7 +1347,7 @@ EOF;
                         </tr>
 
                         <tr style="height: 32px">
-                            <td width="696" style="">Diluition %: $diluition</td>
+                            <td width="696" style="">Dilution %: $dilution</td>
                         </tr>
 
                         <tr style="height: 32px">
@@ -1319,7 +1355,32 @@ EOF;
                         </tr>
 
                         <tr style="height: 32px">
+                            <td width="696" style="">Number of coat: $numOfCoat</td>
+                        </tr>
+
+                        <tr style="height: 32px">
                             <td width="696" style="">Nozzle & needle size: $nozzle</td>
+                        </tr>
+
+                        <tr style="height: 32px">
+                            <td width="696" style="">SV% standard: $svStandard</td>
+                        </tr>
+
+                        <tr style="height: 32px">
+                            <td width="696" style="">SV% diluted: $svDiluted</td>
+                        </tr>
+
+                        <tr style="height: 32px">
+                            <td width="696" style="">Total paint consumption (l): $totalPaintConsumption</td>
+                        </tr>
+
+                        <tr style="height: 32px">
+                            <td width="696" style="">DFT estimated: $dftEstimated</td>
+                        </tr>
+
+
+                        <tr style="height: 32px">
+                            <td width="696" style="">Coverage (sqm/l): $coverage</td>
                         </tr>
 
                         <tr style="height: 32px"><td width="696"></td></tr>
