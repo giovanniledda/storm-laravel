@@ -572,7 +572,8 @@ class SeederUtils
             'key_value_infos' => [
                 'method' => $this->faker->randomElement(['Conventional', 'Airless', 'HVLP','Electrostatic', 'Roll']),
                 'nozzle_needle_size' => $this->faker->randomDigitNotNull,
-                'loss_factor' => $this->faker->randomFloat(2)
+                'loss_factor' => $this->faker->randomFloat(2),
+                'num_of_coat' => $this->faker->randomNumber()
             ]
         ]);
 
