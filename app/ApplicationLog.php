@@ -221,7 +221,7 @@ class ApplicationLog extends Model
             }, $used_zones);
 
             $other_remarks_collection = Task::remark()
-                ->open()
+                ->opened()
                 ->whereIn('zone_id', $zones_ids)
                 ->whereNotIn('id', $this->opened_tasks()->pluck('id'));
 
