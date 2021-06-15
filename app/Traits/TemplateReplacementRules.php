@@ -12,6 +12,7 @@ use App\Task;
 use App\Tool;
 use App\Zone;
 use App\ZoneAnalysisInfoBlock;
+use DateTime;
 use Illuminate\Support\Facades\Storage;
 use Net7\DocsGenerator\Utils;
 use Net7\Documents\Document;
@@ -25,6 +26,7 @@ use function array_walk;
 use function ceil;
 use function count;
 use function date;
+use function date_format;
 use function factory;
 use function fclose;
 use function floatval;
@@ -1035,7 +1037,7 @@ EOF;
         /** @var Tool $tool */
         $tool = $detection_info_block->tool;
         $tool_name = $tool ? $tool->name : '-';
-        $tool_exp_date = $tool ? $tool->calibration_expiration_date : '-';
+        $tool_exp_date = $tool ? date_format(new DateTime($tool->calibration_expiration_date), 'Y-m-d') : '-';
 
         $html = <<<EOF
 	    <table width="340" cellpadding="0" cellspacing="0">
