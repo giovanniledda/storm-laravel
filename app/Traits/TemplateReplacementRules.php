@@ -1322,6 +1322,7 @@ EOF;
             if ($totalPaintConsumption) {
                 $coverage = $area / $totalPaintConsumption;
             }
+            $coverage = round($coverage, 2);
 
             $html .= <<<EOF
                 <!-- Application method -->
