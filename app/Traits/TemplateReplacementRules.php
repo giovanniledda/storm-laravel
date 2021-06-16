@@ -13,6 +13,7 @@ use App\Tool;
 use App\Zone;
 use App\ZoneAnalysisInfoBlock;
 use DateTime;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Net7\DocsGenerator\Utils;
 use Net7\Documents\Document;
@@ -21,8 +22,11 @@ use Net7\EnvironmentalMeasurement\Models\Measurement;
 use Phpdocx\Create\CreateDocxFromTemplate;
 use Phpdocx\Elements\WordFragment;
 
+use function abs;
 use function array_reduce;
 use function array_walk;
+use function call_user_func;
+use function call_user_func_array;
 use function ceil;
 use function count;
 use function date;
@@ -34,6 +38,7 @@ use function foo\func;
 use function getimagesize;
 use function in_array;
 use function intval;
+use function is_callable;
 use function logger;
 use function max;
 use function min;
@@ -976,12 +981,7 @@ EOF;
             <tr style="height: 32px;"><td width="696"></td></tr>';
     }
 
-    /**
-     * @param DetectionsInfoBlock $detections_ib
-     * @param $detection_param_keys
-     * @return string
-     */
-    public function renderDetections(DetectionsInfoBlock &$detections_ib, $detection_param_keys) // 'surface_roughness', 'salts', 'other...
+    public function renderDetections(DetectionsInfoBlock &$detections_ib, array $detection_param_keys, string $specialParamToCalculate = '', callable $specialParamCalculationCallback = null) // $detection_param_keys: 'temperature', 'supp_temperature', 'humidity', 'surface_roughness', 'salts', 'other...
     {
         $html = '';
         $detections_array = $detections_ib->detections;
@@ -999,6 +999,11 @@ EOF;
                 }
                 $val = '';
                 foreach ($detection_param_keys as $detection_param_key) {
+                    if ($detection_param_key == $specialParamToCalculate && is_callable($specialParamCalculationCallback)) {
+                        $calculation = call_user_func_array($specialParamCalculationCallback, [$detection]);
+                        $val .= $specialParamToCalculate.': '.$calculation.', ';
+                        continue;
+                    }
                     $val .= $detection_param_key.': '.$detection[$detection_param_key].', ';
                 }
                 $detection_values[$counter]['det_value'] = trim($val, ', ');
@@ -1014,14 +1019,7 @@ EOF;
         return $html;
     }
 
-    /**
-     * @param DetectionsInfoBlock $detection_info_block
-     * @param $block_title
-     * @param $detection_param_keys
-     * @param bool $skipIfNoData
-     * @return string
-     */
-    public function renderRegularDetectionInfoBlock(DetectionsInfoBlock &$detection_info_block, $block_title, $detection_param_keys, $skipIfNoData = false)
+    public function renderRegularDetectionInfoBlock(DetectionsInfoBlock &$detection_info_block, string $block_title, array $detection_param_keys, bool $skipIfNoData = false, string $specialParamToCalculate = '', callable $specialParamCalculationCallback = null)
     {
         // come nascondere blocchi -> se le detections sono vuote, non stampo nulla
         $detections_array = $detection_info_block->detections;
@@ -1063,7 +1061,7 @@ EOF;
 	    <table cellpadding="0" cellspacing="0">
 	        <tbody>
 EOF;
-        $html .= $this->renderDetections($detection_info_block, $detection_param_keys);
+        $html .= $this->renderDetections($detection_info_block, $detection_param_keys, $specialParamToCalculate, $specialParamCalculationCallback);
         $html .= <<<EOF
 	        </tbody>
 	    </table>
@@ -1163,6 +1161,7 @@ EOF;
         return $html;
     }
 
+
     /**
      * @return string
      */
@@ -1196,7 +1195,15 @@ EOF;
         /** @var DetectionsInfoBlock $temp_hum */
         $temp_hum = $application_section->getTemperatureAndHumidityDetectionBlock();
         $html .= '<p style="font-weight: bold; color: black">AMBIENT CONDITIONS</p>'.
-            $this->renderRegularDetectionInfoBlock($temp_hum, 'Temperature & humidity', ['temperature', 'humidity']);
+            $this->renderRegularDetectionInfoBlock(
+                $temp_hum,
+                'Temperature & humidity',
+                ['temperature', 'supp_temperature', 'delta_temperature', 'humidity'], // delta_temperature: non viene passato dalla mobile app, lo calcoliamo internamente con la callback passate come ultimo parametro
+                false,
+                'delta_temperature',
+                function ($detection) {
+                    return isset($detection['temperature']) && isset($detection['supp_temperature']) ? abs($detection['temperature'] - $detection['supp_temperature']) : '-'; // è il calolo per ottenere la delta_temperature
+                });
 
         /** @var ProductUseInfoBlock $application_product */
         $application_product = $application_section->product_use_info_blocks()->first();
@@ -1286,7 +1293,7 @@ EOF;
                 $dilution = round(($thinners_liters_sum/$components_liters_sum)*100, 2); // arrotondare
             }
 
-            $svStandard = $svPercentage;
+            $svStandard = intval($svPercentage);
 //            (SV%standard / (100+Dilution %))*100
             $svDiluted = round(($svStandard / (100 + $dilution)) * 100, 2);
 
