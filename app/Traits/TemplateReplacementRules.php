@@ -37,6 +37,7 @@ use function intval;
 use function logger;
 use function max;
 use function min;
+use function round;
 use function storage_path;
 use function strtotime;
 use function throw_if;
@@ -1282,12 +1283,12 @@ EOF;
 
             $dilution = 0;
             if ($components_liters_sum) {
-                $dilution = ($thinners_liters_sum/$components_liters_sum)*100;
+                $dilution = round(($thinners_liters_sum/$components_liters_sum)*100, 2); // arrotondare
             }
 
             $svStandard = $svPercentage;
 //            (SV%standard / (100+Dilution %))*100
-            $svDiluted = ($svStandard / (100 + $dilution)) * 100;
+            $svDiluted = round(($svStandard / (100 + $dilution)) * 100, 2);
 
             // Utilizzo totale (somma di tutti i componenti + thinners)
             $totalPaintConsumption = ($thinners_liters_sum + $components_liters_sum); // ?? chiamarla
@@ -1308,12 +1309,13 @@ EOF;
                     $area += floatval(($item->zone->extension / 100)*$item->percentage_in_work); // mq * utilizzo %
                 }
             }
+            $area = round($area, 2);
 
             $dftEstimated = $coverage = 0;
 
             // DFT estimated (Dry Feel Tickness - "spessore secco"): SV% (diluted)*100%*Total paint *(1-Loss factor%) *n°mani /(10*superficie m2)
             if ($area && $loss_factor != '-' && $numOfCoat != '-') {
-                $dftEstimated = ($svDiluted * 100 * $totalPaintConsumption * (1 - floatval($loss_factor)) * intval($numOfCoat))  / (10 * $area);
+                $dftEstimated = ($svDiluted * 100 * $totalPaintConsumption * (1 - floatval($loss_factor)/100) * intval($numOfCoat))  / (10 * $area);
             }
 
             // Coverage (m2/litro): : superficie m2 / Total paint (litre
