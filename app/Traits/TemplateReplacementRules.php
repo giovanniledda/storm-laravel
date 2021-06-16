@@ -1317,6 +1317,7 @@ EOF;
             if ($area && $loss_factor != '-' && $numOfCoat != '-') {
                 $dftEstimated = ($svDiluted * 100 * $totalPaintConsumption * (1 - floatval($loss_factor)/100) * intval($numOfCoat))  / (10 * $area);
             }
+            $dftEstimated = floor($dftEstimated);
 
             // Coverage (m2/litro): : superficie m2 / Total paint (litre
             if ($totalPaintConsumption) {
@@ -1348,7 +1349,7 @@ EOF;
                         </tr>
 
                         <tr style="height: 32px">
-                            <td width="696" style="">Product viscosity: $viscosity</td>
+                            <td width="696" style="">Product viscosity (s): $viscosity</td>
                         </tr>
 
                         <tr style="height: 32px">
@@ -1356,7 +1357,7 @@ EOF;
                         </tr>
 
                         <tr style="height: 32px">
-                            <td width="696" style="">Loss factor: $loss_factor</td>
+                            <td width="696" style="">Loss factor %: $loss_factor</td>
                         </tr>
 
                         <tr style="height: 32px">
@@ -1380,9 +1381,12 @@ EOF;
                         </tr>
 
                         <tr style="height: 32px">
-                            <td width="696" style="">DFT estimated: $dftEstimated</td>
+                            <td width="696" style="">DFT estimated (µ): $dftEstimated</td>
                         </tr>
 
+                        <tr style="height: 32px">
+                            <td width="696" style="">Area (sqm): $area</td>
+                        </tr>
 
                         <tr style="height: 32px">
                             <td width="696" style="">Coverage (sqm/l): $coverage</td>
