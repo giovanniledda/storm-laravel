@@ -2,13 +2,13 @@
 
 namespace App\Exceptions;
 
-use Throwable;
 use App\Utils\Utils as StormUtils;
 use CloudCreativity\LaravelJsonApi\Exceptions\HandlesErrors;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Neomerx\JsonApi\Exceptions\JsonApiException;
+use Throwable;
 
 class Handler extends ExceptionHandler
 {
