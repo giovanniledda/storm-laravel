@@ -26,7 +26,7 @@ class Adapter extends AbstractAdapter
      */
     public function __construct(StandardStrategy $paging)
     {
-        parent::__construct(new \App\TaskInterventType(), $paging);
+        parent::__construct(new \App\Models\TaskInterventType(), $paging);
     }
 
     /**

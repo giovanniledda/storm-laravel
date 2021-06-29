@@ -2,7 +2,7 @@
 
 namespace App\JsonApi\V1\Zones;
 
-use App\Zone;
+use App\Models\Zone;
 use CloudCreativity\LaravelJsonApi\Contracts\Validation\ValidatorFactoryInterface;
 use CloudCreativity\LaravelJsonApi\Contracts\Validation\ValidatorInterface;
 use CloudCreativity\LaravelJsonApi\Validation\AbstractValidators;

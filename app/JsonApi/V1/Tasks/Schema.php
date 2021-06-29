@@ -2,9 +2,9 @@
 
 namespace App\JsonApi\V1\Tasks;
 
-use App\Section;
-use App\TaskInterventType;
-use App\User;
+use App\Models\Section;
+use App\Models\TaskInterventType;
+use App\Models\User;
 use Neomerx\JsonApi\Schema\SchemaProvider;
 
 class Schema extends SchemaProvider

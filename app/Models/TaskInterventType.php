@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,7 +17,7 @@ class TaskInterventType extends Model
 
     public function tasks()
     {
-        return $this->hasMany(\App\Task::class);
+        return $this->hasMany(\App\Models\Task::class);
     }
 
     /**

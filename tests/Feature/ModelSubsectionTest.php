@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Boat;
-use App\Section;
-use App\Subsection;
+use App\Models\Boat;
+use App\Models\Section;
+use App\Models\Subsection;
 use Tests\TestCase;
 
 class ModelSubsectionTest extends TestCase

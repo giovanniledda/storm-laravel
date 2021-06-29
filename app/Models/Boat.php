@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -48,23 +48,23 @@ class Boat extends Model
 
     public function site()
     {
-        return $this->hasOne(\App\Site::class);
-//        return $this->hasOneThrough('App\Site', 'App\Project');  // NON funziona perché i progetti sono "many" e il site è "one"
+        return $this->hasOne(\App\Models\Site::class);
+//        return $this->hasOneThrough('App\Models\Site', 'App\Models\Project');  // NON funziona perché i progetti sono "many" e il site è "one"
     }
 
     public function sections()
     {
-        return $this->hasMany(\App\Section::class);
+        return $this->hasMany(\App\Models\Section::class);
     }
 
     public function subsections()
     {
-        return $this->hasManyThrough(\App\Subsection::class, \App\Section::class);
+        return $this->hasManyThrough(\App\Models\Subsection::class, \App\Models\Section::class);
     }
 
     public function projects()
     {
-        return $this->hasMany(\App\Project::class);
+        return $this->hasMany(\App\Models\Project::class);
     }
 
     public function projectsRelatedToUser($user_id)
@@ -107,19 +107,19 @@ class Boat extends Model
 
     public function history()
     {
-        return $this->morphMany(\App\History::class, 'historyable');
+        return $this->morphMany(\App\Models\History::class, 'historyable');
     }
 
     public function associatedUsers()
     {
-        return $this->hasMany(\App\BoatUser::class);
+        return $this->hasMany(\App\Models\BoatUser::class);
     }
 
     // owner ed equipaggio
     public function users()
     {
-        return $this->belongsToMany(\App\User::class)
-            ->using(\App\BoatUser::class)
+        return $this->belongsToMany(\App\Models\User::class)
+            ->using(\App\Models\BoatUser::class)
             ->withPivot([
                 'profession_id',
             ]);

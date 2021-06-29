@@ -2,8 +2,8 @@
 
 namespace App\JsonApi\V1\Tasks;
 
-use App\ApplicationLog;
-use App\Task;
+use App\Models\ApplicationLog;
+use App\Models\Task;
 use App\TaskStatus;
 use function array_filter;
 use function array_keys;
@@ -62,7 +62,7 @@ class Adapter extends AbstractAdapter
      */
     public function __construct(StandardStrategy $paging)
     {
-        parent::__construct(new \App\Task(), $paging);
+        parent::__construct(new \App\Models\Task(), $paging);
     }
 
     /**

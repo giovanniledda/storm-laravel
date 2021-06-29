@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Comment;
-use App\History;
+use App\Models\Comment;
+use App\Models\History;
 use App\Http\Controllers\Controller;
 use App\Utils\Utils;
 use Illuminate\Http\Request;

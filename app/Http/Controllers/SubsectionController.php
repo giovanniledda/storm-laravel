@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Subsection;
+use App\Models\Subsection;
 use Illuminate\Http\Request;
 
 class SubsectionController extends Controller
@@ -41,7 +41,7 @@ class SubsectionController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Subsection  $subsection
+     * @param  \App\Models\Subsection  $subsection
      * @return \Illuminate\Http\Response
      */
     public function show(Subsection $subsection)
@@ -52,7 +52,7 @@ class SubsectionController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Subsection  $subsection
+     * @param  \App\Models\Subsection  $subsection
      * @return \Illuminate\Http\Response
      */
     public function edit(Subsection $subsection)
@@ -64,7 +64,7 @@ class SubsectionController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Subsection  $subsection
+     * @param  \App\Models\Subsection  $subsection
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Subsection $subsection)
@@ -75,7 +75,7 @@ class SubsectionController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Subsection  $subsection
+     * @param  \App\Models\Subsection  $subsection
      * @return \Illuminate\Http\Response
      */
     public function destroy(Subsection $subsection)

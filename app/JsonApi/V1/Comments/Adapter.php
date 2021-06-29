@@ -2,9 +2,9 @@
 
 namespace App\JsonApi\V1\Comments;
 
-use App\Comment;
-use App\History;
-use App\Task;
+use App\Models\Comment;
+use App\Models\History;
+use App\Models\Task;
 use CloudCreativity\LaravelJsonApi\Eloquent\AbstractAdapter;
 use CloudCreativity\LaravelJsonApi\Pagination\StandardStrategy;
 use Illuminate\Database\Eloquent\Builder;
@@ -16,7 +16,7 @@ class Adapter extends AbstractAdapter
     protected $fillable = [
         'body',
         'author_id',
-        'commentable_type',  // ex: App\Task
+        'commentable_type',  // ex: App\Models\Task
         'commentable_id',    // ex: 1
     ];
 
@@ -34,7 +34,7 @@ class Adapter extends AbstractAdapter
      */
     public function __construct(StandardStrategy $paging)
     {
-        parent::__construct(new \App\Comment(), $paging);
+        parent::__construct(new \App\Models\Comment(), $paging);
     }
 
     /**
@@ -46,7 +46,7 @@ class Adapter extends AbstractAdapter
     {
         // Restituisce i commenti di un Task
         if ($task_id = $filters->get('task_id')) {
-            $query->where('commentable_type', '=', \App\Task::class)
+            $query->where('commentable_type', '=', \App\Models\Task::class)
                 ->where('commentable_id', '=', $task_id);
         }
     }

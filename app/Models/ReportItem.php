@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use function get_class;
 use Illuminate\Database\Eloquent\Model;
@@ -56,7 +56,7 @@ class ReportItem extends Model
      */
     public function author()
     {
-        return $this->belongsTo(\App\User::class);
+        return $this->belongsTo(\App\Models\User::class);
     }
 
     /**
@@ -64,7 +64,7 @@ class ReportItem extends Model
      */
     public function project()
     {
-        return $this->belongsTo(\App\Project::class);
+        return $this->belongsTo(\App\Models\Project::class);
     }
 
     /**

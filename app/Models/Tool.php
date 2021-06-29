@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -31,7 +31,7 @@ class Tool extends Model
      */
     public function detections_info_blocks()
     {
-        return $this->hasMany(\App\DetectionsInfoBlock::class, 'tool_id');
+        return $this->hasMany(\App\Models\DetectionsInfoBlock::class, 'tool_id');
     }
 
     /**
@@ -39,7 +39,7 @@ class Tool extends Model
      */
     public function projects()
     {
-        return $this->belongsToMany(\App\Project::class, 'project_tool');
+        return $this->belongsToMany(\App\Models\Project::class, 'project_tool');
     }
 
     /**

@@ -18,7 +18,7 @@ class UpdateTaskMap implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(\App\Task $task)
+    public function __construct(\App\Models\Task $task)
     {
         $this->task = $task;
     }

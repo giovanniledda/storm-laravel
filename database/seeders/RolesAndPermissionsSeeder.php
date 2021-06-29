@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use App\Permission;
 use App\Role;
-use App\User;
+use App\Models\User;
 use App\Utils\Utils;
 use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;

@@ -4,7 +4,7 @@
 
 namespace Database\Factories;
 
-use App\Site;
+use App\Models\Site;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 $autoIncrement = StormUtils::autoIncrement();

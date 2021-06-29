@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\ApplicationLogSection;
-use App\Product;
-use App\ProductUseInfoBlock;
+use App\Models\ApplicationLogSection;
+use App\Models\Product;
+use App\Models\ProductUseInfoBlock;
 use function factory;
 use Tests\TestCase;
 

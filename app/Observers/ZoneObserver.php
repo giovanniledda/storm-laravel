@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Zone;
+use App\Models\Zone;
 
 class ZoneObserver
 {
@@ -27,7 +27,7 @@ class ZoneObserver
     /**
      * Handle the zone "created" event.
      *
-     * @param \App\Zone $zone
+     * @param \App\Models\Zone $zone
      * @return void
      */
     public function created(Zone $zone)
@@ -38,7 +38,7 @@ class ZoneObserver
     /**
      * Handle the zone "updated" event.
      *
-     * @param \App\Zone $zone
+     * @param \App\Models\Zone $zone
      * @return void
      */
     public function updated(Zone $zone)
@@ -49,7 +49,7 @@ class ZoneObserver
     /**
      * Listen to the Zone updating event.
      *
-     * @param \App\Zone $zone
+     * @param \App\Models\Zone $zone
      * @return void
      */
     public function updating(Zone $zone)
@@ -60,7 +60,7 @@ class ZoneObserver
     /**
      * Handle the zone "deleted" event.
      *
-     * @param \App\Zone $zone
+     * @param \App\Models\Zone $zone
      * @return void
      */
     public function deleted(Zone $zone)
@@ -71,7 +71,7 @@ class ZoneObserver
     /**
      * Handle the zone "restored" event.
      *
-     * @param \App\Zone $zone
+     * @param \App\Models\Zone $zone
      * @return void
      */
     public function restored(Zone $zone)
@@ -82,7 +82,7 @@ class ZoneObserver
     /**
      * Handle the zone "force deleted" event.
      *
-     * @param \App\Zone $zone
+     * @param \App\Models\Zone $zone
      * @return void
      */
     public function forceDeleted(Zone $zone)

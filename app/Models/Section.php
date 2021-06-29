@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Utils\Utils;
 use const DIRECTORY_SEPARATOR;
@@ -70,22 +70,22 @@ class Section extends Model
 
     public function boat()
     {
-        return $this->belongsTo(\App\Boat::class);
+        return $this->belongsTo(\App\Models\Boat::class);
     }
 
     public function subsections()
     {
-        return $this->hasMany(\App\Subsection::class);
+        return $this->hasMany(\App\Models\Subsection::class);
     }
 
 //    public function tasks()
 //    {
-//        return $this->hasManyThrough('App\Task', 'App\Subsection');
+//        return $this->hasManyThrough('App\Models\Task', 'App\Models\Subsection');
 //    }
 
     public function tasks()
     {
-        return $this->hasMany(\App\Task::class);
+        return $this->hasMany(\App\Models\Task::class);
     }
 
     public function map_image()

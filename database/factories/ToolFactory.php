@@ -4,7 +4,7 @@
 
 namespace Database\Factories;
 
-use App\Tool;
+use App\Models\Tool;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ToolFactory extends Factory

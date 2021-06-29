@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Boat;
-use App\Project;
-use App\Task;
+use App\Models\Boat;
+use App\Models\Project;
+use App\Models\Task;
 
 class InternalProgNumHandler
 {

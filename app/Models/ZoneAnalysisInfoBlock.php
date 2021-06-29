@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Traits\JsonAPIPhotos;
 use Faker\Generator as Faker;
@@ -41,7 +41,7 @@ class ZoneAnalysisInfoBlock extends Model
      */
     public function zone()
     {
-        return $this->belongsTo(\App\Zone::class, 'zone_id');
+        return $this->belongsTo(\App\Models\Zone::class, 'zone_id');
     }
 
     /**
@@ -51,7 +51,7 @@ class ZoneAnalysisInfoBlock extends Model
      */
     public function application_log_section()
     {
-        return $this->belongsTo(\App\ApplicationLogSection::class, 'application_log_section_id');
+        return $this->belongsTo(\App\Models\ApplicationLogSection::class, 'application_log_section_id');
     }
 
     /**

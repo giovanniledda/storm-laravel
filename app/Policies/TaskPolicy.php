@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\Task;
-use App\User;
+use App\Models\Task;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use const PERMISSION_ADMIN;
 use const PERMISSION_BACKEND_MANAGER;
@@ -19,7 +19,7 @@ class TaskPolicy
     /**
      * Determine whether the user can view any boats.
      *
-     * @param  \App\User $user
+     * @param  \App\Models\User $user
      * @return mixed
      */
     public function viewAny(User $user)
@@ -30,7 +30,7 @@ class TaskPolicy
     /**
      * Determine whether the user can view the boat.
      *
-     * @param  \App\User $user
+     * @param  \App\Models\User $user
      * @param  \App\Boat $boat
      * @return mixed
      */
@@ -42,7 +42,7 @@ class TaskPolicy
     /**
      * Determine whether the user can create boats.
      *
-     * @param  \App\User $user
+     * @param  \App\Models\User $user
      * @return mixed
      */
     public function create(User $user)
@@ -53,7 +53,7 @@ class TaskPolicy
     /**
      * Determine whether the user can update the boat.
      *
-     * @param  \App\User $user
+     * @param  \App\Models\User $user
      * @param  \App\Boat $boat
      * @return mixed
      */
@@ -65,7 +65,7 @@ class TaskPolicy
     /**
      * Determine whether the user can delete the boat.
      *
-     * @param  \App\User $user
+     * @param  \App\Models\User $user
      * @param  \App\Boat $boat
      * @return mixed
      */
@@ -77,7 +77,7 @@ class TaskPolicy
     /**
      * Determine whether the user can restore the boat.
      *
-     * @param  \App\User $user
+     * @param  \App\Models\User $user
      * @param  \App\Boat $boat
      * @return mixed
      */
@@ -89,7 +89,7 @@ class TaskPolicy
     /**
      * Determine whether the user can permanently delete the boat.
      *
-     * @param  \App\User $user
+     * @param  \App\Models\User $user
      * @param  \App\Boat $boat
      * @return mixed
      */

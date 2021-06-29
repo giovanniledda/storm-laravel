@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -17,11 +17,11 @@ class Subsection extends Model
 
     public function section()
     {
-        return $this->belongsTo(\App\Section::class);
+        return $this->belongsTo(\App\Models\Section::class);
     }
 
     public function tasks()
     {
-        return $this->hasMany(\App\Task::class);
+        return $this->hasMany(\App\Models\Task::class);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Observers\TaskObserver;
 use function date;
@@ -225,43 +225,43 @@ class Task extends Model
 
     public function intervent_type()
     {
-        return $this->belongsTo(\App\TaskInterventType::class);
+        return $this->belongsTo(\App\Models\TaskInterventType::class);
     }
 
     public function project()
     {
-        return $this->belongsTo(\App\Project::class);
+        return $this->belongsTo(\App\Models\Project::class);
     }
 
     public function getProjectBoat()
     {
-//        $this->hasOneThrough('App\Boat','App\Project'); // così non funziona perché va a cercare 'projects.task_id' in 'field list' (SQL: select `boats`.*, `projects`.`task_id` as `laravel_through_key` from `boats` inner join `projects` on `projects`.`id` = `boats`.`project_id` where `projects`.`task_id` = 13 limit 1)'
+//        $this->hasOneThrough('App\Boat','App\Models\Project'); // così non funziona perché va a cercare 'projects.task_id' in 'field list' (SQL: select `boats`.*, `projects`.`task_id` as `laravel_through_key` from `boats` inner join `projects` on `projects`.`id` = `boats`.`project_id` where `projects`.`task_id` = 13 limit 1)'
         return $this->project ? $this->project->boat : null;
     }
 
     public function subsection()
     {
-        return $this->belongsTo(\App\Subsection::class);
+        return $this->belongsTo(\App\Models\Subsection::class);
     }
 
     public function section()
     {
-        return $this->belongsTo(\App\Section::class);
+        return $this->belongsTo(\App\Models\Section::class);
     }
 
     public function author()
     {
-        return $this->belongsTo(\App\User::class);
+        return $this->belongsTo(\App\Models\User::class);
     }
 
     public function comments()
     {
-        return $this->morphMany(\App\Comment::class, 'commentable');
+        return $this->morphMany(\App\Models\Comment::class, 'commentable');
     }
 
     public function history()
     {
-        return $this->morphMany(\App\History::class, 'historyable');
+        return $this->morphMany(\App\Models\History::class, 'historyable');
     }
 
     /**
@@ -315,7 +315,7 @@ class Task extends Model
      */
     public function taskIntervents()
     {
-        return $this->hasOne(\App\TaskInterventType::class);
+        return $this->hasOne(\App\Models\TaskInterventType::class);
     }
 
     /**
@@ -323,7 +323,7 @@ class Task extends Model
      */
     public function zone()
     {
-        return $this->belongsTo(\App\Zone::class, 'zone_id');
+        return $this->belongsTo(\App\Models\Zone::class, 'zone_id');
     }
 
     /**
@@ -341,7 +341,7 @@ class Task extends Model
      */
     public function closer_application_log()
     {
-        return $this->belongsToMany(\App\ApplicationLog::class, \App\ApplicationLogTask::class)->wherePivot('action', '=', 'close');
+        return $this->belongsToMany(\App\Models\ApplicationLog::class, \App\Models\ApplicationLogTask::class)->wherePivot('action', '=', 'close');
     }
 
     /**
@@ -350,7 +350,7 @@ class Task extends Model
      */
     public function opener_application_log()
     {
-        return $this->belongsToMany(\App\ApplicationLog::class, \App\ApplicationLogTask::class)->wherePivot('action', '=', 'open');
+        return $this->belongsToMany(\App\Models\ApplicationLog::class, \App\Models\ApplicationLogTask::class)->wherePivot('action', '=', 'open');
     }
 
     public function getProjectUsers()

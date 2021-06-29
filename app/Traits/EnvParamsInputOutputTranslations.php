@@ -2,7 +2,7 @@
 
 namespace App\Traits;
 
-use App\User;
+use App\Models\User;
 use function array_slice;
 use function count;
 use function date;

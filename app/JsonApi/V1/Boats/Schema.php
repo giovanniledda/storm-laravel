@@ -2,7 +2,7 @@
 
 namespace App\JsonApi\V1\Boats;
 
-use App\Section;
+use App\Models\Section;
 use Neomerx\JsonApi\Schema\SchemaProvider;
 
 class Schema extends SchemaProvider

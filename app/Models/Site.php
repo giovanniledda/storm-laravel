@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -75,12 +75,12 @@ class Site extends Model
 
     public function projects()
     {
-        return $this->hasMany(\App\Project::class);
+        return $this->hasMany(\App\Models\Project::class);
     }
 
     public function boats()
     {
-        return $this->hasMany(\App\Boat::class);
+        return $this->hasMany(\App\Models\Boat::class);
     }
 
     // public function addDocument(\Net7\Documents\Document $document, $type=false){

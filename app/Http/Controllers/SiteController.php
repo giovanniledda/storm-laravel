@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\RequestAddress;
 use App\Http\Requests\RequestSite;
-use App\Site;
+use App\Models\Site;
 use Countries;
 use const FLASH_ERROR;
 use Illuminate\Http\Request;
@@ -54,7 +54,7 @@ class SiteController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Site  $site
+     * @param  \App\Models\Site  $site
      * @return \Illuminate\Http\Response
      */
     public function show(Site $site)
@@ -65,7 +65,7 @@ class SiteController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Site  $site
+     * @param  \App\Models\Site  $site
      * @return \Illuminate\Http\Response
      */
     public function edit(Site $site)
@@ -77,7 +77,7 @@ class SiteController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\RequestSite  $request
-     * @param  \App\Site  $site
+     * @param  \App\Models\Site  $site
      * @return \Illuminate\Http\Response
      */
     public function update(RequestSite $request, Site $site)

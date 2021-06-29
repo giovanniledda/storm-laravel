@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RequestProfession;
-use App\Profession;
+use App\Models\Profession;
 use Illuminate\Http\Request;
 use StormUtils;
 
@@ -51,7 +51,7 @@ class ProfessionController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Profession  $profession
+     * @param  \App\Models\Profession  $profession
      * @return \Illuminate\Http\Response
      */
     public function show(Profession $profession)
@@ -62,7 +62,7 @@ class ProfessionController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Profession  $profession
+     * @param  \App\Models\Profession  $profession
      * @return \Illuminate\Http\Response
      */
     public function edit(Profession $profession)
@@ -74,7 +74,7 @@ class ProfessionController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\RequestProfession  $request
-     * @param  \App\Profession  $profession
+     * @param  \App\Models\Profession  $profession
      * @return \Illuminate\Http\Response
      */
     public function update(RequestProfession $request, Profession $profession)

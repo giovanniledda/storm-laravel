@@ -2,8 +2,8 @@
 
 namespace App\JsonApi\V1\Projects;
 
-use App\Boat;
-use App\Site;
+use App\Models\Boat;
+use App\Models\Site;
 use Neomerx\JsonApi\Schema\SchemaProvider;
 
 class Schema extends SchemaProvider

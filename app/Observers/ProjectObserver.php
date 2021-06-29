@@ -23,9 +23,9 @@ restored
 namespace App\Observers;
 
 use App\Jobs\ProjectGoogleDirSetup;
-use App\Project;
-use App\ProjectUser;
-use App\Task;
+use App\Models\Project;
+use App\Models\ProjectUser;
+use App\Models\Task;
 use Log;
 
 class ProjectObserver
@@ -33,7 +33,7 @@ class ProjectObserver
     /**
      * Handle the project "updating" event.
      *
-     * @param  \App\Project  $project
+     * @param  \App\Models\Project  $project
      * @return void
      */
     public function updating(Project $project)
@@ -62,7 +62,7 @@ class ProjectObserver
     /**
      * Handle the project "created" event.
      *
-     * @param \App\Project $project
+     * @param \App\Models\Project $project
      * @return void
      * @throws \Spatie\ModelStatus\Exceptions\InvalidStatus
      */
@@ -92,7 +92,7 @@ class ProjectObserver
     /**
      * Handle the project "updated" event.
      *
-     * @param \App\Project $project
+     * @param \App\Models\Project $project
      * @return void
      * @throws \Spatie\ModelStatus\Exceptions\InvalidStatus
      */
@@ -106,7 +106,7 @@ class ProjectObserver
     /**
      * Handle the project "deleted" event.
      *
-     * @param  \App\Project  $project
+     * @param  \App\Models\Project  $project
      * @return void
      */
     public function deleted(Project $project)
@@ -117,7 +117,7 @@ class ProjectObserver
     /**
      * Handle the project "restored" event.
      *
-     * @param  \App\Project  $project
+     * @param  \App\Models\Project  $project
      * @return void
      */
     public function restored(Project $project)
@@ -128,7 +128,7 @@ class ProjectObserver
     /**
      * Handle the project "force deleted" event.
      *
-     * @param  \App\Project  $project
+     * @param  \App\Models\Project  $project
      * @return void
      */
     public function forceDeleted(Project $project)

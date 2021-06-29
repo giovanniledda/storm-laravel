@@ -2,14 +2,14 @@
 
 namespace Tests\Feature;
 
-use App\ApplicationLog;
-use App\Boat;
-use App\Product;
-use App\Profession;
-use App\Project;
-use App\ProjectUser;
-use App\Site;
-use App\User;
+use App\Models\ApplicationLog;
+use App\Models\Boat;
+use App\Models\Product;
+use App\Models\Profession;
+use App\Models\Project;
+use App\Models\ProjectUser;
+use App\Models\Site;
+use App\Models\User;
 use function array_map;
 use function factory;
 use Faker\Provider\Base as fakerBase;

@@ -2,8 +2,8 @@
 
 namespace App\JsonApi\V1\Boats;
 
-use App\Boat;
-use App\User;
+use App\Models\Boat;
+use App\Models\User;
 use CloudCreativity\LaravelJsonApi\Eloquent\AbstractAdapter;
 use CloudCreativity\LaravelJsonApi\Pagination\StandardStrategy;
 use Illuminate\Database\Eloquent\Builder;
@@ -25,7 +25,7 @@ class Adapter extends AbstractAdapter
      */
     public function __construct(StandardStrategy $paging)
     {
-        parent::__construct(new \App\Boat(), $paging);
+        parent::__construct(new \App\Models\Boat(), $paging);
     }
 
     /**
@@ -92,7 +92,7 @@ class Adapter extends AbstractAdapter
 
     public function projects()
     {
-        return $this->hasMany(\App\Project::class);
+        return $this->hasMany(\App\Models\Project::class);
     }
 
     /**

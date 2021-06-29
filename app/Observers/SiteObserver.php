@@ -3,14 +3,14 @@
 namespace App\Observers;
 
 use function abort_if;
-use App\Site;
+use App\Models\Site;
 
 class SiteObserver
 {
     /**
      * Handle the project "updating" event.
      *
-     * @param  \App\Site $site
+     * @param  \App\Models\Site $site
      * @return void
      */
     /*

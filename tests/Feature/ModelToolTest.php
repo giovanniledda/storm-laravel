@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\DetectionsInfoBlock;
-use App\Tool;
+use App\Models\DetectionsInfoBlock;
+use App\Models\Tool;
 use function factory;
 use Tests\TestCase;
 
