@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\ApplicationLog;
+use App\Models\ApplicationLog;
 use Tests\TestCase;
 
 class ModelApplicationLogTest extends TestCase

@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -47,7 +47,7 @@ class ProductUseInfoBlock extends Model
      */
     public function product()
     {
-        return $this->belongsTo(\App\Product::class, 'product_id');
+        return $this->belongsTo(\App\Models\Product::class, 'product_id');
     }
 
     /**
@@ -57,7 +57,7 @@ class ProductUseInfoBlock extends Model
      */
     public function application_log_section()
     {
-        return $this->belongsTo(\App\ApplicationLogSection::class, 'application_log_section_id');
+        return $this->belongsTo(\App\Models\ApplicationLogSection::class, 'application_log_section_id');
     }
 
     /**

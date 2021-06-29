@@ -2,14 +2,14 @@
 
 namespace Tests\Feature;
 
-use App\ApplicationLog;
-use App\ApplicationLogSection;
-use App\ApplicationLogTask;
-use App\Boat;
-use App\Project;
-use App\Task;
-use App\Zone;
-use App\ZoneAnalysisInfoBlock;
+use App\Models\ApplicationLog;
+use App\Models\ApplicationLogSection;
+use App\Models\ApplicationLogTask;
+use App\Models\Boat;
+use App\Models\Project;
+use App\Models\Task;
+use App\Models\Zone;
+use App\Models\ZoneAnalysisInfoBlock;
 use Database\Seeders\SeederUtils;
 use function factory;
 use Seeds\SeederUtils;

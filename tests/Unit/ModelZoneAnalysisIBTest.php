@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\ZoneAnalysisInfoBlock;
+use App\Models\ZoneAnalysisInfoBlock;
 use Tests\TestCase;
 
 class ModelZoneAnalysisIBTest extends TestCase

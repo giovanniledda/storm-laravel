@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Observers\ProjectObserver;
 use App\Observers\ZoneObserver;
@@ -62,7 +62,7 @@ class Zone extends Model
      */
     public function project()
     {
-        return $this->belongsTo(\App\Project::class, 'project_id');
+        return $this->belongsTo(\App\Models\Project::class, 'project_id');
     }
 
     /**
@@ -82,7 +82,7 @@ class Zone extends Model
      */
     public function zone_analysis_info_blocks()
     {
-        return $this->hasMany(\App\ZoneAnalysisInfoBlock::class, 'zone_id');
+        return $this->hasMany(\App\Models\ZoneAnalysisInfoBlock::class, 'zone_id');
     }
 
     /**
@@ -90,7 +90,7 @@ class Zone extends Model
      */
     public function tasks()
     {
-        return $this->hasMany(\App\Task::class, 'zone_id');
+        return $this->hasMany(\App\Models\Task::class, 'zone_id');
     }
 
     /**

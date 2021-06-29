@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\ApplicationLogTask;
+use App\Models\ApplicationLogTask;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ApplicationLogTaskFactory extends Factory

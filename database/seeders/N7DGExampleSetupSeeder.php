@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Boat;
-use App\Project;
+use App\Models\Boat;
+use App\Models\Project;
 use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 use Net7\DocsGenerator\DocsGenerator;

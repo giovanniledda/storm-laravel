@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\DetectionsInfoBlock;
+use App\Models\DetectionsInfoBlock;
 use Tests\TestCase;
 
 class ModelDetectionsIBTest extends TestCase

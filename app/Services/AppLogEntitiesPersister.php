@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
-use App\ApplicationLog;
-use App\ApplicationLogSection;
-use App\DetectionsInfoBlock;
-use App\GenericDataInfoBlock;
-use App\ProductUseInfoBlock;
-use App\ZoneAnalysisInfoBlock;
+use App\Models\ApplicationLog;
+use App\Models\ApplicationLogSection;
+use App\Models\DetectionsInfoBlock;
+use App\Models\GenericDataInfoBlock;
+use App\Models\ProductUseInfoBlock;
+use App\Models\ZoneAnalysisInfoBlock;
 use function array_merge;
 use ArrayIterator;
 use Illuminate\Support\Arr;

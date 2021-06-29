@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Profession;
-use App\Site;
-use App\TaskInterventType;
+use App\Models\Profession;
+use App\Models\Site;
+use App\Models\TaskInterventType;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Config;
 //use Faker\Factory as Faker;

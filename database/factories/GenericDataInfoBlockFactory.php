@@ -4,7 +4,7 @@
 
 namespace Database\Factories;
 
-use App\GenericDataInfoBlock;
+use App\Models\GenericDataInfoBlock;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class GenericDataInfoBlockFactory extends Factory

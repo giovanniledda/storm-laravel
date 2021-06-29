@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Tool;
+use App\Models\Tool;
 use Tests\TestCase;
 
 class ModelToolTest extends TestCase

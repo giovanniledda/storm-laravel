@@ -19,7 +19,7 @@ class ProjectGoogleSync implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(\App\Project $project)
+    public function __construct(\App\Models\Project $project)
     {
         $this->project = $project;
     }

@@ -48,7 +48,7 @@ class Adapter extends AbstractAdapter
      */
     public function __construct(StandardStrategy $paging)
     {
-        parent::__construct(new \App\Project(), $paging);
+        parent::__construct(new \App\Models\Project(), $paging);
     }
 
     /**
@@ -88,7 +88,7 @@ class Adapter extends AbstractAdapter
                     $query
                         // ->select(\Illuminate\Support\Facades\DB::raw('max(id)'))
                         ->select('model_id')
-                        // ->from(\App\Project::getStatusTableName) // 'statuses') // todo: get table name from somehwere
+                        // ->from(\App\Models\Project::getStatusTableName) // 'statuses') // todo: get table name from somehwere
                         ->from('statuses')
                         ->where('model_type', 'App\\Project')
                         ->where('name', $this->status)

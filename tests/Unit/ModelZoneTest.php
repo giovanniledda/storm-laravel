@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Zone;
+use App\Models\Zone;
 use Tests\TestCase;
 
 class ModelZoneTest extends TestCase

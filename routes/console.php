@@ -1,10 +1,10 @@
 <?php
 
-use App\Comment;
-use App\History;
-use App\Project;
+use App\Models\Comment;
+use App\Models\History;
+use App\Models\Project;
 use App\Services\InternalProgNumHandler;
-use App\Task;
+use App\Models\Task;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Str;
 use Net7\Documents\Document;
@@ -40,7 +40,7 @@ Artisan::command('move-task-images', function () {
 
     if ($this->confirm('Do you wish to continue?')) {
         $this->comment('Running images moving...');
-        $tasks = App\Task::all();
+        $tasks = App\Models\Task::all();
 
         $bar = $this->output->createProgressBar(count($tasks));
 
@@ -110,7 +110,7 @@ Artisan::command('move-task-images', function () {
 Artisan::command('move-task-images-conversions', function () {
     if ($this->confirm('Do you wish to continue?')) {
         $this->comment('Running images moving...');
-        $tasks = App\Task::all();
+        $tasks = App\Models\Task::all();
 
         $bar = $this->output->createProgressBar(count($tasks));
 
@@ -185,7 +185,7 @@ Artisan::command('move-task-descriptions', function () {
 
     if ($this->confirm('Do you wish to continue?')) {
         $this->comment('Running description/comments moving...');
-        $tasks = App\Task::all();
+        $tasks = App\Models\Task::all();
 
         $bar = $this->output->createProgressBar(count($tasks));
 
@@ -260,13 +260,13 @@ Artisan::command('update-task-map {limit?} {--id=*}', function ($limit = null) {
         $ids = $this->option('id');
         if (empty($ids)) {
             $this->comment("1 - limit $limit");
-            $tasks = $limit ? App\Task::limit($limit)->get() : App\Task::all();
+            $tasks = $limit ? App\Models\Task::limit($limit)->get() : App\Models\Task::all();
         } else {
             $this->comment("2 - limit $limit");
             foreach ($ids as $id) {
                 $this->comment("2 - ID: $id");
             }
-            $tasks_q = App\Task::whereIn('id', $ids);
+            $tasks_q = App\Models\Task::whereIn('id', $ids);
             $tasks = $limit ? $tasks_q->limit($limit)->get() : $tasks_q->get();
         }
 

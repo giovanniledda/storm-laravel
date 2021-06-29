@@ -4,7 +4,7 @@
 
 namespace Database\Factories;
 
-use App\DetectionsInfoBlock;
+use App\Models\DetectionsInfoBlock;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class DetectionsInfoBlockFactory extends Factory

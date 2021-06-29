@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Observers\CommentObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -33,12 +33,12 @@ class Comment extends Model
 
     public function author()
     {
-        return $this->belongsTo(\App\User::class);
+        return $this->belongsTo(\App\Models\User::class);
     }
 
     public function authorNickname()
     {
-        // auhtor è un App\User
+        // auhtor è un App\Models\User
         return $this->author ? $this->author->getNickname() : '-';
     }
 }

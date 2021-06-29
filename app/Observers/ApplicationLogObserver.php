@@ -2,16 +2,16 @@
 
 namespace App\Observers;
 
-use App\ApplicationLog;
-use App\ProjectUser;
-use App\ReportItem;
+use App\Models\ApplicationLog;
+use App\Models\ProjectUser;
+use App\Models\ReportItem;
 
 class ApplicationLogObserver
 {
     /**
      * Handle the application log "created" event.
      *
-     * @param  \App\ApplicationLog  $applicationLog
+     * @param  \App\Models\ApplicationLog  $applicationLog
      * @return void
      */
     public function created(ApplicationLog $applicationLog)
@@ -38,7 +38,7 @@ class ApplicationLogObserver
     /**
      * Handle the application log "updated" event.
      *
-     * @param  \App\ApplicationLog  $applicationLog
+     * @param  \App\Models\ApplicationLog  $applicationLog
      * @return void
      */
     public function updated(ApplicationLog $applicationLog)
@@ -51,7 +51,7 @@ class ApplicationLogObserver
     /**
      * Handle the application log "saving" (before save) event.
      *
-     * @param  \App\ApplicationLog  $applicationLog
+     * @param  \App\Models\ApplicationLog  $applicationLog
      * @return void
      */
     public function saving(ApplicationLog $applicationLog)
@@ -68,7 +68,7 @@ class ApplicationLogObserver
     /**
      * Handle the application log "deleted" event.
      *
-     * @param  \App\ApplicationLog  $applicationLog
+     * @param  \App\Models\ApplicationLog  $applicationLog
      * @return void
      */
     public function deleted(ApplicationLog $applicationLog)
@@ -81,7 +81,7 @@ class ApplicationLogObserver
     /**
      * Handle the application log "restored" event.
      *
-     * @param  \App\ApplicationLog  $applicationLog
+     * @param  \App\Models\ApplicationLog  $applicationLog
      * @return void
      */
     public function restored(ApplicationLog $applicationLog)
@@ -92,7 +92,7 @@ class ApplicationLogObserver
     /**
      * Handle the application log "force deleted" event.
      *
-     * @param  \App\ApplicationLog  $applicationLog
+     * @param  \App\Models\ApplicationLog  $applicationLog
      * @return void
      */
     public function forceDeleted(ApplicationLog $applicationLog)

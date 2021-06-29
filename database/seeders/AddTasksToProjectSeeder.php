@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Comment;
-use App\Project;
-use App\TaskInterventType;
+use App\Models\Comment;
+use App\Models\Project;
+use App\Models\TaskInterventType;
 use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Config;

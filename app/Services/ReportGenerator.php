@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use function __;
-use App\Project;
+use App\Models\Project;
 use Illuminate\Http\Response;
 use Net7\DocsGenerator\DocsGenerator;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;

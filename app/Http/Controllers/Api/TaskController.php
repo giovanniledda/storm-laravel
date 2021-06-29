@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\History;
+use App\Models\History;
 use App\Http\Controllers\Controller;
-use App\Section;
-use App\Task;
-use App\User;
+use App\Models\Section;
+use App\Models\Task;
+use App\Models\User;
 use App\Utils\Utils;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;

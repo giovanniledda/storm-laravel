@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Doctrine\DBAL\Driver\PDOException;
 use Illuminate\Database\Eloquent\Relations\Pivot;
@@ -20,17 +20,17 @@ class ProjectUser extends Pivot
 
     public function user()
     {
-        return $this->belongsTo(\App\User::class);
+        return $this->belongsTo(\App\Models\User::class);
     }
 
     public function project()
     {
-        return $this->belongsTo(\App\Project::class);
+        return $this->belongsTo(\App\Models\Project::class);
     }
 
     public function profession()
     {
-        return $this->belongsTo(\App\Profession::class);
+        return $this->belongsTo(\App\Models\Profession::class);
     }
 
     /**

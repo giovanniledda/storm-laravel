@@ -24,7 +24,7 @@ class Adapter extends AbstractAdapter
      */
     public function __construct(StandardStrategy $paging)
     {
-        parent::__construct(new \App\Update(), $paging);
+        parent::__construct(new \App\Models\Update(), $paging);
     }
 
     /**
@@ -38,7 +38,7 @@ class Adapter extends AbstractAdapter
 
         /** restringe il recordset in caso di mancanza di permessi */
         if (1 || $user->can(PERMISSION_BOAT_MANAGER)) {  // per ora bypassato
-            $query->where('notifiable_type', '=', \App\User::class)
+            $query->where('notifiable_type', '=', \App\Models\User::class)
                 ->where('notifiable_id', $user->id);
         }
 

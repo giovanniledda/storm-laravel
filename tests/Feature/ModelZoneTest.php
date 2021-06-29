@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Project;
-use App\Zone;
-use App\ZoneAnalysisInfoBlock;
+use App\Models\Project;
+use App\Models\Zone;
+use App\Models\ZoneAnalysisInfoBlock;
 use function factory;
 use Tests\TestCase;
 

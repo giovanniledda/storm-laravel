@@ -24,7 +24,7 @@ class DocumentsController extends BaseController
         $document = $request->record;
         $entity = $document->documentable;
 
-        if (get_class($entity) == \App\Project::class && env('USE_GOOGLE_DRIVE')) {
+        if (get_class($entity) == \App\Models\Project::class && env('USE_GOOGLE_DRIVE')) {
             try {
                 //   $url = $entity->getDocumentFromDropbox($document);
                 // return response()->redirectTo($url);

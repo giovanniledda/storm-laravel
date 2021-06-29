@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Traits\JsonAPIPhotos;
 use const DIRECTORY_SEPARATOR;
@@ -51,7 +51,7 @@ class GenericDataInfoBlock extends Model
      */
     public function application_log_section()
     {
-        return $this->belongsTo(\App\ApplicationLogSection::class, 'application_log_section_id');
+        return $this->belongsTo(\App\Models\ApplicationLogSection::class, 'application_log_section_id');
     }
 
     /**
