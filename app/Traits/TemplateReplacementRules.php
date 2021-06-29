@@ -3,17 +3,17 @@
 namespace App\Traits;
 
 use function abs;
-use App\ApplicationLog;
-use App\ApplicationLogSection;
-use App\DetectionsInfoBlock;
-use App\GenericDataInfoBlock;
-use App\Product;
-use App\ProductUseInfoBlock;
-use App\Section;
-use App\Task;
-use App\Tool;
-use App\Zone;
-use App\ZoneAnalysisInfoBlock;
+use App\Models\ApplicationLog;
+use App\Models\ApplicationLogSection;
+use App\Models\DetectionsInfoBlock;
+use App\Models\GenericDataInfoBlock;
+use App\Models\Product;
+use App\Models\ProductUseInfoBlock;
+use App\Models\Section;
+use App\Models\Task;
+use App\Models\Tool;
+use App\Models\Zone;
+use App\Models\ZoneAnalysisInfoBlock;
 use const APPLICATION_TYPE_COATING;
 use const APPLICATION_TYPE_FILLER;
 use const APPLICATION_TYPE_HIGHBUILD;

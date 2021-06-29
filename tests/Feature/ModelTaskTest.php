@@ -2,12 +2,12 @@
 
 namespace Tests\Feature;
 
-use App\Boat;
-use App\Project;
-use App\Section;
-use App\Subsection;
-use App\Task;
-use App\Zone;
+use App\Models\Boat;
+use App\Models\Project;
+use App\Models\Section;
+use App\Models\Subsection;
+use App\Models\Task;
+use App\Models\Zone;
 use function factory;
 use Tests\TestCase;
 

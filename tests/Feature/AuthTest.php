@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\User;
+use App\Models\User;
 use function get_class_methods;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;

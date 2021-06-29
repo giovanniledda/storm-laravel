@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\ApplicationLog;
-use App\ApplicationLogSection;
+use App\Models\ApplicationLog;
+use App\Models\ApplicationLogSection;
 use function factory;
 use Tests\TestCase;
 

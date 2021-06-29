@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
@@ -17,11 +17,11 @@ class ProjectSection extends Pivot
 
     public function project()
     {
-        return $this->belongsTo(\App\Project::class);
+        return $this->belongsTo(\App\Models\Project::class);
     }
 
     public function section()
     {
-        return $this->belongsTo(\App\Section::class);
+        return $this->belongsTo(\App\Models\Section::class);
     }
 }

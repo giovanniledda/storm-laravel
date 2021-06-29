@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\ApplicationLog;
-use App\ApplicationLogSection;
-use App\Project;
+use App\Models\ApplicationLog;
+use App\Models\ApplicationLogSection;
+use App\Models\Project;
 use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 use Seeds\SeederUtils as Utils;

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Boat;
-use App\BoatUser;
+use App\Models\Boat;
+use App\Models\BoatUser;
 use App\Http\Controllers\Controller;
-use App\Profession;
-use App\User;
+use App\Models\Profession;
+use App\Models\User;
 use App\Utils\Utils;
 use Auth;
 use Illuminate\Http\Request;

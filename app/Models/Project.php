@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Jobs\SendDocumentsToGoogleDrive;
 use App\Observers\ProjectObserver;
@@ -610,12 +610,12 @@ class Project extends Model
 
     public function boat()
     {
-        return $this->belongsTo(\App\Boat::class);
+        return $this->belongsTo(\App\Models\Boat::class);
     }
 
     public function site()
     {
-        return $this->belongsTo(\App\Site::class);
+        return $this->belongsTo(\App\Models\Site::class);
     }
 
     public function siteLocation()
@@ -725,13 +725,13 @@ class Project extends Model
 
     public function history()
     {
-        return $this->morphMany(\App\History::class, 'historyable');
+        return $this->morphMany(\App\Models\History::class, 'historyable');
     }
 
 //    public function sectionsOld()
 //    {
-//        return $this->belongsToMany('App\Section')
-//            ->using('App\ProjectSection')
+//        return $this->belongsToMany('App\Models\Section')
+//            ->using('App\Models\ProjectSection')
 //            ->withPivot([
 //                'project_id',
 //                'section_id',
@@ -742,8 +742,8 @@ class Project extends Model
 
     public function sections()
     {
-        return $this->belongsToMany(\App\Section::class, 'project_section', 'project_id', 'section_id')
-            ->using(\App\ProjectSection::class)
+        return $this->belongsToMany(\App\Models\Section::class, 'project_section', 'project_id', 'section_id')
+            ->using(\App\Models\ProjectSection::class)
             ->withTimestamps()
             ->withPivot([
                 'project_id',
@@ -785,12 +785,12 @@ class Project extends Model
 
     public function comments()
     {
-        return $this->morphMany(\App\Comment::class, 'commentable');
+        return $this->morphMany(\App\Models\Comment::class, 'commentable');
     }
 
     public function users()
     {
-        return $this->belongsToMany(\App\User::class, 'project_user')
+        return $this->belongsToMany(\App\Models\User::class, 'project_user')
 //                        ->using('App\ProjectUser')
             ->withPivot([
                 // 'role',
@@ -805,7 +805,7 @@ class Project extends Model
      */
     public function products()
     {
-        return $this->belongsToMany(\App\Product::class, 'project_product')
+        return $this->belongsToMany(\App\Models\Product::class, 'project_product')
             ->withPivot([
                 'created_at',
                 'updated_at',
@@ -817,7 +817,7 @@ class Project extends Model
      */
     public function tools()
     {
-        return $this->belongsToMany(\App\Tool::class, 'project_tool')
+        return $this->belongsToMany(\App\Models\Tool::class, 'project_tool')
             ->withPivot([
                 'created_at',
                 'updated_at',

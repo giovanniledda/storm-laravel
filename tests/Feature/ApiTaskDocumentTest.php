@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\Boat;
+use App\Models\Boat;
 use App\Permission;
-use App\Project;
+use App\Models\Project;
 use App\Role;
-use App\Task;
+use App\Models\Task;
 use const DOCUMENT_RELATED_ENTITY_TASK;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -34,7 +34,7 @@ class ApiTaskDocumentTest extends TestApiCase
         $project = Project::factory()->create();
 
         $task_name = $this->faker->sentence;
-        $task = new \App\Task(['title'=>$task_name, 'description' => '']);
+        $task = new \App\Models\Task(['title'=>$task_name, 'description' => '']);
 
         $task->save();
 

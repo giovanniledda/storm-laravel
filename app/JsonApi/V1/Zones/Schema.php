@@ -2,8 +2,8 @@
 
 namespace App\JsonApi\V1\Zones;
 
-use App\Task;
-use App\Zone;
+use App\Models\Task;
+use App\Models\Zone;
 use Neomerx\JsonApi\Schema\SchemaProvider;
 
 class Schema extends SchemaProvider

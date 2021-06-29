@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\ApplicationLogSection;
-use App\GenericDataInfoBlock;
+use App\Models\ApplicationLogSection;
+use App\Models\GenericDataInfoBlock;
 use function factory;
 use Tests\TestCase;
 

@@ -3,7 +3,7 @@
 namespace App\JsonApi\V1\Sites;
 
 use function abort_if;
-use App\Site;
+use App\Models\Site;
 use CloudCreativity\LaravelJsonApi\Eloquent\AbstractAdapter;
 use CloudCreativity\LaravelJsonApi\Pagination\StandardStrategy;
 use Illuminate\Database\Eloquent\Builder;
@@ -26,7 +26,7 @@ class Adapter extends AbstractAdapter
      */
     public function __construct(StandardStrategy $paging)
     {
-        parent::__construct(new \App\Site(), $paging);
+        parent::__construct(new \App\Models\Site(), $paging);
     }
 
     /**

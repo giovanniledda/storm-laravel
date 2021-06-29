@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Project;
+use App\Models\Project;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;

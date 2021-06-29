@@ -3,20 +3,20 @@
 namespace App\Http\Controllers\Api;
 
 use function __;
-use App\ApplicationLog;
-use App\ApplicationLogSection;
+use App\Models\ApplicationLog;
+use App\Models\ApplicationLogSection;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RequestApplicationLog;
 use App\Http\Requests\RequestProjectChangeType;
 use App\Jobs\ProjectGoogleSync;
 use App\Jobs\ProjectLoadEnvironmentalData;
-use App\Project;
-use App\ReportItem;
+use App\Models\Project;
+use App\Models\ReportItem;
 use App\Services\AppLogEntitiesPersister;
 use App\Services\ZonesPersister;
-use App\Task;
+use App\Models\Task;
 use App\Utils\Utils;
-use App\Zone;
+use App\Models\Zone;
 use function array_key_exists;
 use function explode;
 use Illuminate\Http\Request;

@@ -2,14 +2,14 @@
 
 namespace Tests\Feature;
 
-use App\Boat;
+use App\Models\Boat;
 use App\Permission;
-use App\Profession;
-use App\Project;
+use App\Models\Profession;
+use App\Models\Project;
 use App\Role;
-use App\Section;
-use App\Site;
-use App\User;
+use App\Models\Section;
+use App\Models\Site;
+use App\Models\User;
 use Laravel\Passport\Passport;
 use const PERMISSION_ADMIN;
 use const PERMISSION_BOAT_MANAGER;
@@ -94,7 +94,7 @@ class ApiMobileCicleTest extends TestApiCase
             ]);
         $response->assertStatus(201);
 
-        $boat = \App\Boat::find(1);
+        $boat = \App\Models\Boat::find(1);
 
         $data =
          [
@@ -149,7 +149,7 @@ class ApiMobileCicleTest extends TestApiCase
             ]);
         $response->assertStatus(201);
 
-        $boat = \App\Boat::find(1);
+        $boat = \App\Models\Boat::find(1);
 
         $this->_createSections($boat);
         $this->refreshApplication();
@@ -180,7 +180,7 @@ class ApiMobileCicleTest extends TestApiCase
         );
         $site->save();
 
-        $boat = \App\Boat::create(['name'=> 'Teliri',
+        $boat = \App\Models\Boat::create(['name'=> 'Teliri',
                                         'registration_number'=> '9105889',
                                          'manufacture_year'=>'1996',
                                          'length'=>'115.5',
@@ -188,7 +188,7 @@ class ApiMobileCicleTest extends TestApiCase
                                          'beam'=>'9', ]);
         $this->_createSections($boat);
 
-        $project = \App\Project::create(
+        $project = \App\Models\Project::create(
                 [
                     'name'=>'rebuildproject',
                     'project_status'=>'open',
@@ -285,7 +285,7 @@ class ApiMobileCicleTest extends TestApiCase
     {
         $interventTypes = ['flat', 'flot'];
         foreach ($interventTypes as $interventType) {
-            $type = \App\TaskInterventType::create([
+            $type = \App\Models\TaskInterventType::create([
                 'name'=>$interventType,
                     ]);
             $type->save();

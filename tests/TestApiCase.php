@@ -2,10 +2,10 @@
 
 namespace Tests;
 
-use App\Boat;
-use App\Project;
-use App\Task;
-use App\User;
+use App\Models\Boat;
+use App\Models\Project;
+use App\Models\Task;
+use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Passport\ClientRepository;
 use Laravel\Passport\Passport;

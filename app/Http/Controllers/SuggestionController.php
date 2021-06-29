@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use function __;
 use App\Http\Requests\RequestSuggestion;
-use App\Suggestion;
-use App\User;
+use App\Models\Suggestion;
+use App\Models\User;
 use DB;
 use Illuminate\Http\Request;
 use function redirect;

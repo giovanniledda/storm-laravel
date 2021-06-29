@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
@@ -18,11 +18,11 @@ class BoatUser extends Pivot
 
     public function user()
     {
-        return $this->belongsTo(\App\User::class);
+        return $this->belongsTo(\App\Models\User::class);
     }
 
     public function boat()
     {
-        return $this->belongsTo(\App\Boat::class);
+        return $this->belongsTo(\App\Models\Boat::class);
     }
 }

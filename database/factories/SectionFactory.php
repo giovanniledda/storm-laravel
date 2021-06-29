@@ -4,7 +4,7 @@
 
 namespace Database\Factories;
 
-use App\Section;
+use App\Models\Section;
 use App\Utils\Utils;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

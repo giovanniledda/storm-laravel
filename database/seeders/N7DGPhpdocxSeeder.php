@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use App\MyTemplateProcessor;
-use App\Project;
-use App\User;
+use App\Models\Project;
+use App\Models\User;
 use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 use Net7\DocsGenerator\DocsGenerator;

@@ -2,16 +2,16 @@
 
 namespace Tests\Feature;
 
-use App\Boat;
-use App\Comment;
+use App\Models\Boat;
+use App\Models\Comment;
 use App\Notifications\TaskCreated;
 use App\Notifications\TaskUpdated;
 use App\Permission;
-use App\Profession;
-use App\Project;
+use App\Models\Profession;
+use App\Models\Project;
 use App\Role;
-use App\Task;
-use App\User;
+use App\Models\Task;
+use App\Models\User;
 use const PERMISSION_BOAT_MANAGER;
 use const ROLE_BOAT_MANAGER;
 use Tests\TestCase;

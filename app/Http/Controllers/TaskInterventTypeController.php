@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RequestTaskInterventType;
-use App\TaskInterventType;
+use App\Models\TaskInterventType;
 use Illuminate\Http\Request;
 use StormUtils;
 
@@ -51,7 +51,7 @@ class TaskInterventTypeController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\TaskInterventType  $taskInterventType
+     * @param  \App\Models\TaskInterventType  $taskInterventType
      * @return \Illuminate\Http\Response
      */
     public function show(TaskInterventType $taskInterventType)
@@ -62,7 +62,7 @@ class TaskInterventTypeController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\TaskInterventType  $taskInterventType
+     * @param  \App\Models\TaskInterventType  $taskInterventType
      * @return \Illuminate\Http\Response
      */
     public function edit(TaskInterventType $taskInterventType)
@@ -74,7 +74,7 @@ class TaskInterventTypeController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\RequestTaskInterventType  $request
-     * @param  \App\TaskInterventType  $taskInterventType
+     * @param  \App\Models\TaskInterventType  $taskInterventType
      * @return \Illuminate\Http\Response
      */
     public function update(RequestTaskInterventType $request, TaskInterventType $taskInterventType)

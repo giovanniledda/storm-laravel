@@ -2,11 +2,11 @@
 
 namespace Tests\Feature\Disabled;
 
-use App\Boat;
+use App\Models\Boat;
 use App\Permission;
-use App\Profession;
+use App\Models\Profession;
 use App\Role;
-use App\User;
+use App\Models\User;
 use Laravel\Passport\Passport;
 use const PERMISSION_ADMIN;
 use const PERMISSION_BOAT_MANAGER;

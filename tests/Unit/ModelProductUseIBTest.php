@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\ProductUseInfoBlock;
+use App\Models\ProductUseInfoBlock;
 use Tests\TestCase;
 
 class ModelProductUseIBTest extends TestCase

@@ -3,8 +3,8 @@
 namespace App\Utils;
 
 use function abs;
-use App\Profession;
-use App\User;
+use App\Models\Profession;
+use App\Models\User;
 use function ceil;
 use Exception;
 use Faker\Factory as Faker;

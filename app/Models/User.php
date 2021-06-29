@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Notifications\StormResetPasswordNotification;
 use Illuminate\Auth\Passwords\CanResetPassword;
@@ -96,7 +96,7 @@ class User extends Authenticatable
 
     public function projects()
     {
-        return $this->belongsToMany(\App\Project::class, 'project_user')
+        return $this->belongsToMany(\App\Models\Project::class, 'project_user')
 //            ->using('App\ProjectUser')
             ->withPivot([
                 'profession_id',
@@ -172,8 +172,8 @@ class User extends Authenticatable
 
     public function boats()
     {
-        return $this->belongsToMany(\App\Boat::class)
-            ->using(\App\BoatUser::class)
+        return $this->belongsToMany(\App\Models\Boat::class)
+            ->using(\App\Models\BoatUser::class)
             ->withPivot([
                 'profession_id',
                 'created_by',
@@ -183,7 +183,7 @@ class User extends Authenticatable
 
     public function phones()
     {
-        return $this->hasMany(\App\UsersTel::class);
+        return $this->hasMany(\App\Models\UsersTel::class);
     }
 
     public function countPhones()

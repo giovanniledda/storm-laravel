@@ -4,7 +4,7 @@
 
 namespace Database\Factories;
 
-use App\ProductUseInfoBlock;
+use App\Models\ProductUseInfoBlock;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ProductUseInfoBlockFactory extends Factory

@@ -2,8 +2,8 @@
 
 namespace App\Notifications;
 
-use App\Task;
-use App\User;
+use App\Models\Task;
+use App\Models\User;
 use StormUtils;
 use const TASK_CREATED_MOBILE_APP_TEXT;
 

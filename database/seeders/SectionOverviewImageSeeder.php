@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Section;
+use App\Models\Section;
 use Illuminate\Database\Seeder;
 
 class SectionOverviewImageSeeder extends Seeder

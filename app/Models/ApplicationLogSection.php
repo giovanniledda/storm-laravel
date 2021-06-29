@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use const APPLICATION_LOG_SECTION_TYPE_APPLICATION;
 use const APPLICATION_LOG_SECTION_TYPE_INSPECTION;
@@ -33,7 +33,7 @@ class ApplicationLogSection extends Model
      */
     public function application_log()
     {
-        return $this->belongsTo(\App\ApplicationLog::class);
+        return $this->belongsTo(\App\Models\ApplicationLog::class);
     }
 
     /**
@@ -41,7 +41,7 @@ class ApplicationLogSection extends Model
      */
     public function zone_analysis_info_blocks()
     {
-        return $this->hasMany(\App\ZoneAnalysisInfoBlock::class, 'application_log_section_id');
+        return $this->hasMany(\App\Models\ZoneAnalysisInfoBlock::class, 'application_log_section_id');
     }
 
     /**
@@ -49,7 +49,7 @@ class ApplicationLogSection extends Model
      */
     public function product_use_info_blocks()
     {
-        return $this->hasMany(\App\ProductUseInfoBlock::class, 'application_log_section_id');
+        return $this->hasMany(\App\Models\ProductUseInfoBlock::class, 'application_log_section_id');
     }
 
     /**
@@ -57,7 +57,7 @@ class ApplicationLogSection extends Model
      */
     public function generic_data_info_blocks()
     {
-        return $this->hasMany(\App\GenericDataInfoBlock::class, 'application_log_section_id');
+        return $this->hasMany(\App\Models\GenericDataInfoBlock::class, 'application_log_section_id');
     }
 
     /**
@@ -65,7 +65,7 @@ class ApplicationLogSection extends Model
      */
     public function detections_info_blocks()
     {
-        return $this->hasMany(\App\DetectionsInfoBlock::class, 'application_log_section_id');
+        return $this->hasMany(\App\Models\DetectionsInfoBlock::class, 'application_log_section_id');
     }
 
     /**

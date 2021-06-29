@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\GenericDataInfoBlock;
+use App\Models\GenericDataInfoBlock;
 use Tests\TestCase;
 
 class ModelGenericDataIBTest extends TestCase

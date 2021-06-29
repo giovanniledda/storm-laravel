@@ -160,15 +160,15 @@ class ModelDocumentTest extends TestCase
 
         ]);
         // $fake_name = $this->faker->sentence;
-        // $task = new \App\Task([
+        // $task = new \App\Models\Task([
         //         'title' => $fake_name,
         //         'description' => $this->faker->text,
         //     ]
         // );
         // $task->save();
 
-        $task = \App\Task::factory()->create();
-        $project = \App\Project::factory()->create();
+        $task = \App\Models\Task::factory()->create();
+        $project = \App\Models\Project::factory()->create();
 
 //        $project->tasks()->save($task)->save(); NOTA: se faccio questo, poi non posso fare $task->project ..mi dice che è nullo
         $task->project()->associate($project)->save();

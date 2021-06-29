@@ -4,7 +4,7 @@
 
 namespace Database\Factories;
 
-use App\Boat;
+use App\Models\Boat;
 use App\Utils\Utils;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

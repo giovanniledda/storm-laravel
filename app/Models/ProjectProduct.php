@@ -1,41 +1,41 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Doctrine\DBAL\Driver\PDOException;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class ProjectTool extends Pivot
+class ProjectProduct extends Pivot
 {
-    protected $table = 'project_tool';
+    protected $table = 'project_product';
 
     public $incrementing = true;
 
     protected $fillable = [
         'project_id',
-        'tool_id',
+        'product_id',
     ];
 
-    public function tool()
+    public function product()
     {
-        return $this->belongsTo(\App\Tool::class);
+        return $this->belongsTo(\App\Models\Product::class);
     }
 
     public function project()
     {
-        return $this->belongsTo(\App\Project::class);
+        return $this->belongsTo(\App\Models\Project::class);
     }
 
     /**
-     * @param int $tool_id
+     * @param int $product_id
      * @param int $project_id
      * @return int
      */
-    public static function createOneIfNotExists(int $tool_id, int $project_id)
+    public static function createOneIfNotExists(int $product_id, int $project_id)
     {
         try {
             return self::create([
-                'tool_id' => $tool_id,
+                'product_id' => $product_id,
                 'project_id' => $project_id,
             ]);
         } catch (PDOException $e) {
@@ -45,13 +45,13 @@ class ProjectTool extends Pivot
     }
 
     /**
-     * @param int $tool_id
+     * @param int $product_id
      * @param int $project_id
      * @return mixed
      */
-    public static function findOneByPks(int $tool_id, int $project_id)
+    public static function findOneByPks(int $product_id, int $project_id)
     {
-        return self::where('tool_id', '=', $tool_id)
+        return self::where('product_id', '=', $product_id)
             ->where('project_id', '=', $project_id)
             ->first();
     }

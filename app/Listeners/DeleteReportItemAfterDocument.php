@@ -2,7 +2,7 @@
 
 namespace App\Listeners;
 
-use App\ReportItem;
+use App\Models\ReportItem;
 use Net7\Documents\Events\DocumentDeleted;
 
 class DeleteReportItemAfterDocument

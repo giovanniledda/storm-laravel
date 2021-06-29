@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Project;
+use App\Models\Project;
 use App\Utils\Utils;
-use App\Zone;
+use App\Models\Zone;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 

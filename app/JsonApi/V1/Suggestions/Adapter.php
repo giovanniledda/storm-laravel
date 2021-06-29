@@ -30,7 +30,7 @@ class Adapter extends AbstractAdapter
      */
     public function __construct(StandardStrategy $paging)
     {
-        parent::__construct(new \App\Suggestion(), $paging);
+        parent::__construct(new \App\Models\Suggestion(), $paging);
     }
 
     /**

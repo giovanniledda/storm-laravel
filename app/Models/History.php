@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Traits\JsonAPIPhotos;
 use function copy;
@@ -38,7 +38,7 @@ class History extends Model
 
     public function comments()
     {
-        return $this->morphMany(\App\Comment::class, 'commentable');
+        return $this->morphMany(\App\Models\Comment::class, 'commentable');
     }
 
     public function getFirstcomment()

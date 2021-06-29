@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\Boat;
+use App\Models\Boat;
 use App\Permission;
-use App\Project;
+use App\Models\Project;
 use App\Role;
-use App\Site;
+use App\Models\Site;
 use Laravel\Passport\Passport;
 use const PERMISSION_ADMIN;
 use const ROLE_ADMIN;

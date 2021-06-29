@@ -2,13 +2,13 @@
 
 namespace Tests\Feature;
 
-use App\Boat;
-use App\Profession;
-use App\Project;
-use App\ProjectUser;
-use App\Section;
-use App\Subsection;
-use App\User;
+use App\Models\Boat;
+use App\Models\Profession;
+use App\Models\Project;
+use App\Models\ProjectUser;
+use App\Models\Section;
+use App\Models\Subsection;
+use App\Models\User;
 use function factory;
 use const PROJECT_STATUS_CLOSED;
 use const PROJECT_STATUS_IN_SITE;
