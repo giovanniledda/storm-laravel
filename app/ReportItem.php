@@ -56,7 +56,7 @@ class ReportItem extends Model
      */
     public function author()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo(\App\User::class);
     }
 
     /**
@@ -64,7 +64,7 @@ class ReportItem extends Model
      */
     public function project()
     {
-        return $this->belongsTo('App\Project');
+        return $this->belongsTo(\App\Project::class);
     }
 
     /**

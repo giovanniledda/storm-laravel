@@ -20,17 +20,17 @@ class ProjectUser extends Pivot
 
     public function user()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo(\App\User::class);
     }
 
     public function project()
     {
-        return $this->belongsTo('App\Project');
+        return $this->belongsTo(\App\Project::class);
     }
 
     public function profession()
     {
-        return $this->belongsTo('App\Profession');
+        return $this->belongsTo(\App\Profession::class);
     }
 
     /**

@@ -18,11 +18,11 @@ class BoatUser extends Pivot
 
     public function user()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo(\App\User::class);
     }
 
     public function boat()
     {
-        return $this->belongsTo('App\Boat');
+        return $this->belongsTo(\App\Boat::class);
     }
 }

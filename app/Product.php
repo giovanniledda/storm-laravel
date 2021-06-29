@@ -47,7 +47,7 @@ class Product extends Model
      */
     public function product_use_info_blocks()
     {
-        return $this->hasMany('App\ProductUseInfoBlock', 'product_id');
+        return $this->hasMany(\App\ProductUseInfoBlock::class, 'product_id');
     }
 
     /**
@@ -55,7 +55,7 @@ class Product extends Model
      */
     public function projects()
     {
-        return $this->belongsToMany('App\Project', 'project_product');
+        return $this->belongsToMany(\App\Project::class, 'project_product');
     }
 
     /**

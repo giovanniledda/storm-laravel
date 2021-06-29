@@ -17,11 +17,11 @@ class ProjectSection extends Pivot
 
     public function project()
     {
-        return $this->belongsTo('App\Project');
+        return $this->belongsTo(\App\Project::class);
     }
 
     public function section()
     {
-        return $this->belongsTo('App\Section');
+        return $this->belongsTo(\App\Section::class);
     }
 }

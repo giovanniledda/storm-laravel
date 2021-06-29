@@ -37,7 +37,7 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $subscribe = [
-        'App\Listeners\TaskSubscriber',
+        \App\Listeners\TaskSubscriber::class,
     ];
 
     /**

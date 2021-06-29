@@ -49,7 +49,7 @@ class GenericDataInfoBlock extends Model
      */
     public function application_log_section()
     {
-        return $this->belongsTo('App\ApplicationLogSection', 'application_log_section_id');
+        return $this->belongsTo(\App\ApplicationLogSection::class, 'application_log_section_id');
     }
 
     /**

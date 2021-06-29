@@ -48,7 +48,7 @@ class CommentObserver
     {
         $user = \Auth::user();
         /*quando si crea un commento su un task, viene inserito nello storico del task*/
-        if ($comment->commentable_type == 'App\Task') {
+        if ($comment->commentable_type == \App\Task::class) {
             $task = Task::find($comment->commentable_id);
             $task->history()->create(
                                     ['event_date'=> date('Y-m-d H:i:s', time()),

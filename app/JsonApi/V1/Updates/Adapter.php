@@ -38,7 +38,7 @@ class Adapter extends AbstractAdapter
 
         /** restringe il recordset in caso di mancanza di permessi */
         if (1 || $user->can(PERMISSION_BOAT_MANAGER)) {  // per ora bypassato
-            $query->where('notifiable_type', '=', 'App\\User')
+            $query->where('notifiable_type', '=', \App\User::class)
                 ->where('notifiable_id', $user->id);
         }
 

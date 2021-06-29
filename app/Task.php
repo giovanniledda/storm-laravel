@@ -223,12 +223,12 @@ class Task extends Model
 
     public function intervent_type()
     {
-        return $this->belongsTo('App\TaskInterventType');
+        return $this->belongsTo(\App\TaskInterventType::class);
     }
 
     public function project()
     {
-        return $this->belongsTo('App\Project');
+        return $this->belongsTo(\App\Project::class);
     }
 
     public function getProjectBoat()
@@ -239,27 +239,27 @@ class Task extends Model
 
     public function subsection()
     {
-        return $this->belongsTo('App\Subsection');
+        return $this->belongsTo(\App\Subsection::class);
     }
 
     public function section()
     {
-        return $this->belongsTo('App\Section');
+        return $this->belongsTo(\App\Section::class);
     }
 
     public function author()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo(\App\User::class);
     }
 
     public function comments()
     {
-        return $this->morphMany('App\Comment', 'commentable');
+        return $this->morphMany(\App\Comment::class, 'commentable');
     }
 
     public function history()
     {
-        return $this->morphMany('App\History', 'historyable');
+        return $this->morphMany(\App\History::class, 'historyable');
     }
 
     /**
@@ -313,7 +313,7 @@ class Task extends Model
      */
     public function taskIntervents()
     {
-        return $this->hasOne('App\TaskInterventType');
+        return $this->hasOne(\App\TaskInterventType::class);
     }
 
     /**
@@ -321,7 +321,7 @@ class Task extends Model
      */
     public function zone()
     {
-        return $this->belongsTo('App\Zone', 'zone_id');
+        return $this->belongsTo(\App\Zone::class, 'zone_id');
     }
 
     /**
@@ -339,7 +339,7 @@ class Task extends Model
      */
     public function closer_application_log()
     {
-        return $this->belongsToMany('App\ApplicationLog', 'App\ApplicationLogTask')->wherePivot('action', '=', 'close');
+        return $this->belongsToMany(\App\ApplicationLog::class, \App\ApplicationLogTask::class)->wherePivot('action', '=', 'close');
     }
 
     /**
@@ -348,7 +348,7 @@ class Task extends Model
      */
     public function opener_application_log()
     {
-        return $this->belongsToMany('App\ApplicationLog', 'App\ApplicationLogTask')->wherePivot('action', '=', 'open');
+        return $this->belongsToMany(\App\ApplicationLog::class, \App\ApplicationLogTask::class)->wherePivot('action', '=', 'open');
     }
 
     public function getProjectUsers()

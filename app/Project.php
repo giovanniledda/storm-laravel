@@ -608,12 +608,12 @@ class Project extends Model
 
     public function boat()
     {
-        return $this->belongsTo('App\Boat');
+        return $this->belongsTo(\App\Boat::class);
     }
 
     public function site()
     {
-        return $this->belongsTo('App\Site');
+        return $this->belongsTo(\App\Site::class);
     }
 
     public function siteLocation()
@@ -723,7 +723,7 @@ class Project extends Model
 
     public function history()
     {
-        return $this->morphMany('App\History', 'historyable');
+        return $this->morphMany(\App\History::class, 'historyable');
     }
 
 //    public function sectionsOld()
@@ -740,8 +740,8 @@ class Project extends Model
 
     public function sections()
     {
-        return $this->belongsToMany('App\Section', 'project_section', 'project_id', 'section_id')
-            ->using('App\ProjectSection')
+        return $this->belongsToMany(\App\Section::class, 'project_section', 'project_id', 'section_id')
+            ->using(\App\ProjectSection::class)
             ->withTimestamps()
             ->withPivot([
                 'project_id',
@@ -783,12 +783,12 @@ class Project extends Model
 
     public function comments()
     {
-        return $this->morphMany('App\Comment', 'commentable');
+        return $this->morphMany(\App\Comment::class, 'commentable');
     }
 
     public function users()
     {
-        return $this->belongsToMany('App\User', 'project_user')
+        return $this->belongsToMany(\App\User::class, 'project_user')
 //                        ->using('App\ProjectUser')
             ->withPivot([
                 // 'role',
@@ -803,7 +803,7 @@ class Project extends Model
      */
     public function products()
     {
-        return $this->belongsToMany('App\Product', 'project_product')
+        return $this->belongsToMany(\App\Product::class, 'project_product')
             ->withPivot([
                 'created_at',
                 'updated_at',
@@ -815,7 +815,7 @@ class Project extends Model
      */
     public function tools()
     {
-        return $this->belongsToMany('App\Tool', 'project_tool')
+        return $this->belongsToMany(\App\Tool::class, 'project_tool')
             ->withPivot([
                 'created_at',
                 'updated_at',

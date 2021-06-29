@@ -87,8 +87,8 @@ class ModelUpdateTest extends TestCase
                 foreach ($user->notifications as $notification) {
                     $this->assertThat($notification->type,
                         $this->logicalOr(
-                            'App\Notifications\TaskCreated',  // Se uso TaskCreated::class ottengo il paradosso: Failed asserting that 'App\Notifications\TaskUpdated' is instance of class "App\Notifications\TaskCreated" or is instance of class "App\Notifications\TaskUpdated".
-                            'App\Notifications\TaskUpdated'
+                            \App\Notifications\TaskCreated::class,  // Se uso TaskCreated::class ottengo il paradosso: Failed asserting that 'App\Notifications\TaskUpdated' is instance of class "App\Notifications\TaskCreated" or is instance of class "App\Notifications\TaskUpdated".
+                            \App\Notifications\TaskUpdated::class
                         ));
                 }
             }

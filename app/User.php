@@ -94,7 +94,7 @@ class User extends Authenticatable
 
     public function projects()
     {
-        return $this->belongsToMany('App\Project', 'project_user')
+        return $this->belongsToMany(\App\Project::class, 'project_user')
 //            ->using('App\ProjectUser')
             ->withPivot([
                 'profession_id',
@@ -170,8 +170,8 @@ class User extends Authenticatable
 
     public function boats()
     {
-        return $this->belongsToMany('App\Boat')
-            ->using('App\BoatUser')
+        return $this->belongsToMany(\App\Boat::class)
+            ->using(\App\BoatUser::class)
             ->withPivot([
                 'profession_id',
                 'created_by',
@@ -181,7 +181,7 @@ class User extends Authenticatable
 
     public function phones()
     {
-        return $this->hasMany('App\UsersTel');
+        return $this->hasMany(\App\UsersTel::class);
     }
 
     public function countPhones()

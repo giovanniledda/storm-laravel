@@ -18,12 +18,12 @@ class ProjectTool extends Pivot
 
     public function tool()
     {
-        return $this->belongsTo('App\Tool');
+        return $this->belongsTo(\App\Tool::class);
     }
 
     public function project()
     {
-        return $this->belongsTo('App\Project');
+        return $this->belongsTo(\App\Project::class);
     }
 
     /**

@@ -44,7 +44,7 @@ class ApplicationLog extends Model
      */
     public function application_log_sections()
     {
-        return $this->hasMany('App\ApplicationLogSection', 'application_log_id');
+        return $this->hasMany(\App\ApplicationLogSection::class, 'application_log_id');
     }
 
     /**
@@ -117,7 +117,7 @@ class ApplicationLog extends Model
      */
     public function project()
     {
-        return $this->belongsTo('App\Project');
+        return $this->belongsTo(\App\Project::class);
     }
 
     /**
@@ -135,7 +135,7 @@ class ApplicationLog extends Model
      */
     public function author()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo(\App\User::class);
     }
 
     /**
@@ -151,7 +151,7 @@ class ApplicationLog extends Model
      */
     public function last_editor()
     {
-        return $this->belongsTo('App\User', 'last_editor_id');
+        return $this->belongsTo(\App\User::class, 'last_editor_id');
     }
 
     /**
@@ -167,7 +167,7 @@ class ApplicationLog extends Model
      */
     public function report_item()
     {
-        return $this->morphOne('App\ReportItem', 'reportable');
+        return $this->morphOne(\App\ReportItem::class, 'reportable');
     }
 
     /**
@@ -175,7 +175,7 @@ class ApplicationLog extends Model
      */
     public function closed_tasks()
     {
-        return $this->belongsToMany('App\Task', 'App\ApplicationLogTask')->wherePivot('action', '=', 'close');
+        return $this->belongsToMany(\App\Task::class, \App\ApplicationLogTask::class)->wherePivot('action', '=', 'close');
     }
 
     public function closeTask(Task $task)
@@ -188,7 +188,7 @@ class ApplicationLog extends Model
      */
     public function opened_tasks()
     {
-        return $this->belongsToMany('App\Task', 'App\ApplicationLogTask')->wherePivot('action', '=', 'open');
+        return $this->belongsToMany(\App\Task::class, \App\ApplicationLogTask::class)->wherePivot('action', '=', 'open');
     }
 
     /**

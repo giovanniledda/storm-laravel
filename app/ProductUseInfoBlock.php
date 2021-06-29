@@ -44,7 +44,7 @@ class ProductUseInfoBlock extends Model
      */
     public function product()
     {
-        return $this->belongsTo('App\Product', 'product_id');
+        return $this->belongsTo(\App\Product::class, 'product_id');
     }
 
     /**
@@ -54,7 +54,7 @@ class ProductUseInfoBlock extends Model
      */
     public function application_log_section()
     {
-        return $this->belongsTo('App\ApplicationLogSection', 'application_log_section_id');
+        return $this->belongsTo(\App\ApplicationLogSection::class, 'application_log_section_id');
     }
 
     /**

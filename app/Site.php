@@ -73,12 +73,12 @@ class Site extends Model
 
     public function projects()
     {
-        return $this->hasMany('App\Project');
+        return $this->hasMany(\App\Project::class);
     }
 
     public function boats()
     {
-        return $this->hasMany('App\Boat');
+        return $this->hasMany(\App\Boat::class);
     }
 
     // public function addDocument(\Net7\Documents\Document $document, $type=false){

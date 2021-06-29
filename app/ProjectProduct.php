@@ -18,12 +18,12 @@ class ProjectProduct extends Pivot
 
     public function product()
     {
-        return $this->belongsTo('App\Product');
+        return $this->belongsTo(\App\Product::class);
     }
 
     public function project()
     {
-        return $this->belongsTo('App\Project');
+        return $this->belongsTo(\App\Project::class);
     }
 
     /**

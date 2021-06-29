@@ -14,11 +14,11 @@ class Subsection extends Model
 
     public function section()
     {
-        return $this->belongsTo('App\Section');
+        return $this->belongsTo(\App\Section::class);
     }
 
     public function tasks()
     {
-        return $this->hasMany('App\Task');
+        return $this->hasMany(\App\Task::class);
     }
 }

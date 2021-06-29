@@ -14,7 +14,7 @@ class TaskInterventType extends Model
 
     public function tasks()
     {
-        return $this->hasMany('App\Task');
+        return $this->hasMany(\App\Task::class);
     }
 
     /**

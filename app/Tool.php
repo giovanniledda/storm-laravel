@@ -28,7 +28,7 @@ class Tool extends Model
      */
     public function detections_info_blocks()
     {
-        return $this->hasMany('App\DetectionsInfoBlock', 'tool_id');
+        return $this->hasMany(\App\DetectionsInfoBlock::class, 'tool_id');
     }
 
     /**
@@ -36,7 +36,7 @@ class Tool extends Model
      */
     public function projects()
     {
-        return $this->belongsToMany('App\Project', 'project_tool');
+        return $this->belongsToMany(\App\Project::class, 'project_tool');
     }
 
     /**

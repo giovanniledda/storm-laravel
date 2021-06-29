@@ -68,12 +68,12 @@ class Section extends Model
 
     public function boat()
     {
-        return $this->belongsTo('App\Boat');
+        return $this->belongsTo(\App\Boat::class);
     }
 
     public function subsections()
     {
-        return $this->hasMany('App\Subsection');
+        return $this->hasMany(\App\Subsection::class);
     }
 
 //    public function tasks()
@@ -83,7 +83,7 @@ class Section extends Model
 
     public function tasks()
     {
-        return $this->hasMany('App\Task');
+        return $this->hasMany(\App\Task::class);
     }
 
     public function map_image()

@@ -38,7 +38,7 @@ class History extends Model
 
     public function comments()
     {
-        return $this->morphMany('App\Comment', 'commentable');
+        return $this->morphMany(\App\Comment::class, 'commentable');
     }
 
     public function getFirstcomment()

@@ -46,7 +46,7 @@ class Adapter extends AbstractAdapter
     {
         // Restituisce i commenti di un Task
         if ($task_id = $filters->get('task_id')) {
-            $query->where('commentable_type', '=', 'App\\Task')
+            $query->where('commentable_type', '=', \App\Task::class)
                 ->where('commentable_id', '=', $task_id);
         }
     }

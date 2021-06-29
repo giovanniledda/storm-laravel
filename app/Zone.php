@@ -39,7 +39,7 @@ class Zone extends Model
      */
     public function parent_zone()
     {
-        return $this->belongsTo('App\Zone', 'parent_zone_id');
+        return $this->belongsTo(\App\Zone::class, 'parent_zone_id');
     }
 
     /**
@@ -49,7 +49,7 @@ class Zone extends Model
      */
     public function children_zones()
     {
-        return $this->hasMany('App\Zone', 'parent_zone_id');
+        return $this->hasMany(\App\Zone::class, 'parent_zone_id');
     }
 
     /**
@@ -59,7 +59,7 @@ class Zone extends Model
      */
     public function project()
     {
-        return $this->belongsTo('App\Project', 'project_id');
+        return $this->belongsTo(\App\Project::class, 'project_id');
     }
 
     /**
@@ -79,7 +79,7 @@ class Zone extends Model
      */
     public function zone_analysis_info_blocks()
     {
-        return $this->hasMany('App\ZoneAnalysisInfoBlock', 'zone_id');
+        return $this->hasMany(\App\ZoneAnalysisInfoBlock::class, 'zone_id');
     }
 
     /**
@@ -87,7 +87,7 @@ class Zone extends Model
      */
     public function tasks()
     {
-        return $this->hasMany('App\Task', 'zone_id');
+        return $this->hasMany(\App\Task::class, 'zone_id');
     }
 
     /**
