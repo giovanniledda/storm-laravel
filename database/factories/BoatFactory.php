@@ -2,24 +2,42 @@
 
 /* @var $factory \Illuminate\Database\Eloquent\Factory */
 
+namespace Database\Factories;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Boat;
 use App\Utils\Utils;
-use Faker\Generator as Faker;
 
 $autoIncrement = StormUtils::autoIncrement();
 
-$factory->define(Boat::class, function (Faker $faker) use ($autoIncrement) {
-    $autoIncrement->next();
+class BoatFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Boat::class;
 
-    return [
-        'id' => $autoIncrement->current(),
-        'name' => $faker->sentence(3),
-        'registration_number' => $faker->randomNumber(5),
-        'flag' => $faker->country(),
-        'manufacture_year' => $faker->year(),
-        'length' => $faker->randomFloat(4, 1, 200),
-        'draft' => $faker->randomFloat(4, 1, 40),
-        'beam' => $faker->randomFloat(4, 1, 3),
-        'boat_type' => $faker->randomElement([BOAT_TYPE_MOTOR, BOAT_TYPE_SAIL]),
-    ];
-});
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        $autoIncrement->next();
+
+        return [
+            'id' => $autoIncrement->current(),
+            'name' => $this->faker->sentence(3),
+            'registration_number' => $this->faker->randomNumber(5),
+            'flag' => $this->faker->country(),
+            'manufacture_year' => $this->faker->year(),
+            'length' => $this->faker->randomFloat(4, 1, 200),
+            'draft' => $this->faker->randomFloat(4, 1, 40),
+            'beam' => $this->faker->randomFloat(4, 1, 3),
+            'boat_type' => $this->faker->randomElement([BOAT_TYPE_MOTOR, BOAT_TYPE_SAIL]),
+        ];
+    }
+}

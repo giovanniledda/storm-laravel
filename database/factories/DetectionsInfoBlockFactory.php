@@ -2,9 +2,27 @@
 
 /* @var $factory \Illuminate\Database\Eloquent\Factory */
 
-use App\DetectionsInfoBlock;
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(DetectionsInfoBlock::class, function (Faker $faker) {
-    return DetectionsInfoBlock::getSemiFakeData($faker);
-});
+use Illuminate\Database\Eloquent\Factories\Factory;
+use App\DetectionsInfoBlock;
+
+class DetectionsInfoBlockFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = DetectionsInfoBlock::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return DetectionsInfoBlock::getSemiFakeData($faker);
+    }
+}

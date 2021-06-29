@@ -27,8 +27,8 @@ class ModelTaskTest extends TestCase
 
     public function test_can_create_task_related_to_project()
     {
-        $task = factory(Task::class)->create();
-        $project = factory(Project::class)->create();
+        $task = Task::factory()->create();
+        $project = Project::factory()->create();
 
 //        $project->tasks()->save($task)->save(); NOTA: se faccio questo, poi non posso fare $task->project ..mi dice che è nullo
         $task->project()->associate($project)->save();
@@ -45,22 +45,22 @@ class ModelTaskTest extends TestCase
     // dammiITaskDelleSubsectionEMiei  (cioe' della section) in section
     public function test_can_create_tasks_related_to_subsections_and_sections()
     {
-        $boat = factory(Boat::class)->create();
+        $boat = Boat::factory()->create();
         $this->assertInstanceOf(Boat::class, $boat);
 
-        $sections = factory(Section::class, $this->faker->randomDigitNotNull)->create();
+        $sections = Section::factory()->count($this->faker->randomDigitNotNull)->create();
         $boat->sections()->saveMany($sections);
 
         foreach ($sections as $section) {
             $this->assertInstanceOf(Section::class, $section);
 
-            $subsections = factory(Subsection::class, $this->faker->randomDigitNotNull)->create();
+            $subsections = Subsection::factory()->count($this->faker->randomDigitNotNull)->create();
             $section->subsections()->saveMany($subsections);
 
             foreach ($subsections as $subsection) {
                 $this->assertInstanceOf(Subsection::class, $subsection);
 
-                $tasks = factory(Task::class, $this->faker->randomDigitNotNull)->create();
+                $tasks = Task::factory()->count($this->faker->randomDigitNotNull)->create();
                 $subsection->tasks()->saveMany($tasks);
             }
         }
@@ -78,12 +78,12 @@ class ModelTaskTest extends TestCase
 
     public function test_internal_progressive_number()
     {
-        $boats = factory(Boat::class, 3)->create();
+        $boats = Boat::factory()->count(3)->create();
         /** @var Boat $boat */
         foreach ($boats as $boat) {
             $projs_index_for_boat = 1;
             $tasks_index_for_boat = 1;
-            $projects = factory(Project::class, 4)->create([
+            $projects = Project::factory()->count(4)->create([
                 'boat_id' => $boat->id,
             ]);
             /** @var Project $project */
@@ -91,7 +91,7 @@ class ModelTaskTest extends TestCase
                 $this->assertEquals($boat->id, $project->boat->id);
                 $this->assertEquals($projs_index_for_boat++, $project->internal_progressive_number);
 
-                $tasks = factory(Task::class, 10)->create([
+                $tasks = Task::factory()->count(10)->create([
                     'project_id' => $project->id,
                 ]);
                 /** @var Task $task */
@@ -107,17 +107,17 @@ class ModelTaskTest extends TestCase
     {
 
         /** @var Task $task1 */
-        $task1 = factory(Task::class)->create();
+        $task1 = Task::factory()->create();
         /** @var Task $task2 */
-        $task2 = factory(Task::class)->create();
+        $task2 = Task::factory()->create();
         /** @var Task $task3 */
-        $task3 = factory(Task::class)->create();
+        $task3 = Task::factory()->create();
 
         /** zone */
         /** $table->foreign('zone_id')->references('id')->on('zones')->onDelete('set null'); */
 
         /** @var Zone $zone */
-        $zone = factory(Zone::class)->create();
+        $zone = Zone::factory()->create();
         $task1->zone()->associate($zone);
         $task1->save();
         $task2->zone()->associate($zone);
@@ -137,11 +137,11 @@ class ModelTaskTest extends TestCase
 
     public function test_related_sections()
     {
-        $boat = factory(Boat::class)->create();
+        $boat = Boat::factory()->create();
         $this->assertInstanceOf(Boat::class, $boat);
 
         // creo 3 sezioni
-        $sections_a = factory(Section::class, 3)->create();
+        $sections_a = Section::factory()->count(3)->create();
         $boat->sections()->saveMany($sections_a);
 
         // verifico che l'estrazione degli id funzioni
@@ -153,7 +153,7 @@ class ModelTaskTest extends TestCase
         // assegno 5 task ad ogni sezione e raccolgo tutti gli id dei task
         $all_tasks_a_ids = [];
         foreach ($sections_a as $section) {
-            $tasks_a = factory(Task::class, 5)->create();
+            $tasks_a = Task::factory()->count(5)->create();
             $section->tasks()->saveMany($tasks_a);
 
             foreach ($tasks_a as $task) {

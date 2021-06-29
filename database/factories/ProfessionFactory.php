@@ -2,16 +2,34 @@
 
 /* @var $factory \Illuminate\Database\Eloquent\Factory */
 
+namespace Database\Factories;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Profession;
-use Faker\Generator as Faker;
 
 $autoIncrement = StormUtils::autoIncrement();
 
-$factory->define(Profession::class, function (Faker $faker) use ($autoIncrement) {
-    $autoIncrement->next();
+class ProfessionFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Profession::class;
 
-    return [
-        'id' => $autoIncrement->current(),
-        'name' => $faker->jobTitle,
-    ];
-});
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        $autoIncrement->next();
+
+        return [
+            'id' => $autoIncrement->current(),
+            'name' => $this->faker->jobTitle,
+        ];
+    }
+}

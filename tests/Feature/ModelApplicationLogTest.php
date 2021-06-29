@@ -23,10 +23,10 @@ class ModelApplicationLogTest extends TestCase
     public function testBasicRelationships()
     {
         /** @var ApplicationLog $application_log */
-        $application_log = factory(ApplicationLog::class)->create();
+        $application_log = ApplicationLog::factory()->create();
 
         /** @var Project $project */
-        $project = factory(Project::class)->create();
+        $project = Project::factory()->create();
 
         /** project **/
         /** $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');  **/
@@ -38,7 +38,7 @@ class ModelApplicationLogTest extends TestCase
         $this->assertEquals($project->id, $application_log->project->id);
 
         /** @var Boat boat */
-        $boat = factory(Boat::class)->create();
+        $boat = Boat::factory()->create();
         $project->boat()->associate($boat)->save();
 
         $this->assertEquals($project->boat->id, $application_log->boat()->id);
@@ -46,12 +46,12 @@ class ModelApplicationLogTest extends TestCase
 
     public function test_internal_progressive_number()
     {
-        $boats = factory(Boat::class, 3)->create();
+        $boats = Boat::factory()->count(3)->create();
         /** @var Boat $boat */
         foreach ($boats as $boat) {
             $projs_index_for_boat = 1;
             $application_logs_index_for_boat = 1;
-            $projects = factory(Project::class, 4)->create([
+            $projects = Project::factory()->count(4)->create([
                 'boat_id' => $boat->id,
             ]);
             /** @var Project $project */
@@ -59,7 +59,7 @@ class ModelApplicationLogTest extends TestCase
                 $this->assertEquals($boat->id, $project->boat->id);
                 $this->assertEquals($projs_index_for_boat++, $project->internal_progressive_number);
 
-                $application_logs = factory(ApplicationLog::class, 10)->create([
+                $application_logs = ApplicationLog::factory()->count(10)->create([
                     'project_id' => $project->id,
                 ]);
                 /** @var ApplicationLog $application_log */
@@ -77,8 +77,8 @@ class ModelApplicationLogTest extends TestCase
         $application_log_sections_started_num = $started_counter = $this->faker->numberBetween(1, $application_log_sections_num);
 
         /** @var ApplicationLog $application_log */
-        $application_log = factory(ApplicationLog::class)->create();
-        $application_log_sections = factory(ApplicationLogSection::class, $application_log_sections_num)->create();
+        $application_log = ApplicationLog::factory()->create();
+        $application_log_sections = ApplicationLogSection::factory()->count($application_log_sections_num)->create();
 
         /** application_log **/
         /** $table->foreign('application_log_id')->references('id')->on('application_logs')->onDelete('set null'); **/
@@ -115,17 +115,17 @@ class ModelApplicationLogTest extends TestCase
     {
 
         /** @var ApplicationLog $application_log */
-        $application_log = factory(ApplicationLog::class)->create();
+        $application_log = ApplicationLog::factory()->create();
 
         /** @var Task $task */
-        $task = factory(Task::class)->create();
+        $task = Task::factory()->create();
 
         /**
          *  ------------ OPENING ------------
          */
 
         /** @var ApplicationLogTask $app_log_task */
-        $app_log_task = factory(ApplicationLogTask::class)->create(
+        $app_log_task = ApplicationLogTask::factory()->create(
             [
                 'task_id' => $task->id,
                 'application_log_id' => $application_log->id,
@@ -142,7 +142,7 @@ class ModelApplicationLogTest extends TestCase
 
         // try with attach/detach
         /** @var Task $task2 */
-        $task2 = factory(Task::class)->create();
+        $task2 = Task::factory()->create();
 
         $application_log->opened_tasks()->attach($task2->id, ['action' => 'open']);
 
@@ -157,7 +157,7 @@ class ModelApplicationLogTest extends TestCase
          */
 
         /** @var ApplicationLogTask $app_log_task */
-        $app_log_task2 = factory(ApplicationLogTask::class)->create(
+        $app_log_task2 = ApplicationLogTask::factory()->create(
             [
                 'task_id' => $task2->id,
                 'application_log_id' => $application_log->id,
@@ -174,7 +174,7 @@ class ModelApplicationLogTest extends TestCase
 
         // try with attach/detach, opening and closing the same new task3
         /** @var Task $task3 */
-        $task3 = factory(Task::class)->create();
+        $task3 = Task::factory()->create();
 
         $application_log->opened_tasks()->attach($task3->id, ['action' => 'open']);
         $this->assertEquals($task3->opener_application_log()->first()->id, $application_log->id);
@@ -186,7 +186,7 @@ class ModelApplicationLogTest extends TestCase
 
         // try with new functions
         /** @var Task $task4 */
-        $task4 = factory(Task::class)->create();
+        $task4 = Task::factory()->create();
 
         // ... openTask
         $application_log->openTask($task4);
@@ -197,8 +197,8 @@ class ModelApplicationLogTest extends TestCase
         $this->assertEquals($task4->closer_application_log()->first()->id, $application_log->id);
 
         /** @var Task $task5 */
-        $task5 = factory(Task::class)->create([
-            'project_id' => factory(Project::class)->create()->id,
+        $task5 = Task::factory()->create([
+            'project_id' => Project::factory()->create()->id,
         ]);
 
         // .. openMe
@@ -216,13 +216,13 @@ class ModelApplicationLogTest extends TestCase
         $utils = new SeederUtils();
 
         /** @var Project $project */
-        $project = factory(Project::class)->create();
+        $project = Project::factory()->create();
 
         // adding Zones to project
         $utils->addFakeZonesToProject($project, 2, 4);
 
         /** @var ApplicationLog $first_application_log */
-        $first_application_log = factory(ApplicationLog::class)->create(
+        $first_application_log = ApplicationLog::factory()->create(
             [
                 'project_id' => $project->id,
             ]
@@ -243,7 +243,7 @@ class ModelApplicationLogTest extends TestCase
 
         // Creating some remarks (Task) who bind to the first of those zones
         /** @var Task $task1 */
-        $task1 = factory(Task::class)->create(
+        $task1 = Task::factory()->create(
             [
                 'project_id' => $project->id,
                 'is_open' => true,
@@ -251,7 +251,7 @@ class ModelApplicationLogTest extends TestCase
             ]
         );
         /** @var Task $task2 */
-        $task2 = factory(Task::class)->create(
+        $task2 = Task::factory()->create(
             [
                 'project_id' => $project->id,
                 'is_open' => true,
@@ -259,7 +259,7 @@ class ModelApplicationLogTest extends TestCase
             ]
         );
         /** @var Task $task3 */
-        $task3 = factory(Task::class)->create(
+        $task3 = Task::factory()->create(
             [
                 'project_id' => $project->id,
                 'is_open' => true,
@@ -277,7 +277,7 @@ class ModelApplicationLogTest extends TestCase
 
         // Creating some other remarks (Task) who bind to the other zone
         /** @var Task $task4 */
-        $task4 = factory(Task::class)->create(
+        $task4 = Task::factory()->create(
             [
                 'project_id' => $project->id,
                 'is_open' => true,
@@ -285,7 +285,7 @@ class ModelApplicationLogTest extends TestCase
             ]
         );
         /** @var Task $task5 */
-        $task5 = factory(Task::class)->create(
+        $task5 = Task::factory()->create(
             [
                 'project_id' => $project->id,
                 'is_open' => true,
@@ -293,7 +293,7 @@ class ModelApplicationLogTest extends TestCase
             ]
         );
         /** @var Task $task6 */
-        $task6 = factory(Task::class)->create(
+        $task6 = Task::factory()->create(
             [
                 'project_id' => $project->id,
                 'is_open' => true,
@@ -330,7 +330,7 @@ class ModelApplicationLogTest extends TestCase
 
         // Now I've to create a different App Log wich uses the same zones in its zone_ib
         /** @var ApplicationLog $second_application_log */
-        $second_application_log = factory(ApplicationLog::class)->create();
+        $second_application_log = ApplicationLog::factory()->create();
 
         // Adding "ZONES" section to app log
         /** @var ApplicationLogSection $section_zone */

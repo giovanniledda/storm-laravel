@@ -22,16 +22,16 @@ class ModelCommentTest extends TestCase
     {
         $this->_populateProfessions();
         // Creo barca
-        $boat = factory(Boat::class)->create();
+        $boat = Boat::factory()->create();
 
         // Creo progetto e lo associo alla barca
-        $project = factory(Project::class)->create();
+        $project = Project::factory()->create();
         $project->boat()->associate($boat)->save();
 
         $this->assertEquals($boat->id, $project->boat->id);
 
         // Creo utenti da assegnare al progetto
-        $users = factory(User::class, $this->faker->randomDigitNotNull)->create();
+        $users = User::factory()->count($this->faker->randomDigitNotNull)->create();
         $this->assertNotCount(0, $users);
 
         foreach ($users as $user) {
@@ -43,7 +43,7 @@ class ModelCommentTest extends TestCase
         }
 
         // Creo i task e li assegno al progetto
-        $tasks = factory(Task::class, $this->faker->randomDigitNotNull)->create();
+        $tasks = Task::factory()->count($this->faker->randomDigitNotNull)->create();
 //        $project->tasks()->saveMany($tasks);  // Vedi mail di Ledda del 24 luglio: se uso questa poi $t->project è null :-(
 
         foreach ($tasks as $task) {
@@ -55,7 +55,7 @@ class ModelCommentTest extends TestCase
 
             // associo i commenti agli autori
             foreach ($users as $user) {
-                $comments = factory(Comment::class, $this->faker->randomDigitNotNull)->create();
+                $comments = Comment::factory()->count($this->faker->randomDigitNotNull)->create();
 
                 foreach ($comments as $comment) {
                     $comment->author()->associate($user)->save();

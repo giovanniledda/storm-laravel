@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Utils\Utils;
 use const DIRECTORY_SEPARATOR;
 use function exif_imagetype;
@@ -39,6 +40,8 @@ use function unlink;
 
 class Section extends Model
 {
+    use HasFactory;
+
     use DocumentableTrait;
 
     protected $table = 'sections';

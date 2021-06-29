@@ -16,8 +16,8 @@ class ModelApplicationLogSectionTest extends TestCase
     {
         $application_log_sections_num = $this->faker->numberBetween(1, 15);
 
-        $application_log = factory(ApplicationLog::class)->create();
-        $application_log_sections = factory(ApplicationLogSection::class, $application_log_sections_num)->create();
+        $application_log = ApplicationLog::factory()->create();
+        $application_log_sections = ApplicationLogSection::factory()->count($application_log_sections_num)->create();
 
         /** application_log **/
         /** $table->foreign('application_log_id')->references('id')->on('application_logs')->onDelete('set null'); **/

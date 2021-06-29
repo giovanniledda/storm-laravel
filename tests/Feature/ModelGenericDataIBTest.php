@@ -17,9 +17,9 @@ class ModelGenericDataIBTest extends TestCase
 
         /** application_log_section **/
         /** $table->foreign('application_log_section_id')->references('id')->on('application_log_sections')->onDelete('set null') **/
-        $app_log_section = factory(ApplicationLogSection::class)->create();
+        $app_log_section = ApplicationLogSection::factory()->create();
         $generic_data_info_blocks_num = $this->faker->numberBetween(10, 50);
-        $generic_data_info_blocks = factory(GenericDataInfoBlock::class, $generic_data_info_blocks_num)->create();
+        $generic_data_info_blocks = GenericDataInfoBlock::factory()->count($generic_data_info_blocks_num)->create();
 
         // assegno i generic data info blocks (n ($generic_data_info_blocks_num) elementi) all'app log section
         $app_log_section->generic_data_info_blocks()->saveMany($generic_data_info_blocks);

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Observers\ApplicationLogObserver;
 use const APPLICATION_LOG_SECTION_TYPE_APPLICATION;
 use const APPLICATION_LOG_SECTION_TYPE_INSPECTION;
@@ -19,6 +20,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class ApplicationLog extends Model
 {
+    use HasFactory;
+
     /**
      * The table associated with the model.
      *
@@ -242,7 +245,7 @@ class ApplicationLog extends Model
         try {
             $last_editor = $user ?? User::all()->random(1);
         } catch (\Exception $e) {
-            $last_editor = factory(User::class)->create();
+            $last_editor = User::factory()->create();
         }
 
         return [

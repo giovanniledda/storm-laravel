@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Observers\ProjectObserver;
 use App\Observers\ZoneObserver;
 use Faker\Generator as Faker;
@@ -9,6 +10,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Zone extends Model
 {
+    use HasFactory;
+
     /**
      * The table associated with the model.
      *

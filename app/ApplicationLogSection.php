@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use const APPLICATION_LOG_SECTION_TYPE_APPLICATION;
 use const APPLICATION_LOG_SECTION_TYPE_INSPECTION;
 use const APPLICATION_LOG_SECTION_TYPE_PREPARATION;
@@ -11,6 +12,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class ApplicationLogSection extends Model
 {
+    use HasFactory;
+
     /**
      * The table associated with the model.
      *

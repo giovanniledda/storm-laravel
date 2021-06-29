@@ -19,7 +19,7 @@ class ModelProjectTest extends TestCase
 {
     public function test_can_create_project_without_site()
     {
-        $project = factory(Project::class)->create();
+        $project = Project::factory()->create();
         $this->assertDatabaseHas('projects', ['name' => $project->name]);
     }
 
@@ -34,7 +34,7 @@ class ModelProjectTest extends TestCase
         );
         $site->save();
 
-        $project = factory(Project::class)->create();
+        $project = Project::factory()->create();
 
         $this->assertDatabaseHas('projects', ['name' => $project->name]);
 
@@ -56,7 +56,7 @@ class ModelProjectTest extends TestCase
         );
         $boat->save();
 
-        $project = factory(Project::class)->create();
+        $project = Project::factory()->create();
 
         $this->assertDatabaseHas('projects', ['name' => $project->name]);
 
@@ -78,7 +78,7 @@ class ModelProjectTest extends TestCase
         );
         $boat->save();
 
-//        $project = factory(Project::class)->create();
+//        $project = Project::factory()->create();
         $project = Project::createSemiFake($this->faker);
 
         $this->assertDatabaseHas('projects', ['name' => $project->name]);
@@ -112,9 +112,9 @@ class ModelProjectTest extends TestCase
         $this->assertEquals($boat->name, $newProject->boat->name);
 
         // associo utenti al primo progetto
-        $users = factory(User::class, 10)->create();
+        $users = User::factory()->count(10)->create();
         foreach ($users as $u) {
-            $profession = factory(Profession::class)->create();
+            $profession = Profession::factory()->create();
             ProjectUser::createOneIfNotExists($u->id, $project->id, $profession->id);
         }
 
@@ -130,7 +130,7 @@ class ModelProjectTest extends TestCase
 
         /** @var Project $project */
         $project = Project::createSemiFake($this->faker);
-        $products = factory(Product::class, 10)->create();
+        $products = Product::factory()->count(10)->create();
 
         $project->products()->attach(Product::pluck('id'));
         /** @var Product $product */
@@ -151,7 +151,7 @@ class ModelProjectTest extends TestCase
         // faccio lo stesso con un secondo progetto e vedo che i prodotti siano distinti (differenzio per p_type)
         /** @var Project $project2 */
         $project2 = Project::createSemiFake($this->faker);
-        $products2 = factory(Product::class, 10)->create([
+        $products2 = Product::factory()->count(10)->create([
             'p_type' => 'TEST',
         ]);
 
@@ -167,7 +167,7 @@ class ModelProjectTest extends TestCase
 
         /** @var Project $project */
         $project = Project::createSemiFake($this->faker);
-        $application_logs = factory(ApplicationLog::class, 10)->create([
+        $application_logs = ApplicationLog::factory()->count(10)->create([
             'project_id' => $project->id,
         ]);
 
@@ -184,7 +184,7 @@ class ModelProjectTest extends TestCase
         // faccio lo stesso con un secondo progetto e vedo che gli app log siano distinti
         /** @var Project $project2 */
         $project2 = Project::createSemiFake($this->faker);
-        $application_logs2 = factory(ApplicationLog::class, 15)->create([
+        $application_logs2 = ApplicationLog::factory()->count(15)->create([
             'project_id' => $project2->id,
         ]);
 
@@ -198,11 +198,11 @@ class ModelProjectTest extends TestCase
 
     public function test_internal_progressive_number()
     {
-        $boats = factory(Boat::class, 3)->create();
+        $boats = Boat::factory()->count(3)->create();
         /** @var Boat $boat */
         foreach ($boats as $boat) {
             $projs_index_for_boat = 1;
-            $projects = factory(Project::class, 4)->create([
+            $projects = Project::factory()->count(4)->create([
                 'boat_id' => $boat->id,
             ]);
             /** @var Project $project */

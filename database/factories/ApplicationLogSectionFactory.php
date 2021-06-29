@@ -2,9 +2,27 @@
 
 /* @var $factory \Illuminate\Database\Eloquent\Factory */
 
-use App\ApplicationLogSection;
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(ApplicationLogSection::class, function (Faker $faker) {
-    return ApplicationLogSection::getSemiFakeData($faker);
-});
+use Illuminate\Database\Eloquent\Factories\Factory;
+use App\ApplicationLogSection;
+
+class ApplicationLogSectionFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = ApplicationLogSection::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return ApplicationLogSection::getSemiFakeData($faker);
+    }
+}

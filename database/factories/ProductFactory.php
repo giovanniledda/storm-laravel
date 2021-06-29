@@ -2,9 +2,27 @@
 
 /* @var $factory \Illuminate\Database\Eloquent\Factory */
 
-use App\Product;
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(Product::class, function (Faker $faker) {
-    return Product::getSemiFakeData($faker);
-});
+use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Product;
+
+class ProductFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Product::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return Product::getSemiFakeData($faker);
+    }
+}

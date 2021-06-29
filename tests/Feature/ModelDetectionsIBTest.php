@@ -18,9 +18,9 @@ class ModelDetectionsIBTest extends TestCase
         /** $table->foreign('application_log_section_id')->references('id')->on('application_log_sections')->onDelete('set null') **/
 
         /** @var ApplicationLogSection $app_log_section */
-        $app_log_section = factory(ApplicationLogSection::class)->create();
+        $app_log_section = ApplicationLogSection::factory()->create();
         $detections_info_blocks_num = $this->faker->numberBetween(10, 50);
-        $detections_info_blocks = factory(DetectionsInfoBlock::class, $detections_info_blocks_num)->create();
+        $detections_info_blocks = DetectionsInfoBlock::factory()->count($detections_info_blocks_num)->create();
 
         // assegno i generic data info blocks (n ($detections_info_blocks_num) elementi) all'app log section
         $app_log_section->detections_info_blocks()->saveMany($detections_info_blocks);

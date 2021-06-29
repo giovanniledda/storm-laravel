@@ -24,7 +24,7 @@ class ModelTaskTest extends TestCase
             'intervent_type_id',
         ];
 
-        $task1 = factory(Task::class)->create();
+        $task1 = Task::factory()->create();
         $this->checkAllFields($task1, $data, $except);
 
         $task2 = Task::create($data);
@@ -38,10 +38,10 @@ class ModelTaskTest extends TestCase
 
     public function testPublicPrivate()
     {
-        $pub_tasks_created = factory(Task::class, 5)->create(
+        $pub_tasks_created = Task::factory()->count(5)->create(
           ['is_private' => 0]
         );
-        $priv_tasks_created = factory(Task::class, 15)->create(
+        $priv_tasks_created = Task::factory()->count(15)->create(
             ['is_private' => 1]
         );
 
@@ -54,20 +54,20 @@ class ModelTaskTest extends TestCase
 
     public function testSoftDelete()
     {
-        $pub_tasks_created = factory(Task::class, 5)->create(
+        $pub_tasks_created = Task::factory()->count(5)->create(
           ['is_private' => 0]
         );
-        $pub_task1 = factory(Task::class)->create(
+        $pub_task1 = Task::factory()->create(
             ['is_private' => 0]
         );
-        $pub_task2 = factory(Task::class)->create(
+        $pub_task2 = Task::factory()->create(
             ['is_private' => 0]
         );
-        $pub_task3 = factory(Task::class)->create(
+        $pub_task3 = Task::factory()->create(
             ['is_private' => 0]
         );
 
-        $priv_tasks_created = factory(Task::class, 15)->create(
+        $priv_tasks_created = Task::factory()->count(15)->create(
             ['is_private' => 1]
         );
 

@@ -19,8 +19,8 @@ class ModelProductUseIBTest extends TestCase
         /** application_log_section **/
         /** $table->foreign('application_log_section_id')->references('id')->on('application_log_sections')->onDelete('set null') **/
         $product_use_info_blocks_num = $this->faker->numberBetween(10, 50);
-        $app_log_section = factory(ApplicationLogSection::class)->create();
-        $product_use_info_blocks = factory(ProductUseInfoBlock::class, $product_use_info_blocks_num)->create();
+        $app_log_section = ApplicationLogSection::factory()->create();
+        $product_use_info_blocks = ProductUseInfoBlock::factory()->count($product_use_info_blocks_num)->create();
 
         // assegno i product use info blocks (n ($product_use_info_blocks_num) elementi) all'app log section
         $app_log_section->product_use_info_blocks()->saveMany($product_use_info_blocks);
@@ -32,7 +32,7 @@ class ModelProductUseIBTest extends TestCase
             $this->assertEquals($product_use_info_block->application_log_section->id, $app_log_section->id);
 
             /** @var Product $product */
-            $product = factory(Product::class)->create();
+            $product = Product::factory()->create();
 
             // salvo sia dai product che dal product use info block a seconda del bool
             if ($this->faker->boolean) {

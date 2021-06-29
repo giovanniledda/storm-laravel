@@ -24,13 +24,13 @@ class ModelUpdateTest extends TestCase
     public function test_can_create_notifications_related_to_task_creation()
     {
         // Creo professioni
-        $professions = factory(Profession::class, 5)->create();
+        $professions = Profession::factory()->count(5)->create();
 
         // Creo barca
-        $boat = factory(Boat::class)->create();
+        $boat = Boat::factory()->create();
 
         // Creo progetto e lo associo alla barca
-        $project = factory(Project::class)->create();
+        $project = Project::factory()->create();
         $project->boat()->associate($boat)->save();
 
         $this->assertEquals($boat->id, $project->boat->id);
@@ -40,7 +40,7 @@ class ModelUpdateTest extends TestCase
         $permission = Permission::firstOrCreate(['name' => PERMISSION_BOAT_MANAGER]);
 
         // Creo utenti da assegnare al progetto
-        $users = factory(User::class, 10)->create();
+        $users = User::factory()->count(10)->create();
         $this->assertNotCount(0, $users);
 
         foreach ($users as $user) {
@@ -57,7 +57,7 @@ class ModelUpdateTest extends TestCase
 
         // Creo i task e li assegno al progetto
 
-        $tasks = factory(Task::class, $this->faker->randomDigitNotNull)->create();
+        $tasks = Task::factory()->count($this->faker->randomDigitNotNull)->create();
 
 //        $project->tasks()->saveMany($tasks);  // Vedi mail di Ledda del 24 luglio: se uso questa poi $t->project è null :-(
 

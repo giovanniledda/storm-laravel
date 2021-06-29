@@ -15,10 +15,10 @@ class ModelToolTest extends TestCase
     public function testBasicRelationships()
     {
         /** @var Tool $tool */
-        $tool = factory(Tool::class)->create();
+        $tool = Tool::factory()->create();
 
         /** @var DetectionsInfoBlock $detections_info_block */
-        $detections_info_block = factory(DetectionsInfoBlock::class)->create();
+        $detections_info_block = DetectionsInfoBlock::factory()->create();
 
         // salvo dal Detections IB
         $detections_info_block->tool()->associate($tool);
@@ -28,10 +28,10 @@ class ModelToolTest extends TestCase
         $this->assertContains($detections_info_block->id, $tool->detections_info_blocks()->pluck('id'));
 
         /** @var Tool $tool2 */
-        $tool2 = factory(Tool::class)->create();
+        $tool2 = Tool::factory()->create();
 
         /** @var DetectionsInfoBlock $detections_info_block2 */
-        $detections_info_block2 = factory(DetectionsInfoBlock::class)->create();
+        $detections_info_block2 = DetectionsInfoBlock::factory()->create();
 
         // salvo dal Tool
         $tool2->detections_info_blocks()->save($detections_info_block2);

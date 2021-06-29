@@ -30,9 +30,9 @@ class ApiDocumentTest extends TestApiCase
         $this->assertIsString($token_admin);
         Passport::actingAs($admin1);
 
-        $boat = factory(Boat::class)->create();
+        $boat = Boat::factory()->create();
 
-        $project = factory(Project::class)->create();
+        $project = Project::factory()->create();
 
         $task_name = $this->faker->sentence;
         $task = new \App\Task(['title'=>$task_name, 'description' => '']);
@@ -86,9 +86,9 @@ class ApiDocumentTest extends TestApiCase
         $this->assertIsString($token_admin);
         Passport::actingAs($admin1);
 
-        $boat = factory(Boat::class)->create();
+        $boat = Boat::factory()->create();
 
-        $project = factory(Project::class)->create();
+        $project = Project::factory()->create();
 
         $project->boat()->associate($boat)->save();
 

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Jobs\SendDocumentsToGoogleDrive;
 use App\Observers\ProjectObserver;
 use App\Traits\EnvParamsInputOutputTranslations;
@@ -41,6 +42,8 @@ use const TASKS_STATUS_MONITORED;
 
 class Project extends Model
 {
+    use HasFactory;
+
     use DocumentableTrait {
         addDocumentWithType as traitAddDocumentWithType;
         updateDocument as traitUpdateDocument;

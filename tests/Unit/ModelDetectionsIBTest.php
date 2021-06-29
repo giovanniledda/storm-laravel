@@ -15,7 +15,7 @@ class ModelDetectionsIBTest extends TestCase
         $data = DetectionsInfoBlock::getSemiFakeData($this->faker);
         $except = [];
 
-        $detections_ib1 = factory(DetectionsInfoBlock::class)->create();
+        $detections_ib1 = DetectionsInfoBlock::factory()->create();
         $this->checkAllFields($detections_ib1, $data, $except);
 
         $detections_ib2 = DetectionsInfoBlock::create($data);

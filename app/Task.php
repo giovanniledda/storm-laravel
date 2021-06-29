@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Observers\TaskObserver;
 use function date;
 use const DIRECTORY_SEPARATOR;
@@ -30,6 +31,8 @@ use Venturecraft\Revisionable\RevisionableTrait;
 
 class Task extends Model
 {
+    use HasFactory;
+
     use RevisionableTrait,
         HasStatuses,
         DocumentableTrait,

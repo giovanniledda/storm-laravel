@@ -15,10 +15,10 @@ class ModelProductTest extends TestCase
     public function testBasicRelationships()
     {
         /** @var Product $product */
-        $product = factory(Product::class)->create();
+        $product = Product::factory()->create();
 
         /** @var ProductUseInfoBlock $product_use_info_block */
-        $product_use_info_block = factory(ProductUseInfoBlock::class)->create();
+        $product_use_info_block = ProductUseInfoBlock::factory()->create();
 
         // salvo dal Prod Use IB
         $product_use_info_block->product()->associate($product);
@@ -28,10 +28,10 @@ class ModelProductTest extends TestCase
         $this->assertContains($product_use_info_block->id, $product->product_use_info_blocks()->pluck('id'));
 
         /** @var Product $product2 */
-        $product2 = factory(Product::class)->create();
+        $product2 = Product::factory()->create();
 
         /** @var ProductUseInfoBlock $product_use_info_block2 */
-        $product_use_info_block2 = factory(ProductUseInfoBlock::class)->create();
+        $product_use_info_block2 = ProductUseInfoBlock::factory()->create();
 
         // salvo dal Product
         $product2->product_use_info_blocks()->save($product_use_info_block2);

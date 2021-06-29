@@ -18,9 +18,9 @@ class ModelZoneAnalysisIBTest extends TestCase
 
         /** application_log_section **/
         /** $table->foreign('application_log_section_id')->references('id')->on('application_log_sections')->onDelete('set null') **/
-        $app_log_section = factory(ApplicationLogSection::class)->create();
+        $app_log_section = ApplicationLogSection::factory()->create();
         $zone_analysis_info_blocks_num = $this->faker->numberBetween(10, 50);
-        $zone_analysis_info_blocks = factory(ZoneAnalysisInfoBlock::class, $zone_analysis_info_blocks_num)->create();
+        $zone_analysis_info_blocks = ZoneAnalysisInfoBlock::factory()->count($zone_analysis_info_blocks_num)->create();
 
         // assegno i zone analysis info blocks (n ($zone_analysis_info_blocks_num) elementi) all'app log section
         $app_log_section->zone_analysis_info_blocks()->saveMany($zone_analysis_info_blocks);
@@ -32,7 +32,7 @@ class ModelZoneAnalysisIBTest extends TestCase
             $this->assertEquals($zone_analysis_info_block->application_log_section->id, $app_log_section->id);
 
             /** @var Zone $zone */
-            $zone = factory(Zone::class)->create();
+            $zone = Zone::factory()->create();
 
             // salvo sia dalla zone che dalla zone analysis info block a seconda del bool
             if ($this->faker->boolean) {
