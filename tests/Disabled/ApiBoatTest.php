@@ -19,7 +19,7 @@ use Tests\TestApiCase;
 class ApiBoatTest extends TestApiCase
 {
     // https://docs.spatie.be/laravel-permission/v2/advanced-usage/unit-testing/
-    public function setUp(): void
+    protected function setUp(): void
     {
         // first include all the normal setUp operations
         parent::setUp();

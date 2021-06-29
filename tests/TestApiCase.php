@@ -23,7 +23,7 @@ abstract class TestApiCase extends TestCase
         'Accept' => 'application/vnd.api+json',
     ];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         // // To test Oauth Grants
