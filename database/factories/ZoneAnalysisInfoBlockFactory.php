@@ -4,8 +4,8 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\ZoneAnalysisInfoBlock;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ZoneAnalysisInfoBlockFactory extends Factory
 {

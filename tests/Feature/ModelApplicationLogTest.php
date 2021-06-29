@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use Database\Seeders\SeederUtils;
 use App\ApplicationLog;
 use App\ApplicationLogSection;
 use App\ApplicationLogTask;
@@ -11,6 +10,7 @@ use App\Project;
 use App\Task;
 use App\Zone;
 use App\ZoneAnalysisInfoBlock;
+use Database\Seeders\SeederUtils;
 use function factory;
 use Seeds\SeederUtils;
 use const TASK_TYPE_REMARK;

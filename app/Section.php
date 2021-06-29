@@ -2,7 +2,6 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Utils\Utils;
 use const DIRECTORY_SEPARATOR;
 use function exif_imagetype;
@@ -10,6 +9,7 @@ use function explode;
 use Faker\Generator as Faker;
 use function fclose;
 use function getimagesize;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use function imagealphablending;
@@ -41,7 +41,6 @@ use function unlink;
 class Section extends Model
 {
     use HasFactory;
-
     use DocumentableTrait;
 
     protected $table = 'sections';

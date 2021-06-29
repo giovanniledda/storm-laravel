@@ -2,12 +2,12 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use const APPLICATION_LOG_SECTION_TYPE_APPLICATION;
 use const APPLICATION_LOG_SECTION_TYPE_INSPECTION;
 use const APPLICATION_LOG_SECTION_TYPE_PREPARATION;
 use const APPLICATION_LOG_SECTION_TYPE_ZONES;
 use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ApplicationLogSection extends Model

@@ -4,8 +4,8 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\GenericDataInfoBlock;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class GenericDataInfoBlockFactory extends Factory
 {

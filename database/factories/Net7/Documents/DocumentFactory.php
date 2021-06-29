@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Database\Factories\Net7\Documents;
 
 use Illuminate\Database\Eloquent\Factories\Factory;

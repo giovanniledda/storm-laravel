@@ -4,8 +4,8 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Project;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 $autoIncrement = StormUtils::autoIncrement();
 

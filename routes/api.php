@@ -1,8 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api;
 use CloudCreativity\LaravelJsonApi\Facades\JsonApi;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Api;
 use Illuminate\Support\Facades\Route;
 
 /*

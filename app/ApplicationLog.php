@@ -2,7 +2,6 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Observers\ApplicationLogObserver;
 use const APPLICATION_LOG_SECTION_TYPE_APPLICATION;
 use const APPLICATION_LOG_SECTION_TYPE_INSPECTION;
@@ -16,6 +15,7 @@ use function array_map;
 use function env;
 use function factory;
 use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ApplicationLog extends Model

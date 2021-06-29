@@ -2,7 +2,6 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Jobs\SendDocumentsToGoogleDrive;
 use App\Observers\ProjectObserver;
 use App\Traits\EnvParamsInputOutputTranslations;
@@ -14,6 +13,7 @@ use function collect;
 use function date;
 use function explode;
 use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Queue\SerializesModels;
@@ -43,7 +43,6 @@ use const TASKS_STATUS_MONITORED;
 class Project extends Model
 {
     use HasFactory;
-
     use DocumentableTrait {
         addDocumentWithType as traitAddDocumentWithType;
         updateDocument as traitUpdateDocument;

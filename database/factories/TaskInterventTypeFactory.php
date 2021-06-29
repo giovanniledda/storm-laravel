@@ -4,8 +4,8 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\TaskInterventType;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class TaskInterventTypeFactory extends Factory
 {

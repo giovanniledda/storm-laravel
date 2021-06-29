@@ -4,8 +4,8 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\ApplicationLogSection;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ApplicationLogSectionFactory extends Factory
 {

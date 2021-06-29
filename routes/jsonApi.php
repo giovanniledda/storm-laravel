@@ -3,10 +3,9 @@
 use App\Http\Controllers\BoatController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
-use Illuminate\Support\Facades\Route;
-
 use CloudCreativity\LaravelJsonApi\Facades\JsonApi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------

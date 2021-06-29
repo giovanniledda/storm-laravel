@@ -6,6 +6,7 @@ use App\Comment;
 use App\TaskInterventType;
 use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Config;
 use Net7\Documents\Document;
 use Seeds\SeederUtils as Utils;
 
@@ -177,7 +178,7 @@ class DatabaseSeeder extends Seeder
                 // ...con N task associati
                 $this->command->warn(" ------ TASKS FOR PROJECT {$project->name} --------");
 
-                $intervent_types = \Config::get('storm.startup.task_intervent_types');
+                $intervent_types = Config::get('storm.startup.task_intervent_types');
 
                 for ($t = 0; $t < $this->faker->numberBetween(1, 20); $t++) {
                     $section = $this->faker->randomElement($boat->sections);

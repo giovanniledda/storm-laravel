@@ -4,8 +4,8 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Task;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class TaskFactory extends Factory
 {

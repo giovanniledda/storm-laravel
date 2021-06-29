@@ -2,8 +2,8 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Lecturize\Addresses\Traits\HasAddresses;
 use StormUtils;
@@ -11,7 +11,6 @@ use StormUtils;
 class Site extends Model
 {
     use HasFactory;
-
     use HasAddresses;
 
     protected $table = 'sites';

@@ -2,7 +2,6 @@
 
 namespace Seeds;
 
-use Database\Seeders\SeederUtils;
 use App\ApplicationLog;
 use App\ApplicationLogSection;
 use App\Boat;
@@ -34,6 +33,7 @@ use const APPLICATION_TYPE_PRIMER;
 use const APPLICATION_TYPE_UNDERCOAT;
 use function array_merge;
 use function count;
+use Database\Seeders\SeederUtils;
 use function factory;
 use Faker\Factory as Faker;
 use Illuminate\Support\Facades\Storage;

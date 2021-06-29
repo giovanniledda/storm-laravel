@@ -1,11 +1,9 @@
 <?php
 
-
-
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\ApplicationLogTask;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ApplicationLogTaskFactory extends Factory
 {

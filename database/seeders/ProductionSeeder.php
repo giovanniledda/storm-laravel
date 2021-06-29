@@ -6,6 +6,7 @@ use App\Profession;
 use App\Site;
 use App\TaskInterventType;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Config;
 //use Faker\Factory as Faker;
 use Seeds\SeederUtils as Utils;
 
@@ -50,7 +51,7 @@ class ProductionSeeder extends Seeder
 
         $this->command->info("Site {$site2->name} created");
 
-        // $sites = \Config::get('storm.startup.sites');
+        // $sites = Config::get('storm.startup.sites');
         // foreach ($sites as $site => $fields) {
 
         //     $s = Site::create(Arr::except($fields, ['addresses']));
@@ -77,7 +78,7 @@ class ProductionSeeder extends Seeder
             $this->command->info("Profession {$professions[$s]->name} created");
         }
 
-        // $professions = \Config::get('storm.startup.professions');
+        // $professions = Config::get('storm.startup.professions');
         // foreach ($professions as $profession => $fields) {
         //     $p = Profession::create($fields);
         //     $this->command->info("Profession {$p->name} [OK]");
@@ -89,7 +90,7 @@ class ProductionSeeder extends Seeder
     {
         $this->command->warn("\n\n ________________ Creating Task Intervent Types ________________\n\n");
 
-        $intervent_types = \Config::get('storm.startup.task_intervent_types');
+        $intervent_types = Config::get('storm.startup.task_intervent_types');
         foreach ($intervent_types as $task_type => $fields) {
             $tit = TaskInterventType::create($fields);
             $this->command->info("Task Intervent Type {$tit->name} [OK]");

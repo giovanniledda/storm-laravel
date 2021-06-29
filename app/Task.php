@@ -2,13 +2,13 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Observers\TaskObserver;
 use function date;
 use const DIRECTORY_SEPARATOR;
 use function explode;
 use Faker\Generator as Faker;
 use function file_exists;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
@@ -32,7 +32,6 @@ use Venturecraft\Revisionable\RevisionableTrait;
 class Task extends Model
 {
     use HasFactory;
-
     use RevisionableTrait,
         HasStatuses,
         DocumentableTrait,

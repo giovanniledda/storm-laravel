@@ -2,8 +2,8 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Arr;
@@ -16,7 +16,6 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class Boat extends Model
 {
     use HasFactory;
-
     use DocumentableTrait, HasDocsGenerator;
 
     protected $table = 'boats';
