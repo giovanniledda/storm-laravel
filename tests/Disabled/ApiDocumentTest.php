@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Disabled;
+namespace Tests\Disabled;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;

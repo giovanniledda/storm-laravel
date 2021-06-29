@@ -3,7 +3,7 @@
  * RIFERIMENTO https://github.com/spatie/dropbox-api/blob/master/tests/ClientTest.php
  *  */
 
-namespace Spatie\Dropbox\Test;
+namespace Tests\Disabled;
 
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\ClientException;

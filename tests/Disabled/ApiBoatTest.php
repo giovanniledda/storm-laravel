@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Disabled;
+namespace Tests\Disabled;
 
 use App\Models\Boat;
 use App\Permission;
