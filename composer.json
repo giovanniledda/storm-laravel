@@ -54,7 +54,8 @@
         "spatie/laravel-model-status": "^1.10",
         "spatie/laravel-permission": "^4.2",
         "venturecraft/revisionable": "1.*",
-        "fruitcake/laravel-cors": "^0.11.4"
+        "fruitcake/laravel-cors": "^0.11.4",
+        "laravel/ui": "^2.0"
     },
     "require-dev": {
         "beyondcode/laravel-er-diagram-generator": "^1.4",
