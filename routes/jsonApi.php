@@ -1,5 +1,10 @@
 <?php
 
+use App\Http\Controllers\BoatController;
+use App\Http\Controllers\TaskController;
+use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Route;
+
 use CloudCreativity\LaravelJsonApi\Facades\JsonApi;
 use Illuminate\Http\Request;
 
@@ -26,8 +31,8 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
         $api->resource('tasks');
         //   $api->resource('task-minimized');
 
-        $api->get('/task-primary-statuses', 'TaskController@primaryStatuses')->name('task-primary-statuses');
-        $api->get('/task-remark-statuses', 'TaskController@remarkStatuses')->name('task-remark-statuses');
+        $api->get('/task-primary-statuses', [TaskController::class, 'primaryStatuses'])->name('task-primary-statuses');
+        $api->get('/task-remark-statuses', [TaskController::class, 'remarkStatuses'])->name('task-remark-statuses');
 
         $api->resource('tasks')->only('history')->controller('TaskController')//uses the App\Http\Controllers\Api\TaskController
         ->routes(function ($task) {
@@ -62,9 +67,9 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
             $boats->get('{record}/closed-projects', 'closedProjects')->name('closed-projects');  // tutti i progetti chiusi di una certa boat
         });
 
-        $api->get('/boats-dashboard', 'BoatController@dashboard')->name('boats-dashboard');  // tutte le boat di progetti chiusi
+        $api->get('/boats-dashboard', [BoatController::class, 'dashboard'])->name('boats-dashboard');  // tutte le boat di progetti chiusi
 
-        $api->get('/version', 'UserController@getVersion')->name('version');
+        $api->get('/version', [UserController::class, 'getVersion'])->name('version');
 
         $api->resource('projects')->only(
             'statuses',
