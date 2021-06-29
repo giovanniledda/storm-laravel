@@ -31,7 +31,7 @@ abstract class TestApiCase extends TestCase
         //  Passport::actingAs(factory(User::class)->create());
     }
 
-    public function logResponse(\Illuminate\Foundation\Testing\TestResponse $response)
+    public function logResponse(\Illuminate\Testing\TestResponse $response)
     {
         if ($this->log) {
             echo "\nStatusCode : ".$response->getStatusCode();
