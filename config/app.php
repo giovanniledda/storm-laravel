@@ -214,17 +214,11 @@ return [
          * net7 packages
          */
 
-        // logging
-        Net7\Logging\LoggingServiceProvider::class,
-
         // Documents
         Net7\Documents\DocumentsServiceProvider::class,
 
         // DocsGenerator
         Net7\DocsGenerator\DocsGeneratorServiceProvider::class,
-
-        // cors plug in
-        Barryvdh\Cors\ServiceProvider::class,
 
         // google
         App\Providers\GoogleDriveServiceProvider::class,
