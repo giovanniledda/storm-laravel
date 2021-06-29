@@ -2,9 +2,27 @@
 
 /* @var $factory \Illuminate\Database\Eloquent\Factory */
 
-use App\Task;
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(Task::class, function (Faker $faker) {
-    return Task::getSemiFakeData($faker);
-});
+use App\Task;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class TaskFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Task::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return Task::getSemiFakeData($faker);
+    }
+}

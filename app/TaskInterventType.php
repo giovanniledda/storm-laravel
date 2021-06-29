@@ -3,11 +3,14 @@
 namespace App;
 
 use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use function ucfirst;
 
 class TaskInterventType extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'name',
     ];

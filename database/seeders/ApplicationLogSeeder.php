@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use App\ApplicationLog;
 use App\ApplicationLogSection;
 use App\Project;

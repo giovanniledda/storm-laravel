@@ -20,10 +20,10 @@ class ApiUpdateTest extends TestApiCase
     {
         $this->_populateProfessions();
         // Creo barca
-        $boat = factory(Boat::class)->create();
+        $boat = Boat::factory()->create();
 
         // Creo progetto e lo associo alla barca
-        $project = factory(Project::class)->create();
+        $project = Project::factory()->create();
         $project->boat()->associate($boat)->save();
 
         // creo ruoli e permessi BOAT (in futuro potremmo dover limitare le notifiche in base a questi)
@@ -31,7 +31,7 @@ class ApiUpdateTest extends TestApiCase
         $permission = Permission::firstOrCreate(['name' => PERMISSION_BOAT_MANAGER]);
 
         // Creo utenti da assegnare al progetto
-        $users = factory(User::class, $this->faker->randomDigitNotNull)->create();
+        $users = User::factory()->count($this->faker->randomDigitNotNull)->create();
 
         foreach ($users as $user) {
             // ruoli e permessi ad utente
@@ -47,7 +47,7 @@ class ApiUpdateTest extends TestApiCase
 //        $this->refreshApplication();  // Fa una sorta di pulizia della cache perché dopo la prima post, poi tutte le chiamate successive tornano sulla stessa route
 
         // Creo i task e li assegno al progetto
-        $tasks = factory(Task::class, $this->faker->randomDigitNotNull)->create();
+        $tasks = Task::factory()->count($this->faker->randomDigitNotNull)->create();
 
         foreach ($tasks as $t) {
             $t->project()->associate($project)->save();

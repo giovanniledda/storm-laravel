@@ -30,7 +30,7 @@ class SendDocumentsToGoogleDrive implements ShouldQueue
      *
      * @var int
      */
-    public $retryAfter = 5;
+    public $backoff = 5;
 
     /**
      * The number of seconds the job can run before timing out.

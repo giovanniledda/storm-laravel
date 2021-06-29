@@ -27,7 +27,7 @@ class NotifyTaskUpdates implements ShouldQueue
      *
      * @var int
      */
-    public $retryAfter = 1;
+    public $backoff = 1;
 
     /**
      * The number of seconds the job can run before timing out.

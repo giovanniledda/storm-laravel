@@ -37,7 +37,7 @@ class GenerateApplicationLogReport implements ShouldQueue
      *
      * @var int
      */
-    public $retryAfter = 3;
+    public $backoff = 3;
 
     /**
      * The number of seconds the job can run before timing out.

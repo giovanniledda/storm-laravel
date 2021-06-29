@@ -21,7 +21,7 @@ class ApiProjectTest extends TestApiCase
         Permission::firstOrCreate(['name' => PERMISSION_ADMIN]);
 
         $this->disableExceptionHandling();
-        $boat = factory(Boat::class)->create();
+        $boat = Boat::factory()->create();
         $site_name = $this->faker->sentence;
         $site = new Site([
                 'name' => $site_name,
@@ -70,8 +70,8 @@ class ApiProjectTest extends TestApiCase
     {
         Role::firstOrCreate(['name' => ROLE_ADMIN]);
         Permission::firstOrCreate(['name' => PERMISSION_ADMIN]);
-        $boat = factory(Boat::class)->create();
-        $project = factory(Project::class)->create();
+        $boat = Boat::factory()->create();
+        $project = Project::factory()->create();
         $this->assertDatabaseHas('projects', ['name' => $project->name]);
 
         $project->boat()->associate($boat)->save();

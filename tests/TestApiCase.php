@@ -28,7 +28,7 @@ abstract class TestApiCase extends TestCase
         parent::setUp();
         // // To test Oauth Grants
 //         \Artisan::call('passport:install',['-vvv' => true]);
-        //  Passport::actingAs(factory(User::class)->create());
+        //  Passport::actingAs(User::factory()->create());
     }
 
     public function logResponse(\Illuminate\Testing\TestResponse $response)
@@ -106,7 +106,7 @@ abstract class TestApiCase extends TestCase
     /* crea un nuovo task dato il progetto */
     public function createProjectTask(Project $project): Task
     {
-        $task = factory(Task::class)->create();
+        $task = Task::factory()->create();
         $task->project()->associate($project)->save();
 
         return $task;
@@ -115,8 +115,8 @@ abstract class TestApiCase extends TestCase
     /* crea un progetto con la barca relazionata */
     public function createBoatAndHisProject(): array
     {
-        $boat = factory(Boat::class)->create();
-        $project = factory(Project::class)->create();
+        $boat = Boat::factory()->create();
+        $project = Project::factory()->create();
         $project->boat()->associate($boat)->save();
 
         return ['boat' => $boat, 'project' => $project];

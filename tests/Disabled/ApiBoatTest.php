@@ -165,7 +165,7 @@ class ApiBoatTest extends TestApiCase
     /** crea una barca */
     private function createBoat(): Boat
     {
-        $boat = factory(Boat::class)->create();
+        $boat = Boat::factory()->create();
         $this->assertInstanceOf(Boat::class, $boat);
         $this->assertDatabaseHas('boats', ['name' => $boat->name]);
 

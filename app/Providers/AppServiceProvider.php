@@ -33,7 +33,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-
+        \Illuminate\Pagination\Paginator::useBootstrap();
+        
         // https://laravel-json-api.readthedocs.io/en/latest/basics/api/
         LaravelJsonApi::defaultApi('v1');
 

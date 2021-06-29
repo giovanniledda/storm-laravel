@@ -15,7 +15,7 @@ class ModelToolTest extends TestCase
         $data = Tool::getSemiFakeData($this->faker);
         $except = [];
 
-        $tool1 = factory(Tool::class)->create();
+        $tool1 = Tool::factory()->create();
         $this->checkAllFields($tool1, $data, $except);
 
         $tool2 = Tool::create($data);

@@ -15,7 +15,7 @@ class ModelApplicationLogSectionTest extends TestCase
         $data = ApplicationLogSection::getSemiFakeData($this->faker);
         $except = [];
 
-        $application_log_section1 = factory(ApplicationLogSection::class)->create();
+        $application_log_section1 = ApplicationLogSection::factory()->create();
         $this->checkAllFields($application_log_section1, $data, $except);
 
         $application_log_section2 = ApplicationLogSection::create($data);

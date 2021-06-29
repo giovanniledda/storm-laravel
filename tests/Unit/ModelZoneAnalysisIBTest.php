@@ -15,7 +15,7 @@ class ModelZoneAnalysisIBTest extends TestCase
         $data = ZoneAnalysisInfoBlock::getSemiFakeData($this->faker);
         $except = [];
 
-        $zone_analysis_ib1 = factory(ZoneAnalysisInfoBlock::class)->create();
+        $zone_analysis_ib1 = ZoneAnalysisInfoBlock::factory()->create();
         $this->checkAllFields($zone_analysis_ib1, $data, $except);
 
         $zone_analysis_ib2 = ZoneAnalysisInfoBlock::create($data);

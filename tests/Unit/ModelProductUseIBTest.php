@@ -15,7 +15,7 @@ class ModelProductUseIBTest extends TestCase
         $data = ProductUseInfoBlock::getSemiFakeData($this->faker);
         $except = [];
 
-        $prod_use_ib1 = factory(ProductUseInfoBlock::class)->create();
+        $prod_use_ib1 = ProductUseInfoBlock::factory()->create();
         $this->checkAllFields($prod_use_ib1, $data, $except);
 
         $prod_use_ib2 = ProductUseInfoBlock::create($data);

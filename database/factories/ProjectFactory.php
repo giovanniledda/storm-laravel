@@ -2,21 +2,39 @@
 
 /* @var $factory \Illuminate\Database\Eloquent\Factory */
 
+namespace Database\Factories;
+
 use App\Project;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 $autoIncrement = StormUtils::autoIncrement();
 
-$factory->define(Project::class, function (Faker $faker) use ($autoIncrement) {
-    $autoIncrement->next();
+class ProjectFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Project::class;
 
-    return [
-        'id' => $autoIncrement->current(),
-        'name' => $faker->sentence(4),
-        'start_date' => $faker->date(),
-        'end_date' => $faker->date(),
-        'project_type' => $faker->randomElement([PROJECT_TYPE_NEWBUILD, PROJECT_TYPE_REFIT]),
-        'acronym' => $faker->word,
-        'project_status' => $faker->randomElement(PROJECT_STATUSES),
-    ];
-});
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        $autoIncrement->next();
+
+        return [
+            'id' => $autoIncrement->current(),
+            'name' => $this->faker->sentence(4),
+            'start_date' => $this->faker->date(),
+            'end_date' => $this->faker->date(),
+            'project_type' => $this->faker->randomElement([PROJECT_TYPE_NEWBUILD, PROJECT_TYPE_REFIT]),
+            'acronym' => $this->faker->word,
+            'project_status' => $this->faker->randomElement(PROJECT_STATUSES),
+        ];
+    }
+}

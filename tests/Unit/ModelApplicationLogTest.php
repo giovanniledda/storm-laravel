@@ -15,7 +15,7 @@ class ModelApplicationLogTest extends TestCase
         $data = ApplicationLog::getSemiFakeData($this->faker);
         $except = [];
 
-        $application_log1 = factory(ApplicationLog::class)->create();
+        $application_log1 = ApplicationLog::factory()->create();
         $this->checkAllFields($application_log1, $data, $except);
 
         $application_log2 = ApplicationLog::create($data);

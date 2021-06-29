@@ -18,10 +18,10 @@ class ModelBoatTest extends TestCase
 {
     public function test_can_create_boat_related_to_section_and_subsections()
     {
-        $boat = factory(Boat::class)->create();
+        $boat = Boat::factory()->create();
         $this->assertInstanceOf(Boat::class, $boat);
 
-        $sections = factory(Section::class, $this->faker->randomDigitNotNull)->create();
+        $sections = Section::factory()->count($this->faker->randomDigitNotNull)->create();
         $boat->sections()->saveMany($sections);
 
         $all_subsections = [];
@@ -29,7 +29,7 @@ class ModelBoatTest extends TestCase
             $this->assertInstanceOf(Section::class, $section);
             $this->assertEquals($boat->id, $section->boat_id);
 
-            $subsections = factory(Subsection::class, $this->faker->randomDigitNotNull)->create();
+            $subsections = Subsection::factory()->count($this->faker->randomDigitNotNull)->create();
             $section->subsections()->saveMany($subsections);
 
             foreach ($subsections as $subsection) {
@@ -44,9 +44,9 @@ class ModelBoatTest extends TestCase
 
     public function test_access_only_my_boats()
     {
-        $boats = factory(Boat::class, 3)->create();
+        $boats = Boat::factory()->count(3)->create();
 
-        $project = factory(Project::class)->create([
+        $project = Project::factory()->create([
             'project_status' => PROJECT_STATUS_IN_SITE,
         ]);
 
@@ -58,15 +58,15 @@ class ModelBoatTest extends TestCase
 
         // creo un utente e lo associo al progetto $project
         /** @var User $user */
-        $user = factory(User::class)->create();
-        $profession = factory(Profession::class)->create();
+        $user = User::factory()->create();
+        $profession = Profession::factory()->create();
         ProjectUser::createOneIfNotExists($user->id, $project->id, $profession->id);
 
         // faccio lo stesso...con altre 3 barche, un altro progetto $project2 e un altro utente $user2
 
-        $boats2 = factory(Boat::class, 3)->create();
+        $boats2 = Boat::factory()->count(3)->create();
 
-        $project2 = factory(Project::class)->create([
+        $project2 = Project::factory()->create([
             'project_status' => PROJECT_STATUS_IN_SITE,
         ]);
 
@@ -76,8 +76,8 @@ class ModelBoatTest extends TestCase
         }
 
         /** @var User $user2 */
-        $user2 = factory(User::class)->create();
-        $profession2 = factory(Profession::class)->create();
+        $user2 = User::factory()->create();
+        $profession2 = Profession::factory()->create();
         ProjectUser::createOneIfNotExists($user2->id, $project2->id, $profession2->id);
 
         // TEST: $user1 non deve vedere le $boats2 e $user2 non deve vedere le $boats

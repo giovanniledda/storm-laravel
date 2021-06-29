@@ -15,7 +15,7 @@ class ModelProductTest extends TestCase
         $data = Product::getSemiFakeData($this->faker);
         $except = [];
 
-        $product1 = factory(Product::class)->create();
+        $product1 = Product::factory()->create();
         $this->checkAllFields($product1, $data, $except);
 
         $product2 = Product::create($data);

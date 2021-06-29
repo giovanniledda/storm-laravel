@@ -167,8 +167,8 @@ class ModelDocumentTest extends TestCase
         // );
         // $task->save();
 
-        $task = factory(\App\Task::class)->create();
-        $project = factory(\App\Project::class)->create();
+        $task = \App\Task::factory()->create();
+        $project = \App\Project::factory()->create();
 
 //        $project->tasks()->save($task)->save(); NOTA: se faccio questo, poi non posso fare $task->project ..mi dice che è nullo
         $task->project()->associate($project)->save();

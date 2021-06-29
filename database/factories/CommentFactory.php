@@ -2,16 +2,34 @@
 
 /* @var $factory \Illuminate\Database\Eloquent\Factory */
 
+namespace Database\Factories;
+
 use App\Comment;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 $autoIncrement = StormUtils::autoIncrement();
 
-$factory->define(Comment::class, function (Faker $faker) use ($autoIncrement) {
-    $autoIncrement->next();
+class CommentFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Comment::class;
 
-    return [
-        'id' => $autoIncrement->current(),
-        'body' => $faker->sentence(10),
-    ];
-});
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        $autoIncrement->next();
+
+        return [
+            'id' => $autoIncrement->current(),
+            'body' => $this->faker->sentence(10),
+        ];
+    }
+}

@@ -15,10 +15,13 @@ use function array_map;
 use function env;
 use function factory;
 use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ApplicationLog extends Model
 {
+    use HasFactory;
+
     /**
      * The table associated with the model.
      *
@@ -242,7 +245,7 @@ class ApplicationLog extends Model
         try {
             $last_editor = $user ?? User::all()->random(1);
         } catch (\Exception $e) {
-            $last_editor = factory(User::class)->create();
+            $last_editor = User::factory()->create();
         }
 
         return [

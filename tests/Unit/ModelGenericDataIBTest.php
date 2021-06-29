@@ -15,7 +15,7 @@ class ModelGenericDataIBTest extends TestCase
         $data = GenericDataInfoBlock::getSemiFakeData($this->faker);
         $except = [];
 
-        $generic_data_ib1 = factory(GenericDataInfoBlock::class)->create();
+        $generic_data_ib1 = GenericDataInfoBlock::factory()->create();
         $this->checkAllFields($generic_data_ib1, $data, $except);
 
         $generic_data_ib2 = GenericDataInfoBlock::create($data);

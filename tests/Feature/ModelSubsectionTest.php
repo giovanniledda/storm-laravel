@@ -16,11 +16,11 @@ class ModelSubsectionTest extends TestCase
 
     public function test_can_create_subsections_related_to_sections()
     {
-        $boat = factory(Boat::class)->create();
+        $boat = Boat::factory()->create();
 
         $this->assertInstanceOf(Boat::class, $boat);
 
-        $sections = factory(Section::class, $this->faker->randomDigitNotNull)->create();
+        $sections = Section::factory()->count($this->faker->randomDigitNotNull)->create();
 
         foreach ($sections as $section) {
             $section->boat()->associate($boat)->save();  // alternativa a $boat->sections()->saveMany($sections) ? Sembrerebbe di no...
@@ -28,7 +28,7 @@ class ModelSubsectionTest extends TestCase
             $this->assertInstanceOf(Section::class, $section);
             $this->assertEquals($section->boat->registration_number, $boat->registration_number);
 
-            $subsections = factory(Subsection::class, $this->faker->randomDigitNotNull)->create();
+            $subsections = Subsection::factory()->count($this->faker->randomDigitNotNull)->create();
             $section->subsections()->saveMany($subsections);
         }
 

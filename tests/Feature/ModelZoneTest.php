@@ -16,11 +16,11 @@ class ModelZoneTest extends TestCase
     public function testBasicRelationships()
     {
         /** @var Zone $zone_parent */
-        $zone_parent = factory(Zone::class)->create();
+        $zone_parent = Zone::factory()->create();
         /** @var Zone $zone_child1 */
-        $zone_child1 = factory(Zone::class)->create();
+        $zone_child1 = Zone::factory()->create();
         /** @var Zone $zone_child2 */
-        $zone_child2 = factory(Zone::class)->create();
+        $zone_child2 = Zone::factory()->create();
 
         /** parent_zone (Zone) */
         /** $table->foreign('parent_zone_id')->references('id')->on('zones')->onDelete('set null'); */
@@ -44,7 +44,7 @@ class ModelZoneTest extends TestCase
         /** $table->foreign('project_id')->references('id')->on('projects')->onDelete('set null'); */
 
         /** @var Project $project */
-        $project = factory(Project::class)->create();
+        $project = Project::factory()->create();
         $zone_parent->project()->associate($project);
         $zone_parent->save();
 
@@ -52,11 +52,11 @@ class ModelZoneTest extends TestCase
         $this->assertContains($zone_parent->id, $project->zones()->pluck('id')); // testo la relazione inversa
 
         // test: countParentZones
-        $zone_parent2 = factory(Zone::class)->create();
+        $zone_parent2 = Zone::factory()->create();
         $zone_parent2->project()->associate($project);
         $zone_parent2->save();
 
-        $zone_parent3 = factory(Zone::class)->create();
+        $zone_parent3 = Zone::factory()->create();
         $zone_parent3->project()->associate($project);
         $zone_parent3->save();
 
@@ -83,7 +83,7 @@ class ModelZoneTest extends TestCase
 
         // test su: transferMyZonesToProject
         /** @var Project $project2 */
-        $project2 = factory(Project::class)->create();
+        $project2 = Project::factory()->create();
         $project->transferMyZonesToProject($project2);
 
         $this->assertEquals(3, $project2->countParentZones());
@@ -100,7 +100,7 @@ class ModelZoneTest extends TestCase
         /** zone_analysis_info_block */
         /** $table->foreign('zone_analysis_info_block_id')->references('id')->on('zone_analysis_info_blocks')->onDelete('set null') */
         $zone_analysis_info_blocks_num = $this->faker->numberBetween(10, 50);
-        $zone_analysis_info_blocks = factory(ZoneAnalysisInfoBlock::class, $zone_analysis_info_blocks_num)->create();
+        $zone_analysis_info_blocks = ZoneAnalysisInfoBlock::factory()->count($zone_analysis_info_blocks_num)->create();
 
         /** @var ZoneAnalysisInfoBlock $zone_analysis_info_block */
         foreach ($zone_analysis_info_blocks as $zone_analysis_info_block) {

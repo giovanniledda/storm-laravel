@@ -2,16 +2,34 @@
 
 /* @var $factory \Illuminate\Database\Eloquent\Factory */
 
+namespace Database\Factories;
+
 use App\Site;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 $autoIncrement = StormUtils::autoIncrement();
 
-$factory->define(Site::class, function (Faker $faker) use ($autoIncrement) {
-    $autoIncrement->next();
+class SiteFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Site::class;
 
-    return [
-        'id' => $autoIncrement->current(),
-        //
-    ];
-});
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        $autoIncrement->next();
+
+        return [
+            'id' => $autoIncrement->current(),
+            //
+        ];
+    }
+}

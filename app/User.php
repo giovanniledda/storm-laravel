@@ -4,6 +4,7 @@ namespace App;
 
 use App\Notifications\StormResetPasswordNotification;
 use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
@@ -19,6 +20,7 @@ use StormUtils;
 
 class User extends Authenticatable
 {
+    use HasFactory;
     use Notifiable, HasApiTokens, HasRoles, CanResetPassword, HasAddresses, DocumentableTrait;
 
     protected $fillable = [
