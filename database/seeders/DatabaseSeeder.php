@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use App\Comment;
 use App\TaskInterventType;
 use Faker\Factory as Faker;

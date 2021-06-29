@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Database\Seeders\SeederUtils;
 use App\ApplicationLog;
 use App\ApplicationLogSection;
 use App\ApplicationLogTask;

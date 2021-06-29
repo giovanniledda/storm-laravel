@@ -2,6 +2,7 @@
 
 namespace Seeds;
 
+use Database\Seeders\SeederUtils;
 use App\ApplicationLog;
 use App\ApplicationLogSection;
 use App\Boat;

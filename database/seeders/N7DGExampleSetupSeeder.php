@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use App\Boat;
 use App\Project;
 use Faker\Factory as Faker;

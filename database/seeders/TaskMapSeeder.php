@@ -4,6 +4,8 @@
  * by @reina
  */
 
+namespace Database\Seeders;
+
 use App\Task;
 use Illuminate\Database\Seeder;
 
