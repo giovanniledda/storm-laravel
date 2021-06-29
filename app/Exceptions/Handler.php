@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Throwable;
 use App\Utils\Utils as StormUtils;
 use CloudCreativity\LaravelJsonApi\Exceptions\HandlesErrors;
 use Exception;
@@ -37,10 +38,10 @@ class Handler extends ExceptionHandler
     /**
      * Report or log an exception.
      *
-     * @param  \Exception $exception
+     * @param  \Throwable  $exception
      * @return void
      */
-    public function report(Exception $exception)
+    public function report(Throwable $exception)
     {
         if ($exception instanceof QueryException) {
             StormUtils::catchIntegrityContraintViolationException($exception);
@@ -53,10 +54,10 @@ class Handler extends ExceptionHandler
      * Render an exception into an HTTP response.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  \Exception $exception
+     * @param  \Throwable  $exception
      * @return \Illuminate\Http\Response
      */
-    public function render($request, Exception $exception)
+    public function render($request, Throwable $exception)
     {
         if ($this->isJsonApi($request, $exception)) {
 
