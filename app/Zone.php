@@ -39,7 +39,7 @@ class Zone extends Model
      */
     public function parent_zone()
     {
-        return $this->belongsTo(\App\Zone::class, 'parent_zone_id');
+        return $this->belongsTo(self::class, 'parent_zone_id');
     }
 
     /**
@@ -49,7 +49,7 @@ class Zone extends Model
      */
     public function children_zones()
     {
-        return $this->hasMany(\App\Zone::class, 'parent_zone_id');
+        return $this->hasMany(self::class, 'parent_zone_id');
     }
 
     /**

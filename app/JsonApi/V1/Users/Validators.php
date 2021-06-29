@@ -7,9 +7,9 @@ use const VALIDATOR_EMAIL_UNIQUE;
 
 class Validators extends AbstractValidators
 {
-     /* The messages variable.
-     * @var string[]|null
-     */
+    /* The messages variable.
+    * @var string[]|null
+    */
     protected $messages = [
         'name.required' => 'name '.VALIDATOR_REQUIRED,
         'name.string' => 'name '.VALIDATOR_STRING,
