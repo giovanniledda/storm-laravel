@@ -6,16 +6,15 @@ use CloudCreativity\LaravelJsonApi\Validation\AbstractValidators;
 
 class Validators extends AbstractValidators
 {
-
-     protected $messages = [
+    protected $messages = [
         'boat_id.required' => 'boat_id '.VALIDATOR_REQUIRED,
         'boat_id.numeric' => 'boat_id '.VALIDATOR_NUMERIC,
         'boat_id.exists' => 'boat_id '.VALIDATOR_EXIST,
-      
+
         'profession_id.required' => 'profession_id '.VALIDATOR_REQUIRED,
         'profession_id.numeric' => 'profession_id '.VALIDATOR_NUMERIC,
         'profession_id.exists' => 'profession_id '.VALIDATOR_EXIST,
-        
+
         'user_id.required' => 'user_id '.VALIDATOR_REQUIRED,
         'user_id.numeric' => 'user_id '.VALIDATOR_NUMERIC,
         'user_id.exists' => 'user_id '.VALIDATOR_EXIST,
@@ -45,10 +44,10 @@ class Validators extends AbstractValidators
      */
     protected function rules($record = null): array
     {
-        return [ 
+        return [
             'boat_id'=> 'required|numeric|exists:boats,id',
             'profession_id'=> 'required|numeric|exists:professions,id',
-            'user_id'=> 'required|numeric|exists:users,id'
+            'user_id'=> 'required|numeric|exists:users,id',
         ];
     }
 
@@ -63,5 +62,4 @@ class Validators extends AbstractValidators
             //
         ];
     }
-
 }

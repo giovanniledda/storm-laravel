@@ -46,6 +46,7 @@ class SiteController extends Controller
     {
         $validated = $request->validated();
         $site = Site::create($validated);
+
         return redirect()->route('sites.index')
             ->with(FLASH_SUCCESS, __('Site :name created!', ['name' => $site->name]));
     }
@@ -81,7 +82,6 @@ class SiteController extends Controller
      */
     public function update(RequestSite $request, Site $site)
     {
-
         $validated = $request->validated();
         $site->fill($validated)->save();
 
@@ -103,7 +103,6 @@ class SiteController extends Controller
             ->with(FLASH_SUCCESS, __('Site deleted'));
     }
 
-
     /**
      * Ask confirmation about the specified resource from storage to remove.
      *
@@ -113,9 +112,9 @@ class SiteController extends Controller
     public function confirmDestroy($id)
     {
         $site = Site::findOrFail($id);
+
         return view('sites.delete')->withSite($site);
     }
-
 
     /*
      * *************************************************************
@@ -133,6 +132,7 @@ class SiteController extends Controller
     {
         $site = Site::findOrFail($id);
         $addresses = $site->getAddresses(true);
+
         return view('sites.addresses.index')->with(['addresses' => $addresses, 'site' => $site]);
     }
 
@@ -146,7 +146,6 @@ class SiteController extends Controller
     {
         return view('sites.addresses.create')->with(['site' => Site::findOrFail($id)]);
     }
-
 
     /**
      * Store a newly created addresses for the Site in storage.
@@ -172,7 +171,6 @@ class SiteController extends Controller
             $site->addAddress($validated);
             $message = __('New address added for site :name!', ['name' => $site->name]);
             $message_type = FLASH_SUCCESS;
-
         } catch (\Exception $e) {
             $message = __('Something went wrong adding new address, check your data!');
             $message_type = FLASH_ERROR;
@@ -180,7 +178,6 @@ class SiteController extends Controller
 
         return redirect()->route('sites.addresses.index', ['id' => $id])->with($message_type, $message);
     }
-
 
     /**
      * Show the form for editing the specified addresses for the Site.
@@ -218,7 +215,6 @@ class SiteController extends Controller
                 $site->updateAddress($address, $validated);
                 $message = __('Address [:id] in :city updated!', ['id' => $address_id, 'city' => $address->city]);
                 $message_type = FLASH_SUCCESS;
-
             } catch (\Exception $e) {
                 $message = __('Something went wrong updating address [:id], check your data!', ['id' => $address_id]);
                 $message_type = FLASH_ERROR;
@@ -250,7 +246,6 @@ class SiteController extends Controller
 
         return redirect()->route('sites.addresses.index', ['id' => $site_id])->with($message_type, $message);
     }
-
 
     /**
      * Ask confirmation about the specified resource from storage to remove.

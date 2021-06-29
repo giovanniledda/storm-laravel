@@ -54,7 +54,7 @@ return [
     */
     'resources' => [
         'storm-documents' => \App\Storm\StormDocument::class,
-        'storm-projects' => \App\Storm\StormProject::class
+        'storm-projects' => \App\Storm\StormProject::class,
     ],
 
     /*
@@ -166,7 +166,7 @@ return [
     */
     'decoding' => [
         'application/vnd.api+json',
-        'multipart/form-data'
+        'multipart/form-data',
     ],
 
     /*

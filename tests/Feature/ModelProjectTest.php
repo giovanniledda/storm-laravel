@@ -3,34 +3,33 @@
 namespace Tests\Feature;
 
 use App\ApplicationLog;
+use App\Boat;
 use App\Product;
 use App\Profession;
+use App\Project;
 use App\ProjectUser;
 use App\Site;
-use App\Project;
-use App\Boat;
+use App\User;
 use function array_map;
 use function factory;
-use Tests\TestCase;
 use Faker\Provider\Base as fakerBase;
-use App\User;
+use Tests\TestCase;
 
 class ModelProjectTest extends TestCase
 {
-
-    function test_can_create_project_without_site()
+    public function test_can_create_project_without_site()
     {
         $project = factory(Project::class)->create();
         $this->assertDatabaseHas('projects', ['name' => $project->name]);
     }
 
-    function test_can_create_project_related_to_site()
+    public function test_can_create_project_related_to_site()
     {
         $site_name = $this->faker->sentence;
         $site = new Site([
                 'name' => $site_name,
                 'lat' => $this->faker->randomFloat(2, -60, 60),
-                'lng' => $this->faker->randomFloat(2, -60, 60)
+                'lng' => $this->faker->randomFloat(2, -60, 60),
             ]
         );
         $site->save();
@@ -42,10 +41,9 @@ class ModelProjectTest extends TestCase
         $project->site()->associate($site)->save();
 
         $this->assertEquals($site->name, $project->site->name);
-
     }
 
-    function test_can_create_project_related_to_boat()
+    public function test_can_create_project_related_to_boat()
     {
         $boat_name = $this->faker->sentence;
         $boat = new Boat([
@@ -53,7 +51,7 @@ class ModelProjectTest extends TestCase
                 'registration_number' => $this->faker->sentence($nbWords = 1),
                 'length'  => $this->faker->randomFloat(2, 12, 110),
                 'draft'  => $this->faker->randomFloat(2, 2, 15),
-                "boat_type"=>"M/Y"
+                'boat_type'=>'M/Y',
             ]
         );
         $boat->save();
@@ -67,7 +65,7 @@ class ModelProjectTest extends TestCase
         $this->assertEquals($boat->name, $project->boat->name);
     }
 
-    function test_can_clone_project_with_relations()
+    public function test_can_clone_project_with_relations()
     {
         $boat_name = $this->faker->sentence;
         $boat = new Boat([
@@ -75,7 +73,7 @@ class ModelProjectTest extends TestCase
                 'registration_number' => $this->faker->sentence($nbWords = 1),
                 'length'  => $this->faker->randomFloat(2, 12, 110),
                 'draft'  => $this->faker->randomFloat(2, 2, 15),
-                "boat_type"=>"M/Y"
+                'boat_type'=>'M/Y',
             ]
         );
         $boat->save();
@@ -93,7 +91,7 @@ class ModelProjectTest extends TestCase
         $site = new Site([
                 'name' => $site_name,
                 'lat' => $this->faker->randomFloat(2, -60, 60),
-                'lng' => $this->faker->randomFloat(2, -60, 60)
+                'lng' => $this->faker->randomFloat(2, -60, 60),
             ]
         );
         $site->save();
@@ -127,7 +125,8 @@ class ModelProjectTest extends TestCase
         $this->assertEquals($newProject->users()->count(), $project->users()->count());
     }
 
-    function test_project_products() {
+    public function test_project_products()
+    {
 
         /** @var Project $project */
         $project = Project::createSemiFake($this->faker);
@@ -139,7 +138,7 @@ class ModelProjectTest extends TestCase
             $this->assertContains($project->id, $product->projects()->pluck('project_id'));
         }
 
-        $prod_ids_for_project = array_map(function($el) {
+        $prod_ids_for_project = array_map(function ($el) {
             return $el['id'];
         }, $project->products->toArray());
 
@@ -153,7 +152,7 @@ class ModelProjectTest extends TestCase
         /** @var Project $project2 */
         $project2 = Project::createSemiFake($this->faker);
         $products2 = factory(Product::class, 10)->create([
-            'p_type' => 'TEST'
+            'p_type' => 'TEST',
         ]);
 
         $project2->products()->attach(Product::where('p_type', '=', 'TEST')->pluck('id'));
@@ -163,12 +162,13 @@ class ModelProjectTest extends TestCase
         }
     }
 
-    function test_project_application_logs() {
+    public function test_project_application_logs()
+    {
 
         /** @var Project $project */
         $project = Project::createSemiFake($this->faker);
         $application_logs = factory(ApplicationLog::class, 10)->create([
-            'project_id' => $project->id
+            'project_id' => $project->id,
         ]);
 
 //        $project->application_logs()->saveMany($application_logs); // non va, forse perché il campo projecT_id è stato aggiunto postumo (2020_01_02_121545_add_project_to_application_log) come index?
@@ -185,7 +185,7 @@ class ModelProjectTest extends TestCase
         /** @var Project $project2 */
         $project2 = Project::createSemiFake($this->faker);
         $application_logs2 = factory(ApplicationLog::class, 15)->create([
-            'project_id' => $project2->id
+            'project_id' => $project2->id,
         ]);
 
 //        $project2->application_logs()->saveMany($application_logs2); // non va, vedi sopra
@@ -196,15 +196,14 @@ class ModelProjectTest extends TestCase
         $this->assertEquals(15, $project2->application_logs()->count());
     }
 
-
-    function test_internal_progressive_number() {
-
+    public function test_internal_progressive_number()
+    {
         $boats = factory(Boat::class, 3)->create();
         /** @var Boat $boat */
         foreach ($boats as $boat) {
             $projs_index_for_boat = 1;
             $projects = factory(Project::class, 4)->create([
-                'boat_id' => $boat->id
+                'boat_id' => $boat->id,
             ]);
             /** @var Project $project */
             foreach ($projects as $project) {

@@ -8,7 +8,6 @@ use Neomerx\JsonApi\Schema\SchemaProvider;
 
 class Schema extends SchemaProvider
 {
-
     /**
      * @var string
      */
@@ -86,7 +85,7 @@ class Schema extends SchemaProvider
                 self::DATA => function () use ($zone) {
                     return $zone->project_for_api;
                 },
-            ]
+            ],
         ];
     }
 }

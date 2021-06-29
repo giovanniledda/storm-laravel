@@ -2,30 +2,30 @@
 
 namespace App\Utils;
 
-use Exception;
+use function abs;
 use App\Profession;
 use App\User;
+use function ceil;
+use Exception;
 use Faker\Factory as Faker;
-use League\Csv\Writer;
-use Webpatser\Countries\Countries;
+use function getimagesize;
+use const HTTP_412_ADD_UPD_ERROR_MSG;
+use const HTTP_412_DEL_UPD_ERROR_MSG;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use function abs;
-use function ceil;
-use function getimagesize;
 use function imagecopyresampled;
 use function imagecreatefrompng;
 use function imagecreatetruecolor;
 use function is_null;
+use League\Csv\Writer;
 use const PERMISSION_ADMIN;
 use const PERMISSION_WORKER;
 use const PROJECT_STATUS_CLOSED;
 use const USER_PHONE_TYPE_FIXED;
 use const USER_PHONE_TYPE_MOBILE;
-use const HTTP_412_ADD_UPD_ERROR_MSG;
-use const HTTP_412_DEL_UPD_ERROR_MSG;
+use Webpatser\Countries\Countries;
 
 class Utils
 {
@@ -54,22 +54,25 @@ class Utils
             // Must not already exist in the `email` column of `users` table
             $validator = Validator::make(['email' => $email], ['email' => 'unique:users']);
             $progressive->next();
-        } while($validator->fails());
+        } while ($validator->fails());
 
         return $email;
     }
 
-    public static function getAdmins() {
+    public static function getAdmins()
+    {
         return User::permission(PERMISSION_ADMIN)->get();
 //        return User::role(ROLE_ADMIN)->get();
     }
 
-    public static function getAllBoatManagers() {
+    public static function getAllBoatManagers()
+    {
         return User::permission(PERMISSION_BOAT_MANAGER)->get();
 //        return User::role(ROLE_BOAT_MANAGER)->get();
     }
 
-    public static function getAllWorkers() {
+    public static function getAllWorkers()
+    {
         return User::permission(PERMISSION_WORKER)->get();
 //        return User::role(ROLE_WORKER)->get();
     }
@@ -88,18 +91,17 @@ class Utils
 
     /**
      * Returns a Response with JSONAPI header
-     *
      */
     public static function renderStandardJsonapiResponse($data, $code)
     {
         $resp = Response($data, $code);
         $resp->header('Content-Type', 'application/vnd.api+json');
+
         return $resp;
     }
 
     /**
      * Get the list of countries for @countries component
-     *
      */
     public static function getCountriesList()
     {
@@ -110,18 +112,15 @@ class Utils
 
     /**
      * Get the list of telephone types defined in constants
-     *
      */
     public static function getPhoneTypes()
     {
         return [USER_PHONE_TYPE_MOBILE => USER_PHONE_TYPE_MOBILE,
-                USER_PHONE_TYPE_FIXED => USER_PHONE_TYPE_FIXED];
+                USER_PHONE_TYPE_FIXED => USER_PHONE_TYPE_FIXED, ];
     }
-
 
     /**
      * Get the list of professions for @stormprofessions component
-     *
      */
     public static function getStormProfessionsList()
     {
@@ -133,7 +132,6 @@ class Utils
 
     /**
      * Get the list of professions for @stormprofessions component
-     *
      */
     public static function getItemsPerPage()
     {
@@ -142,7 +140,6 @@ class Utils
 
     /**
      * Get the list of projects for @projects component
-     *
      */
     public static function getActiveProjectsList()
     {
@@ -150,7 +147,7 @@ class Utils
             ->leftJoin('boats', 'projects.boat_id', '=', 'boats.id')
             ->leftJoin('sites', 'projects.site_id', '=', 'sites.id')
             ->where('projects.project_status', '<>', PROJECT_STATUS_CLOSED)
-            ->select('sites.name as sname', 'boats.name as bname','projects.name as pname', 'projects.id')
+            ->select('sites.name as sname', 'boats.name as bname', 'projects.name as pname', 'projects.id')
             ->orderBy('bname')
             ->get();
 
@@ -160,21 +157,23 @@ class Utils
                 'id' => $p->id,
                 'bname' => $p->bname,
                 'sname' => $p->sname,
-                'pname' => $p->pname]
+                'pname' => $p->pname, ]
             );
         }
+
         return $results;
     }
-
 
     /**
      * Ritorna la query SQL generata da eloquent.
      * @param type $queryBuilder
      * @return type
      */
-    public static function getSql($queryBuilder) {
-        $query = str_replace(array('?'), array('\'%s\''), $queryBuilder->toSql());
+    public static function getSql($queryBuilder)
+    {
+        $query = str_replace(['?'], ['\'%s\''], $queryBuilder->toSql());
         $query = vsprintf($query, $queryBuilder->getBindings());
+
         return  $query;
     }
 
@@ -183,12 +182,13 @@ class Utils
      *
      * @param Exception $exception
      */
-    public static function catchIntegrityContraintViolationException(Exception $exception){
-        if (Str::contains($exception->getMessage(), "Integrity constraint violation")) {
-            if (Str::contains($exception->getMessage(), "1451")) {
+    public static function catchIntegrityContraintViolationException(Exception $exception)
+    {
+        if (Str::contains($exception->getMessage(), 'Integrity constraint violation')) {
+            if (Str::contains($exception->getMessage(), '1451')) {
                 abort(412, __(HTTP_412_DEL_UPD_ERROR_MSG));
             }
-            if (Str::contains($exception->getMessage(), "1452")) {
+            if (Str::contains($exception->getMessage(), '1452')) {
                 abort(412, __(HTTP_412_ADD_UPD_ERROR_MSG));
             }
         }
@@ -210,7 +210,7 @@ class Utils
         $h = ['Content-Type' => 'application/vnd.api+json'];
         $error = [
             'status' => $http_status_code,
-            'code' => $internal_error];
+            'code' => $internal_error, ];
 
         if ($title) {
             $error['title'] = $title;
@@ -219,7 +219,8 @@ class Utils
         if ($message) {
             $error['detail'] = $message;
         }
-        return response()->json(['errors' => $error], (string)$http_status_code, $h);
+
+        return response()->json(['errors' => $error], (string) $http_status_code, $h);
     }
 
     /**
@@ -245,7 +246,6 @@ class Utils
     }
 
     /**
-     *
      * Ridimensiona un'immagine da un path
      * @param $file
      * @param $w
@@ -253,7 +253,7 @@ class Utils
      * @param $crop
      * @return mixed
      */
-    public static function resize_image($file, $w, $h, $crop = FALSE)
+    public static function resize_image($file, $w, $h, $crop = false)
     {
         list($width, $height) = getimagesize($file);
         $r = $width / $height;
@@ -281,7 +281,6 @@ class Utils
         return $dst;
     }
 
-
     /**
      * https://stackoverflow.com/a/279310/470749
      *
@@ -290,7 +289,8 @@ class Utils
      * @param int $newHeight
      * @return resource
      */
-    public static function getPNGImageResized($image, int $newWidth, int $newHeight) {
+    public static function getPNGImageResized($image, int $newWidth, int $newHeight)
+    {
         $newImg = imagecreatetruecolor($newWidth, $newHeight);
         imagealphablending($newImg, false);
         imagesavealpha($newImg, true);
@@ -299,6 +299,7 @@ class Utils
         $src_w = imagesx($image);
         $src_h = imagesy($image);
         imagecopyresampled($newImg, $image, 0, 0, 0, 0, $newWidth, $newHeight, $src_w, $src_h);
+
         return $newImg;
     }
 
@@ -314,7 +315,8 @@ class Utils
      * 08-JAN-2011
      *
      **/
-    public static function imagecopymerge_alpha($dst_im, $src_im, $dst_x, $dst_y, $src_x, $src_y, $src_w, $src_h, $pct){
+    public static function imagecopymerge_alpha($dst_im, $src_im, $dst_x, $dst_y, $src_x, $src_y, $src_w, $src_h, $pct)
+    {
         // creating a cut resource
         $cut = imagecreatetruecolor($src_w, $src_h);
 

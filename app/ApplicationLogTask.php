@@ -12,5 +12,4 @@ class ApplicationLogTask extends Model
      * @var string
      */
     protected $table = 'applications_logs_tasks';
-
 }

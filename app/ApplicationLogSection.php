@@ -2,12 +2,12 @@
 
 namespace App;
 
-use Faker\Generator as Faker;
-use Illuminate\Database\Eloquent\Model;
 use const APPLICATION_LOG_SECTION_TYPE_APPLICATION;
 use const APPLICATION_LOG_SECTION_TYPE_INSPECTION;
 use const APPLICATION_LOG_SECTION_TYPE_PREPARATION;
 use const APPLICATION_LOG_SECTION_TYPE_ZONES;
+use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Model;
 
 class ApplicationLogSection extends Model
 {
@@ -68,7 +68,8 @@ class ApplicationLogSection extends Model
     /**
      * @return Model|\Illuminate\Database\Eloquent\Relations\HasMany|object|null
      */
-    public function getSurfaceInspectionDetectionBlock(){
+    public function getSurfaceInspectionDetectionBlock()
+    {
         return $this->detections_info_blocks()->where('name', '=', 'Surface inspection')->first();
     }
 
@@ -149,7 +150,7 @@ class ApplicationLogSection extends Model
                 APPLICATION_LOG_SECTION_TYPE_ZONES,
                 APPLICATION_LOG_SECTION_TYPE_PREPARATION,
                 APPLICATION_LOG_SECTION_TYPE_APPLICATION,
-                APPLICATION_LOG_SECTION_TYPE_INSPECTION
+                APPLICATION_LOG_SECTION_TYPE_INSPECTION,
             ]),
             'is_started' => $faker->boolean(30),
             'date_hour' => $faker->dateTime(),
@@ -157,7 +158,6 @@ class ApplicationLogSection extends Model
     }
 
     /**
-     *
      * Creates a Application Log Section using some fake data and some others that have sense
      * @param Faker $faker
      * @return ApplicationLogSection
@@ -165,8 +165,9 @@ class ApplicationLogSection extends Model
     public static function createSemiFake(Faker $faker)
     {
         $data = self::getSemiFakeData($faker);
-        $t = new ApplicationLogSection($data);
+        $t = new self($data);
         $t->save();
+
         return $t;
     }
 
@@ -183,8 +184,9 @@ class ApplicationLogSection extends Model
         $data = [
             'type' => $this->table,
             'id' => $this->id,
-            'attributes' => parent::toArray()
+            'attributes' => parent::toArray(),
         ];
+
         return $data;
     }
 

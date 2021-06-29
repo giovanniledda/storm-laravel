@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 trait HasUsers
 {
-
-
     /**
      * @param int $uid
      *
@@ -32,11 +30,10 @@ trait HasUsers
     /**
      * @param int $uid
      *
-     * @return Boolean
+     * @return bool
      */
     public function hasUserById($uid)
     {
         return $this->getUserByIdBaseQuery($uid)->count() > 0;
     }
-
 }

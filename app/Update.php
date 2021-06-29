@@ -21,47 +21,62 @@ class Update extends Model
         return json_decode($this->data, true);
     }
 
-    public function getUpdateId() {
+    public function getUpdateId()
+    {
         return isset($this->getAttributes()['id']) ? $this->getAttributes()['id'] : $this->id;
     }
 
-    public function getMessage() {
+    public function getMessage()
+    {
         $data = $this->getDataArray();
+
         return isset($data['message']) ? $data['message'] : null;
     }
 
-    public function getTaskId() {
+    public function getTaskId()
+    {
         $data = $this->getDataArray();
+
         return isset($data['task_id']) ? $data['task_id'] : null;
     }
 
-    public function getBoatName() {
+    public function getBoatName()
+    {
         $data = $this->getDataArray();
+
         return isset($data['boat_name']) ? $data['boat_name'] : null;
     }
 
-    public function getBoatId() {
+    public function getBoatId()
+    {
         $data = $this->getDataArray();
+
         return isset($data['boat_id']) ? $data['boat_id'] : null;
     }
 
-    public function getProjectName() {
+    public function getProjectName()
+    {
         $data = $this->getDataArray();
+
         return isset($data['project_name']) ? $data['project_name'] : null;
     }
 
-    public function getProjectId() {
+    public function getProjectId()
+    {
         $data = $this->getDataArray();
+
         return isset($data['project_id']) ? $data['project_id'] : null;
     }
 
     /**
      * Who did the action that fires the notification
      *
-     * @return null|integer
+     * @return null|int
      */
-    public function getActionAuthorId() {
+    public function getActionAuthorId()
+    {
         $data = $this->getDataArray();
+
         return isset($data['action_author_id']) ? $data['action_author_id'] : null;
     }
 
@@ -70,14 +85,16 @@ class Update extends Model
      *
      * @return null|User
      */
-    public function getActionAuthor() {
+    public function getActionAuthor()
+    {
         $id = $this->getActionAuthorId();
-        return !is_null($id) ? User::find($id) : null;
+
+        return ! is_null($id) ? User::find($id) : null;
     }
 
     public function isRead()
     {
-        return !is_null($this->read_at);
+        return ! is_null($this->read_at);
     }
 
     public function markAsRead()
@@ -85,8 +102,10 @@ class Update extends Model
         $notification = DatabaseNotification::where('id', $this->id)->get();
         if ($notification) {
             $notification->markAsRead();
+
             return $notification;
         }
+
         return null;
     }
 }

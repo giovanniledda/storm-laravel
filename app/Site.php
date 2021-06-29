@@ -2,10 +2,10 @@
 
 namespace App;
 
+use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Model;
 use Lecturize\Addresses\Traits\HasAddresses;
 use StormUtils;
-use Faker\Generator as Faker;
 
 class Site extends Model
 {
@@ -17,7 +17,7 @@ class Site extends Model
         'name',
         'location',
         'lat',
-        'lng'
+        'lng',
     ];
 
     /**
@@ -27,6 +27,7 @@ class Site extends Model
     public function setName($name)
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -37,6 +38,7 @@ class Site extends Model
     public function setLocation($location)
     {
         $this->location = $location;
+
         return $this;
     }
 
@@ -47,6 +49,7 @@ class Site extends Model
     public function setLat($lat)
     {
         $this->lat = $lat;
+
         return $this;
     }
 
@@ -57,9 +60,9 @@ class Site extends Model
     public function setLng($lng)
     {
         $this->lng = $lng;
+
         return $this;
     }
-
 
     protected static function boot()
     {
@@ -78,7 +81,6 @@ class Site extends Model
         return $this->hasMany('App\Boat');
     }
 
-
     // public function addDocument(\Net7\Documents\Document $document, $type=false){
     //     $this->documents()->save($document);
     // }
@@ -93,6 +95,7 @@ class Site extends Model
         if ($this->hasAddress()) {
             return $pagination ? $this->addresses()->paginate(StormUtils::getItemsPerPage()) : $this->addresses()->get();
         }
+
         return [];
     }
 
@@ -106,7 +109,6 @@ class Site extends Model
         return $this->addresses()->count();
     }
 
-
     /**
      * Creates a Site using some fake data and some others that have sense
      *
@@ -117,7 +119,7 @@ class Site extends Model
      */
     public static function createSemiFake(Faker $faker, $how_many_addresses = 0)
     {
-        $site = new Site([
+        $site = new self([
             'name' => $faker->company,
             'location' => $faker->address,
             'lat' => $faker->latitude,
@@ -135,6 +137,7 @@ class Site extends Model
                 ]);
             }
         }
+
         return $site;
     }
 }

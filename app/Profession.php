@@ -1,9 +1,9 @@
 <?php
+
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 use Faker\Generator as Faker;
-
+use Illuminate\Database\Eloquent\Model;
 
 class Profession extends Model
 {
@@ -11,9 +11,8 @@ class Profession extends Model
 
     protected $fillable = [
        'name',
-       'is_storm'
+       'is_storm',
     ];
-
 
     /**
      * Creates a Section using some fake data and some others that have sense
@@ -22,16 +21,17 @@ class Profession extends Model
      *
      * @return Profession $profession
      */
-    public static function createSemiFake(Faker $faker, $slug='worker')
-    {   
-        $is_storm = ($slug==='worker') ? $faker->randomFloat(0,0,1) : 0;
-        $profession = new Profession([
-                'name' => ( $slug==='worker' ) ? $faker->jobTitle : 'Owner',
+    public static function createSemiFake(Faker $faker, $slug = 'worker')
+    {
+        $is_storm = ($slug === 'worker') ? $faker->randomFloat(0, 0, 1) : 0;
+        $profession = new self([
+                'name' => ($slug === 'worker') ? $faker->jobTitle : 'Owner',
                 'is_storm' => $is_storm,
-                'slug'=>$slug
+                'slug'=>$slug,
             ]
         );
         $profession->save();
+
         return $profession;
     }
 }

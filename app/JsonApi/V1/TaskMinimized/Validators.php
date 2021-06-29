@@ -6,7 +6,6 @@ use CloudCreativity\LaravelJsonApi\Validation\AbstractValidators;
 
 class Validators extends AbstractValidators
 {
-
     /**
      * The include paths a client is allowed to request.
      *
@@ -21,7 +20,7 @@ class Validators extends AbstractValidators
      * @var string[]|null
      *      the allowed fields, an empty array for none allowed, or null to allow all fields.
      */
-    protected $allowedSortParameters = null;// ['title', 'description']; // tutti i campi abilitati all'ordinamento
+    protected $allowedSortParameters = null; // ['title', 'description']; // tutti i campi abilitati all'ordinamento
 
     protected $messages = [
       //  'title.required' => 'title '.VALIDATOR_REQUIRED,
@@ -46,7 +45,6 @@ class Validators extends AbstractValidators
         'intervent_type_id.exists' => 'intervent_type_id '.VALIDATOR_EXIST,
         ];
 
-
     /**
      * Get resource validation rules.
      *
@@ -56,7 +54,7 @@ class Validators extends AbstractValidators
      */
     protected function rules($record = null): array
     {
-       return [
+        return [
         //'title' => 'string|min:1|max:255',
 //        'description' => 'string',
         'number' => 'numeric',
@@ -82,5 +80,4 @@ class Validators extends AbstractValidators
             //
         ];
     }
-
 }

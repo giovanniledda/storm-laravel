@@ -9,7 +9,6 @@ use const VALIDATOR_REQUIRED;
 
 class Validators extends AbstractValidators
 {
-
     /**
      * The include paths a client is allowed to request.
      *
@@ -75,5 +74,4 @@ class Validators extends AbstractValidators
             //
         ];
     }
-
 }

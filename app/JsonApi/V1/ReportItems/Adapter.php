@@ -4,13 +4,12 @@ namespace App\JsonApi\V1\ReportItems;
 
 use CloudCreativity\LaravelJsonApi\Eloquent\AbstractAdapter;
 use CloudCreativity\LaravelJsonApi\Pagination\StandardStrategy;
+use function explode;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
-use function explode;
 
 class Adapter extends AbstractAdapter
 {
-
     /**
      * Mapping of JSON API attribute field names to model keys.
      *
@@ -48,5 +47,4 @@ class Adapter extends AbstractAdapter
             $query->whereIn('report_type', explode('|', $report_types));
         }
     }
-
 }

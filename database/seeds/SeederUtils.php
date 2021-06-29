@@ -22,17 +22,6 @@ use App\TaskInterventType;
 use App\Tool;
 use App\Zone;
 use App\ZoneAnalysisInfoBlock;
-use Faker\Factory as Faker;
-use Illuminate\Support\Facades\Storage;
-use Net7\Documents\Document;
-use StormUtils;
-use User;
-use function array_merge;
-use function count;
-use function factory;
-use function memory_get_peak_usage;
-use function memory_get_usage;
-use function round;
 use const APPLICATION_LOG_SECTION_TYPE_APPLICATION;
 use const APPLICATION_LOG_SECTION_TYPE_INSPECTION;
 use const APPLICATION_LOG_SECTION_TYPE_PREPARATION;
@@ -42,6 +31,17 @@ use const APPLICATION_TYPE_FILLER;
 use const APPLICATION_TYPE_HIGHBUILD;
 use const APPLICATION_TYPE_PRIMER;
 use const APPLICATION_TYPE_UNDERCOAT;
+use function array_merge;
+use function count;
+use function factory;
+use Faker\Factory as Faker;
+use Illuminate\Support\Facades\Storage;
+use function memory_get_peak_usage;
+use function memory_get_usage;
+use Net7\Documents\Document;
+use function round;
+use StormUtils;
+use User;
 
 class SeederUtils
 {
@@ -63,8 +63,8 @@ class SeederUtils
         /* Peak memory usage */
         $mem_peak = memory_get_peak_usage();
 
-        echo 'The script is now using: -' . round($mem_usage / 1024) . "KB- of memory. \n";
-        echo 'Peak usage: -' . round($mem_peak / 1024) . "KB- of memory.\n\n";
+        echo 'The script is now using: -'.round($mem_usage / 1024)."KB- of memory. \n";
+        echo 'Peak usage: -'.round($mem_peak / 1024)."KB- of memory.\n\n";
     }
 
     /**
@@ -75,7 +75,6 @@ class SeederUtils
      */
     public function createUser($role_name)
     {
-
         $faker = $this->faker ? $this->faker : Faker::create();
         $email = StormUtils::getFakeStormEmail($role_name);
 
@@ -90,6 +89,7 @@ class SeederUtils
         ]);
 
         $user->assignRole($role_name);
+
         return $user;
     }
 
@@ -141,25 +141,24 @@ class SeederUtils
 
     public function associateUserToBoat(User $user, Boat $boat, Profession $profession)
     {
-        if (!$boat->hasUserById($user->id)) {
+        if (! $boat->hasUserById($user->id)) {
             BoatUser::create(['user_id' => $user->id, 'boat_id' => $boat->id, 'profession_id' => $profession->id]);
         }
     }
 
     public function associateUserToProject(User $user, Project $project, Profession $profession)
     {
-        if (!$project->hasUserById($user->id)) {
+        if (! $project->hasUserById($user->id)) {
             ProjectUser::create(['user_id' => $user->id, 'project_id' => $project->id, 'profession_id' => $profession->id]);
         }
     }
 
     public function associateSectionToProject(Section $section, Project $project)
     {
-        if (!$project->hasSectionById($section->id)) {
+        if (! $project->hasSectionById($section->id)) {
             ProjectSection::create(['section_id' => $section->id, 'project_id' => $project->id]);
         }
     }
-
 
     public function createTasksAndAssociateWithProject($project = null)
     {
@@ -168,11 +167,10 @@ class SeederUtils
                 $tasks = factory(Task::class, $this->faker->randomDigitNotNull)->create();
                 //        $project->tasks()->saveMany($tasks);  // Vedi mail di Ledda del 24 luglio: se uso questa poi $t->project è null :-(
                 $created = true;
-
             } catch (\Exception $e) {
                 $created = false;
             }
-        } while (!$created);
+        } while (! $created);
 
         if (isset($tasks)) {
             foreach ($tasks as $t) {
@@ -180,6 +178,7 @@ class SeederUtils
                     $t->project()->associate($project)->save();
                 }
             }
+
             return $tasks;
         }
 
@@ -189,17 +188,16 @@ class SeederUtils
     public function createManyProjectsAndAssociateWithSiteAndBoats($site, $boats)
     {
         $all_projects = [];
-        if (!empty($boats)) {
+        if (! empty($boats)) {
             foreach ($boats as $boat) {
                 do {
                     try {
                         $projects = factory(Project::class, $this->faker->randomDigitNotNull)->create();
                         $projs_created = true;
-
                     } catch (\Exception $e) {
                         $projs_created = false;
                     }
-                } while (!$projs_created);
+                } while (! $projs_created);
 
                 if (isset($projects)) {
                     foreach ($projects as $project) {
@@ -251,7 +249,7 @@ class SeederUtils
     {
 //        return;
         if (Storage::disk('local-seeder')->exists($filepath)) {
-            $section->addImagePhoto('./storage/seeder/' . $filepath, $type);
+            $section->addImagePhoto('./storage/seeder/'.$filepath, $type);
         }
     }
 
@@ -336,10 +334,11 @@ class SeederUtils
         if ($project->application_logs()->count() == 0) {
             for ($i = 1; $i <= $app_logs; $i++) {
                 $application_logs_obj_array[] = factory(ApplicationLog::class)->create([
-                    'project_id' => $project->id
+                    'project_id' => $project->id,
                 ]);
             }
         }
+
         return $application_logs_obj_array;
     }
 
@@ -355,33 +354,34 @@ class SeederUtils
         $application_logs_obj_array[] = factory(ApplicationLog::class)->create(
             [
                 'project_id' => $project->id,
-                'application_type' => APPLICATION_TYPE_COATING
+                'application_type' => APPLICATION_TYPE_COATING,
             ]
         );
         $application_logs_obj_array[] = factory(ApplicationLog::class)->create(
             [
                 'project_id' => $project->id,
-                'application_type' => APPLICATION_TYPE_FILLER
+                'application_type' => APPLICATION_TYPE_FILLER,
             ]
         );
         $application_logs_obj_array[] = factory(ApplicationLog::class)->create(
             [
                 'project_id' => $project->id,
-                'application_type' => APPLICATION_TYPE_HIGHBUILD
+                'application_type' => APPLICATION_TYPE_HIGHBUILD,
             ]
         );
         $application_logs_obj_array[] = factory(ApplicationLog::class)->create(
             [
                 'project_id' => $project->id,
-                'application_type' => APPLICATION_TYPE_PRIMER
+                'application_type' => APPLICATION_TYPE_PRIMER,
             ]
         );
         $application_logs_obj_array[] = factory(ApplicationLog::class)->create(
             [
                 'project_id' => $project->id,
-                'application_type' => APPLICATION_TYPE_UNDERCOAT
+                'application_type' => APPLICATION_TYPE_UNDERCOAT,
             ]
         );
+
         return $application_logs_obj_array;
     }
 
@@ -407,13 +407,14 @@ class SeederUtils
         $za_ib_1 = factory(ZoneAnalysisInfoBlock::class)->create([
             'application_log_section_id' => $section_zone->id,
             'name' => 'Zone 1',
-            'zone_id' => $z1->id
+            'zone_id' => $z1->id,
         ]);
         $za_ib_2 = factory(ZoneAnalysisInfoBlock::class)->create([
             'application_log_section_id' => $section_zone->id,
             'name' => 'Zone 2',
-            'zone_id' => $z2->id
+            'zone_id' => $z2->id,
         ]);
+
         return $section_zone;
     }
 
@@ -426,7 +427,7 @@ class SeederUtils
     {
         $section_preparation = factory(ApplicationLogSection::class)->create([
             'application_log_id' => $application_log->id,
-            'section_type' => APPLICATION_LOG_SECTION_TYPE_PREPARATION
+            'section_type' => APPLICATION_LOG_SECTION_TYPE_PREPARATION,
         ]);
 
         $products = $project->products;
@@ -456,10 +457,10 @@ class SeederUtils
                     'P1500',
                     'P2000',
                     'P2500',
-                    'P3000'
+                    'P3000',
                 ]),
-                'short_description' => $this->faker->sentence(20)
-            ]
+                'short_description' => $this->faker->sentence(20),
+            ],
         ]);
         $this->addImageToBlock($gd_ib_1, './task/photo1.jpg', Document::DETAILED_IMAGE_TYPE);
         $this->addImageToBlock($gd_ib_1, './task/photo2.jpg', Document::DETAILED_IMAGE_TYPE);
@@ -473,7 +474,7 @@ class SeederUtils
             'name' => 'Surface inspection',
             'application_log_section_id' => $section_preparation->id,
             'tool_id' => $t1->id,
-            'detections' => null
+            'detections' => null,
         ]);
 
         $this->updateDetectionBlock($d_ib_1, ['surface_roughness' => $this->faker->randomFloat(2)]);
@@ -484,11 +485,12 @@ class SeederUtils
                 'name' => 'Salt - Bresle test',
                 'application_log_section_id' => $section_preparation->id,
                 'tool_id' => $t2->id,
-                'detections' => null
+                'detections' => null,
             ]);
 
             $this->updateDetectionBlock($d_ib_2, ['salts' => $this->faker->randomFloat(2)]);
         }
+
         return $section_preparation;
     }
 
@@ -501,7 +503,7 @@ class SeederUtils
     {
         $section_application = factory(ApplicationLogSection::class)->create([
             'application_log_id' => $application_log->id,
-            'section_type' => APPLICATION_LOG_SECTION_TYPE_APPLICATION
+            'section_type' => APPLICATION_LOG_SECTION_TYPE_APPLICATION,
         ]);
 
         $tools = $project->tools;
@@ -510,11 +512,11 @@ class SeederUtils
             'name' => 'Temperature & Humidity',
             'application_log_section_id' => $section_application->id,
             'tool_id' => $t->id,
-            'detections' => null
+            'detections' => null,
         ]);
         $this->updateDetectionBlock($d_ib_1, [
             'temperature' => $this->faker->randomDigitNotNull,
-            'humidity' => $this->faker->randomFloat(2)
+            'humidity' => $this->faker->randomFloat(2),
         ]);
 
         $products = $project->products;
@@ -528,7 +530,7 @@ class SeederUtils
         ]);
 
         $components = [];
-        if (!empty($p3->components)) {
+        if (! empty($p3->components)) {
             foreach ($p3->components as $component) {
                 $components[] = [
                     'name' => $component,
@@ -538,13 +540,13 @@ class SeederUtils
                     'batch_numbers' => [
                         'bn1' => $this->faker->randomDigitNotNull,
                         'bn2' => $this->faker->randomDigitNotNull,
-                        'bn3' => $this->faker->randomDigitNotNull
-                    ]
+                        'bn3' => $this->faker->randomDigitNotNull,
+                    ],
                 ];
             }
         }
         $pu_ib_1->update([
-            'components' => $components
+            'components' => $components,
         ]);
 
         $thinners = [];
@@ -557,24 +559,23 @@ class SeederUtils
                 'batch_numbers' => [
                     'bn1' => $this->faker->randomDigitNotNull,
                     'bn2' => $this->faker->randomDigitNotNull,
-                    'bn3' => $this->faker->randomDigitNotNull
-                ]
+                    'bn3' => $this->faker->randomDigitNotNull,
+                ],
             ];
         }
         $pu_ib_1->update([
-            'thinners' => $thinners
+            'thinners' => $thinners,
         ]);
-
 
         $gd_ib_1 = factory(GenericDataInfoBlock::class)->create([
             'name' => 'Application method',
             'application_log_section_id' => $section_application->id,
             'key_value_infos' => [
-                'method' => $this->faker->randomElement(['Conventional', 'Airless', 'HVLP','Electrostatic', 'Roll']),
+                'method' => $this->faker->randomElement(['Conventional', 'Airless', 'HVLP', 'Electrostatic', 'Roll']),
                 'nozzle_needle_size' => $this->faker->randomDigitNotNull,
                 'loss_factor' => $this->faker->randomFloat(2),
-                'num_of_coat' => $this->faker->randomNumber()
-            ]
+                'num_of_coat' => $this->faker->randomNumber(),
+            ],
         ]);
 
         return $section_application;
@@ -589,7 +590,7 @@ class SeederUtils
     {
         $section_inspection = factory(ApplicationLogSection::class)->create([
             'application_log_id' => $application_log->id,
-            'section_type' => APPLICATION_LOG_SECTION_TYPE_INSPECTION
+            'section_type' => APPLICATION_LOG_SECTION_TYPE_INSPECTION,
         ]);
 
         $tools = $project->tools;
@@ -599,10 +600,10 @@ class SeederUtils
                 'name' => 'Adhesion',
                 'application_log_section_id' => $section_inspection->id,
                 'tool_id' => $t->id,
-                'detections' => null
+                'detections' => null,
             ]);
             $this->updateDetectionBlock($d_ib_1, [
-                'adhesion' => $this->faker->randomFloat
+                'adhesion' => $this->faker->randomFloat,
             ]);
         }
 
@@ -616,10 +617,10 @@ class SeederUtils
                 'name' => 'Fairness',
                 'application_log_section_id' => $section_inspection->id,
                 'tool_id' => $t->id,
-                'detections' => null
+                'detections' => null,
             ]);
             $this->updateDetectionBlock($d_ib_2, [
-                'fairness' => $this->faker->randomFloat
+                'fairness' => $this->faker->randomFloat,
             ]);
         }
 
@@ -628,10 +629,10 @@ class SeederUtils
             'name' => 'Thickness',
             'application_log_section_id' => $section_inspection->id,
             'tool_id' => $t->id,
-            'detections' => null
+            'detections' => null,
         ]);
         $this->updateDetectionBlock($d_ib_3, [
-            'thickness' => $this->faker->randomFloat(2)
+            'thickness' => $this->faker->randomFloat(2),
         ]);
 
         if ($application_log->application_type == APPLICATION_TYPE_FILLER) {
@@ -640,10 +641,10 @@ class SeederUtils
                 'name' => 'Hardness',
                 'application_log_section_id' => $section_inspection->id,
                 'tool_id' => $t->id,
-                'detections' => null
+                'detections' => null,
             ]);
             $this->updateDetectionBlock($d_ib_4, [
-                'hardness' => $this->faker->randomDigitNotNull
+                'hardness' => $this->faker->randomDigitNotNull,
             ]);
         }
 
@@ -653,13 +654,13 @@ class SeederUtils
                 'name' => 'Gloss / DOI / Haze / Rspec',
                 'application_log_section_id' => $section_inspection->id,
                 'tool_id' => $t->id,
-                'detections' => null
+                'detections' => null,
             ]);
             $this->updateDetectionBlock($d_ib_5, [
                 'gloss' => $this->faker->randomDigitNotNull,
                 'doi' => $this->faker->randomDigitNotNull,
                 'haze' => $this->faker->randomDigitNotNull,
-                'rspec' => $this->faker->randomDigitNotNull
+                'rspec' => $this->faker->randomDigitNotNull,
             ]);
         }
 
@@ -669,10 +670,10 @@ class SeederUtils
                 'name' => 'Orange peel',
                 'application_log_section_id' => $section_inspection->id,
                 'tool_id' => $t->id,
-                'detections' => null
+                'detections' => null,
             ]);
             $this->updateDetectionBlock($d_ib_6, [
-                'orange_peel' => $this->faker->randomDigitNotNull
+                'orange_peel' => $this->faker->randomDigitNotNull,
             ]);
         }
 
@@ -700,8 +701,8 @@ class SeederUtils
                 $arr1,
                 $arr2,
                 $arr3,
-                $arr4
-            ]
+                $arr4,
+            ],
         ]);
     }
 
@@ -732,6 +733,4 @@ class SeederUtils
             $application_log->application_log_sections()->save($section_inspection);
         }
     }
-
-
 }

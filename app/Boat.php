@@ -2,8 +2,8 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Arr;
 use Net7\DocsGenerator\Traits\HasDocsGenerator;
@@ -14,7 +14,6 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class Boat extends Model
 {
-
     use DocumentableTrait, HasDocsGenerator;
 
     protected $table = 'boats';
@@ -26,24 +25,23 @@ class Boat extends Model
         'manufacture_year',
         'length',
         'draft',
-        'beam'
+        'beam',
     ];
 
     // Usate con il DocsGenerator
     protected $_currentTask;
     protected $_currentTaskPhotos;
 
-    public function getMediaPath($media){
-
+    public function getMediaPath($media)
+    {
         $document = $media->model;
         $media_id = $media->id;
         $boat_id = $this->id;
 
-        $path = 'boats' . DIRECTORY_SEPARATOR . $boat_id . DIRECTORY_SEPARATOR . $document->type .
-               DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
+        $path = 'boats'.DIRECTORY_SEPARATOR.$boat_id.DIRECTORY_SEPARATOR.$document->type.
+               DIRECTORY_SEPARATOR.$media_id.DIRECTORY_SEPARATOR;
 
         return $path;
-
     }
 
     public function site()
@@ -92,29 +90,28 @@ class Boat extends Model
     {
         $data = ['data' => []];
         $c_projs = $this->closedProjects();
-        if (!empty($c_projs)) {
+        if (! empty($c_projs)) {
             foreach ($c_projs as $proj) {
                 $data['data'][] = [
-                    "type" => "projects",
-                    "id" => $proj->id,
-                    "attributes" => $proj
+                    'type' => 'projects',
+                    'id' => $proj->id,
+                    'attributes' => $proj,
                 ];
             }
         }
+
         return $data;
     }
-
 
     public function history()
     {
         return $this->morphMany('App\History', 'historyable');
     }
 
-    public function associatedUsers() {
+    public function associatedUsers()
+    {
         return $this->hasMany('App\BoatUser');
     }
-
-
 
     // owner ed equipaggio
     public function users()
@@ -122,10 +119,9 @@ class Boat extends Model
         return $this->belongsToMany('App\User')
             ->using('App\BoatUser')
             ->withPivot([
-                'profession_id'
+                'profession_id',
             ]);
     }
-
 
     /**
      * @param int $uid
@@ -150,13 +146,12 @@ class Boat extends Model
     /**
      * @param int $uid
      *
-     * @return boolean
+     * @return bool
      */
     public function hasUserById($uid)
     {
         return $this->getUserByIdBaseQuery($uid)->count() > 0;
     }
-
 
     /**
      * Creates a Boat using some fake data and some others that have sense
@@ -167,7 +162,7 @@ class Boat extends Model
      */
     public static function createSemiFake(Faker $faker)
     {
-        $boat = new Boat([
+        $boat = new self([
                 'name' => $faker->suffix.' '.$faker->name,
                 'registration_number' => $faker->randomDigitNotNull,
                 'length' => $faker->randomFloat(4, 30, 150),
@@ -179,6 +174,7 @@ class Boat extends Model
             ]
         );
         $boat->save();
+
         return $boat;
     }
 
@@ -189,7 +185,7 @@ class Boat extends Model
      */
     public function getOwner()
     {
-        return Boat::select('users.name', 'users.surname')
+        return self::select('users.name', 'users.surname')
             ->Join('boat_user', 'boat_user.boat_id', '=', 'boats.id')
             ->Join('professions', 'boat_user.profession_id', '=', 'professions.id')
             ->Join('users', 'users.id', '=', 'boat_user.user_id')
@@ -198,31 +194,30 @@ class Boat extends Model
             ->first();
     }
 
-
     public static function boatsWithClosedProjects()
     {
         $boat_ids = Project::closedProjects()->pluck('boat_id');
-        return Boat::whereIn('id', $boat_ids)->get();
+
+        return self::whereIn('id', $boat_ids)->get();
     }
 
     public static function boatsWithActiveProjects()
     {
         $boat_ids = Project::activeProjects()->pluck('boat_id');
-        return Boat::whereIn('id', $boat_ids)->get();
-    }
 
+        return self::whereIn('id', $boat_ids)->get();
+    }
 
     /**
      * Adds an image as a generic_image Net7/Document
-     *
      */
     public function addMainPhoto(string $filepath, string $type = null)
     {
         // mettere tutto in una funzione
         $f_arr = explode('/', $filepath);
         $filename = Arr::last($f_arr);
-        $tempFilepath = '/tmp/' . $filename;
-        copy('./storage/seeder/' . $filepath, $tempFilepath);
+        $tempFilepath = '/tmp/'.$filename;
+        copy('./storage/seeder/'.$filepath, $tempFilepath);
         $file = new UploadedFile($tempFilepath, $filename, null, null, true);
 
         $doc = new Document([
@@ -253,7 +248,6 @@ class Boat extends Model
      */
     public function getAllProjectsTableRowInfo()
     {
-
         $replacements = [];
 
         foreach ($this->projects as $project) {
@@ -262,8 +256,9 @@ class Boat extends Model
                 'projName' => $project->name,
                 'projType' => $project->project_type,
                 'projStatus' => $project->project_status,
-                'projStart' => $project->start_date];
+                'projStart' => $project->start_date, ];
         }
+
         return $replacements;
     }
 
@@ -295,13 +290,12 @@ class Boat extends Model
                         'img_currentTask_img3' => $this->getCurrentTaskImg3(),
                         'img_currentTask_img4' => $this->getCurrentTaskImg4(),
                         'img_currentTask_img5' => $this->getCurrentTaskImg5(),
-                    ]
-                ;
+                    ];
             }
         }
+
         return $replacements;
     }
-
 
     public function getBloccoTaskSampleReportInfoArray()
     {
@@ -325,10 +319,10 @@ class Boat extends Model
                         'img_currentTask_img3' => $this->getCurrentTaskImg3(),
                         'img_currentTask_img4' => $this->getCurrentTaskImg4(),
                         'img_currentTask_img5' => $this->getCurrentTaskImg5(),
-                    ]
-                ;
+                    ];
             }
         }
+
         return $replacements;
     }
 
@@ -364,13 +358,11 @@ class Boat extends Model
 
     public function printDocxPageBreak()
     {
-        return '</w:t></w:r>'.'<w:r><w:br w:type="page"/></w:r>'. '<w:r><w:t>';
+        return '</w:t></w:r>'.'<w:r><w:br w:type="page"/></w:r>'.'<w:r><w:t>';
     }
 
     public function printDocxTodayDate()
     {
         return date('Y-m-d', time());
     }
-
-
 }

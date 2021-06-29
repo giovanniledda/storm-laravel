@@ -1,15 +1,13 @@
 <?php
 
-
 /*
  * BOAT, SECTIONS & SIMILAR
  */
 
 defined('SECTION_TYPE_LEFT_SIDE') or define('SECTION_TYPE_LEFT_SIDE', 'left_side');
-defined('SECTION_TYPE_RIGHT_SIDE') or define('SECTION_TYPE_RIGHT_SIDE',  'right_side');
+defined('SECTION_TYPE_RIGHT_SIDE') or define('SECTION_TYPE_RIGHT_SIDE', 'right_side');
 defined('SECTION_TYPE_DECK') or define('SECTION_TYPE_DECK', 'deck');
 defined('SECTION_IMAGE_POINTS_OVERVIEW') or define('SECTION_IMAGE_POINTS_OVERVIEW', 'points_overview_image');
-
 
 /*
  * USERS
@@ -20,7 +18,6 @@ defined('USER_FAKE_PASSWORD') or define('USER_FAKE_PASSWORD', '$2y$10$92IXUNpkjO
 defined('USER_PHONE_TYPE_MOBILE') or define('USER_PHONE_TYPE_MOBILE', 'mobile');
 defined('USER_PHONE_TYPE_FIXED') or define('USER_PHONE_TYPE_FIXED', 'fixed line');
 defined('USER_PHONE_TYPES') or define('USER_PHONE_TYPES', [USER_PHONE_TYPE_MOBILE, USER_PHONE_TYPE_FIXED]);
-
 
 /*
  * ROLES
@@ -34,7 +31,6 @@ defined('ROLE_BACKEND_MANAGER') or define('ROLE_BACKEND_MANAGER', 'backend_manag
 defined('ROLE_BACKEND_MANAGER_LABEL') or define('ROLE_BACKEND_MANAGER_LABEL', 'Backend manager');
 defined('ROLE_WORKER') or define('ROLE_WORKER', 'worker');
 defined('ROLE_WORKER_LABEL') or define('ROLE_WORKER_LABEL', 'Worker');
-
 
 /*
  * PERMISSIONS
@@ -52,7 +48,6 @@ defined('PERMISSION_WORKER') or define('PERMISSION_WORKER', 'worker');
 defined('TASK_CREATED_MOBILE_APP_TEXT') or define('TASK_CREATED_MOBILE_APP_TEXT', '@someone just created Task @task_id, on Project @project_name, Boat @boat_name.');
 defined('TASK_UPDATED_MOBILE_APP_TEXT') or define('TASK_UPDATED_MOBILE_APP_TEXT', 'Task @task_id, on Project @project_name, Boat @boat_name has been updated by @someone.');
 
-
 /*
  * PROJECT STATUSES
  *
@@ -68,14 +63,12 @@ defined('PROJECT_STATUS_CLOSED') or define('PROJECT_STATUS_CLOSED', 'closed');
 
 defined('PROJECT_STATUSES') or define('PROJECT_STATUSES', [PROJECT_STATUS_IN_SITE, PROJECT_STATUS_OPERATIONAL, PROJECT_STATUS_CLOSED]);
 
-
 /*
  * PROJECT-USERS ROLES
  */
 
 defined('PROJECT_USER_ROLE_AUTHOR') or define('PROJECT_USER_ROLE_AUTHOR', 'author');
 defined('PROJECT_USER_ROLE_OWNER') or define('PROJECT_USER_ROLE_OWNER', 'owner'); //?? discutere con danilo
-
 
 /*
  * PROJECT EVENTS STRINGS
@@ -84,15 +77,12 @@ defined('PROJECT_USER_ROLE_OWNER') or define('PROJECT_USER_ROLE_OWNER', 'owner')
 defined('PROJECT_EVENT_MARK_COMPLETED') or define('PROJECT_EVENT_MARK_COMPLETED', ' marked as completed');
 defined('PROJECT_EVENT_PROGRESS') or define('PROJECT_EVENT_PROGRESS', '% percentage');
 
-
-
 /*
  * PROJECT TYPES
  */
 
 defined('PROJECT_TYPE_NEWBUILD') or define('PROJECT_TYPE_NEWBUILD', 'newbuild');
 defined('PROJECT_TYPE_REFIT') or define('PROJECT_TYPE_REFIT', 'refit');
-
 
 /*
  * BOAT TYPES
@@ -144,7 +134,6 @@ defined('TASKS_R_STATUSES') or define('TASKS_R_STATUSES',
         TASKS_STATUS_R_TOTAL_REPAINT,
         ]);
 
-
 /*
  * TASK TYPES
  */
@@ -156,12 +145,11 @@ defined('TASK_TYPE_REMARK') or define('TASK_TYPE_REMARK', 'remark');
  * TASK INTERVENT TYPES
  */
 
-$intervent_types = ['damaged', 'corrosion', 'other' ];  // ???
+$intervent_types = ['damaged', 'corrosion', 'other'];  // ???
 
 defined('TASK_INTERVENT_TYPE_DAMAGED') or define('TASK_INTERVENT_TYPE_DAMAGED', 'damaged');
 defined('TASK_INTERVENT_TYPE_CORROSION') or define('TASK_INTERVENT_TYPE_CORROSION', 'corrosion');
 defined('TASK_INTERVENT_TYPE_OTHER') or define('TASK_INTERVENT_TYPE_OTHER', 'other');
-
 
 /*
  * VALIDATORS MESSAGES
@@ -180,7 +168,6 @@ defined('VALIDATOR_EXIST') or define('VALIDATOR_EXIST', 'does not exist in the d
 
 defined('PASSWORD_RESET_LINK_SENT') or define('PASSWORD_RESET_LINK_SENT', 'Password reset link sent via email!');
 
-
 /*
  * SYSTEM FLASH MESSAGES
  */
@@ -189,7 +176,6 @@ defined('FLASH_ERROR') or define('FLASH_ERROR', 'error');
 defined('FLASH_SUCCESS') or define('FLASH_SUCCESS', 'success');
 defined('FLASH_WARNING') or define('FLASH_WARNING', 'warning');
 defined('FLASH_INFO') or define('FLASH_INFO', 'info');
-
 
 /*
  * HTTP STATUS ERRORS
@@ -201,8 +187,6 @@ defined('HTTP_412_ADD_UPD_ERROR_MSG') or define('HTTP_412_ADD_UPD_ERROR_MSG', 'T
 defined('HTTP_412_ADD_DEL_ENTITIES_ERROR_MSG') or define('HTTP_412_ADD_DEL_ENTITIES_ERROR_MSG', 'The :resource you are trying to delete has some :entities related, this operation is not allowed.');
 defined('CUSTOM_CODE_ERROR_BODY') or define('CUSTOM_CODE_ERROR_BODY', 'Code: :code');
 
-
-
 /*
  * QUEUE JOB MESSAGES
  */
@@ -211,27 +195,22 @@ defined('QUEUE_TASK_CREATED') or define('QUEUE_TASK_CREATED', 'task_created');
 defined('QUEUE_TASK_UPDATED') or define('QUEUE_TASK_UPDATED', 'task_updated');
 defined('QUEUE_JOB_TASK_UPDATES_FAILED') or define('QUEUE_JOB_TASK_UPDATES_FAILED', '[QUEUE - JOB FAILED] Job failure when trying to notify task creation/updating. [msg: :exc_msg]');
 
-
 /*
  * ENTITY TYPES TO WHICH WE CAN ADD A DOCUMENT
  */
-
 
 defined('DOCUMENT_RELATED_ENTITY_PROJECT') or define('DOCUMENT_RELATED_ENTITY_PROJECT', 'project');
 defined('DOCUMENT_RELATED_ENTITY_BOAT') or define('DOCUMENT_RELATED_ENTITY_BOAT', 'boat');
 defined('DOCUMENT_RELATED_ENTITY_SECTION') or define('DOCUMENT_RELATED_ENTITY_SECTION', 'section');
 defined('DOCUMENT_RELATED_ENTITY_TASK') or define('DOCUMENT_RELATED_ENTITY_TASK', 'task');
 
-
 defined('DOCUMENT_RELATED_ENTITIES') or define('DOCUMENT_RELATED_ENTITIES',
         [
           DOCUMENT_RELATED_ENTITY_PROJECT,
           DOCUMENT_RELATED_ENTITY_BOAT,
           DOCUMENT_RELATED_ENTITY_SECTION,
-          DOCUMENT_RELATED_ENTITY_TASK
+          DOCUMENT_RELATED_ENTITY_TASK,
          ]);
-
-
 
 /*
  * CUSTOM APIs
@@ -243,7 +222,6 @@ defined('PROJECT_TYPE_API_PROJECT_CLOSED_MSG') or define('PROJECT_TYPE_API_PROJE
 defined('USER_PHOTO_API_NO_DOC_TITLE') or define('USER_PHOTO_API_NO_DOC_TITLE', 'Internal error.');
 defined('USER_PHOTO_API_NO_DOC_MSG') or define('USER_PHOTO_API_NO_DOC_MSG', 'Something went wrong. The profile photo was not uploaded.');
 
-
 /*
  * REPORTS
  */
@@ -251,7 +229,6 @@ defined('REPORT_CORROSION_MAP_SUBTYPE') or define('REPORT_CORROSION_MAP_SUBTYPE'
 defined('REPORT_CORROSION_MAP_OVERVIEW_SUBTYPE') or define('REPORT_CORROSION_MAP_OVERVIEW_SUBTYPE', 'corrosion_map_overview_only');
 defined('REPORT_ENVIRONMENTAL_SUBTYPE') or define('REPORT_ENVIRONMENTAL_SUBTYPE', 'environmental_report');
 defined('REPORT_APPLOG_SUBTYPE') or define('REPORT_APPLOG_SUBTYPE', 'application_log_report');
-
 
 /*
  * APPLICATION LOG - PRODUCTS - REPORT ITEMS

@@ -8,8 +8,7 @@ use Faker\Generator as Faker;
 
 $autoIncrement = Utils::autoIncrement();
 
-$factory->define(Subsection::class, function (Faker $faker) use ($autoIncrement)  {
-
+$factory->define(Subsection::class, function (Faker $faker) use ($autoIncrement) {
     $autoIncrement->next();
 
     return [

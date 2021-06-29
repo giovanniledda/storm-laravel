@@ -29,7 +29,7 @@ class Zone extends Model
     protected static function boot()
     {
         parent::boot();
-        Zone::observe(ZoneObserver::class);
+        self::observe(ZoneObserver::class);
     }
 
     /**
@@ -108,7 +108,6 @@ class Zone extends Model
     }
 
     /**
-     *
      * Creates a Zone using some fake data and some others that have sense
      * @param Faker $faker
      * @param int|null $project_id
@@ -117,8 +116,9 @@ class Zone extends Model
     public static function createSemiFake(Faker $faker, int $project_id = null)
     {
         $data = self::getSemiFakeData($faker, $project_id);
-        $t = new Zone($data);
+        $t = new self($data);
         $t->save();
+
         return $t;
     }
 

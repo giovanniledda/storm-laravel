@@ -2,8 +2,8 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 use App\User;
-use Illuminate\Support\Str;
 use Faker\Generator as Faker;
+use Illuminate\Support\Str;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,7 +19,6 @@ use Faker\Generator as Faker;
 $autoIncrement = StormUtils::autoIncrement();
 
 $factory->define(User::class, function (Faker $faker) use ($autoIncrement) {
-
     $autoIncrement->next();
 
     return [

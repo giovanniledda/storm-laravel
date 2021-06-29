@@ -6,7 +6,6 @@ use CloudCreativity\LaravelJsonApi\Validation\AbstractValidators;
 
 class Validators extends AbstractValidators
 {
-
     /**
      * The include paths a client is allowed to request.
      *
@@ -31,7 +30,7 @@ class Validators extends AbstractValidators
      */
     protected $allowedFilteringParameters = [
         'name',
-        'producer'
+        'producer',
     ];
 
     /**
@@ -64,5 +63,4 @@ class Validators extends AbstractValidators
             'producer' => 'string',
         ];
     }
-
 }

@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateApplicationLogSectionsTable extends Migration
 {
@@ -20,7 +20,7 @@ class CreateApplicationLogSectionsTable extends Migration
                 APPLICATION_LOG_SECTION_TYPE_ZONES,
                 APPLICATION_LOG_SECTION_TYPE_PREPARATION,
                 APPLICATION_LOG_SECTION_TYPE_APPLICATION,
-                APPLICATION_LOG_SECTION_TYPE_INSPECTION
+                APPLICATION_LOG_SECTION_TYPE_INSPECTION,
             ])->nullable();
             $table->boolean('is_started')->default(false);
             $table->dateTime('date_hour')->nullable();

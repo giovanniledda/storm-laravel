@@ -25,7 +25,7 @@ class ProductUseInfoBlock extends Model
         'components',
         'thinners',
         'application_log_section_id',
-        'product_id'
+        'product_id',
     ];
 
     /**
@@ -57,7 +57,6 @@ class ProductUseInfoBlock extends Model
         return $this->belongsTo('App\ApplicationLogSection', 'application_log_section_id');
     }
 
-
     /**
      * Returns an array of data with values for each field
      *
@@ -75,7 +74,6 @@ class ProductUseInfoBlock extends Model
     }
 
     /**
-     *
      * Creates a Product Use IB using some fake data and some others that have sense
      * @param Faker $faker
      * @return ProductUseInfoBlock
@@ -83,8 +81,9 @@ class ProductUseInfoBlock extends Model
     public static function createSemiFake(Faker $faker)
     {
         $data = self::getSemiFakeData($faker);
-        $t = new ProductUseInfoBlock($data);
+        $t = new self($data);
         $t->save();
+
         return $t;
     }
 
@@ -96,8 +95,9 @@ class ProductUseInfoBlock extends Model
         $data = [
             'type' => $this->table,
             'id' => $this->id,
-            'attributes' => parent::toArray()
+            'attributes' => parent::toArray(),
         ];
+
         return $data;
     }
 

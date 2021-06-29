@@ -13,7 +13,7 @@ class GoogleDriveServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        \Storage::extend('google', function($app, $config) {
+        \Storage::extend('google', function ($app, $config) {
             $client = new \Google_Client();
             $client->setClientId($config['clientId']);
             $client->setClientSecret($config['clientSecret']);
@@ -21,7 +21,7 @@ class GoogleDriveServiceProvider extends ServiceProvider
             $service = new \Google_Service_Drive($client);
 
             $options = [];
-            if(isset($config['teamDriveId'])) {
+            if (isset($config['teamDriveId'])) {
                 $options['teamDriveId'] = $config['teamDriveId'];
             }
 

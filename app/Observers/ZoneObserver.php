@@ -6,18 +6,17 @@ use App\Zone;
 
 class ZoneObserver
 {
-
     /**
      * @param Zone $zone
      */
     private function allignProjectIdChangesOnChildren(Zone &$zone)
     {
         // Check this only for parent zones
-        if (!$zone->parent_zone_id && $zone->isDirty('project_id')) {
+        if (! $zone->parent_zone_id && $zone->isDirty('project_id')) {
             if ($zone->children_zones()->count()) {
                 // if project_id is changed for parent, then change it for children too
                 $zone->children_zones()->update([
-                    'project_id' => $zone->project_id
+                    'project_id' => $zone->project_id,
                 ]);
 //                $c = $zone->children_zones()->first();
 //                dd($c);

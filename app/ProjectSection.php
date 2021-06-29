@@ -1,8 +1,9 @@
 <?php
+
 namespace App;
- 
+
 use Illuminate\Database\Eloquent\Relations\Pivot;
-  
+
 class ProjectSection extends Pivot
 {
     protected $table = 'project_section';
@@ -11,9 +12,8 @@ class ProjectSection extends Pivot
 
     protected $fillable = [
         'section_id',
-        'project_id'
+        'project_id',
     ];
-
 
     public function project()
     {
@@ -24,4 +24,4 @@ class ProjectSection extends Pivot
     {
         return $this->belongsTo('App\Section');
     }
-} 
+}

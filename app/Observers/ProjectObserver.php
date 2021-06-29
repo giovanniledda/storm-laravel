@@ -19,6 +19,7 @@ restored
  * If a model already existed in the database and the save method is called, the updating / updated events will fire.
  * However, in both cases, the saving / saved events will fire.
  */
+
 namespace App\Observers;
 
 use App\Jobs\ProjectGoogleDirSetup;
@@ -29,38 +30,33 @@ use Log;
 
 class ProjectObserver
 {
-
-
     /**
      * Handle the project "updating" event.
      *
      * @param  \App\Project  $project
      * @return void
      */
-   public function updating(Project $project)
+    public function updating(Project $project)
     {
         $original = $project->getOriginal();
 
         // è cambiato lo stato del progetto
-        if (isset($original['project_status']) && isset($project->project_status) && $original['project_status']!=$project->project_status) {
-           Project::find($project->id)
+        if (isset($original['project_status']) && isset($project->project_status) && $original['project_status'] != $project->project_status) {
+            Project::find($project->id)
                             ->history()
                             ->create(
-                                    ['event_date'=> date("Y-m-d H:i:s", time()),
-                                     'event_body'=>'project status changed to '.$project->project_status]);
-
+                                    ['event_date'=> date('Y-m-d H:i:s', time()),
+                                     'event_body'=>'project status changed to '.$project->project_status, ]);
         }
 
-         // è cambiato lo stato di avanzamento
-        if (isset($original['project_progress']) && isset($project->project_progress) && $original['project_progress']!=$project->project_progress) {
-           Project::find($project->id)
+        // è cambiato lo stato di avanzamento
+        if (isset($original['project_progress']) && isset($project->project_progress) && $original['project_progress'] != $project->project_progress) {
+            Project::find($project->id)
                             ->history()
                             ->create(
-                                    ['event_date'=> date("Y-m-d H:i:s", time()),
-                                     'event_body'=>$project->project_progress.'% percentage']);
+                                    ['event_date'=> date('Y-m-d H:i:s', time()),
+                                     'event_body'=>$project->project_progress.'% percentage', ]);
         }
-
-
     }
 
     /**
@@ -139,6 +135,4 @@ class ProjectObserver
     {
         //
     }
-
-
 }

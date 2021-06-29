@@ -3,16 +3,16 @@
 namespace App\Listeners;
 
 use App\Events\TaskCreated;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
 
 class TaskSubscriber
 {
     /**
      * Handle user login events.
      */
-    public function handleTaskCreation($event) {
-
+    public function handleTaskCreation($event)
+    {
     }
 
     /**

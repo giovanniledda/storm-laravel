@@ -41,10 +41,6 @@ return [
     |
     */
 
-
-
-
-
     'disks' => [
 
         'local' => [
@@ -79,7 +75,6 @@ return [
             'token' => env('DROPBOX_TOKEN'),
         ],
 
-
         'media' => [
             'driver' => 'dropbox',
             'root' => storage_path('storm/documents'),
@@ -94,7 +89,6 @@ return [
             'refreshToken' => env('GOOGLE_DRIVE_REFRESH_TOKEN'),
             'folderId' => env('GOOGLE_DRIVE_FOLDER_ID'),
         ],
-
 
     ],
 

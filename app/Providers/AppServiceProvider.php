@@ -2,11 +2,11 @@
 
 namespace App\Providers;
 
-use Illuminate\Queue\Events\JobFailed;
-use Illuminate\Support\Facades\Queue;
 use CloudCreativity\LaravelJsonApi\LaravelJsonApi;
-use Illuminate\Support\ServiceProvider;
+use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -47,7 +47,6 @@ class AppServiceProvider extends ServiceProvider
         // TODO: make this work:
         // Schema::defaultStringLength(191);
 
-
         /** Blade Components Aliasing [https://laravel.com/docs/5.8/blade#components-and-slots] **/
 
         /**
@@ -78,7 +77,6 @@ class AppServiceProvider extends ServiceProvider
          */
         Blade::component('components.projects', 'projects');
 
-
         /** Blade extensions [https://laravel.com/docs/5.8/blade#extending-blade] **/
 
         /**
@@ -98,6 +96,7 @@ class AppServiceProvider extends ServiceProvider
         Blade::directive('booltostr', function ($expression) {
             $yes = __('Yes');
             $no = __('No');
+
             return "<?php echo {$expression} == 1  ? '$yes' : '$no'; ?>";
         });
 

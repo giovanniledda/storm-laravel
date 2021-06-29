@@ -2,36 +2,34 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Net7\DocsGenerator\Utils;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Arr;
 use App\Observers\TaskObserver;
-use Spatie\ModelStatus\HasStatuses;
-use Venturecraft\Revisionable\RevisionableTrait;
-use Net7\Documents\Document;
-use Net7\Documents\DocumentableTrait;
-use Faker\Generator as Faker;
-
 use function date;
+use const DIRECTORY_SEPARATOR;
 use function explode;
+use Faker\Generator as Faker;
 use function file_exists;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Arr;
 use function in_array;
 use function is_object;
-use function strtotime;
-use const DIRECTORY_SEPARATOR;
+use Net7\DocsGenerator\Utils;
+use Net7\Documents\Document;
+use Net7\Documents\DocumentableTrait;
 use const PROJECT_STATUS_CLOSED;
+use Spatie\ModelStatus\HasStatuses;
+use function strtotime;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use const TASK_TYPE_PRIMARY;
 use const TASK_TYPE_REMARK;
 use const TASKS_STATUS_COMPLETED;
 use const TASKS_STATUS_DENIED;
 use const TASKS_STATUS_R_CLOSED;
 use const TASKS_STATUSES;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 class Task extends Model
 {
-
     use RevisionableTrait,
         HasStatuses,
         DocumentableTrait,
@@ -78,6 +76,7 @@ class Task extends Model
     public function setMinX($min_x)
     {
         $this->min_x = $min_x;
+
         return $this;
     }
 
@@ -88,6 +87,7 @@ class Task extends Model
     public function setMaxX($max_x)
     {
         $this->max_x = $max_x;
+
         return $this;
     }
 
@@ -98,6 +98,7 @@ class Task extends Model
     public function setMinY($min_y)
     {
         $this->min_y = $min_y;
+
         return $this;
     }
 
@@ -108,20 +109,20 @@ class Task extends Model
     public function setMaxY($max_y)
     {
         $this->max_y = $max_y;
+
         return $this;
     }
 
     public function getMediaPath($media)
     {
-
         $document = $media->model;
         $media_id = $media->id;
 
         $project = $this->project;
         $project_id = $project->id;
         $task_id = $this->id;
-        $path = 'projects' . DIRECTORY_SEPARATOR . $project_id . DIRECTORY_SEPARATOR . 'tasks' . DIRECTORY_SEPARATOR .
-            $task_id . DIRECTORY_SEPARATOR . $document->type . DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
+        $path = 'projects'.DIRECTORY_SEPARATOR.$project_id.DIRECTORY_SEPARATOR.'tasks'.DIRECTORY_SEPARATOR.
+            $task_id.DIRECTORY_SEPARATOR.$document->type.DIRECTORY_SEPARATOR.$media_id.DIRECTORY_SEPARATOR;
 
         return $path;
     }
@@ -207,14 +208,14 @@ class Task extends Model
      */
     public static function findPublic($id)
     {
-        return Task::public()->where('id', '=', $id)->first();
+        return self::public()->where('id', '=', $id)->first();
     }
 
     protected static function boot()
     {
         parent::boot();
 
-        Task::observe(TaskObserver::class);
+        self::observe(TaskObserver::class);
 
         // se utente non è is_storm, non vede i task privati
 //        static::addGlobalScope(new VisibilityScope());
@@ -279,13 +280,15 @@ class Task extends Model
             $data = [
                 'id' => $last_history->id,
                 'type' => History::class,
-                'attributes' => $last_history
+                'attributes' => $last_history,
             ];
             Arr::forget($data['attributes'], 'documents');
             $data['attributes']['comments'] = $last_history->comments_for_api;
             $data['attributes']['photos'] = $last_history->getPhotosApi('data', 'thumb');
+
             return $data;
         }
+
         return null;
     }
 
@@ -330,7 +333,6 @@ class Task extends Model
         return $this->zone ? $this->zone->code.' - '.$this->zone->description : null;
     }
 
-
     /**
      * Application Log from where the Task has been closed
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
@@ -354,10 +356,11 @@ class Task extends Model
         $proj = $this->project;
         if (is_object($proj)) {
             $users = $proj->users;
-            if (!empty($users)) {
+            if (! empty($users)) {
                 return $users;
             }
         }
+
         return [];
     }
 
@@ -378,14 +381,15 @@ class Task extends Model
      * @param $project_id
      * @return \Illuminate\Support\Collection
      */
-    public static function getAllAuthors($project_id) {
-
+    public static function getAllAuthors($project_id)
+    {
         $user = \Auth::user();
         $q = User::join('tasks', 'users.id', '=', 'tasks.author_id')
             ->where('tasks.project_id', '=', $project_id);
-        if ($user && !$user->is_storm) {
+        if ($user && ! $user->is_storm) {
             $q = $q->where('tasks.is_private', '!=', 1);
         }
+
         return $q->select('users.id', 'users.name', 'users.surname')
             ->orderBy('users.name', 'asc')
             ->distinct()
@@ -395,7 +399,7 @@ class Task extends Model
     public static function getSemiFakeData(Faker $faker, Project $proj = null, Section $sect = null, Subsection $ssect = null, User $author = null, TaskInterventType $type = null)
     {
         $status = $faker->randomElement(TASKS_STATUSES);
-        $is_open = is_object($proj) ? ($proj->project_status != PROJECT_STATUS_CLOSED) : !in_array($status, [TASKS_STATUS_COMPLETED, TASKS_STATUS_DENIED]);
+        $is_open = is_object($proj) ? ($proj->project_status != PROJECT_STATUS_CLOSED) : ! in_array($status, [TASKS_STATUS_COMPLETED, TASKS_STATUS_DENIED]);
 
         return [
             'number' => $faker->randomDigitNotNull(),
@@ -426,14 +430,14 @@ class Task extends Model
      * @param TaskInterventType $type
      * @return Task $t
      * @throws \Spatie\ModelStatus\Exceptions\InvalidStatus
-     *
      */
     public static function createSemiFake(Faker $faker, Project $proj = null, Section $sect = null, Subsection $ssect = null, User $author = null, TaskInterventType $type = null)
     {
         $status = $faker->randomElement(TASKS_STATUSES);
-        $t = new Task(self::getSemiFakeData($faker, $proj, $sect, $ssect, $author, $type));
+        $t = new self(self::getSemiFakeData($faker, $proj, $sect, $ssect, $author, $type));
         $t->save();
         $t->setStatus($status);
+
         return $t;
     }
 
@@ -456,8 +460,8 @@ class Task extends Model
         // mettere tutto in una funzione
         $f_arr = explode('/', $filepath);
         $filename = Arr::last($f_arr);
-        $tempFilepath = '/tmp/' . $filename;
-        copy('./storage/seeder/' . $filepath, $tempFilepath);
+        $tempFilepath = '/tmp/'.$filename;
+        copy('./storage/seeder/'.$filepath, $tempFilepath);
         $file = new UploadedFile($tempFilepath, $filename, null, null, true);
 
         $doc = new Document([
@@ -465,6 +469,7 @@ class Task extends Model
             'file' => $file,
         ]);
         $this->addDocumentWithType($doc, $type ? $type : Document::GENERIC_IMAGE_TYPE);
+
         return $doc;
     }
 
@@ -498,14 +503,13 @@ class Task extends Model
         fwrite($handle, base64_decode($data[1]));
         fseek($handle, 0);
 
+        $pngPath = $path.'.jpg';
 
-        $pngPath = $path . ".jpg";
-
-        shell_exec("convert " . $path . " " . $pngPath);
+        shell_exec('convert '.$path.' '.$pngPath);
 
         return [
             'path' => $pngPath,
-            'handle' => $handle
+            'handle' => $handle,
         ];
     }
 
@@ -519,8 +523,10 @@ class Task extends Model
         $document = $this->documents->where('type', self::CORROSION_MAP_DOCUMENT_TYPE)->last();
         if ($document) {
             $media = $document->getRelatedMedia();
+
             return $media->getPath();
         }
+
         return '';
     }
 
@@ -529,26 +535,23 @@ class Task extends Model
         $task = $this;
         ini_set('memory_limit', '-1');
 
-        $map_dir = storage_path() . DIRECTORY_SEPARATOR . '/tasks/';
-        if (!is_dir($map_dir)) {
+        $map_dir = storage_path().DIRECTORY_SEPARATOR.'/tasks/';
+        if (! is_dir($map_dir)) {
             mkdir($map_dir);
         }
 
-        $tmpfilePath = storage_path() . DIRECTORY_SEPARATOR . '/tasks/' . DIRECTORY_SEPARATOR . $task->id . '_map.png';
+        $tmpfilePath = storage_path().DIRECTORY_SEPARATOR.'/tasks/'.DIRECTORY_SEPARATOR.$task->id.'_map.png';
         if (is_file($tmpfilePath)) {
             unlink($tmpfilePath);
         }
 
         // $map = $map_dir.'map_'.$task->id.'.png';
 
-
         $mapfileHandle = tmpfile();
         $mapfilePath = stream_get_meta_data($mapfileHandle)['uri'];
 
-
         $tmpfileHandle = tmpfile();
         $tmpfilePath = stream_get_meta_data($tmpfileHandle)['uri'];
-
 
         // prendo l'immagine del ponte
         $isOpen = $task['is_open'];
@@ -559,7 +562,6 @@ class Task extends Model
         if ($section) {
             $bridgeMedia = $section->generic_images->last();
             if ($bridgeMedia) {
-
                 $bridgeImagePath = $bridgeMedia->getPathBySize('');
                 $bridgeImageInfo = getimagesize($bridgeImagePath);
                 $image = imagecreate($bridgeImageInfo[0] * 2, $bridgeImageInfo[1] * 2);
@@ -578,7 +580,6 @@ class Task extends Model
                 }
 
                 imagecopy($image, $dest, $bridgeImageInfo[0] / 2, $bridgeImageInfo[1] / 2, 0, 0, $bridgeImageInfo[0], $bridgeImageInfo[1]);
-
 
                 try {
                     $pinPath = $this->getIcon($status, $isOpen);
@@ -599,7 +600,6 @@ class Task extends Model
                     // imagepng($image, $map);
                     imagepng($image, $mapfilePath);
 
-
                     // $el = $this->resize_image($map, $sizeW, $sizeH);
                     $el = $this->resize_image($mapfilePath, $sizeW, $sizeH);
 
@@ -609,7 +609,6 @@ class Task extends Model
                     fclose($mapfileHandle);
                     imagecopymerge($el, $src, $xx - $iconInfo[0] / 2, $yy - $iconInfo[1], 0, 0, $iconInfo[0], $iconInfo[1], 100);
 
-
                     imagealphablending($el, false);
                     imagesavealpha($el, true);
 
@@ -617,8 +616,7 @@ class Task extends Model
                     $crop_h = 360;
 
                     $im2 = imagecrop($el, ['x' => $xx - ($crop_w / 2), 'y' => $yy - ($crop_h / 2), 'width' => $crop_w, 'height' => $crop_h]);
-                    if ($im2 !== FALSE) {
-
+                    if ($im2 !== false) {
                         imagealphablending($im2, false);
                         imagesavealpha($im2, true);
                         // imagepng($im2, $map);
@@ -684,16 +682,16 @@ class Task extends Model
         $isOpen = $p_isOpen ?? $this->is_open;
 //        $ext = in_array($status, ['monitored', 'completed', 'denied']) ? '.svg' : '.png';
         $ext = '.png';
-        $icon = $icon . $ext;
+        $icon = $icon.$ext;
         $status = str_replace(' ', '_', $status);
         $dir = $miniature ? 'storm-pins-half' : 'storm-pins';
-        $path = storage_path() . DIRECTORY_SEPARATOR . $dir;
-        if (!$isOpen && file_exists($path . DIRECTORY_SEPARATOR . $status . DIRECTORY_SEPARATOR . 'closed' . DIRECTORY_SEPARATOR . $icon)) {
-            return $path . DIRECTORY_SEPARATOR . $status . DIRECTORY_SEPARATOR . 'closed' . DIRECTORY_SEPARATOR . $icon;
+        $path = storage_path().DIRECTORY_SEPARATOR.$dir;
+        if (! $isOpen && file_exists($path.DIRECTORY_SEPARATOR.$status.DIRECTORY_SEPARATOR.'closed'.DIRECTORY_SEPARATOR.$icon)) {
+            return $path.DIRECTORY_SEPARATOR.$status.DIRECTORY_SEPARATOR.'closed'.DIRECTORY_SEPARATOR.$icon;
         }
-        return $path . DIRECTORY_SEPARATOR . $status . DIRECTORY_SEPARATOR . $icon;
-    }
 
+        return $path.DIRECTORY_SEPARATOR.$status.DIRECTORY_SEPARATOR.$icon;
+    }
 
     /**
      * FIXME: non ha senso questa funzione privata e non statica. Va fatta statica e messa fuori da un Model specifico. ZIOBE'
@@ -705,7 +703,7 @@ class Task extends Model
      * @param $crop
      * @return mixed
      */
-    private function resize_image($file, $w, $h, $crop = FALSE)
+    private function resize_image($file, $w, $h, $crop = false)
     {
         return StormUtils::resize_image($file, $w, $h, $crop); // vedi il FIXME sopra
     }
@@ -831,7 +829,7 @@ EOF;
 EOF;
 
         // creo la tabella a seconda delle immagini che ho
-        if (!empty($photos_array) && count($photos_array) > 1) {
+        if (! empty($photos_array) && count($photos_array) > 1) {
             $tds_1 = <<<EOF
                     <td width="174">
                         <img width="174" src="file://$photos_array[1]" alt="Corrosion img 1">
@@ -846,7 +844,7 @@ EOF;
 EOF;
             }
 
-            $trs = '<tr>' . $tds_1 . '</tr><tr height=30></tr>';
+            $trs = '<tr>'.$tds_1.'</tr><tr height=30></tr>';
 
             if (isset($photos_array[3])) {
                 $tds_2 = <<<EOF
@@ -863,7 +861,7 @@ EOF;
 EOF;
                 }
 
-                $trs = '<tr>' . $tds_1 . $tds_2 . '</tr>';
+                $trs = '<tr>'.$tds_1.$tds_2.'</tr>';
             }
 
             $theadContent = '<p style="text-align: left;font-size: 15px;font-weight: bold; font-family: Raleway, sans-serif; color: #1f519b;">Detail photos</p>';
@@ -875,34 +873,36 @@ EOF;
             $html .= '<table style="float: right"><thead><p style="text-align: left;font-size: 15px;font-weight: bold; font-family: Raleway, sans-serif; color: #1f519b;">Detail photos</p></thead><tbody><span style="color: #666666">Photos not available</span></tbody></table>';
         }
 
-        $html .= <<<EOF
+        $html .= <<<'EOF'
 
             <p style="page-break-before: always;"></p>
 EOF;
+
         return $html;
     }
 
     /**
      * An internal ID calculated on a "per-boat" base
      * @param $boat_id
-     * @return integer
+     * @return int
      */
     public static function getLastInternalProgressiveIDByBoat($boat_id)
     {
-        $max = Task::join('projects', 'projects.id', '=', 'tasks.project_id')
+        $max = self::join('projects', 'projects.id', '=', 'tasks.project_id')
             ->where('projects.boat_id', '=', $boat_id)
             ->max('tasks.internal_progressive_number');
+
         return $max ? $max : 0;
     }
 
     /**
      * Goives total number of tasks calculated on a "per-boat" base
      * @param $boat_id
-     * @return integer
+     * @return int
      */
     public static function countTasksByBoat($boat_id)
     {
-        return Task::join('projects', 'projects.id', '=', 'tasks.project_id')
+        return self::join('projects', 'projects.id', '=', 'tasks.project_id')
             ->where('projects.boat_id', '=', $boat_id)
             ->withTrashed()
             ->count();
@@ -916,7 +916,7 @@ EOF;
         if (env('INTERNAL_PROG_NUM_ACTIVE')) {
             $p_boat = $this->getProjectBoat();
             if ($p_boat) {
-                $highest_internal_pn = Task::getLastInternalProgressiveIDByBoat($p_boat->id);
+                $highest_internal_pn = self::getLastInternalProgressiveIDByBoat($p_boat->id);
                 $this->update(['internal_progressive_number' => ++$highest_internal_pn]);
             }
         }
@@ -977,7 +977,7 @@ EOF;
     {
         $this->update([
             'is_open' => true,
-            'task_status' => $status
+            'task_status' => $status,
         ]);
 
         if ($application_log) {

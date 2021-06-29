@@ -9,13 +9,12 @@ use Tests\TestCase;
 
 class ModelSubsectionTest extends TestCase
 {
-
     // Creo una Boat...
     // ...creo le sue sezioni, random
     // ...ad ogni sezione associo delle sottosezioni
     // ...che al mercato mio padre comprò.
 
-    function test_can_create_subsections_related_to_sections()
+    public function test_can_create_subsections_related_to_sections()
     {
         $boat = factory(Boat::class)->create();
 
@@ -24,7 +23,6 @@ class ModelSubsectionTest extends TestCase
         $sections = factory(Section::class, $this->faker->randomDigitNotNull)->create();
 
         foreach ($sections as $section) {
-
             $section->boat()->associate($boat)->save();  // alternativa a $boat->sections()->saveMany($sections) ? Sembrerebbe di no...
 
             $this->assertInstanceOf(Section::class, $section);
@@ -42,7 +40,6 @@ class ModelSubsectionTest extends TestCase
 
         $total_subsections_num = 0;
         foreach ($boat->sections as $section) {
-
             $this->assertInstanceOf(Section::class, $section);
 
             $total_subsections_num += $section->subsections()->count();
@@ -51,6 +48,4 @@ class ModelSubsectionTest extends TestCase
         $this->assertEquals($boat->subsections()->count(), $total_subsections_num);
         $this->assertNotEquals($boat->subsections()->count(), 0);
     }
-
-
 }

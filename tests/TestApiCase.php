@@ -7,8 +7,8 @@ use App\Project;
 use App\Task;
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Laravel\Passport\Passport;
 use Laravel\Passport\ClientRepository;
+use Laravel\Passport\Passport;
 
 //abstract class TestApiCase extends BaseTestCase
 abstract class TestApiCase extends TestCase
@@ -23,14 +23,16 @@ abstract class TestApiCase extends TestCase
         'Accept' => 'application/vnd.api+json',
     ];
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
         parent::setUp();
         // // To test Oauth Grants
 //         \Artisan::call('passport:install',['-vvv' => true]);
         //  Passport::actingAs(factory(User::class)->create());
     }
 
-    public function logResponse(\Illuminate\Foundation\Testing\TestResponse $response) {
+    public function logResponse(\Illuminate\Foundation\Testing\TestResponse $response)
+    {
         if ($this->log) {
             echo "\nStatusCode : ".$response->getStatusCode();
             echo "\nResponse : ".$response->getContent();
@@ -38,10 +40,8 @@ abstract class TestApiCase extends TestCase
         }
     }
 
-
     public function _grantTokenPassword(User $user, $password = null)
     {
-
         $oauth_client = $this->_createTestPasswordGrantClient($user);
 
         //User's data
@@ -71,6 +71,7 @@ abstract class TestApiCase extends TestCase
         $clientRepository->createPasswordGrantClient($user->id, \Config::get('auth.token_clients.password.name'), '/');
 
         $oauth_client_id = \Config::get('auth.token_clients.password.id');
+
         return $clientRepository->find($oauth_client_id);
     }
 
@@ -84,6 +85,7 @@ abstract class TestApiCase extends TestCase
         ];
         $user = User::create($user_data);
         $user->assignRole($ruolo);
+
         return $user;
     }
 
@@ -106,6 +108,7 @@ abstract class TestApiCase extends TestCase
     {
         $task = factory(Task::class)->create();
         $task->project()->associate($project)->save();
+
         return $task;
     }
 
@@ -115,6 +118,7 @@ abstract class TestApiCase extends TestCase
         $boat = factory(Boat::class)->create();
         $project = factory(Project::class)->create();
         $project->boat()->associate($boat)->save();
+
         return ['boat' => $boat, 'project' => $project];
     }
 }

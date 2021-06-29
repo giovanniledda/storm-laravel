@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * Class CreateAddressesTable
@@ -12,7 +12,7 @@ class CreateAddressesTable extends Migration
     /**
      * Table names.
      *
-     * @var string  $table  The main table name for this migration.
+     * @var string   The main table name for this migration.
      */
     protected $table;
 
@@ -31,13 +31,12 @@ class CreateAddressesTable extends Migration
      */
     public function up()
     {
-        Schema::create($this->table, function(Blueprint $table)
-        {
+        Schema::create($this->table, function (Blueprint $table) {
             $table->increments('id');
 
-            $table->string('street',    60)->nullable();
-            $table->string('city',      60)->nullable();
-            $table->string('state',     60)->nullable();
+            $table->string('street', 60)->nullable();
+            $table->string('city', 60)->nullable();
+            $table->string('state', 60)->nullable();
             $table->string('post_code', 10)->nullable();
 
             $table->integer('country_id')->nullable()->unsigned()->index();
@@ -49,8 +48,8 @@ class CreateAddressesTable extends Migration
 
             $table->nullableMorphs('addressable');
 
-            foreach(config('lecturize.addresses.flags', ['public', 'primary', 'billing', 'shipping']) as $flag) {
-                $table->boolean('is_'. $flag)->default(false)->index();
+            foreach (config('lecturize.addresses.flags', ['public', 'primary', 'billing', 'shipping']) as $flag) {
+                $table->boolean('is_'.$flag)->default(false)->index();
             }
 
             $table->timestamps();

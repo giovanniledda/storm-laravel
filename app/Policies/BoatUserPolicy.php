@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\User;
 use App\BoatUser;
+use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class BoatUserPolicy
@@ -44,6 +44,7 @@ class BoatUserPolicy
         if ($user->can(PERMISSION_ADMIN) || $user->can(PERMISSION_BOAT_MANAGER)) {
             return true;
         }
+
         return false;
     }
 

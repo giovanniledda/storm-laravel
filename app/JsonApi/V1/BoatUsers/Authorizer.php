@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 
 class Authorizer extends AbstractAuthorizer
 {
-
     /**
      * Authorize a resource index request.
      *
@@ -90,5 +89,4 @@ class Authorizer extends AbstractAuthorizer
     {
         // TODO: Implement delete() method.
     }
-
 }

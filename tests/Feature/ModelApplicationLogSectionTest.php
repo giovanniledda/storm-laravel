@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\ApplicationLog;
+use App\ApplicationLogSection;
 use function factory;
 use Tests\TestCase;
-use App\ApplicationLogSection;
-use App\ApplicationLog;
 
 class ModelApplicationLogSectionTest extends TestCase
 {

@@ -3,9 +3,9 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Lang;
 
 class StormResetPasswordNotification extends Notification
@@ -23,7 +23,6 @@ class StormResetPasswordNotification extends Notification
     {
         $this->token = $token;
     }
-
 
     /**
      * Get the notification's delivery channels.
@@ -44,7 +43,6 @@ class StormResetPasswordNotification extends Notification
      */
     public function toMail($notifiable)
     {
-
         return (new MailMessage)
             ->subject(Lang::getFromJson('[:site] Reset Password Notification', ['site' => config('app.name')]))
             ->line(Lang::getFromJson('You are receiving this email because we received a password reset request for your account.'))

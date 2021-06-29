@@ -67,7 +67,6 @@ return [
     |
     */
 
-
     'timezone' => 'Europe/Rome',
 
     /*
@@ -294,7 +293,5 @@ return [
         // Utility class for Storm Project
         'StormUtils' => App\Utils\Utils::class,
     ],
-
-
 
 ];

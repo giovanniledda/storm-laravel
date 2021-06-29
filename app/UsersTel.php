@@ -4,7 +4,6 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-
 class UsersTel extends Model
 {
     protected $table = 'users_tel';
@@ -21,5 +20,4 @@ class UsersTel extends Model
     {
         return $this->belongsTo('App\User');
     }
-  
 }

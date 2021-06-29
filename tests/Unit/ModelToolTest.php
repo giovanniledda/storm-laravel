@@ -2,18 +2,16 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
 use App\Tool;
+use Tests\TestCase;
 
 class ModelToolTest extends TestCase
 {
     /**
-     *
      * @return void
      */
     public function testSimpleCreation()
     {
-
         $data = Tool::getSemiFakeData($this->faker);
         $except = [];
 

@@ -27,10 +27,9 @@ class EventServiceProvider extends ServiceProvider
         ]
         */
         DocumentDeleted::class => [
-            DeleteReportItemAfterDocument::class
-        ]
+            DeleteReportItemAfterDocument::class,
+        ],
     ];
-
 
     /**
      * The subscriber classes to register.

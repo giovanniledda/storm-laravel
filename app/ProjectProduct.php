@@ -1,4 +1,5 @@
 <?php
+
 namespace App;
 
 use Doctrine\DBAL\Driver\PDOException;
@@ -12,7 +13,7 @@ class ProjectProduct extends Pivot
 
     protected $fillable = [
         'project_id',
-        'product_id'
+        'product_id',
     ];
 
     public function product()
@@ -33,9 +34,9 @@ class ProjectProduct extends Pivot
     public static function createOneIfNotExists(int $product_id, int $project_id)
     {
         try {
-            return ProjectProduct::create([
+            return self::create([
                 'product_id' => $product_id,
-                'project_id' => $project_id
+                'project_id' => $project_id,
             ]);
         } catch (PDOException $e) {
             // se si passa di qua qualcuno cerca di fare una relazione già presente, un doppione.
@@ -50,7 +51,7 @@ class ProjectProduct extends Pivot
      */
     public static function findOneByPks(int $product_id, int $project_id)
     {
-        return ProjectProduct::where('product_id', '=', $product_id)
+        return self::where('product_id', '=', $product_id)
             ->where('project_id', '=', $project_id)
             ->first();
     }

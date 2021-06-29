@@ -7,8 +7,7 @@ use const VALIDATOR_EMAIL_UNIQUE;
 
 class Validators extends AbstractValidators
 {
-
-     /* The messages variable. 
+     /* The messages variable.
      * @var string[]|null
      */
     protected $messages = [
@@ -48,12 +47,12 @@ class Validators extends AbstractValidators
      */
     protected function rules($record = null): array
     {
-          return [
+        return [
            'name' => 'required|string|min:1|max:255',
-           'surname' => 'required|string|min:1|max:255',   
+           'surname' => 'required|string|min:1|max:255',
            'email' => 'unique:users', //email:rfc,dns|
-           'password' => 'required|string|min:1|max:255',   
-           'is_storm' => 'required|numeric'
+           'password' => 'required|string|min:1|max:255',
+           'is_storm' => 'required|numeric',
         ];
     }
 
@@ -68,5 +67,4 @@ class Validators extends AbstractValidators
             //
         ];
     }
-
 }

@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
-use function factory;
+use App\ApplicationLogSection;
 use App\Zone;
 use App\ZoneAnalysisInfoBlock;
+use function factory;
 use Tests\TestCase;
-use App\ApplicationLogSection;
 
 class ModelZoneAnalysisIBTest extends TestCase
 {
@@ -18,7 +18,6 @@ class ModelZoneAnalysisIBTest extends TestCase
 
         /** application_log_section **/
         /** $table->foreign('application_log_section_id')->references('id')->on('application_log_sections')->onDelete('set null') **/
-
         $app_log_section = factory(ApplicationLogSection::class)->create();
         $zone_analysis_info_blocks_num = $this->faker->numberBetween(10, 50);
         $zone_analysis_info_blocks = factory(ZoneAnalysisInfoBlock::class, $zone_analysis_info_blocks_num)->create();
@@ -30,7 +29,6 @@ class ModelZoneAnalysisIBTest extends TestCase
 
         /** @var ZoneAnalysisInfoBlock $zone_analysis_info_block */
         foreach ($zone_analysis_info_blocks as $zone_analysis_info_block) {
-
             $this->assertEquals($zone_analysis_info_block->application_log_section->id, $app_log_section->id);
 
             /** @var Zone $zone */
@@ -45,7 +43,7 @@ class ModelZoneAnalysisIBTest extends TestCase
             }
 
             $this->assertEquals($zone_analysis_info_block->zone->id, $zone->id); // testo la relazione inversa
-            $this->assertContains($zone_analysis_info_block->id, $zone->zone_analysis_info_blocks()->pluck('id')) ;
+            $this->assertContains($zone_analysis_info_block->id, $zone->zone_analysis_info_blocks()->pluck('id'));
         }
     }
 }

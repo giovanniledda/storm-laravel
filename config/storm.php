@@ -4,7 +4,6 @@ return [
     'startup' => [
 
         /** SITES **/
-
         'sites' => [
             'site1' => [
                 'name' => 'SiteA',
@@ -24,7 +23,7 @@ return [
                         'post_code'  => 'AAAAB',
                         'country'    => 'IT', // ISO-3166-2 or ISO-3166-3 country code
                     ],
-                ]
+                ],
             ],
             'site2' => [
                 'name' => 'SiteB',
@@ -44,29 +43,27 @@ return [
                         'post_code'  => 'BBBBA',
                         'country'    => 'IT', // ISO-3166-2 or ISO-3166-3 country code
                     ],
-                ]
+                ],
             ],
         ],
 
         /** PROFESSIONS **/
-
         'professions' => [
             'prof1' => [
                 'name' => 'ProfA',
-                'is_storm' => 0
+                'is_storm' => 0,
             ],
             'prof2' => [
                 'name' => 'ProfB',
-                'is_storm' => 0
+                'is_storm' => 0,
             ],
             'profn' => [
                 'name' => 'ProfN',
-                'is_storm' => 0
+                'is_storm' => 0,
             ],
         ],
 
         /** TASK INTERVENT TYPES **/
-
         'task_intervent_types' => [
             'type1' => [
                 'name' => TASK_INTERVENT_TYPE_DAMAGED,
@@ -77,6 +74,6 @@ return [
             'type3' => [
                 'name' => TASK_INTERVENT_TYPE_OTHER,
             ],
-        ]
-    ]
+        ],
+    ],
 ];

@@ -2,13 +2,12 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
 use App\ProductUseInfoBlock;
+use Tests\TestCase;
 
 class ModelProductUseIBTest extends TestCase
 {
     /**
-     *
      * @return void
      */
     public function testSimpleCreation()

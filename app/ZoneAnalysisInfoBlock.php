@@ -68,7 +68,6 @@ class ZoneAnalysisInfoBlock extends Model
     }
 
     /**
-     *
      * Creates a Zone Analysis IB using some fake data and some others that have sense
      * @param Faker $faker
      * @return ZoneAnalysisInfoBlock
@@ -76,8 +75,9 @@ class ZoneAnalysisInfoBlock extends Model
     public static function createSemiFake(Faker $faker)
     {
         $data = self::getSemiFakeData($faker);
-        $t = new ZoneAnalysisInfoBlock($data);
+        $t = new self($data);
         $t->save();
+
         return $t;
     }
 
@@ -89,8 +89,9 @@ class ZoneAnalysisInfoBlock extends Model
         $data = [
             'type' => $this->table,
             'id' => $this->id,
-            'attributes' => parent::toArray()
+            'attributes' => parent::toArray(),
         ];
+
         return $data;
     }
 

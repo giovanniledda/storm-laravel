@@ -3,8 +3,8 @@
 use App\Comment;
 use App\Project;
 use App\TaskInterventType;
-use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
+use Illuminate\Database\Seeder;
 use Net7\Documents\Document;
 use Seeds\SeederUtils as Utils;
 
@@ -66,7 +66,7 @@ class AddTasksToProjectSeeder extends Seeder
                 // associo qualche foto
                 for ($ti = 1; $ti <= 4; $ti++) {
                     if ($this->faker->boolean(30)) {
-                        $this->utils->addImageToTask($task, './task/photo' . $ti . '.jpg', Document::DETAILED_IMAGE_TYPE);
+                        $this->utils->addImageToTask($task, './task/photo'.$ti.'.jpg', Document::DETAILED_IMAGE_TYPE);
                     }
                 }
                 if ($this->faker->boolean(30)) {
@@ -74,7 +74,7 @@ class AddTasksToProjectSeeder extends Seeder
                 }
 
                 // se il task è chiuso, lo stato non può essere diverso da COMPLETED o DECLINED
-                if (!$task->is_open) {
+                if (! $task->is_open) {
                     $task->update(['task_status' => $this->faker->randomElement([TASKS_STATUS_COMPLETED, TASKS_STATUS_DENIED])]);
                 }
                 // se il task è di stato MONITORED, deve essere aperto
@@ -85,7 +85,6 @@ class AddTasksToProjectSeeder extends Seeder
                 $this->command->info("Task {$task->name} for Project {$project->name}, created");
 
                 if ($task->status != TASKS_STATUS_DRAFT) {
-
                     $this->command->warn(" ------ COMMENTS FOR TASK {$task->name} --------");
                     for ($c = 0; $c < $this->faker->numberBetween(1, 5); $c++) {
                         $comment = Comment::firstOrCreate(['body' => $this->faker->sentence(10)]);
@@ -108,7 +107,6 @@ class AddTasksToProjectSeeder extends Seeder
 
             unset($project);
             $this->utils->print_mem();
-
         } catch (\Exception $e) {
             $this->command->error("OOPSS..an error occurred: {$e->getMessage()}");
         }

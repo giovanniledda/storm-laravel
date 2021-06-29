@@ -2,13 +2,13 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
-use function implode;
 use const APPLICATION_LOG_SECTION_TYPE_APPLICATION;
 use const APPLICATION_LOG_SECTION_TYPE_INSPECTION;
 use const APPLICATION_LOG_SECTION_TYPE_PREPARATION;
 use const APPLICATION_LOG_SECTION_TYPE_ZONES;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use function implode;
 
 class RequestApplicationLog extends FormRequest
 {
@@ -38,8 +38,8 @@ class RequestApplicationLog extends FormRequest
                     APPLICATION_TYPE_FILLER,
                     APPLICATION_TYPE_HIGHBUILD,
                     APPLICATION_TYPE_UNDERCOAT,
-                    APPLICATION_TYPE_COATING
-                ])
+                    APPLICATION_TYPE_COATING,
+                ]),
         ];
     }
 

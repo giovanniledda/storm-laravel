@@ -6,7 +6,6 @@ use CloudCreativity\LaravelJsonApi\Validation\AbstractValidators;
 
 class Validators extends AbstractValidators
 {
-
     /**
      * The include paths a client is allowed to request.
      *
@@ -33,7 +32,7 @@ class Validators extends AbstractValidators
         'name',
         'producer',
         'serial_number',
-        'calibration_expiration_date'
+        'calibration_expiration_date',
     ];
 
     /**
@@ -66,5 +65,4 @@ class Validators extends AbstractValidators
             'serial_number' => 'string',
         ];
     }
-
 }

@@ -6,7 +6,6 @@ use Neomerx\JsonApi\Schema\SchemaProvider;
 
 class Schema extends SchemaProvider
 {
-
     /**
      * @var string
      */
@@ -19,18 +18,17 @@ class Schema extends SchemaProvider
      */
     public function getId($resource)
     {
-        return (string)$resource->getRouteKey();
+        return (string) $resource->getRouteKey();
     }
-
 
     public function getPrimaryMeta($resource)
     {
         $image = $resource->generic_images->last();
+
         return [
-            'image' => $image ? $image->getShowApiUrl() : null
+            'image' => $image ? $image->getShowApiUrl() : null,
         ];
     }
-
 
     public function getInclusionMeta($resource)
     {

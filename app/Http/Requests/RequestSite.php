@@ -16,7 +16,6 @@ class RequestSite extends FormRequest
         return true; // la logica è per tutti nel middleware Admin
     }
 
-
     /**
      * Get the validation rules that apply to the request.
      *

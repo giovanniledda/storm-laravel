@@ -6,7 +6,6 @@ use CloudCreativity\LaravelJsonApi\Validation\AbstractValidators;
 
 class Validators extends AbstractValidators
 {
-
     /**
      * The include paths a client is allowed to request.
      *
@@ -32,10 +31,9 @@ class Validators extends AbstractValidators
      */
     protected function rules($record = null): array
     {
-    return [  
-        'boat_id'=> 'required|numeric|exists:boats,id', 
-        ]; 
-
+        return [
+        'boat_id'=> 'required|numeric|exists:boats,id',
+        ];
     }
 
     /**
@@ -49,5 +47,4 @@ class Validators extends AbstractValidators
             //
         ];
     }
-
 }

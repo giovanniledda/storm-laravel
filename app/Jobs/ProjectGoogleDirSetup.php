@@ -3,15 +3,14 @@
 namespace App\Jobs;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
 class ProjectGoogleDirSetup implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
 
     private $project;
 
@@ -39,7 +38,5 @@ class ProjectGoogleDirSetup implements ShouldQueue
         $projectReportsPath = $this->project->getGoogleProjectReportsFolderPath();
         // this will create the directory in the google drive account
         $this->project->getGooglePathFromHumanPath($projectReportsPath);
-
-
     }
 }

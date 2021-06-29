@@ -21,7 +21,7 @@ class ApplicationLogObserver
 
         // Aggiorno l'autore
         $user_id = 1; // admin
-        if (!$applicationLog->author_id && \Auth::check()) {
+        if (! $applicationLog->author_id && \Auth::check()) {
             $auth_user = \Auth::user();
             $user_id = $auth_user->id;
         }

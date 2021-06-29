@@ -2,18 +2,16 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
 use App\ZoneAnalysisInfoBlock;
+use Tests\TestCase;
 
 class ModelZoneAnalysisIBTest extends TestCase
 {
     /**
-     *
      * @return void
      */
     public function testSimpleCreation()
     {
-
         $data = ZoneAnalysisInfoBlock::getSemiFakeData($this->faker);
         $except = [];
 

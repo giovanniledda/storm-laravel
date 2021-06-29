@@ -1,9 +1,9 @@
 <?php
 
 use App\Task;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateTasksTable extends Migration
 {
@@ -16,7 +16,7 @@ class CreateTasksTable extends Migration
     {
         Schema::create('tasks', function (Blueprint $table) {
             $table->bigIncrements('id');
-            
+
             $table->integer('number')->nullable();
             $table->string('title')->nullable();
             $table->text('description')->nullable();
@@ -51,10 +51,7 @@ class CreateTasksTable extends Migration
             // intervent_type
             $table->unsignedBigInteger('intervent_type_id')->nullable();
             $table->foreign('intervent_type_id')->references('id')->on('task_intervent_types')->onDelete('set null');
-
-
         });
-
     }
 
     /**
@@ -65,6 +62,5 @@ class CreateTasksTable extends Migration
     public function down()
     {
         Schema::dropIfExists('tasks');
-
     }
 }

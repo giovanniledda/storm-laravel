@@ -2,8 +2,8 @@
 
 use App\Comment;
 use App\TaskInterventType;
-use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
+use Illuminate\Database\Seeder;
 use Net7\Documents\Document;
 use Seeds\SeederUtils as Utils;
 
@@ -25,7 +25,7 @@ class LightSeeder extends Seeder
         $this->utils = new Utils();
 
         // creo un sito
-        $this->command->warn(" ------ SITES --------");
+        $this->command->warn(' ------ SITES --------');
 
         $site = $this->utils->createSite();
 
@@ -36,7 +36,6 @@ class LightSeeder extends Seeder
             ->save();
 
         $this->command->info("Site {$site->name} created");
-
 
         $site2 = $this->utils->createSite();
 
@@ -49,7 +48,7 @@ class LightSeeder extends Seeder
         $this->command->info("Site {$site2->name} created");
 
         // crea N boat...
-        $this->command->warn(" ------ BOATS & SECTIONS --------");
+        $this->command->warn(' ------ BOATS & SECTIONS --------');
 
         $boats = [];
         for ($i = 0; $i < 2; $i++) {
@@ -60,10 +59,10 @@ class LightSeeder extends Seeder
             $num = $this->faker->randomElement(['1', '2', '3', '4']);
             if ($boats[$i]->boat_type == BOAT_TYPE_SAIL) {
 //                $this->utils->addImageToBoat($boats[$i], "./boat/sail$num.jpg", Document::GENERIC_IMAGE_TYPE);
-                $this->utils->addImageToBoat($boats[$i], "./boat/generic_sail_img.png", Document::GENERIC_IMAGE_TYPE);
+                $this->utils->addImageToBoat($boats[$i], './boat/generic_sail_img.png', Document::GENERIC_IMAGE_TYPE);
             } else {
 //                $this->utils->addImageToBoat($boats[$i], "./boat/motor$num.jpg", Document::GENERIC_IMAGE_TYPE);
-                $this->utils->addImageToBoat($boats[$i], "./boat/generic_motor_img.png", Document::GENERIC_IMAGE_TYPE);
+                $this->utils->addImageToBoat($boats[$i], './boat/generic_motor_img.png', Document::GENERIC_IMAGE_TYPE);
             }
 
             $this->command->info("Boat {$boats[$i]->name} created");
@@ -74,14 +73,13 @@ class LightSeeder extends Seeder
             $sections[$boats[$i]->id] = [];
             $left_done = $right_done = false;
             for ($s = 0; $s <= 5; $s++) {
-
                 $sections[$boats[$i]->id] = $this->utils->createSection($boats[$i]);
 
                 // Creare un left, un right e gli altri deck
-                if (0 && !$left_done) {
+                if (0 && ! $left_done) {
                     $sections[$boats[$i]->id]->update([
                         'section_type' => SECTION_TYPE_LEFT_SIDE,
-                        'name' => 'Starboard']);
+                        'name' => 'Starboard', ]);
 
                     // associo la foto di SX
                     $this->utils->addImageToSection($sections[$boats[$i]->id], './section/starboard.png');
@@ -91,10 +89,10 @@ class LightSeeder extends Seeder
                     continue;
                 }
 
-                if (0 && !$right_done) {
+                if (0 && ! $right_done) {
                     $sections[$boats[$i]->id]->update([
                         'section_type' => SECTION_TYPE_RIGHT_SIDE,
-                        'name' => 'Port']);
+                        'name' => 'Port', ]);
 
                     // associo la foto di DX
                     $this->utils->addImageToSection($sections[$boats[$i]->id], './section/port.png');
@@ -108,7 +106,7 @@ class LightSeeder extends Seeder
                 $name = $section_names[$s];
                 $sections[$boats[$i]->id]->update([
                     'section_type' => SECTION_TYPE_DECK,
-                    'name' => ucfirst($name)]);
+                    'name' => ucfirst($name), ]);
 
                 // associo la foto di un ponte a caso
                 $this->utils->addImageToSection($sections[$boats[$i]->id], "./section/$name.png");
@@ -117,7 +115,7 @@ class LightSeeder extends Seeder
         }
 
         // creo N professioni a caso
-        $this->command->warn(" ------ PROFESSIONS --------");
+        $this->command->warn(' ------ PROFESSIONS --------');
 
         $professions = [];
         $professions[0] = $this->utils->createProfession('owner');
@@ -169,7 +167,6 @@ class LightSeeder extends Seeder
                 $this->command->info("Backend Manager {$be_man->name} associated to Boat {$boat->name}, with Profession {$profession->name} created");
                 $backend_managers[] = $be_man;
             }
-
 
             // per ogni boat creo N progetti...
             $projects = [];
@@ -225,7 +222,7 @@ class LightSeeder extends Seeder
                     }
 
                     // se il task è chiuso, lo stato non può essere diverso da COMPLETED o DECLINED
-                    if (!$task->is_open) {
+                    if (! $task->is_open) {
                         $task->update(['task_status' => $this->faker->randomElement([TASKS_STATUS_COMPLETED, TASKS_STATUS_DENIED])]);
                     }
                     // se il task è di stato MONITORED, deve essere aperto
@@ -236,7 +233,6 @@ class LightSeeder extends Seeder
                     $this->command->info("Task {$task->name} for Project {$project->name}, created");
 
                     if ($task->status != TASKS_STATUS_DRAFT) {
-
                         $this->command->warn(" ------ COMMENTS FOR TASK {$task->name} --------");
                         for ($c = 0; $c < $this->faker->numberBetween(1, 5); $c++) {
                             $comment = Comment::firstOrCreate(['body' => $this->faker->sentence(10)]);

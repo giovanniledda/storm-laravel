@@ -7,22 +7,21 @@ use App\Jobs\NotifyTaskUpdates;
 use App\Notifications\TaskCreated;
 use App\Notifications\TaskUpdated;
 use App\Permission;
-use App\Project;
 use App\Profession;
+use App\Project;
 use App\Role;
 use App\Task;
+use App\User;
 use function count;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Queue;
-use Tests\TestCase;
-use App\User;
-
 use const PERMISSION_BOAT_MANAGER;
 use const ROLE_BOAT_MANAGER;
+use Tests\TestCase;
 
 class ModelUpdateTest extends TestCase
 {
-    function test_can_create_notifications_related_to_task_creation()
+    public function test_can_create_notifications_related_to_task_creation()
     {
         // Creo professioni
         $professions = factory(Profession::class, 5)->create();
@@ -74,13 +73,11 @@ class ModelUpdateTest extends TestCase
         }
 
         if (\Config::get('queue.default') == 'database') {
-
             $this->assertDatabaseHas('jobs', ['queue' => 'default']);
 
             // i job di notifica devono essere il doppio dei task (uno parte per la creazione e l'altro per l'update)
             $counts = DB::table('jobs')->count();
-            $this->assertEquals($counts, count($tasks)*2);
-
+            $this->assertEquals($counts, count($tasks) * 2);
         } else {
 
             // verifico che gli utenti abbiano le notifiche
@@ -88,7 +85,6 @@ class ModelUpdateTest extends TestCase
                 $this->assertNotCount(0, $user->notifications);
                 $this->assertCount($user->unreadNotifications->count(), $user->notifications);
                 foreach ($user->notifications as $notification) {
-
                     $this->assertThat($notification->type,
                         $this->logicalOr(
                             'App\Notifications\TaskCreated',  // Se uso TaskCreated::class ottengo il paradosso: Failed asserting that 'App\Notifications\TaskUpdated' is instance of class "App\Notifications\TaskCreated" or is instance of class "App\Notifications\TaskUpdated".
@@ -97,8 +93,5 @@ class ModelUpdateTest extends TestCase
                 }
             }
         }
-
-
     }
-    
 }

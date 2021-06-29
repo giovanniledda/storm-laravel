@@ -3,10 +3,10 @@
 namespace App;
 
 use App\Traits\JsonAPIPhotos;
+use const DIRECTORY_SEPARATOR;
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Model;
 use Net7\Documents\DocumentableTrait;
-use const DIRECTORY_SEPARATOR;
 
 class DetectionsInfoBlock extends Model
 {
@@ -73,20 +73,20 @@ class DetectionsInfoBlock extends Model
         return [
             'name' => $faker->word,
             'detections' => $faker->words(30),
-            'short_description' => $faker->sentence(15)
+            'short_description' => $faker->sentence(15),
         ];
     }
 
     /**
-     *
      * Creates a Generic Data IB using some fake data and some others that have sense
      * @param Faker $faker
      * @return DetectionsInfoBlock
      */
     public static function createSemiFake(Faker $faker)
     {
-        $t = new DetectionsInfoBlock(self::getSemiFakeData($faker));
+        $t = new self(self::getSemiFakeData($faker));
         $t->save();
+
         return $t;
     }
 
@@ -102,17 +102,16 @@ class DetectionsInfoBlock extends Model
                 /** @var Project $project */
                 $project = $app_log->project;
 
-                return DIRECTORY_SEPARATOR . 'projects' . DIRECTORY_SEPARATOR . $project->id .
-                    DIRECTORY_SEPARATOR . 'applications_logs' . DIRECTORY_SEPARATOR  . $app_log->application_type . DIRECTORY_SEPARATOR  . $app_log->id .
-                    DIRECTORY_SEPARATOR . 'applications_log_sections' . DIRECTORY_SEPARATOR  . $app_log_section->section_type . DIRECTORY_SEPARATOR  . $app_log_section->id .
-                    DIRECTORY_SEPARATOR . 'detections_info_blocks' . DIRECTORY_SEPARATOR  . $this->id .
-                    DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
+                return DIRECTORY_SEPARATOR.'projects'.DIRECTORY_SEPARATOR.$project->id.
+                    DIRECTORY_SEPARATOR.'applications_logs'.DIRECTORY_SEPARATOR.$app_log->application_type.DIRECTORY_SEPARATOR.$app_log->id.
+                    DIRECTORY_SEPARATOR.'applications_log_sections'.DIRECTORY_SEPARATOR.$app_log_section->section_type.DIRECTORY_SEPARATOR.$app_log_section->id.
+                    DIRECTORY_SEPARATOR.'detections_info_blocks'.DIRECTORY_SEPARATOR.$this->id.
+                    DIRECTORY_SEPARATOR.$media_id.DIRECTORY_SEPARATOR;
             }
         }
 
         return '/tmp/';
     }
-
 
     /**
      * @return array
@@ -122,7 +121,7 @@ class DetectionsInfoBlock extends Model
         $data = [
             'type' => $this->table,
             'id' => $this->id,
-            'attributes' => parent::toArray()
+            'attributes' => parent::toArray(),
         ];
         $data['attributes']['tool'] = $this->tool;
         $data['attributes']['photos'] = $this->getPhotosApi('data', null, true);

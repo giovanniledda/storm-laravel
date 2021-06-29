@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Permission;
+use App\Role;
+use Auth;
 use const FLASH_ERROR;
 use const FLASH_WARNING;
 use Illuminate\Http\Request;
-use Auth;
 use Session;
-use App\Role;
-use App\Permission;
 use StormUtils;
 
 class PermissionController extends Controller
 {
-
     public function __construct()
     {
 //        $this->middleware(['auth', 'isAdmin']); //isAdmin middleware lets only users with a //specific permission permission to access these resources
@@ -64,7 +63,7 @@ class PermissionController extends Controller
 
         $permission->save();
 
-        if (!empty($request['roles'])) { //If one or more role is selected
+        if (! empty($request['roles'])) { //If one or more role is selected
             foreach ($roles as $role) {
                 $r = Role::where('id', '=', $role)->firstOrFail(); //Match input role to db record
 
@@ -74,8 +73,7 @@ class PermissionController extends Controller
         }
 
         return redirect()->route('permissions.index')
-            ->with(FLASH_SUCCESS, 'Permission' . $permission->name . ' added!');
-
+            ->with(FLASH_SUCCESS, 'Permission'.$permission->name.' added!');
     }
 
     /**
@@ -119,8 +117,7 @@ class PermissionController extends Controller
         $permission->fill($input)->save();
 
         return redirect()->route('permissions.index')
-            ->with(FLASH_SUCCESS, 'Permission' . $permission->name . ' updated!');
-
+            ->with(FLASH_SUCCESS, 'Permission'.$permission->name.' updated!');
     }
 
     /**
@@ -134,7 +131,7 @@ class PermissionController extends Controller
         $permission = Permission::findOrFail($id);
 
         //Make it impossible to delete this specific permission
-        if ($permission->name == "Administer roles & permissions") {
+        if ($permission->name == 'Administer roles & permissions') {
             return redirect()->route('permissions.index')
                 ->with(FLASH_WARNING, 'Cannot delete this Permission!');
         }
@@ -151,10 +148,10 @@ class PermissionController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-
     public function confirmDestroy($id)
     {
         $permission = Permission::findOrFail($id);
+
         return view('permissions.delete')->withPermission($permission);
     }
 }

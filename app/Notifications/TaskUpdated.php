@@ -29,12 +29,12 @@ class TaskUpdated extends TaskNotifications
     {
         $parent_result = parent::toDatabase($notifiable);
         $parent_result['message'] = $this->getMobileAppMessage();
+
         return $parent_result;
     }
 
     protected function getMobileAppMessage()
     {
-
         return StormUtils::replacePlaceholders(TASK_UPDATED_MOBILE_APP_TEXT, [
             '@someone' => $this->actionAuthor ? $this->actionAuthor->getFullName() : 'Someone',
             '@task_id' => $this->task->id,

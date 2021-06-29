@@ -2,8 +2,8 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
@@ -39,7 +39,6 @@ class Product extends Model
     protected $casts = [
         'components' => 'array',
     ];
-
 
     /**
      * The product use info block which the product belongs
@@ -77,16 +76,15 @@ class Product extends Model
     }
 
     /**
-     *
      * Creates a Product using some fake data and some others that have sense
      * @param Faker $faker
      * @return Product
      */
     public static function createSemiFake(Faker $faker)
     {
-        $p = new Product(self::getSemiFakeData($faker));
+        $p = new self(self::getSemiFakeData($faker));
         $p->save();
+
         return $p;
     }
-
 }

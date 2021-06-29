@@ -1,28 +1,25 @@
 <?php
-/* NON VA UN CAZZO, solo per capire come deve essere implementato un test con drop box 
+/* NON VA UN CAZZO, solo per capire come deve essere implementato un test con drop box
  * RIFERIMENTO https://github.com/spatie/dropbox-api/blob/master/tests/ClientTest.php
  *  */
 
 namespace Spatie\Dropbox\Test;
 
-use Spatie\Dropbox\Client;
-use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\StreamInterface;
 use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Exception\ClientException;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Spatie\Dropbox\UploadSessionCursor;
-use GuzzleHttp\Exception\ClientException;
+use Psr\Http\Message\StreamInterface;
+use Spatie\Dropbox\Client;
 use Spatie\Dropbox\Exceptions\BadRequest;
+use Spatie\Dropbox\UploadSessionCursor;
 
-
- 
-class ClientTest extends TestCase
+class ApiDropBoxTest extends TestCase
 {
     /** @test */
     public function it_can_be_instantiated()
     {
-       
         $client = new Client(DROPBOX_TOKEN);
 
         $this->assertInstanceOf(Client::class, $client);

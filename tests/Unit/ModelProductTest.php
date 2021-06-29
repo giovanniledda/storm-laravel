@@ -2,18 +2,16 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
 use App\Product;
+use Tests\TestCase;
 
 class ModelProductTest extends TestCase
 {
     /**
-     *
      * @return void
      */
     public function testSimpleCreation()
     {
-
         $data = Product::getSemiFakeData($this->faker);
         $except = [];
 

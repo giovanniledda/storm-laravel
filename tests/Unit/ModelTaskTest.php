@@ -2,20 +2,18 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
 use App\Task;
 use function factory;
+use Tests\TestCase;
 
 class ModelTaskTest extends TestCase
 {
     /**
-     *
      * @return void
      * @throws \Spatie\ModelStatus\Exceptions\InvalidStatus
      */
     public function testSimpleCreation()
     {
-
         $data = Task::getSemiFakeData($this->faker);
         $except = [
             'is_open',
@@ -69,7 +67,6 @@ class ModelTaskTest extends TestCase
             ['is_private' => 0]
         );
 
-
         $priv_tasks_created = factory(Task::class, 15)->create(
             ['is_private' => 1]
         );
@@ -96,6 +93,5 @@ class ModelTaskTest extends TestCase
         Task::public()->forceDelete();
         $this->assertCount(15, Task::all());
         $this->assertCount(15, Task::withTrashed()->get());
-
     }
 }

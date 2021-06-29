@@ -8,7 +8,6 @@ use CloudCreativity\LaravelJsonApi\Validation\AbstractValidators;
 
 class Validators extends AbstractValidators
 {
-
     /**
      * The messages variable.
      * @var string[]|null
@@ -65,7 +64,7 @@ class Validators extends AbstractValidators
            'boat_type' => 'required|in:'.BOAT_TYPE_MOTOR.','.BOAT_TYPE_SAIL,
         ];
     }
-  
+
     /**
      * Get query parameter validation rules.
      *
@@ -78,6 +77,4 @@ class Validators extends AbstractValidators
             'filter.site_id' => 'integer',
         ];
     }
-    
-
 }

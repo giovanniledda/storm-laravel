@@ -3,8 +3,8 @@
 use App\MyTemplateProcessor;
 use App\Project;
 use App\User;
-use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
+use Illuminate\Database\Seeder;
 use Net7\DocsGenerator\DocsGenerator;
 use Seeds\SeederUtils;
 
@@ -29,11 +29,11 @@ class N7DGPhpdocxSeeder extends Seeder
         /** @var Project $project */
         $project = Project::find(1);
 
-        $this->command->warn(" ------ MANAGE TEMPLATE (corrosion_map) --------");
+        $this->command->warn(' ------ MANAGE TEMPLATE (corrosion_map) --------');
 
         $project->setupCorrosionMapTemplate();
 
-        $this->command->warn(" ------ MANAGE TEMPLATE (environmental_report) --------");
+        $this->command->warn(' ------ MANAGE TEMPLATE (environmental_report) --------');
 
         $project->setupEnvironmentalReportTemplate();
     }

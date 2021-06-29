@@ -2,12 +2,11 @@
 
 namespace App\Services;
 
+use function __;
 use App\Project;
 use Illuminate\Http\Response;
 use Net7\DocsGenerator\DocsGenerator;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
-
-use function __;
 
 class ReportGenerator
 {
@@ -22,7 +21,7 @@ class ReportGenerator
     {
         $dg = new DocsGenerator($template, $project);
 
-        if (isset($dg) && !$dg->checkTemplateCategory()) {
+        if (isset($dg) && ! $dg->checkTemplateCategory()) {
             $msg = __("Template :name not valid (there's no such a Model on DB)!", ['name' => $template]);
             throw new \Exception($msg);
         }

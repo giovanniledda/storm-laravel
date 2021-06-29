@@ -3,17 +3,14 @@
 namespace App;
 
 use App\Utils\Utils;
-use Illuminate\Database\Eloquent\Model;
-use Faker\Generator as Faker;
-use Illuminate\Support\Arr;
-use Net7\Documents\Document;
-use Net7\Documents\DocumentableTrait;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-
+use const DIRECTORY_SEPARATOR;
 use function exif_imagetype;
 use function explode;
+use Faker\Generator as Faker;
 use function fclose;
 use function getimagesize;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use function imagealphablending;
 use function imagecolorallocate;
 use function imagecopy;
@@ -25,23 +22,23 @@ use function imagecrop;
 use function imagedestroy;
 use function imagepng;
 use function imagesavealpha;
+use const IMAGETYPE_JPEG;
+use const IMAGETYPE_PNG;
 use function ini_set;
 use function is_dir;
 use function is_file;
 use function mkdir;
+use Net7\Documents\Document;
+use Net7\Documents\DocumentableTrait;
+use const SECTION_IMAGE_POINTS_OVERVIEW;
 use function storage_path;
 use function stream_get_meta_data;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use function tmpfile;
 use function unlink;
 
-use const DIRECTORY_SEPARATOR;
-use const IMAGETYPE_JPEG;
-use const IMAGETYPE_PNG;
-use const SECTION_IMAGE_POINTS_OVERVIEW;
-
 class Section extends Model
 {
-
     use DocumentableTrait;
 
     protected $table = 'sections';
@@ -51,7 +48,7 @@ class Section extends Model
         'section_type',
         'position',
         'code',
-        'boat_id'
+        'boat_id',
     ];
 
     public function getMediaPath($media)
@@ -63,8 +60,8 @@ class Section extends Model
         $section_id = $this->id;
         $boat = $this->boat;
         $boat_id = $boat->id;
-        $path = 'boats' . DIRECTORY_SEPARATOR . $boat_id . DIRECTORY_SEPARATOR . 'sections' . DIRECTORY_SEPARATOR . $section_id .
-            DIRECTORY_SEPARATOR . $document->type . DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
+        $path = 'boats'.DIRECTORY_SEPARATOR.$boat_id.DIRECTORY_SEPARATOR.'sections'.DIRECTORY_SEPARATOR.$section_id.
+            DIRECTORY_SEPARATOR.$document->type.DIRECTORY_SEPARATOR.$media_id.DIRECTORY_SEPARATOR;
 
         return $path;
     }
@@ -114,7 +111,7 @@ class Section extends Model
      */
     public static function createSemiFake(Faker $faker, Boat $boat = null)
     {
-        $section = new Section(
+        $section = new self(
             [
                 'name' => $faker->numerify('Deck #'),
                 'section_type' => $faker->randomElement(
@@ -122,13 +119,13 @@ class Section extends Model
                 ),
                 'position' => $faker->randomDigitNotNull(),
                 'code' => $faker->lexify('???-???'),
-                'boat_id' => $boat ? $boat->id : null
+                'boat_id' => $boat ? $boat->id : null,
             ]
         );
         $section->save();
+
         return $section;
     }
-
 
     /**
      * Adds an image as a generic_image Net7/Document
@@ -147,7 +144,7 @@ class Section extends Model
     ) {
         // TODO: mettere tutto in una funzione
         $filename = $p_filename ?? Arr::last(explode('/', $filepath));
-        $tempFilepath = '/tmp/' . $filename;
+        $tempFilepath = '/tmp/'.$filename;
         copy($filepath, $tempFilepath);
         $file = new UploadedFile($tempFilepath, $filename, null, null, true);
 
@@ -170,7 +167,7 @@ class Section extends Model
      */
     public static function getSectionsStartingFromTasks(array $tasks_ids)
     {
-        return Section::query()
+        return self::query()
             ->select('*')
             ->orderBy('position')
             ->orderBy('section_type')
@@ -211,7 +208,7 @@ class Section extends Model
         // immagine del ponte
         $deck_media = $this->generic_images->last();
         // i task di cui vogliamo stampare i pin
-        $my_tasks = !empty($tasks_ids) ? $this->getOnlyMyTasks($tasks_ids) : $this->tasks;
+        $my_tasks = ! empty($tasks_ids) ? $this->getOnlyMyTasks($tasks_ids) : $this->tasks;
         if ($deck_media) {
             $deck_with_pins_f_handler = tmpfile();
             $deck_with_pins_f_path = stream_get_meta_data($deck_with_pins_f_handler)['uri'];
@@ -248,7 +245,7 @@ class Section extends Model
                 $dst_deck_white_bkg_img,
                 $original_deck_img_src,
                 $bridge_w / 2,
-                ($bridge_h + $extraUpperBorder)/ 2,
+                ($bridge_h + $extraUpperBorder) / 2,
                 0,
                 0,
                 $bridge_w,
@@ -349,7 +346,7 @@ class Section extends Model
                         'x' => ($sizeW / 2) - $crop_w / 2,
                         'y' => ($sizeH / 2) - $crop_h / 2,
                         'width' => $crop_w,
-                        'height' => $crop_h
+                        'height' => $crop_h,
                     ]
                 );
                 if ($im2 !== false) {
@@ -381,6 +378,7 @@ class Section extends Model
             imagedestroy($dst_deck_white_bkg_img);
 
             fclose($tmpfileHandle); //this removes the tempfile
+
             return $final_file_path;
         }
     }
@@ -394,6 +392,7 @@ class Section extends Model
         $document = $this->documents->where('type', SECTION_IMAGE_POINTS_OVERVIEW)->last();
         if ($document) {
             $media = $document->getRelatedMedia();
+
             return $media->getPath();
         } else {
             return '';

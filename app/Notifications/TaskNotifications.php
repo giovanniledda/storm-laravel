@@ -5,9 +5,9 @@ namespace App\Notifications;
 use App\Task;
 use App\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
 use function is_null;
 use function is_object;
@@ -36,7 +36,6 @@ class TaskNotifications extends Notification
         if (is_null($this->actionAuthor) && Auth::check()) {
             $this->actionAuthor = Auth::user();
         }
-
     }
 
     /**
@@ -57,15 +56,15 @@ class TaskNotifications extends Notification
      * @param  mixed  $notifiable
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
-/*
-    public function toMail($notifiable)
-    {
-        return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
-    }
-*/
+    /*
+        public function toMail($notifiable)
+        {
+            return (new MailMessage)
+                        ->line('The introduction to the notification.')
+                        ->action('Notification Action', url('/'))
+                        ->line('Thank you for using our application!');
+        }
+    */
 
     /**
      * Get the array representation of the notification.
@@ -121,6 +120,4 @@ class TaskNotifications extends Notification
     {
         return is_object($this->task->getProjectBoat()) ? $this->task->getProjectBoat()->name : null;
     }
-
-
 }

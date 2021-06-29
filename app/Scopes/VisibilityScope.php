@@ -2,9 +2,9 @@
 
 namespace App\Scopes;
 
-use Illuminate\Database\Eloquent\Scope;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Scope;
 
 class VisibilityScope implements Scope
 {
@@ -18,7 +18,7 @@ class VisibilityScope implements Scope
     public function apply(Builder $builder, Model $model)
     {
         $user = \Auth::user();
-        if ($user && !$user->is_storm) {
+        if ($user && ! $user->is_storm) {
             $builder->where('is_private', '!=', 1);
         }
     }

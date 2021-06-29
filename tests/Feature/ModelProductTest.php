@@ -2,15 +2,14 @@
 
 namespace Tests\Feature;
 
-use function factory;
 use App\Product;
 use App\ProductUseInfoBlock;
+use function factory;
 use Tests\TestCase;
 
 class ModelProductTest extends TestCase
 {
     /**
-     *
      * @return void
      */
     public function testBasicRelationships()
@@ -26,8 +25,7 @@ class ModelProductTest extends TestCase
         $product_use_info_block->save();
 
         $this->assertEquals($product_use_info_block->product->id, $product->id); // testo la relazione inversa
-        $this->assertContains($product_use_info_block->id, $product->product_use_info_blocks()->pluck('id')) ;
-
+        $this->assertContains($product_use_info_block->id, $product->product_use_info_blocks()->pluck('id'));
 
         /** @var Product $product2 */
         $product2 = factory(Product::class)->create();
@@ -40,6 +38,6 @@ class ModelProductTest extends TestCase
         $product2->save();
 
         $this->assertEquals($product_use_info_block2->product->id, $product2->id); // testo la relazione inversa
-        $this->assertContains($product_use_info_block2->id, $product2->product_use_info_blocks()->pluck('id')) ;
+        $this->assertContains($product_use_info_block2->id, $product2->product_use_info_blocks()->pluck('id'));
     }
 }

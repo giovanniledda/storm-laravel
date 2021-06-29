@@ -8,7 +8,6 @@ use Tests\TestCase;
 class ModelDetectionsIBTest extends TestCase
 {
     /**
-     *
      * @return void
      */
     public function testSimpleCreation()
