@@ -2,52 +2,51 @@
 
 namespace App\Http\Controllers\Api;
 
+use function __;
 use App\ApplicationLog;
 use App\ApplicationLogSection;
 use App\Boat;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\RequestApplicationLog;
+use App\Http\Requests\RequestProjectChangeType;
 use App\Jobs\GenerateApplicationLogReport;
 use App\Jobs\GenerateCorrosionMapReport;
+use App\Jobs\ProjectGoogleSync;
 use App\Jobs\ProjectLoadEnvironmentalData;
+use App\Project;
 use App\ReportItem;
 use App\Services\AppLogEntitiesPersister;
 use App\Services\ReportGenerator;
 use App\Services\ZonesPersister;
 use App\Task;
+use App\Utils\Utils;
 use App\Zone;
-use Illuminate\Support\Str;
-use function __;
 use function array_key_exists;
 use function explode;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Str;
 use function in_array;
 use function json_decode;
 use function md5;
-use function response;
-use function trim;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Net7\Documents\Document;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\RequestProjectChangeType;
-use App\Project;
-use App\Utils\Utils;
-use App\Jobs\ProjectGoogleSync;
+use const MEASUREMENT_FILE_TYPE;
 use Net7\DocsGenerator\DocsGenerator;
-use Symfony\Component\Filesystem\Exception\FileNotFoundException;
+use Net7\Documents\Document;
 use const PERMISSION_ADMIN;
 use const PERMISSION_BACKEND_MANAGER;
+use const PROJECT_STATUS_CLOSED;
 use const PROJECT_STATUSES;
 use const REPORT_APPLOG_SUBTYPE;
 use const REPORT_CORROSION_MAP_SUBTYPE;
 use const REPORT_ENVIRONMENTAL_SUBTYPE;
-use const MEASUREMENT_FILE_TYPE;
-use const PROJECT_STATUS_CLOSED;
 use const REPORT_ITEM_TYPE_CORR_MAP_DOC;
 use const REPORT_ITEM_TYPE_ENVIRONM_DOC;
+use function response;
+use Symfony\Component\Filesystem\Exception\FileNotFoundException;
+use function trim;
 
 class ProjectController extends Controller
 {
-
     /**
      * @var AppLogEntitiesPersister
      */
@@ -70,9 +69,9 @@ class ProjectController extends Controller
         return Utils::renderStandardJsonapiResponse(
             [
                 'data' => [
-                    "type" => "projects",
-                    "attributes" => ["statuses" => PROJECT_STATUSES]
-                ]
+                    'type' => 'projects',
+                    'attributes' => ['statuses' => PROJECT_STATUSES],
+                ],
             ],
             200
         );
@@ -93,11 +92,12 @@ class ProjectController extends Controller
             array_push(
                 $data,
                 [
-                    "type" => "projects",
-                    "attributes" => ['event' => $history['event_body']]
+                    'type' => 'projects',
+                    'attributes' => ['event' => $history['event_body']],
                 ]
             );
         }
+
         return Utils::renderStandardJsonapiResponse(['data' => $data], 200);
         //  exit();
     }
@@ -123,10 +123,11 @@ class ProjectController extends Controller
                         'success' => $closeResponse['success'],
                         'status' => PROJECT_STATUS_CLOSED,
                         'force' => $force,
-                        'tasks' => $closeResponse['tasks']
-                    ]
-                ]
+                        'tasks' => $closeResponse['tasks'],
+                    ],
+                ],
             ];
+
             return Response($ret, 202);
         } else {
             $ret = [
@@ -137,10 +138,11 @@ class ProjectController extends Controller
                         'success' => $closeResponse['success'],
                         'status' => $data['project_status'],
                         'force' => $force,
-                        'tasks' => $closeResponse['tasks']
-                    ]
-                ]
+                        'tasks' => $closeResponse['tasks'],
+                    ],
+                ],
             ];
+
             return Response($ret, 200);
         }
     }
@@ -187,9 +189,10 @@ class ProjectController extends Controller
                     'data' => [
                         'type' => 'projects',
                         'id' => $newProject->id,
-                        'attributes' => $newProject
-                    ]
+                        'attributes' => $newProject,
+                    ],
                 ];
+
                 return Utils::renderStandardJsonapiResponse($ret, 200);
             } else {
                 return Utils::jsonAbortWithInternalError(
@@ -200,6 +203,7 @@ class ProjectController extends Controller
                 );
             }
         }
+
         return Utils::jsonAbortWithInternalError(
             422,
             130,
@@ -216,7 +220,6 @@ class ProjectController extends Controller
      *
      * @return mixed
      */
-
     public function cloudSync(Request $request, $record)
     {
         $project = Project::findOrFail($record->id);
@@ -229,8 +232,8 @@ class ProjectController extends Controller
                 'data' => [
                     'type' => 'projects',
                     'id' => $project->id,
-                    "attributes" => ["syncronized" => "queued"]
-                ]
+                    'attributes' => ['syncronized' => 'queued'],
+                ],
             ],
             200
         );
@@ -256,16 +259,17 @@ class ProjectController extends Controller
 
                 $headers = [
                     'Cache-Control' => 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0',
-                    "Content-Type" => "application/octet-stream"
+                    'Content-Type' => 'application/octet-stream',
                 ];
+
                 return response()->download($filepath, $filename, $headers);
             } else {
                 $ret = [
                     'data' => [
                         'type' => 'documents',
                         'id' => $document->id,
-                        'attributes' => $document
-                    ]
+                        'attributes' => $document,
+                    ],
                 ];
 
                 return Utils::renderStandardJsonapiResponse($ret, 200);
@@ -314,7 +318,7 @@ class ProjectController extends Controller
                 );
             }
         } catch (\Exception $e) {
-            return Utils::jsonAbortWithInternalError(422, 402, "Error generating report", $e->getMessage());
+            return Utils::jsonAbortWithInternalError(422, 402, 'Error generating report', $e->getMessage());
         }
 
         $project->closeAllTasksTemporaryFiles();
@@ -395,6 +399,7 @@ class ProjectController extends Controller
         if (isset($reports_data['links'])) {
             $ret['links'] = $reports_data['links'];
         }
+
         return Utils::renderStandardJsonapiResponse($ret, 200);
     }
 
@@ -424,7 +429,7 @@ class ProjectController extends Controller
                 ) : null;
 
                 $arr = [
-                    'data_source' => $data_source
+                    'data_source' => $data_source,
                 ];
 
                 $additional_data = json_encode($arr);
@@ -468,12 +473,12 @@ class ProjectController extends Controller
             }
         } catch (\Exception $e) {
             $msg = __("Error: ':e_msg'!", ['e_msg' => $e->getMessage()]);
-            return Utils::jsonAbortWithInternalError(422, 402, "Error uploading CSV log file", $msg);
+
+            return Utils::jsonAbortWithInternalError(422, 402, 'Error uploading CSV log file', $msg);
         }
     }
 
     /**
-     *
      * #PR19-a  api/v1/projects/{record_id}/generate-environmental-report
      * API used to generate a report from the project
      *
@@ -485,11 +490,11 @@ class ProjectController extends Controller
      */
     public function generateEnvironmentalReport(Request $request, $record, ReportGenerator $reportGenerator)
     {
-        if (!$request->has('data_source')) {
+        if (! $request->has('data_source')) {
             return Utils::jsonAbortWithInternalError(
                 422,
                 402,
-                "Error generating report",
+                'Error generating report',
                 "Mandatory parameter 'data_source' is missing!"
             );
         }
@@ -534,13 +539,13 @@ class ProjectController extends Controller
                         'area' => $data_source,
                         'measurement_interval_dates' => [
                             'min' => $date_start,
-                            'max' => $date_end
-                        ]
+                            'max' => $date_end,
+                        ],
                     ]
                 );
             }
         } catch (\Exception $e) {
-            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error generating report", $e->getMessage());
+            return Utils::jsonAbortWithInternalError(422, $e->getCode(), 'Error generating report', $e->getMessage());
         }
 
         // $filepath = $dg->getRealFinalFilePath();
@@ -548,9 +553,7 @@ class ProjectController extends Controller
         return $this->renderJsonOrDownloadFile($request, $document);
     }
 
-
     /**
-     *
      * #PR19-b  api/v1/projects/{record_id}/generate-environmental-report-queued
      * API used to generate a report from the project
      *
@@ -562,11 +565,11 @@ class ProjectController extends Controller
      */
     public function generateEnvironmentalReportQueued(Request $request, $record, ReportGenerator $reportGenerator)
     {
-        if (!$request->has('data_source')) {
+        if (! $request->has('data_source')) {
             return Utils::jsonAbortWithInternalError(
                 422,
                 402,
-                "Error generating report",
+                'Error generating report',
                 "Mandatory parameter 'data_source' is missing!"
             );
         }
@@ -611,20 +614,19 @@ class ProjectController extends Controller
                         'area' => $data_source,
                         'measurement_interval_dates' => [
                             'min' => $date_start,
-                            'max' => $date_end
-                        ]
+                            'max' => $date_end,
+                        ],
                     ]
                 );
             }
         } catch (\Exception $e) {
-            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error generating report", $e->getMessage());
+            return Utils::jsonAbortWithInternalError(422, $e->getCode(), 'Error generating report', $e->getMessage());
         }
 
         // $filepath = $dg->getRealFinalFilePath();
         // $filename = $dg->getFinalFileName()
         return $this->renderJsonOrDownloadFile($request, $document);
     }
-
 
     /**
      * #PR20  api/v1/projects/{record_id}/env-measurements-logs
@@ -655,11 +657,11 @@ class ProjectController extends Controller
         if (isset($reports_data['links'])) {
             $ret['links'] = $reports_data['links'];
         }
+
         return Utils::renderStandardJsonapiResponse($ret, 200);
     }
 
     /**
-     *
      * #PR21  api/v1/projects/{record_id}/env-measurements-datasources
      *
      * Get all the sources of environmental data
@@ -680,21 +682,20 @@ class ProjectController extends Controller
                 $tmp['type'] = 'data_source';
                 $tmp['id'] = md5($source);
                 $tmp['attributes'] = [
-                    'name' => $source
+                    'name' => $source,
                 ];
 
                 $data_array[] = $tmp;
             }
             $ret = ['data' => $data_array];
+
             return Utils::renderStandardJsonapiResponse($ret, 200);
         } catch (\Exception $e) {
-            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error generating report", $e->getMessage());
+            return Utils::jsonAbortWithInternalError(422, $e->getCode(), 'Error generating report', $e->getMessage());
         }
     }
 
-
     /**
-     *
      * #PR22  api/v1/projects/1/env-log-delete
      *
      * Remove all measurements associated to a specific log file
@@ -729,12 +730,11 @@ class ProjectController extends Controller
 
             return Utils::renderStandardJsonapiResponse([], 204);
         } catch (\Exception $e) {
-            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error generating report", $e->getMessage());
+            return Utils::jsonAbortWithInternalError(422, $e->getCode(), 'Error generating report', $e->getMessage());
         }
     }
 
     /**
-     *
      * #PR23  api/v1/projects/{record_id}/bulk-create-zones
      *
      * @param Request $request
@@ -750,12 +750,11 @@ class ProjectController extends Controller
 
             return Utils::renderStandardJsonapiResponse([], 204);
         } catch (\Exception $e) {
-            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error creating zones", $e->getMessage());
+            return Utils::jsonAbortWithInternalError(422, $e->getCode(), 'Error creating zones', $e->getMessage());
         }
     }
 
     /**
-     *
      * #PR24  api/v1/projects/{record_id}/bulk-delete-zones
      *
      * @param Request $request
@@ -766,7 +765,7 @@ class ProjectController extends Controller
     {
         try {
             $zones = $request->data;
-            if (!empty($zones)) {
+            if (! empty($zones)) {
                 foreach ($zones as $zone_resource) {
                     $zone = Zone::findOrFail($zone_resource['id']);
                     $zone->delete();
@@ -775,12 +774,11 @@ class ProjectController extends Controller
 
             return Utils::renderStandardJsonapiResponse([], 204);
         } catch (\Exception $e) {
-            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error deleting zones", $e->getMessage());
+            return Utils::jsonAbortWithInternalError(422, $e->getCode(), 'Error deleting zones', $e->getMessage());
         }
     }
 
     /**
-     *
      * #PR28 /api/v1/projects/{record_id}/app-log-structure/{app_log_id}
      *
      * @param Request $request
@@ -792,19 +790,19 @@ class ProjectController extends Controller
         try {
             /** @var ApplicationLog $app_log */
             $app_log = $record->application_logs()->findOrFail($app_log_id);
+
             return Utils::renderStandardJsonapiResponse(['data' => $app_log->toJsonApi()], 200);
         } catch (\Exception $e) {
             return Utils::jsonAbortWithInternalError(
                 422,
                 $e->getCode(),
-                "Error retrieving application log",
+                'Error retrieving application log',
                 $e->getMessage()
             );
         }
     }
 
     /**
-     *
      * #PR29 /api/v1/projects/{record_id}/app-log-next-id
      *
      * @param Request $request
@@ -822,22 +820,22 @@ class ProjectController extends Controller
                 'type' => 'application_logs',
                 'id' => time(),
                 'attributes' => [
-                    'internal_progressive_number' => $prog + 1
-                ]
+                    'internal_progressive_number' => $prog + 1,
+                ],
             ];
+
             return Utils::renderStandardJsonapiResponse(['data' => $data], 200);
         } catch (\Exception $e) {
             return Utils::jsonAbortWithInternalError(
                 422,
                 $e->getCode(),
-                "Error retrieving application log next ID",
+                'Error retrieving application log next ID',
                 $e->getMessage()
             );
         }
     }
 
     /**
-     *
      * #PR30 (POST) /api/v1/projects/{record_id}/app-log-structure/{app_log_id}
      *
      * @param Request $request
@@ -850,12 +848,12 @@ class ProjectController extends Controller
         try {
             /** @var ApplicationLog $app_log */
             $app_log = $record->application_logs()->find($request->input('data.id'));
-            if (!$app_log) {
+            if (! $app_log) {
                 $app_log = ApplicationLog::create(
                     [
                         'name' => $request->input('data.attributes.name'),
                         'application_type' => $request->input('data.attributes.application_type'),
-                        'project_id' => $record->id
+                        'project_id' => $record->id,
                     ]
                 );
             } else {
@@ -879,14 +877,13 @@ class ProjectController extends Controller
             return Utils::jsonAbortWithInternalError(
                 422,
                 $e->getCode(),
-                "Error uploading application log",
+                'Error uploading application log',
                 $e->getMessage()
             );
         }
     }
 
     /**
-     *
      * #PR31 (POST) /api/v1/projects/{record_id}/tasks-statistics
      *
      * @param Request $request
@@ -899,22 +896,21 @@ class ProjectController extends Controller
         try {
             $ret = [
                 'tasks_num' => $record->getAllTaskNumGroupedByStatus(),
-                'authors' => Task::getAllAuthors($record->id)
+                'authors' => Task::getAllAuthors($record->id),
             ];
+
             return Utils::renderStandardJsonapiResponse(['data' => $ret], 200);
         } catch (\Exception $e) {
             return Utils::jsonAbortWithInternalError(
                 422,
                 $e->getCode(),
-                "Error uploading application log",
+                'Error uploading application log',
                 $e->getMessage()
             );
         }
     }
 
-
     /**
-     *
      * #PR32-a  api/v1/projects/{record_id}/generate-application-log-report
      * API used to generate a report from the project
      *
@@ -926,11 +922,11 @@ class ProjectController extends Controller
      */
     public function generateApplicationLogReport(Request $request, $record, ReportGenerator $reportGenerator)
     {
-        if (!$request->has('application_log_id')) {
+        if (! $request->has('application_log_id')) {
             return Utils::jsonAbortWithInternalError(
                 422,
                 402,
-                "Error generating report",
+                'Error generating report',
                 "Mandatory parameter 'application_log_id' is missing!"
             );
         }
@@ -963,12 +959,12 @@ class ProjectController extends Controller
                         'id' => $document->id,
                         'app_log_type' => $record->getCurrentAppLogType(),
                         'app_log_name' => $application_log->name,
-                        'zones' => $record->getCurrentAppLogZones()
+                        'zones' => $record->getCurrentAppLogZones(),
                     ]
                 );
             }
         } catch (\Exception $e) {
-            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error generating report", $e->getMessage());
+            return Utils::jsonAbortWithInternalError(422, $e->getCode(), 'Error generating report', $e->getMessage());
         }
 
         // $filepath = $dg->getRealFinalFilePath();
@@ -976,9 +972,7 @@ class ProjectController extends Controller
         return $this->renderJsonOrDownloadFile($request, $document);
     }
 
-
     /**
-     *
      * #PR32-b  api/v1/projects/{record_id}/generate-application-log-report-queued
      * API used to generate a report from the project
      *
@@ -989,11 +983,11 @@ class ProjectController extends Controller
      */
     public function generateApplicationLogReportQueued(Request $request, $record)
     {
-        if (!$request->has('application_log_id')) {
+        if (! $request->has('application_log_id')) {
             return Utils::jsonAbortWithInternalError(
                 422,
                 402,
-                "Error generating report",
+                'Error generating report',
                 "Mandatory parameter 'application_log_id' is missing!"
             );
         }
@@ -1025,7 +1019,6 @@ class ProjectController extends Controller
         return Utils::renderStandardJsonapiResponse([], 200);
     }
 
-
     /**
      * #PR33  /api/v1/closed-projects
      * @param Request $request
@@ -1042,27 +1035,28 @@ class ProjectController extends Controller
             $sortDir = 'desc';
             if ($request->has('sort')) {
                 $sortField = $request->get('sort');
-                if (!Str::startsWith($sortField, '-')) {
+                if (! Str::startsWith($sortField, '-')) {
                     $sortDir = 'asc';
                 } else {
                     $sortField = substr($sortField, 1);
                 }
             }
             $closedProjects = Project::closedProjectsFiltered($request->get('filter'), $sortField, $sortDir);
-            if (!empty($closedProjects)) {
+            if (! empty($closedProjects)) {
                 foreach ($closedProjects as $project) {
                     $data['data'][] = [
                         'id' => $project->id,
                         'type' => 'projects',
-                        'attributes' => $project
+                        'attributes' => $project,
                     ];
                 }
             }
+
             return Utils::renderStandardJsonapiResponse($data, 200);
         }
+
         return Utils::jsonAbortWithInternalError(401, 401, 'Authorization denied', "You're not allowed to access this resource.");
     }
-
 
     /**
      * #PR34
@@ -1087,8 +1081,7 @@ class ProjectController extends Controller
                 'Content-Disposition' => 'attachment; filename="'.$filename.'.csv"',
             ]);
         } catch (\Exception $e) {
-            return Utils::jsonAbortWithInternalError(422, 402, "Error generating report", $e->getMessage());
+            return Utils::jsonAbortWithInternalError(422, 402, 'Error generating report', $e->getMessage());
         }
-
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
-
 namespace App\Listeners;
+
 use App\ReportItem;
 use Net7\Documents\Events\DocumentDeleted;
 

@@ -3,17 +3,18 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Section;
+use App\User;
+use App\Utils\Utils;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use App\User;
-use App\Section;
-use Validator;
 use Illuminate\Validation\Rule;
 use Net7\Documents\Document;
-use App\Utils\Utils;
+use Validator;
 
-class SectionController extends Controller {
+class SectionController extends Controller
+{
     /**
      *  $rules = [
       'type'=>['required',Rule::in([
@@ -27,6 +28,4 @@ class SectionController extends Controller {
       $validator = Validator::make($request->data['attributes'], $rules);
       if ($validator->passes()) {
      */
-
-
 }

@@ -2,28 +2,24 @@
 
 namespace Tests\Feature\Disabled;
 
-use Tests\TestApiCase;
 use App\Boat;
-use App\User;
 use App\Permission;
-use App\Role;
 use App\Profession;
-
+use App\Role;
+use App\User;
 use Laravel\Passport\Passport;
-
-use const ROLE_ADMIN;
-use const ROLE_BOAT_MANAGER;
-use const ROLE_WORKER;
 use const PERMISSION_ADMIN;
 use const PERMISSION_BOAT_MANAGER;
 use const PERMISSION_WORKER;
-
+use const ROLE_ADMIN;
+use const ROLE_BOAT_MANAGER;
+use const ROLE_WORKER;
+use Tests\TestApiCase;
 
 class ApiBoatTest extends TestApiCase
 {
-
     // https://docs.spatie.be/laravel-permission/v2/advanced-usage/unit-testing/
-    public function setUp(): void
+    protected function setUp(): void
     {
         // first include all the normal setUp operations
         parent::setUp();
@@ -41,10 +37,8 @@ class ApiBoatTest extends TestApiCase
      */
 
     /** crea un utente e lo associa al ruolo */
-
-    function test_all()
+    public function test_all()
     {
-
         $this->populateProfessions();
         $admin_role = Role::firstOrCreate(['name' => ROLE_ADMIN]);
         $boat_manager_role = Role::firstOrCreate(['name' => ROLE_BOAT_MANAGER]);
@@ -65,15 +59,13 @@ class ApiBoatTest extends TestApiCase
         $boatManager2 = $this->_addUser(ROLE_BOAT_MANAGER); // equipaggio ??
         $boatManager2->givePermissionTo($bootmanagerPerm);
 
-
         $user = $this->_addUser(ROLE_WORKER);
-
 
         /*** test connessione con l'utente Admin */
         $token_admin = $this->_grantTokenPassword($admin1);
         $this->assertIsString($token_admin);
 
-        $response = $this->json('GET', route('api.auth.user'), [], ['Authorization' => 'Bearer ' . $token_admin])
+        $response = $this->json('GET', route('api.auth.user'), [], ['Authorization' => 'Bearer '.$token_admin])
             ->assertStatus(200)
             ->assertJsonStructure(['data' => ['id', 'type', 'attributes']]);
 
@@ -111,7 +103,7 @@ class ApiBoatTest extends TestApiCase
         $token = $this->_grantTokenPassword($boatManager1);
         $this->assertIsString($token);
         Passport::actingAs($boatManager1);
-        $response = $this->json('GET', route('api.auth.user'), [], ['Authorization' => 'Bearer ' . $token])
+        $response = $this->json('GET', route('api.auth.user'), [], ['Authorization' => 'Bearer '.$token])
             ->assertStatus(200)
             ->assertJsonStructure(['data' => ['id', 'type', 'attributes']]);
 
@@ -122,14 +114,12 @@ class ApiBoatTest extends TestApiCase
         // deve vedere SOLO le boat di $boatManager2
         //   $this->getBoatList($boatManager2, count($boats_for_bm2));
 
-
         //    $this->getBoatList($user,  0); // non deve vedere nessuna boat il suo ruolo è worker con nessun permesso
 
         //    $user->givePermissionTo($adminPerm); // do il permesso all'utente di admin e deve vedere tutto
 
         // $this->getBoatList($user,  count($boats_for_bm1) + count($boats_for_bm2));
         // do all'utente $user il permesso di
-
     }
 
     private function getBoatList(User $user, int $expected)
@@ -148,12 +138,11 @@ class ApiBoatTest extends TestApiCase
     /** associa la barca all'utente via api*/
     private function boatApiAssociate(User $connectedUser, User $user, Boat $boat)
     {
-
         $data = [
             'data' => [
                 'type' => 'boat-users',
-                'attributes' => ['profession_id' => 1, 'boat_id' => $boat->id, 'user_id' => $user->id]
-            ]
+                'attributes' => ['profession_id' => 1, 'boat_id' => $boat->id, 'user_id' => $user->id],
+            ],
         ];
         $this->refreshApplication();  // Fa una sorta di pulizia della cache perché dopo la prima post, poi tutte le chiamate successive tornano sulla stessa route
         Passport::actingAs($connectedUser);
@@ -179,9 +168,9 @@ class ApiBoatTest extends TestApiCase
         $boat = factory(Boat::class)->create();
         $this->assertInstanceOf(Boat::class, $boat);
         $this->assertDatabaseHas('boats', ['name' => $boat->name]);
+
         return $boat;
     }
-
 
     private function populateProfessions()
     {
@@ -190,9 +179,5 @@ class ApiBoatTest extends TestApiCase
             $prof = Profession::create(['name' => $profession]);
             $prof->save();
         }
-
-
     }
-
-
 }

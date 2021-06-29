@@ -1,13 +1,11 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateApplicationLogsTasksTable extends Migration
 {
-
-
     /**
      * Run the migrations.
      *
@@ -16,7 +14,6 @@ class CreateApplicationLogsTasksTable extends Migration
     public function up()
     {
         Schema::create('applications_logs_tasks', function (Blueprint $table) {
-
             $table->enum('action', ['open', 'close'])->default('open');
 
             // Relations:
@@ -30,7 +27,6 @@ class CreateApplicationLogsTasksTable extends Migration
             $table->foreign('application_log_id')->references('id')->on('application_logs')->onDelete('cascade');
 
             $table->timestamps();
-
         });
     }
 

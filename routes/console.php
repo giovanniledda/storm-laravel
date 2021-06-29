@@ -6,8 +6,8 @@ use App\Project;
 use App\Services\InternalProgNumHandler;
 use App\Task;
 use Illuminate\Foundation\Inspiring;
-use Net7\Documents\Document;
 use Illuminate\Support\Str;
+use Net7\Documents\Document;
 use Symfony\Component\Process\Process;
 
 /*
@@ -25,16 +25,12 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->describe('Display an inspiring quote');
 
-
 // Aggiornamento ID interni di Task, Project e ApplicationLog su base "Boat"
 Artisan::command('update-internal-ids', function (InternalProgNumHandler $ipn_handler) {
-
     $this->comment('Running internal IDS sync...');
     $ipn_handler->run();
     $this->comment('...done!');
-
 })->describe('Update (and sync) internal_progressive_number field for many Models');
-
 
 // Spostamento immagini da Task a History
 Artisan::command('move-task-images', function () {
@@ -52,7 +48,6 @@ Artisan::command('move-task-images', function () {
 
         /** @var Task $resource */
         foreach ($tasks as $resource) {
-
             $this->info("\n");
             $this->info("- Task ({$resource->created_at}) {$resource->name} [ID: {$resource->id}]");
 
@@ -85,11 +80,11 @@ Artisan::command('move-task-images', function () {
                         if ($file_path && file_exists($file_path)) {
                             $trick = Str::replaceLast('/', '<', $file_path);
                             $filename = Str::after($trick, '<');
-                            $new_file_dir_path = storage_path('app/' . $history->getMediaPath($media));
-                            if (!is_dir($new_file_dir_path)) {
+                            $new_file_dir_path = storage_path('app/'.$history->getMediaPath($media));
+                            if (! is_dir($new_file_dir_path)) {
                                 mkdir($new_file_dir_path, 0755, true);
                             }
-                            $new_file_path = $new_file_dir_path . $filename;
+                            $new_file_path = $new_file_dir_path.$filename;
                             rename($file_path, $new_file_path);
                             $this->info("--- OLD PATH ($file_path) ---> NEW PATH ($new_file_path)");
                         }
@@ -98,7 +93,7 @@ Artisan::command('move-task-images', function () {
                         $document->documentable_type = History::class;
                         $document->documentable_id = $history->id;
                         $document->save();
-                        $this->info("--- ...updated!");
+                        $this->info('--- ...updated!');
                     }
                 }
             }
@@ -109,13 +104,10 @@ Artisan::command('move-task-images', function () {
         $bar->finish();
         $this->comment("\n...done!");
     }
-
 })->describe('Takes images from Tasks and assign them to the first History instance of each Task');
-
 
 // Spostamento CONVERSIONI (dir "c") immagini da Task a History
 Artisan::command('move-task-images-conversions', function () {
-
     if ($this->confirm('Do you wish to continue?')) {
         $this->comment('Running images moving...');
         $tasks = App\Task::all();
@@ -126,7 +118,6 @@ Artisan::command('move-task-images-conversions', function () {
 
         /** @var Task $resource */
         foreach ($tasks as $resource) {
-
             $this->info("\n");
             $this->info("- Task ({$resource->created_at}) {$resource->name} [ID: {$resource->id}]");
 
@@ -159,20 +150,20 @@ Artisan::command('move-task-images-conversions', function () {
                         $project_id = $resource->project->id;
                         $task_id = $resource->id;
                         $media_id = $media->id;
-                        $source_path = 'projects' . DIRECTORY_SEPARATOR . $project_id . DIRECTORY_SEPARATOR . 'tasks' . DIRECTORY_SEPARATOR .
-                            $task_id . DIRECTORY_SEPARATOR . $document->type . DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
+                        $source_path = 'projects'.DIRECTORY_SEPARATOR.$project_id.DIRECTORY_SEPARATOR.'tasks'.DIRECTORY_SEPARATOR.
+                            $task_id.DIRECTORY_SEPARATOR.$document->type.DIRECTORY_SEPARATOR.$media_id.DIRECTORY_SEPARATOR;
 
-                        $source_path = storage_path('app/' . $source_path . "c");
+                        $source_path = storage_path('app/'.$source_path.'c');
 
                         if ($source_path && is_dir($source_path)) {
-                            $new_file_dir_path = storage_path('app/' . $history->getMediaPath($media) . "c");
+                            $new_file_dir_path = storage_path('app/'.$history->getMediaPath($media).'c');
                             $new_file_path = $new_file_dir_path;
 
                             rename($source_path, $new_file_path);
                             $this->info("--- OLD PATH ($source_path) ---> NEW PATH ($new_file_path)");
 
                             $this->info("--- Document ({$document->created_at}) [ID: {$document->id}]");
-                            $this->info("--- ...updated!");
+                            $this->info('--- ...updated!');
                         }
                     }
                 }
@@ -184,9 +175,7 @@ Artisan::command('move-task-images-conversions', function () {
         $bar->finish();
         $this->comment("\n...done!");
     }
-
 })->describe('Takes images CONVERSIONS from Tasks and assign them to the first History instance of each Task');
-
 
 // Spostamento descrizioni da Task a History comments
 Artisan::command('move-task-descriptions', function () {
@@ -204,7 +193,6 @@ Artisan::command('move-task-descriptions', function () {
 
         /** @var Task $resource */
         foreach ($tasks as $resource) {
-
             $this->info("\n");
             $this->info("- Task ({$resource->created_at}) {$resource->name} [ID: {$resource->id}]");
             $description = $resource->description;
@@ -217,16 +205,16 @@ Artisan::command('move-task-descriptions', function () {
                     if ($history->comments()->count()) {
                         $comment = $history->getFirstcomment();
                         $this->info("-- Comment [ID: {$comment->id}]");
-                        $comment->body = $comment->body . ' - ' . $description;
-                        if (!$comment->author_id) {
+                        $comment->body = $comment->body.' - '.$description;
+                        if (! $comment->author_id) {
                             $comment->author_id = $resource->author_id;
                         }
                         $comment->save();
-                        $this->info("--- ...updated!");
+                        $this->info('--- ...updated!');
                     } else {
                         $comment = Comment::create([
                             'body' => $description,
-                            'author_id' => $resource->author_id
+                            'author_id' => $resource->author_id,
                         ]);
                         $history->comments()->save($comment);
                         $this->info("--- ...comment [ID: {$comment->id}] created!");
@@ -239,9 +227,7 @@ Artisan::command('move-task-descriptions', function () {
         $bar->finish();
         $this->comment("\n...done!");
     }
-
 })->describe('Takes description from Tasks and assign them as a comment to the first History instance of each Task');
-
 
 // Aggiornamento dei template in uso, con nuovi placeholders
 Artisan::command('update-phpdocx-templates', function () {
@@ -262,18 +248,14 @@ Artisan::command('update-phpdocx-templates', function () {
 
             $project->setupApplicationLogTemplate();
             $this->info("- Template APP_LOG_REPORT updated for Project [ID: {$project->id}]");
-
         }
     }
 })->describe('Update of used templates, with new placeholders');
 
-
 // Per ogni Task aggiorna l'immaginina della sua posizione (con pin) sul ritaglio di ponte
 Artisan::command('update-task-map {limit?} {--id=*}', function ($limit = null) {
-
     if ($this->confirm('Do you wish to continue?')) {
-
-        $this->comment("Running task updating map...");
+        $this->comment('Running task updating map...');
 
         $ids = $this->option('id');
         if (empty($ids)) {
@@ -294,30 +276,25 @@ Artisan::command('update-task-map {limit?} {--id=*}', function ($limit = null) {
 
         /** @var Task $task */
         foreach ($tasks as $task) {
-
             $this->info("\n");
             $this->info("- Task ({$task->created_at}) {$task->name} [ID: {$task->id}]...");
             $task->updateMap();
-            $this->info("...map updated!");
+            $this->info('...map updated!');
             $bar->advance();
         }
 
         $bar->finish();
         $this->comment("\n...done!");
     }
-
 })->describe('Runs updateMap for each Task');
-
 
 // SOLO PER LA PROD: Riavvia il container Docker che gestisce la coda degli invii a Google e rilancia i job falliti
 Artisan::command('reload-gdrive-jobs', function () {
-
     Artisan::call('queue retry:all', [
-        '--queue' => QUEUE_GDRIVE_SEND_DOCS
+        '--queue' => QUEUE_GDRIVE_SEND_DOCS,
     ]);
 
     $gdriveQueueDockerContainer = 'laravel_storm_queue';
     $process = new Process(["docker restart $gdriveQueueDockerContainer"]);
     $process->run();
-
 })->describe('Restarts docker container and retry gdrive-jobs queue jobs');

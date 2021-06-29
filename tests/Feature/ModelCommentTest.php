@@ -7,19 +7,18 @@ use App\Comment;
 use App\Notifications\TaskCreated;
 use App\Notifications\TaskUpdated;
 use App\Permission;
+use App\Profession;
 use App\Project;
 use App\Role;
-use App\Profession;
 use App\Task;
-use Tests\TestCase;
 use App\User;
-
 use const PERMISSION_BOAT_MANAGER;
 use const ROLE_BOAT_MANAGER;
+use Tests\TestCase;
 
 class ModelCommentTest extends TestCase
 {
-    function test_can_create_comment_related_to_task()
+    public function test_can_create_comment_related_to_task()
     {
         $this->_populateProfessions();
         // Creo barca
@@ -67,15 +66,14 @@ class ModelCommentTest extends TestCase
                 $this->assertDatabaseHas('comments', ['commentable_type' => Task::class, 'commentable_id' => $task->id]);
             }
         }
-
-
     }
-    private function _populateProfessions() {
-        $professions = ['owner','chief engineer', 'captain', 'ship\'s boy'];
+
+    private function _populateProfessions()
+    {
+        $professions = ['owner', 'chief engineer', 'captain', 'ship\'s boy'];
         foreach ($professions as $profession) {
             $prof = Profession::create(['name'=>$profession]);
             $prof->save();
-        } 
-        
+        }
     }
 }

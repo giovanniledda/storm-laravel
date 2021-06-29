@@ -6,11 +6,10 @@ use App\Project;
 use App\ReportItem;
 use App\Services\ReportGenerator;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\SerializesModels;
-
 use const REPORT_ITEM_TYPE_CORR_MAP_DOC;
 
 class GenerateCorrosionMapReport implements ShouldQueue
@@ -87,6 +86,7 @@ class GenerateCorrosionMapReport implements ShouldQueue
         }
 
         $project->closeAllTasksTemporaryFiles();
+
         return true;
     }
 }

@@ -8,16 +8,15 @@ use App\Project;
 use App\ProjectUser;
 use App\Section;
 use App\Subsection;
-use Tests\TestCase;
 use App\User;
 use function factory;
 use const PROJECT_STATUS_CLOSED;
 use const PROJECT_STATUS_IN_SITE;
+use Tests\TestCase;
 
 class ModelBoatTest extends TestCase
 {
-
-    function test_can_create_boat_related_to_section_and_subsections()
+    public function test_can_create_boat_related_to_section_and_subsections()
     {
         $boat = factory(Boat::class)->create();
         $this->assertInstanceOf(Boat::class, $boat);
@@ -27,7 +26,6 @@ class ModelBoatTest extends TestCase
 
         $all_subsections = [];
         foreach ($sections as $section) {
-
             $this->assertInstanceOf(Section::class, $section);
             $this->assertEquals($boat->id, $section->boat_id);
 
@@ -44,13 +42,12 @@ class ModelBoatTest extends TestCase
         $this->assertCount(count($all_subsections), $boat->subsections);
     }
 
-
-    function test_access_only_my_boats()
+    public function test_access_only_my_boats()
     {
         $boats = factory(Boat::class, 3)->create();
 
         $project = factory(Project::class)->create([
-            'project_status' => PROJECT_STATUS_IN_SITE
+            'project_status' => PROJECT_STATUS_IN_SITE,
         ]);
 
         // associo le 3 boat al progetto $project
@@ -70,7 +67,7 @@ class ModelBoatTest extends TestCase
         $boats2 = factory(Boat::class, 3)->create();
 
         $project2 = factory(Project::class)->create([
-            'project_status' => PROJECT_STATUS_IN_SITE
+            'project_status' => PROJECT_STATUS_IN_SITE,
         ]);
 
         foreach ($boats2 as $boat) {
@@ -95,5 +92,4 @@ class ModelBoatTest extends TestCase
             $this->assertNotContains($boat1->id, $user2_boats_ids);
         }
     }
-
 }

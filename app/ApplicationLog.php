@@ -3,12 +3,6 @@
 namespace App;
 
 use App\Observers\ApplicationLogObserver;
-use Faker\Generator as Faker;
-use Illuminate\Database\Eloquent\Model;
-use function array_map;
-use function env;
-use function factory;
-
 use const APPLICATION_LOG_SECTION_TYPE_APPLICATION;
 use const APPLICATION_LOG_SECTION_TYPE_INSPECTION;
 use const APPLICATION_LOG_SECTION_TYPE_ZONES;
@@ -17,6 +11,11 @@ use const APPLICATION_TYPE_FILLER;
 use const APPLICATION_TYPE_HIGHBUILD;
 use const APPLICATION_TYPE_PRIMER;
 use const APPLICATION_TYPE_UNDERCOAT;
+use function array_map;
+use function env;
+use function factory;
+use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Model;
 
 class ApplicationLog extends Model
 {
@@ -37,7 +36,7 @@ class ApplicationLog extends Model
     protected static function boot()
     {
         parent::boot();
-        ApplicationLog::observe(ApplicationLogObserver::class);
+        self::observe(ApplicationLogObserver::class);
     }
 
     /**
@@ -45,7 +44,7 @@ class ApplicationLog extends Model
      */
     public function application_log_sections()
     {
-        return $this->hasMany('App\ApplicationLogSection', 'application_log_id');
+        return $this->hasMany(\App\ApplicationLogSection::class, 'application_log_id');
     }
 
     /**
@@ -118,7 +117,7 @@ class ApplicationLog extends Model
      */
     public function project()
     {
-        return $this->belongsTo('App\Project');
+        return $this->belongsTo(\App\Project::class);
     }
 
     /**
@@ -136,7 +135,7 @@ class ApplicationLog extends Model
      */
     public function author()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo(\App\User::class);
     }
 
     /**
@@ -152,7 +151,7 @@ class ApplicationLog extends Model
      */
     public function last_editor()
     {
-        return $this->belongsTo('App\User', 'last_editor_id');
+        return $this->belongsTo(\App\User::class, 'last_editor_id');
     }
 
     /**
@@ -168,7 +167,7 @@ class ApplicationLog extends Model
      */
     public function report_item()
     {
-        return $this->morphOne('App\ReportItem', 'reportable');
+        return $this->morphOne(\App\ReportItem::class, 'reportable');
     }
 
     /**
@@ -176,7 +175,7 @@ class ApplicationLog extends Model
      */
     public function closed_tasks()
     {
-        return $this->belongsToMany('App\Task', 'App\ApplicationLogTask')->wherePivot('action', '=', 'close');
+        return $this->belongsToMany(\App\Task::class, \App\ApplicationLogTask::class)->wherePivot('action', '=', 'close');
     }
 
     public function closeTask(Task $task)
@@ -189,7 +188,7 @@ class ApplicationLog extends Model
      */
     public function opened_tasks()
     {
-        return $this->belongsToMany('App\Task', 'App\ApplicationLogTask')->wherePivot('action', '=', 'open');
+        return $this->belongsToMany(\App\Task::class, \App\ApplicationLogTask::class)->wherePivot('action', '=', 'open');
     }
 
     /**
@@ -215,7 +214,7 @@ class ApplicationLog extends Model
     {
         $other_remarks = [];
         $used_zones = $this->getUsedZones();
-        if (!empty($used_zones)) {
+        if (! empty($used_zones)) {
             $zones_ids = array_map(function ($zone) {
                 return $zone['id'];
             }, $used_zones);
@@ -227,6 +226,7 @@ class ApplicationLog extends Model
 
             return $apply_pluck ? $other_remarks_collection->pluck('id') : $other_remarks_collection->get();
         }
+
         return $other_remarks;
     }
 
@@ -253,13 +253,12 @@ class ApplicationLog extends Model
                 APPLICATION_TYPE_FILLER,
                 APPLICATION_TYPE_HIGHBUILD,
                 APPLICATION_TYPE_UNDERCOAT,
-                APPLICATION_TYPE_COATING
-            ])
+                APPLICATION_TYPE_COATING,
+            ]),
         ];
     }
 
     /**
-     *
      * Creates a Application Log using some fake data and some others that have sense
      * @param Faker $faker
      * @return ApplicationLog
@@ -267,33 +266,34 @@ class ApplicationLog extends Model
     public static function createSemiFake(Faker $faker)
     {
         $data = self::getSemiFakeData($faker);
-        $t = new ApplicationLog($data);
+        $t = new self($data);
         $t->save();
+
         return $t;
     }
-
 
     /**
      * An internal ID calculated on a "per-boat" base
      * @param $boat_id
-     * @return integer
+     * @return int
      */
     public static function getLastInternalProgressiveIDByBoat($boat_id)
     {
-        $max = ApplicationLog::join('projects', 'projects.id', '=', 'application_logs.project_id')
+        $max = self::join('projects', 'projects.id', '=', 'application_logs.project_id')
             ->where('projects.boat_id', '=', $boat_id)
             ->max('application_logs.internal_progressive_number');
+
         return $max ? $max : 0;
     }
 
     /**
      * Goives total number of tasks calculated on a "per-boat" base
      * @param $boat_id
-     * @return integer
+     * @return int
      */
     public static function countApplicationLogsByBoat($boat_id)
     {
-        return ApplicationLog::join('projects', 'projects.id', '=', 'application_logs.project_id')
+        return self::join('projects', 'projects.id', '=', 'application_logs.project_id')
             ->where('projects.boat_id', '=', $boat_id)
             ->count();
     }
@@ -306,7 +306,7 @@ class ApplicationLog extends Model
         if (env('INTERNAL_PROG_NUM_ACTIVE')) {
             $p_boat = $this->boat();
             if ($p_boat) {
-                $highest_internal_pn = ApplicationLog::getLastInternalProgressiveIDByBoat($p_boat->id);
+                $highest_internal_pn = self::getLastInternalProgressiveIDByBoat($p_boat->id);
                 $this->update(['internal_progressive_number' => ++$highest_internal_pn]);
             }
         }
@@ -322,11 +322,12 @@ class ApplicationLog extends Model
         $data = [
             'type' => $this->table,
             'id' => $this->id,
-            'attributes' => $this
+            'attributes' => $this,
         ];
         // editor e author vanno aggiunti dopo aver assegnato $this
         $data['attributes']['author'] = $this->author_for_api();
         $data['attributes']['last_editor'] = $this->last_editor_for_api();
+
         return $data;
     }
 
@@ -347,6 +348,7 @@ class ApplicationLog extends Model
                 }
             }
         }
+
         return $used_zones;
     }
 

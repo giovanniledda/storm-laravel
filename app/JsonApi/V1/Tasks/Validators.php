@@ -2,10 +2,10 @@
 
 namespace App\JsonApi\V1\Tasks;
 
-use CloudCreativity\LaravelJsonApi\Validation\AbstractValidators;
-use CloudCreativity\LaravelJsonApi\Factories\Factory;
-use CloudCreativity\LaravelJsonApi\Contracts\ContainerInterface;
 use function array_merge;
+use CloudCreativity\LaravelJsonApi\Contracts\ContainerInterface;
+use CloudCreativity\LaravelJsonApi\Factories\Factory;
+use CloudCreativity\LaravelJsonApi\Validation\AbstractValidators;
 use function explode;
 use function implode;
 use const TASK_TYPE_PRIMARY;
@@ -77,8 +77,7 @@ class Validators extends AbstractValidators
      * @var string[]|null
      *      the allowed fields, an empty array for none allowed, or null to allow all fields.
      */
-    protected $allowedSortParameters = null;// ['title', 'description']; // tutti i campi abilitati all'ordinamento
-
+    protected $allowedSortParameters = null; // ['title', 'description']; // tutti i campi abilitati all'ordinamento
 
     /**
      * Get resource validation rules.
@@ -89,20 +88,20 @@ class Validators extends AbstractValidators
      */
     protected function rules($record = null): array
     {
-       return [
+        return [
         //'title' => 'string|min:1|max:255',
 //        'description' => 'string',
            'number' => 'numeric',
            'worked_hours' => 'numeric',
            'estimated_hours' => 'numeric',
-           'status' => 'in: ' . self::getTaskStatusOptions(),
+           'status' => 'in: '.self::getTaskStatusOptions(),
            'project_id' => 'required|numeric|exists:projects,id',
            'section_id' => 'required|numeric|exists:sections,id',
            'x_coord' => 'required|numeric',
            'y_coord' => 'required|numeric',
            'zone_id' => 'nullable|numeric|exists:zones,id',
-           'task_type' => 'string|in:' . TASK_TYPE_REMARK . ',' . TASK_TYPE_PRIMARY,
-           'intervent_type_id' => 'nullable|required_if:task_type,' . TASK_TYPE_PRIMARY . '|numeric|exists:task_intervent_types,id',
+           'task_type' => 'string|in:'.TASK_TYPE_REMARK.','.TASK_TYPE_PRIMARY,
+           'intervent_type_id' => 'nullable|required_if:task_type,'.TASK_TYPE_PRIMARY.'|numeric|exists:task_intervent_types,id',
            'opener_application_log_id' => 'nullable|numeric|exists:application_logs,id',
         ];
     }
@@ -121,5 +120,4 @@ class Validators extends AbstractValidators
             'filter.opener_application_log_id'=> 'numeric',
         ];
     }
-
 }

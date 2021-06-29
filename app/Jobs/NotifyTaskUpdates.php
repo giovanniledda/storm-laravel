@@ -4,12 +4,12 @@ namespace App\Jobs;
 
 use App\Notifications\TaskNotifications;
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Notification;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Net7\Logging\models\Logs as Log;
+use Notification;
 
 class NotifyTaskUpdates implements ShouldQueue
 {
@@ -67,7 +67,7 @@ class NotifyTaskUpdates implements ShouldQueue
     {
 //        $users = StormUtils::getAllBoatManagers();
         $users = $this->task->getUsersToNotify();
-        if (!empty($users)) {
+        if (! empty($users)) {
             Notification::send($users, $this->task_notification);
         }
     }

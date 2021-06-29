@@ -29,7 +29,7 @@ class Zone extends Model
     protected static function boot()
     {
         parent::boot();
-        Zone::observe(ZoneObserver::class);
+        self::observe(ZoneObserver::class);
     }
 
     /**
@@ -39,7 +39,7 @@ class Zone extends Model
      */
     public function parent_zone()
     {
-        return $this->belongsTo('App\Zone', 'parent_zone_id');
+        return $this->belongsTo(self::class, 'parent_zone_id');
     }
 
     /**
@@ -49,7 +49,7 @@ class Zone extends Model
      */
     public function children_zones()
     {
-        return $this->hasMany('App\Zone', 'parent_zone_id');
+        return $this->hasMany(self::class, 'parent_zone_id');
     }
 
     /**
@@ -59,7 +59,7 @@ class Zone extends Model
      */
     public function project()
     {
-        return $this->belongsTo('App\Project', 'project_id');
+        return $this->belongsTo(\App\Project::class, 'project_id');
     }
 
     /**
@@ -79,7 +79,7 @@ class Zone extends Model
      */
     public function zone_analysis_info_blocks()
     {
-        return $this->hasMany('App\ZoneAnalysisInfoBlock', 'zone_id');
+        return $this->hasMany(\App\ZoneAnalysisInfoBlock::class, 'zone_id');
     }
 
     /**
@@ -87,7 +87,7 @@ class Zone extends Model
      */
     public function tasks()
     {
-        return $this->hasMany('App\Task', 'zone_id');
+        return $this->hasMany(\App\Task::class, 'zone_id');
     }
 
     /**
@@ -108,7 +108,6 @@ class Zone extends Model
     }
 
     /**
-     *
      * Creates a Zone using some fake data and some others that have sense
      * @param Faker $faker
      * @param int|null $project_id
@@ -117,8 +116,9 @@ class Zone extends Model
     public static function createSemiFake(Faker $faker, int $project_id = null)
     {
         $data = self::getSemiFakeData($faker, $project_id);
-        $t = new Zone($data);
+        $t = new self($data);
         $t->save();
+
         return $t;
     }
 

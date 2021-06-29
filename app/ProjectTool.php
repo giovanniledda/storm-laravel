@@ -1,4 +1,5 @@
 <?php
+
 namespace App;
 
 use Doctrine\DBAL\Driver\PDOException;
@@ -12,17 +13,17 @@ class ProjectTool extends Pivot
 
     protected $fillable = [
         'project_id',
-        'tool_id'
+        'tool_id',
     ];
 
     public function tool()
     {
-        return $this->belongsTo('App\Tool');
+        return $this->belongsTo(\App\Tool::class);
     }
 
     public function project()
     {
-        return $this->belongsTo('App\Project');
+        return $this->belongsTo(\App\Project::class);
     }
 
     /**
@@ -33,9 +34,9 @@ class ProjectTool extends Pivot
     public static function createOneIfNotExists(int $tool_id, int $project_id)
     {
         try {
-            return ProjectTool::create([
+            return self::create([
                 'tool_id' => $tool_id,
-                'project_id' => $project_id
+                'project_id' => $project_id,
             ]);
         } catch (PDOException $e) {
             // se si passa di qua qualcuno cerca di fare una relazione già presente, un doppione.
@@ -50,7 +51,7 @@ class ProjectTool extends Pivot
      */
     public static function findOneByPks(int $tool_id, int $project_id)
     {
-        return ProjectTool::where('tool_id', '=', $tool_id)
+        return self::where('tool_id', '=', $tool_id)
             ->where('project_id', '=', $project_id)
             ->first();
     }

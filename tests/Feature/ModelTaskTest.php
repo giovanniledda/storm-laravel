@@ -3,17 +3,17 @@
 namespace Tests\Feature;
 
 use App\Boat;
+use App\Project;
 use App\Section;
 use App\Subsection;
 use App\Task;
-use App\Project;
 use App\Zone;
-use Tests\TestCase;
 use function factory;
+use Tests\TestCase;
 
 class ModelTaskTest extends TestCase
 {
-    function test_can_create_task_without_project()
+    public function test_can_create_task_without_project()
     {
         $fake_name = $this->faker->sentence;
         $task = new Task([
@@ -25,7 +25,7 @@ class ModelTaskTest extends TestCase
         $this->assertDatabaseHas('tasks', ['title' => $fake_name]);
     }
 
-    function test_can_create_task_related_to_project()
+    public function test_can_create_task_related_to_project()
     {
         $task = factory(Task::class)->create();
         $project = factory(Project::class)->create();
@@ -40,11 +40,10 @@ class ModelTaskTest extends TestCase
         $this->assertEquals($task->project->name, $project->name);
     }
 
-
     // Per ora il test per com'è fallisce sempre perché cerca tra i task direttamente associati alla section
     // anche quelli delle subsection...ma non c'è nessun modo di prenderli in automatico...ndrebbe messo un metodo
     // dammiITaskDelleSubsectionEMiei  (cioe' della section) in section
-    function test_can_create_tasks_related_to_subsections_and_sections()
+    public function test_can_create_tasks_related_to_subsections_and_sections()
     {
         $boat = factory(Boat::class)->create();
         $this->assertInstanceOf(Boat::class, $boat);
@@ -53,14 +52,12 @@ class ModelTaskTest extends TestCase
         $boat->sections()->saveMany($sections);
 
         foreach ($sections as $section) {
-
             $this->assertInstanceOf(Section::class, $section);
 
             $subsections = factory(Subsection::class, $this->faker->randomDigitNotNull)->create();
             $section->subsections()->saveMany($subsections);
 
             foreach ($subsections as $subsection) {
-
                 $this->assertInstanceOf(Subsection::class, $subsection);
 
                 $tasks = factory(Task::class, $this->faker->randomDigitNotNull)->create();
@@ -77,18 +74,17 @@ class ModelTaskTest extends TestCase
             $this->assertEquals($section_tasks_num, $subsection_tasks_num, "TEST FALLITO? NO PROBLEM! Vedere commento a riga 42 del file.\n");
             $this->assertNotEquals($subsection_tasks_num, 0);
         }
-
     }
 
-    function test_internal_progressive_number() {
-
+    public function test_internal_progressive_number()
+    {
         $boats = factory(Boat::class, 3)->create();
         /** @var Boat $boat */
         foreach ($boats as $boat) {
             $projs_index_for_boat = 1;
             $tasks_index_for_boat = 1;
             $projects = factory(Project::class, 4)->create([
-                'boat_id' => $boat->id
+                'boat_id' => $boat->id,
             ]);
             /** @var Project $project */
             foreach ($projects as $project) {
@@ -96,7 +92,7 @@ class ModelTaskTest extends TestCase
                 $this->assertEquals($projs_index_for_boat++, $project->internal_progressive_number);
 
                 $tasks = factory(Task::class, 10)->create([
-                    'project_id' => $project->id
+                    'project_id' => $project->id,
                 ]);
                 /** @var Task $task */
                 foreach ($tasks as $task) {
@@ -107,7 +103,8 @@ class ModelTaskTest extends TestCase
         }
     }
 
-    function testBasicRelationships() {
+    public function testBasicRelationships()
+    {
 
         /** @var Task $task1 */
         $task1 = factory(Task::class)->create();
@@ -138,9 +135,8 @@ class ModelTaskTest extends TestCase
         $this->assertEquals($zone->id, $task3->zone->id);
     }
 
-
-    function test_related_sections() {
-
+    public function test_related_sections()
+    {
         $boat = factory(Boat::class)->create();
         $this->assertInstanceOf(Boat::class, $boat);
 
@@ -179,7 +175,5 @@ class ModelTaskTest extends TestCase
             $my_tasks = $section->getOnlyMyTasks($all_tasks_a_ids);
             $this->assertCount(5, $my_tasks);
         }
-
     }
-
 }

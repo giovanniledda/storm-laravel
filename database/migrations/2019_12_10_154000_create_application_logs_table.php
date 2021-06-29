@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateApplicationLogsTable extends Migration
 {
@@ -22,7 +22,7 @@ class CreateApplicationLogsTable extends Migration
                 APPLICATION_TYPE_FILLER,
                 APPLICATION_TYPE_HIGHBUILD,
                 APPLICATION_TYPE_UNDERCOAT,
-                APPLICATION_TYPE_COATING
+                APPLICATION_TYPE_COATING,
             ])->nullable();
 
             $table->timestamps();

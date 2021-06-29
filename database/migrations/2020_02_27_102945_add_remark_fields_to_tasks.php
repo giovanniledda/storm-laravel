@@ -1,13 +1,11 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddRemarkFieldsToTasks extends Migration
 {
-
-
     /**
      * Run the migrations.
      *
@@ -16,7 +14,6 @@ class AddRemarkFieldsToTasks extends Migration
     public function up()
     {
         Schema::table('tasks', function (Blueprint $table) {
-
             $table->string('task_type')->default(TASK_TYPE_PRIMARY)->nullable();
 
             // Relations:

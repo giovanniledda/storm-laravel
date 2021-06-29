@@ -2,8 +2,8 @@
 
 use App\Comment;
 use App\TaskInterventType;
-use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
+use Illuminate\Database\Seeder;
 use Net7\Documents\Document;
 use Seeds\SeederUtils as Utils;
 
@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
         $this->utils = new Utils();
 
         // creo un sito
-        $this->command->warn(" ------ SITES --------");
+        $this->command->warn(' ------ SITES --------');
 
         $site = $this->utils->createSite();
 
@@ -34,7 +34,6 @@ class DatabaseSeeder extends Seeder
             ->save();
 
         $this->command->info("Site {$site->name} created");
-
 
         $site2 = $this->utils->createSite();
 
@@ -47,7 +46,7 @@ class DatabaseSeeder extends Seeder
         $this->command->info("Site {$site2->name} created");
 
         // crea N boat...
-        $this->command->warn(" ------ BOATS & SECTIONS --------");
+        $this->command->warn(' ------ BOATS & SECTIONS --------');
 
         $boats = [];
         for ($i = 0; $i < 5; $i++) {
@@ -58,10 +57,10 @@ class DatabaseSeeder extends Seeder
             $num = $this->faker->randomElement(['1', '2', '3', '4']);
             if ($boats[$i]->boat_type == BOAT_TYPE_SAIL) {
 //                $this->utils->addImageToBoat($boats[$i], "./boat/sail$num.jpg", Document::GENERIC_IMAGE_TYPE);
-                $this->utils->addImageToBoat($boats[$i], "./boat/generic_sail_img.png", Document::GENERIC_IMAGE_TYPE);
+                $this->utils->addImageToBoat($boats[$i], './boat/generic_sail_img.png', Document::GENERIC_IMAGE_TYPE);
             } else {
 //                $this->utils->addImageToBoat($boats[$i], "./boat/motor$num.jpg", Document::GENERIC_IMAGE_TYPE);
-                $this->utils->addImageToBoat($boats[$i], "./boat/generic_motor_img.png", Document::GENERIC_IMAGE_TYPE);
+                $this->utils->addImageToBoat($boats[$i], './boat/generic_motor_img.png', Document::GENERIC_IMAGE_TYPE);
             }
 
             $this->command->info("Boat {$boats[$i]->name} created");
@@ -71,16 +70,15 @@ class DatabaseSeeder extends Seeder
             $sections[$boats[$i]->id] = [];
             $left_done = $right_done = false;
             for ($s = 0; $s < 5; $s++) {
-
                 $sections[$boats[$i]->id] = $this->utils->createSection($boats[$i]);
 
                 $this->command->info("Section {$sections[$boats[$i]->id]->name} for Boat {$boats[$i]->name} created");
 
                 // Creare un left, un right e gli altri deck
-                if (!$left_done) {
+                if (! $left_done) {
                     $sections[$boats[$i]->id]->update([
                         'section_type' => SECTION_TYPE_LEFT_SIDE,
-                        'name' => 'Starboard']);
+                        'name' => 'Starboard', ]);
 
                     // associo la foto di SX
                     $this->utils->addImageToSection($sections[$boats[$i]->id], './section/starboard.png');
@@ -88,10 +86,10 @@ class DatabaseSeeder extends Seeder
                     $left_done = true;
                     continue;
                 }
-                if (!$right_done) {
+                if (! $right_done) {
                     $sections[$boats[$i]->id]->update([
                         'section_type' => SECTION_TYPE_RIGHT_SIDE,
-                        'name' => 'Port']);
+                        'name' => 'Port', ]);
 
                     // associo la foto di DX
                     $this->utils->addImageToSection($sections[$boats[$i]->id], './section/port.png');
@@ -102,7 +100,7 @@ class DatabaseSeeder extends Seeder
                 $name = $this->faker->randomElement(['sundeck', 'upperdeck', 'maindeck', 'lowerdeck', 'topdeck', 'wheelhousedeck']);
                 $sections[$boats[$i]->id]->update([
                     'section_type' => SECTION_TYPE_DECK,
-                    'name' => ucfirst($name)]);
+                    'name' => ucfirst($name), ]);
 
                 // associo la foto di un ponte a caso
                 $this->utils->addImageToSection($sections[$boats[$i]->id], "./section/$name.png");
@@ -110,7 +108,7 @@ class DatabaseSeeder extends Seeder
         }
 
         // creo N professioni a caso
-        $this->command->warn(" ------ PROFESSIONS --------");
+        $this->command->warn(' ------ PROFESSIONS --------');
 
         $professions = [];
         $professions[0] = $this->utils->createProfession('owner');
@@ -163,7 +161,6 @@ class DatabaseSeeder extends Seeder
                 $backend_managers[] = $be_man;
             }
 
-
             // per ogni boat creo N progetti...
             $projects = [];
             $this->command->warn(" ------ PROJECTS FOR BOAT {$boat->name} --------");
@@ -211,7 +208,7 @@ class DatabaseSeeder extends Seeder
                     $this->utils->addImageToTask($task, './task/photo5.jpg', Document::ADDITIONAL_IMAGE_TYPE);
 
                     // se il task è chiuso, lo stato non può essere diverso da COMPLETED o DECLINED
-                    if (!$task->is_open) {
+                    if (! $task->is_open) {
                         $task->update(['task_status' => $this->faker->randomElement([TASKS_STATUS_COMPLETED, TASKS_STATUS_DENIED])]);
                     }
                     // se il task è di stato MONITORED, deve essere aperto
@@ -222,7 +219,6 @@ class DatabaseSeeder extends Seeder
                     $this->command->info("Task {$task->name} for Project {$project->name}, created");
 
                     if ($task->status != TASKS_STATUS_DRAFT) {
-
                         $this->command->warn(" ------ COMMENTS FOR TASK {$task->name} --------");
                         for ($c = 0; $c < $this->faker->numberBetween(1, 5); $c++) {
                             $comment = Comment::firstOrCreate(['body' => $this->faker->sentence(10)]);

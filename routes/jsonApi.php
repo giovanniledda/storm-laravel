@@ -17,17 +17,14 @@ use Illuminate\Http\Request;
 /**
  * spostare la rotta di soppra sotto un middlewere protetto e verificare successivamente.
  */
-
 Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
-
     JsonApi::register('v1', ['namespace' => 'Api'])->routes(function ($api) {
-
         $api->resource('sites');
         $api->resource('boat-users')->only('create'); // usato solo per associazione boat - user
         $api->resource('project-users')->only('create', 'update'); //->only('create')   ->only('create'); // usato solo per associazione project  - user
         $api->resource('project-sections')->only('create'); //->only('create'); // usato solo per associazione project  - user
         $api->resource('tasks');
-     //   $api->resource('task-minimized');
+        //   $api->resource('task-minimized');
 
         $api->get('/task-primary-statuses', 'TaskController@primaryStatuses')->name('task-primary-statuses');
         $api->get('/task-remark-statuses', 'TaskController@remarkStatuses')->name('task-remark-statuses');
@@ -82,7 +79,6 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
             $projects->get('{record}/history', 'history')->name('history');
             $projects->post('/{record}/change-type', 'changeType')->name('change-type');
         });
-
 
         $api->resource('projects')->only('cloud-sync')->controller('ProjectController') //uses the App\Http\Controllers\Api\ProjectController
         ->routes(function ($project) {
@@ -205,9 +201,7 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
             $docs->post('create', 'create')->name('create');
         });
 
-
         /** APPLICATION LOG STUFF */
-
         $api->resource('application-logs');
         $api->resource('zones');
         $api->resource('products');
@@ -231,7 +225,6 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
         });
 
         /** APPLICATION LOG STUFF - END */
-
         $api->resource('histories');
 
         $api->resource('histories')
@@ -243,11 +236,9 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
             });
 
         /** REPORT-ITEMS */
-
         $api->resource('report-items');
 
         /** SUGGESTIONS */
-
         $api->resource('suggestions')
             ->only('update-counter')
             ->controller('SuggestionController') // uses the App\Http\Controllers\Api\SuggestionController
@@ -256,7 +247,5 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
             });
 
         $api->resource('suggestions');
-
-
     });
 });

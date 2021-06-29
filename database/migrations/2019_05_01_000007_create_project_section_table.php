@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateProjectSectionTable extends Migration
 {
@@ -14,15 +14,15 @@ class CreateProjectSectionTable extends Migration
     public function up()
     {
         Schema::create('project_section', function (Blueprint $table) {
-            $table->bigIncrements('id');   
+            $table->bigIncrements('id');
             // boat
             $table->unsignedBigInteger('section_id');
             $table->foreign('section_id')->references('id')->on('sections')->onDelete('cascade');
-             // project
+            // project
             $table->unsignedBigInteger('project_id');
             $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
-            
-             $table->timestamps();
+
+            $table->timestamps();
         });
     }
 

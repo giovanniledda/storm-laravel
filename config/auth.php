@@ -44,7 +44,7 @@ return [
         'api' => [
             'driver' => 'passport',
             'provider' => 'users',
-//            'hash' => false,
+            'hash' => false,
         ],
     ],
 
@@ -97,6 +97,7 @@ return [
             'provider' => 'users',
             'table' => 'password_resets',
             'expire' => 60,
+            'throttle' => 60,
         ],
     ],
 
@@ -110,7 +111,7 @@ return [
             'id' => env('PASSPORT_PASSWORD_AC_ID', 2),
             'name' => env('PASSPORT_PASSWORD_AC_NAME', 'Storm-Laravel Password Grant Client'),
             'secret' => env('PASSPORT_PASSWORD_AC_SECRET'),
-        ]
+        ],
     ],
 
     'default_admin' => [
@@ -119,5 +120,19 @@ return [
         'surname' => env('ADMIN_FULLNAME', 'Rossi'),
         'username' => env('ADMIN_USERNAME', 'admin'),
         'password' => env('ADMIN_PASSWORD', 'admin'),
-    ]
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Password Confirmation Timeout
+    |--------------------------------------------------------------------------
+    |
+    | Here you may define the amount of seconds before a password confirmation
+    | times out and the user is prompted to re-enter their password via the
+    | confirmation screen. By default, the timeout lasts for three hours.
+    |
+    */
+
+    'password_timeout' => 10800,
+
 ];

@@ -3,18 +3,17 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use Exception;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\User;
 use App\Utils\Utils as StormUtils;
-use Validator;
-use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
+use Exception;
 use Illuminate\Foundation\Auth\ResetsPasswords;
+use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Validator;
 
 class AuthController extends Controller
 {
-
     // vedere: https://github.com/laravel/framework/issues/28377
     use SendsPasswordResetEmails, ResetsPasswords {
         SendsPasswordResetEmails::broker insteadof ResetsPasswords;
@@ -48,9 +47,10 @@ class AuthController extends Controller
                 $errors[] = [
                     'status' => 401,
                     'title' => $key,
-                    'detail' => $err
+                    'detail' => $err,
                 ];
             }
+
             return response()->json(['errors' => $validator->errors()], 401);  // TODO: rendere jsonapi compliant (il foreach sopra non funziona)
         }
         $input = $request->all();
@@ -63,9 +63,10 @@ class AuthController extends Controller
             'attributes' => [
                 'access_token' => $token,
                 'token_type' => 'Bearer',
-                'expires-in' => 3600
-            ]
+                'expires-in' => 3600,
+            ],
         ];
+
         return response()->json(['data' => $data], 200);
     }
 
@@ -91,17 +92,19 @@ class AuthController extends Controller
                 'attributes' => [
                     'access_token' => $token,
                     'token_type' => 'Bearer',
-                    'expires-in' => 3600
-                ]
+                    'expires-in' => 3600,
+                ],
             ];
+
             return response()->json(['data' => $data], 200);
         } else {
             $error = [
                 'id' => date('Y-m-dTH:i:s', time()),
                 'status' => 401,
                 'title' => 'Unauthorised',
-                'detail' => 'You are not authorized to log in.'
+                'detail' => 'You are not authorized to log in.',
             ];
+
             return response()->json(['errors' => $error], 401);
         }
     }
@@ -114,12 +117,12 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         $request->user()->token()->revoke();  // $request->user() è l'utente autenticato e loggato
+
         return response()->json(['data' => []], 204);
     }
 
     /**
      * Send the email with a link to reset the password
-     *
      */
     public function resetPasswordRequest(Request $request)
     {
@@ -133,7 +136,6 @@ class AuthController extends Controller
 
         return $this->sendResetLinkEmail($request);
     }
-
 
     /**
      * OVVERIDES PARENT FUNCTION!
@@ -164,13 +166,12 @@ class AuthController extends Controller
      */
     protected function sendResetLinkFailedResponse(Request $request, $response)
     {
-
         $data = [
             'errors' => [
                 'status' => 500,
                 'title' => $response,
                 'detail' => trans($response),
-            ]
+            ],
         ];
 
         return StormUtils::renderStandardJsonapiResponse($data, 500);
@@ -194,12 +195,13 @@ class AuthController extends Controller
         $data = [
             'id' => $user->id,
             'type' => 'users',
-            'attributes' => $user
+            'attributes' => $user,
         ];
         // devo fare questo perché per snellire il JSON dell'utente in TUTTE le api ho messo i campi nell'array $hidden di User
         // in questa però li vogliamo
         $data['attributes']['forced_roles'] = $user->roles;
         $data['attributes']['forced_permissions'] = $user->permissions;
+
         return response()->json(['data' => $data], 200);
     }
 }

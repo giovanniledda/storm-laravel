@@ -4,8 +4,8 @@ namespace App\JsonApi\V1\Zones;
 
 use App\Zone;
 use CloudCreativity\LaravelJsonApi\Contracts\Validation\ValidatorFactoryInterface;
-use CloudCreativity\LaravelJsonApi\Validation\AbstractValidators;
 use CloudCreativity\LaravelJsonApi\Contracts\Validation\ValidatorInterface;
+use CloudCreativity\LaravelJsonApi\Validation\AbstractValidators;
 use const VALIDATOR_EXIST;
 use const VALIDATOR_NUMERIC;
 use const VALIDATOR_REQUIRED;
@@ -13,7 +13,6 @@ use const VALIDATOR_STRING;
 
 class Validators extends AbstractValidators
 {
-
     /**
      * The include paths a client is allowed to request.
      *
@@ -68,7 +67,8 @@ class Validators extends AbstractValidators
                 'description' => $input->description,
                 'project_id' => $input->project_id,
             ];
-            return !isset($input->parent_zone_id) && Zone::countWithAttributesAndValues($data);
+
+            return ! isset($input->parent_zone_id) && Zone::countWithAttributesAndValues($data);
         });
 
         // Questa regola si legge così:
@@ -79,6 +79,7 @@ class Validators extends AbstractValidators
                 'parent_zone_id' => $input->parent_zone_id,
                 'code' => $input->code,
             ];
+
             return isset($input->parent_zone_id) && Zone::countWithAttributesAndValues($data);
         });
 
@@ -90,6 +91,7 @@ class Validators extends AbstractValidators
                 'parent_zone_id' => $input->parent_zone_id,
                 'code' => $input->code,
             ];
+
             return isset($input->parent_zone_id) && Zone::countWithAttributesAndValues($data);
         });
 
@@ -103,6 +105,7 @@ class Validators extends AbstractValidators
     public function create(array $document): ValidatorInterface
     {
         $validator = parent::create($document);
+
         return $this->chekDescriptionUnique($validator);
     }
 
@@ -114,6 +117,7 @@ class Validators extends AbstractValidators
     public function update($record, array $document): ValidatorInterface
     {
         $validator = parent::update($record, $document);
+
         return $this->chekDescriptionUnique($validator);
     }
 
@@ -135,7 +139,6 @@ class Validators extends AbstractValidators
         ];
     }
 
-
     protected $queryMessages = [
         'filter.project_id.exists' => 'The Project with ID :input does not exist.',
         'filter.level.in' => 'The level filter must be one of the following types: :values',
@@ -153,5 +156,4 @@ class Validators extends AbstractValidators
             'filter.level' => 'in:f,c',
         ];
     }
-
 }

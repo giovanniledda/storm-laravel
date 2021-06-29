@@ -19,6 +19,7 @@ class TaskInterventTypeController extends Controller
 //        $intervent_types = TaskInterventType::all();
 
         $intervent_types = TaskInterventType::paginate(StormUtils::getItemsPerPage());
+
         return view('task_intervent_types.index')->with('intervent_types', $intervent_types);
     }
 
@@ -42,6 +43,7 @@ class TaskInterventTypeController extends Controller
     {
         $validated = $request->validated();
         $intervent_type = TaskInterventType::create($validated);
+
         return redirect()->route('task_intervent_types.index')
             ->with(FLASH_SUCCESS, __('Intervent type :name created!', ['name' => $intervent_type->name]));
     }
@@ -77,7 +79,6 @@ class TaskInterventTypeController extends Controller
      */
     public function update(RequestTaskInterventType $request, TaskInterventType $taskInterventType)
     {
-
         $validated = $request->validated();
         $taskInterventType->fill($validated)->save();
 
@@ -99,7 +100,6 @@ class TaskInterventTypeController extends Controller
             ->with(FLASH_SUCCESS, __('Intervent type deleted'));
     }
 
-
     /**
      * Ask confirmation about the specified resource from storage to remove.
      *
@@ -109,6 +109,7 @@ class TaskInterventTypeController extends Controller
     public function confirmDestroy($id)
     {
         $taskInterventType = TaskInterventType::findOrFail($id);
+
         return view('task_intervent_types.delete')->with('intervent_type', $taskInterventType);
     }
 }

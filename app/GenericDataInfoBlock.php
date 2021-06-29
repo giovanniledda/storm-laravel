@@ -3,10 +3,10 @@
 namespace App;
 
 use App\Traits\JsonAPIPhotos;
+use const DIRECTORY_SEPARATOR;
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Model;
 use Net7\Documents\DocumentableTrait;
-use const DIRECTORY_SEPARATOR;
 
 class GenericDataInfoBlock extends Model
 {
@@ -49,7 +49,7 @@ class GenericDataInfoBlock extends Model
      */
     public function application_log_section()
     {
-        return $this->belongsTo('App\ApplicationLogSection', 'application_log_section_id');
+        return $this->belongsTo(\App\ApplicationLogSection::class, 'application_log_section_id');
     }
 
     /**
@@ -67,7 +67,6 @@ class GenericDataInfoBlock extends Model
     }
 
     /**
-     *
      * Creates a Generic Data IB using some fake data and some others that have sense
      * @param Faker $faker
      * @return GenericDataInfoBlock
@@ -75,8 +74,9 @@ class GenericDataInfoBlock extends Model
     public static function createSemiFake(Faker $faker)
     {
         $data = self::getSemiFakeData($faker);
-        $t = new GenericDataInfoBlock($data);
+        $t = new self($data);
         $t->save();
+
         return $t;
     }
 
@@ -92,17 +92,16 @@ class GenericDataInfoBlock extends Model
                 /** @var Project $project */
                 $project = $app_log->project;
 
-                return DIRECTORY_SEPARATOR . 'projects' . DIRECTORY_SEPARATOR . $project->id .
-                        DIRECTORY_SEPARATOR . 'applications_logs' . DIRECTORY_SEPARATOR  . $app_log->application_type . DIRECTORY_SEPARATOR  . $app_log->id .
-                        DIRECTORY_SEPARATOR . 'applications_log_sections' . DIRECTORY_SEPARATOR  . $app_log_section->section_type . DIRECTORY_SEPARATOR  . $app_log_section->id .
-                        DIRECTORY_SEPARATOR . 'generic_data_info_blocks' . DIRECTORY_SEPARATOR  . $this->id .
-                        DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
+                return DIRECTORY_SEPARATOR.'projects'.DIRECTORY_SEPARATOR.$project->id.
+                        DIRECTORY_SEPARATOR.'applications_logs'.DIRECTORY_SEPARATOR.$app_log->application_type.DIRECTORY_SEPARATOR.$app_log->id.
+                        DIRECTORY_SEPARATOR.'applications_log_sections'.DIRECTORY_SEPARATOR.$app_log_section->section_type.DIRECTORY_SEPARATOR.$app_log_section->id.
+                        DIRECTORY_SEPARATOR.'generic_data_info_blocks'.DIRECTORY_SEPARATOR.$this->id.
+                        DIRECTORY_SEPARATOR.$media_id.DIRECTORY_SEPARATOR;
             }
         }
 
         return '/tmp/';
     }
-
 
     /**
      * @return array
@@ -112,7 +111,7 @@ class GenericDataInfoBlock extends Model
         $data = [
             'type' => $this->table,
             'id' => $this->id,
-            'attributes' => parent::toArray()
+            'attributes' => parent::toArray(),
         ];
         $data['attributes']['photos'] = $this->getPhotosApi('data', null, true);
 
@@ -127,5 +126,4 @@ class GenericDataInfoBlock extends Model
     {
         return $this->toJsonApi();
     }
-
 }

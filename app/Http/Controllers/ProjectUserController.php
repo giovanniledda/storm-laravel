@@ -6,23 +6,21 @@ use function abort_unless;
 use App\Http\Requests\RequestPhone;
 use App\Http\Requests\RequestProjectUser;
 use App\Http\Requests\RequestSite;
+use App\Permission;
 use App\Phone;
 use App\ProjectUser;
+use App\Role;
+use App\User;
 use App\UsersTel;
 use Auth;
 use const FLASH_ERROR;
 use const FLASH_WARNING;
 use Illuminate\Http\Request;
 use Session;
-use App\User;
-use App\Role;
-use App\Permission;
 use StormUtils;
-
 
 class ProjectUserController extends Controller
 {
-
     public function __construct()
     {
 //        $this->middleware(['auth', 'isAdmin']); //isAdmin middleware lets only users with a //specific permission permission to access these resources
@@ -41,6 +39,7 @@ class ProjectUserController extends Controller
         $proj_users = ProjectUser::where('user_id', $request->user_id)->paginate(StormUtils::getItemsPerPage());
 
         $user = User::findOrFail($request->user_id); //Get user with specified id
+
         return view('project_user.index')->with(['project_users' => $proj_users, 'user' => $user]);
     }
 
@@ -66,9 +65,9 @@ class ProjectUserController extends Controller
      */
     public function store(RequestProjectUser $request)
     {
-
         $validated = $request->validated();
         $project_user = ProjectUser::create($validated);
+
         return redirect()->route('project_user.index', ['user_id' => $project_user->user->id])
             ->with(FLASH_SUCCESS, __('Project :projname related, with profession :profname', [
                 'profname' => $project_user->profession->name,
@@ -128,7 +127,7 @@ class ProjectUserController extends Controller
         }
 
         return redirect()->route('project_user.index', ['user_id' => $project_user->user->id])
-            ->with($message_type, $message);;
+            ->with($message_type, $message);
     }
 
     /**
@@ -140,8 +139,7 @@ class ProjectUserController extends Controller
     public function confirmDestroy($id)
     {
         $project_user = ProjectUser::findOrFail($id);
+
         return view('project_user.delete')->with('project_user', $project_user);
     }
-
-
 }

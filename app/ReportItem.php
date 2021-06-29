@@ -2,13 +2,13 @@
 
 namespace App;
 
+use function get_class;
 use Illuminate\Database\Eloquent\Model;
+use const MEASUREMENT_FILE_TYPE;
+use function method_exists;
 use Net7\Documents\Document;
 use Net7\EnvironmentalMeasurement\Models\Measurement;
-use function get_class;
-use function method_exists;
 use function property_exists;
-use const MEASUREMENT_FILE_TYPE;
 use const REPORT_CORROSION_MAP_SUBTYPE;
 use const REPORT_ITEM_TYPE_APPLICATION_LOG;
 use const REPORT_ITEM_TYPE_CORR_MAP_DOC;
@@ -56,7 +56,7 @@ class ReportItem extends Model
      */
     public function author()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo(\App\User::class);
     }
 
     /**
@@ -64,7 +64,7 @@ class ReportItem extends Model
      */
     public function project()
     {
-        return $this->belongsTo('App\Project');
+        return $this->belongsTo(\App\Project::class);
     }
 
     /**
@@ -92,7 +92,7 @@ class ReportItem extends Model
      */
     public static function getTypeByTemplate($template)
     {
-       return ($template == REPORT_CORROSION_MAP_SUBTYPE) ? REPORT_ITEM_TYPE_CORR_MAP_DOC : REPORT_ITEM_TYPE_CORR_MAP_OV_DOC;
+        return ($template == REPORT_CORROSION_MAP_SUBTYPE) ? REPORT_ITEM_TYPE_CORR_MAP_DOC : REPORT_ITEM_TYPE_CORR_MAP_OV_DOC;
     }
 
     /**
@@ -113,7 +113,6 @@ class ReportItem extends Model
             'reportable_type' => ApplicationLog::class,
             'reportable_id' => $application_log->id,
         ]);
-
     }
 
     /**
@@ -196,7 +195,7 @@ class ReportItem extends Model
     {
         return $document ? [
             'gdrive_url' => $document->getGDriveLink(),
-            'gdrive_filename' => $document->getGDriveFilename()
+            'gdrive_filename' => $document->getGDriveFilename(),
         ] : [];
     }
 
@@ -211,9 +210,10 @@ class ReportItem extends Model
             // get-app-log-structure
             return [
 //                'edit_url' => '/api/v1/projects/'.$this->project_id.'/app-log-structure/'.$object->id
-                'edit_url' => url("/api/v1/projects/{$this->project_id}/app-log-structure/{$object->id}")
+                'edit_url' => url("/api/v1/projects/{$this->project_id}/app-log-structure/{$object->id}"),
             ];
         }
+
         return self::getGdriveInfoForDocument($object);
     }
 
@@ -233,8 +233,8 @@ class ReportItem extends Model
             'area' => $data_attributes['area'],
             'measurement_interval_dates' => [
                 'min' => $min_date,
-                'max' => $max_date
-            ]
+                'max' => $max_date,
+            ],
         ];
     }
 

@@ -4,12 +4,12 @@ namespace App\JsonApi\V1\TaskMinimized;
 
 use CloudCreativity\LaravelJsonApi\Eloquent\AbstractAdapter;
 use CloudCreativity\LaravelJsonApi\Pagination\StandardStrategy;
-use Neomerx\JsonApi\Contracts\Encoder\Parameters\EncodingParametersInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Neomerx\JsonApi\Contracts\Encoder\Parameters\EncodingParametersInterface;
 
-class Adapter extends AbstractAdapter {
-
+class Adapter extends AbstractAdapter
+{
     protected $fillable = [
         'number',
         'title',
@@ -25,7 +25,7 @@ class Adapter extends AbstractAdapter {
         'subsection_id',
         'x_coord',
         'y_coord',
-        'bridge_position'
+        'bridge_position',
     ];
 
     /**
@@ -41,7 +41,8 @@ class Adapter extends AbstractAdapter {
      *
      * @param StandardStrategy $paging
      */
-    public function __construct(StandardStrategy $paging) {
+    public function __construct(StandardStrategy $paging)
+    {
         parent::__construct(new \App\Task(), $paging);
     }
 
@@ -50,7 +51,8 @@ class Adapter extends AbstractAdapter {
      * @param Collection $filters
      * @return void
      */
-    protected function filter($query, Collection $filters) {
+    protected function filter($query, Collection $filters)
+    {
         // TODO IMPLEMENTARE L'ACCESSO HAI TASK A LIVELLO DI ACL
         // ricerca per status
         if ($status = $filters->get('status')) {
@@ -122,7 +124,7 @@ class Adapter extends AbstractAdapter {
         }
         $user = \Auth::user();
         /** restringe il recordset in caso di mancanza di permessi */
-        if (!$user->can(PERMISSION_ADMIN)) {
+        if (! $user->can(PERMISSION_ADMIN)) {
             // L'utente loggato non e' un admin
             // SE SI TRATTA DI UN DIPENDENTE  ALLORA MOSTRO SOLO QUELLI LEGATI A project_user
             if ($user->hasRole(ROLE_WORKER)) {
@@ -144,5 +146,4 @@ class Adapter extends AbstractAdapter {
             }
         }
     }
-
 }

@@ -4,10 +4,10 @@ namespace Tests\Feature;
 
 use App\User;
 use function get_class_methods;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Passport\ClientRepository;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class AuthTest extends TestCase
 {
@@ -27,6 +27,7 @@ class AuthTest extends TestCase
         $clientRepository->createPasswordGrantClient($user->id, \Config::get('auth.token_clients.password.name'), '/');
 
         $oauth_client_id = \Config::get('auth.token_clients.password.id');
+
         return $clientRepository->find($oauth_client_id);
     }
 
@@ -105,7 +106,7 @@ class AuthTest extends TestCase
         $this->_deleteTestUser();
     }
     */
-    
+
     /**
      * @test
      * Test Requesting Tokens with Password Token GRANT
@@ -155,7 +156,6 @@ class AuthTest extends TestCase
      */
     public function testUserAuthenticatedRequest()
     {
-
         $user = $this->_createTestUser();
         $oauth_client = $this->_createTestPasswordGrantClient($user);
 
@@ -190,7 +190,6 @@ class AuthTest extends TestCase
      */
     public function testRefreshTokenRequest()
     {
-
         $user = $this->_createTestUser();
         $oauth_client = $this->_createTestPasswordGrantClient($user);
 
@@ -237,7 +236,6 @@ class AuthTest extends TestCase
      */
     public function testResetPasswordRequest()
     {
-
         $user = $this->_createTestUser();
 
         // User's WRONG data
@@ -272,5 +270,4 @@ class AuthTest extends TestCase
         // Delete data
         $this->_deleteTestUser();
     }
-
 }

@@ -2,8 +2,8 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
@@ -40,7 +40,6 @@ class Product extends Model
         'components' => 'array',
     ];
 
-
     /**
      * The product use info block which the product belongs
      *
@@ -48,7 +47,7 @@ class Product extends Model
      */
     public function product_use_info_blocks()
     {
-        return $this->hasMany('App\ProductUseInfoBlock', 'product_id');
+        return $this->hasMany(\App\ProductUseInfoBlock::class, 'product_id');
     }
 
     /**
@@ -56,7 +55,7 @@ class Product extends Model
      */
     public function projects()
     {
-        return $this->belongsToMany('App\Project', 'project_product');
+        return $this->belongsToMany(\App\Project::class, 'project_product');
     }
 
     /**
@@ -77,16 +76,15 @@ class Product extends Model
     }
 
     /**
-     *
      * Creates a Product using some fake data and some others that have sense
      * @param Faker $faker
      * @return Product
      */
     public static function createSemiFake(Faker $faker)
     {
-        $p = new Product(self::getSemiFakeData($faker));
+        $p = new self(self::getSemiFakeData($faker));
         $p->save();
+
         return $p;
     }
-
 }

@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Traits;
 
+use function abs;
 use App\ApplicationLog;
 use App\ApplicationLogSection;
 use App\DetectionsInfoBlock;
@@ -12,17 +14,11 @@ use App\Task;
 use App\Tool;
 use App\Zone;
 use App\ZoneAnalysisInfoBlock;
-use DateTime;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
-use Net7\DocsGenerator\Utils;
-use Net7\Documents\Document;
-use Net7\EnvironmentalMeasurement\Models\EnvironmentalParameter;
-use Net7\EnvironmentalMeasurement\Models\Measurement;
-use Phpdocx\Create\CreateDocxFromTemplate;
-use Phpdocx\Elements\WordFragment;
-
-use function abs;
+use const APPLICATION_TYPE_COATING;
+use const APPLICATION_TYPE_FILLER;
+use const APPLICATION_TYPE_HIGHBUILD;
+use const APPLICATION_TYPE_PRIMER;
+use const APPLICATION_TYPE_UNDERCOAT;
 use function array_reduce;
 use function array_walk;
 use function call_user_func;
@@ -31,17 +27,26 @@ use function ceil;
 use function count;
 use function date;
 use function date_format;
+use DateTime;
 use function factory;
 use function fclose;
 use function floatval;
 use function foo\func;
 use function getimagesize;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use function in_array;
 use function intval;
 use function is_callable;
 use function logger;
 use function max;
 use function min;
+use Net7\DocsGenerator\Utils;
+use Net7\Documents\Document;
+use Net7\EnvironmentalMeasurement\Models\EnvironmentalParameter;
+use Net7\EnvironmentalMeasurement\Models\Measurement;
+use Phpdocx\Create\CreateDocxFromTemplate;
+use Phpdocx\Elements\WordFragment;
 use function round;
 use function storage_path;
 use function strtotime;
@@ -50,17 +55,10 @@ use function time;
 use function trim;
 use function unlink;
 
-use const APPLICATION_TYPE_COATING;
-use const APPLICATION_TYPE_FILLER;
-use const APPLICATION_TYPE_HIGHBUILD;
-use const APPLICATION_TYPE_PRIMER;
-use const APPLICATION_TYPE_UNDERCOAT;
-
 defined('MEASUREMENT_DEFAULT_DATA_SOURCE') or define('MEASUREMENT_DEFAULT_DATA_SOURCE', 'STORM - Web App Frontend');
 
 trait TemplateReplacementRules
 {
-
     // Usate con il DocsGenerator: per corrosion_map
     protected $_currentTask;
     protected $_currentTaskPhotos;
@@ -79,43 +77,42 @@ trait TemplateReplacementRules
     // Usate con il DocsGenerator: per application_log_report
     protected $_current_app_log;
 
-
     /**
      * *****************************
      * *****************************  TEMPLATE: corrosion_map
      * *****************************
-     *
      */
-
     public function getBoatName()
     {
         $boat = $this->boat;
+
         return Utils::sanitizeTextsForPlaceholders($boat->name);
     }
 
     public function getBoatRegistrationNumber()
     {
         $boat = $this->boat;
+
         return Utils::sanitizeTextsForPlaceholders($boat->registration_number);
     }
 
     public function getBoatType()
     {
         $boat = $this->boat;
+
         return $boat->boat_type;
     }
 
     public function getBoatMainPhotoPath()
     {
-
         $boat = $this->boat;
+
         return $boat->getMainPhotoPath();
     }
 
-
     public function printDocxPageBreak()
     {
-        return '</w:t></w:r>' . '<w:r><w:br w:type="page"/></w:r>' . '<w:r><w:t>';
+        return '</w:t></w:r>'.'<w:r><w:br w:type="page"/></w:r>'.'<w:r><w:t>';
     }
 
     public function printDocxTodayDate()
@@ -153,6 +150,7 @@ trait TemplateReplacementRules
             // }
             $replacements[] = $repl_array;
         }
+
         return $replacements;
     }
 
@@ -162,6 +160,7 @@ trait TemplateReplacementRules
             $this->_currentTask = Task::find($task_id);
             $this->updateCurrentTaskPhotosArray();
         }
+
         return isset($this->_currentTaskPhotos[$index]) ? $this->_currentTaskPhotos[$index] : '';
     }
 
@@ -212,6 +211,7 @@ trait TemplateReplacementRules
             $data = $this->_currentTask->generateBridgePositionFileFromBase64();
 
             $this->_openFiles[] = $data;
+
             return $data['path'];
         }
 
@@ -230,7 +230,7 @@ trait TemplateReplacementRules
      */
     public function getTasksToIncludeInReport()
     {
-        if (!empty($this->_taskToIncludeInReport)) {
+        if (! empty($this->_taskToIncludeInReport)) {
             $tasks = [];
             foreach ($this->_taskToIncludeInReport as $task_id) {
                 if ($task_obj = $this->_only_public_tasks ? Task::findPublic($task_id) : Task::find($task_id)) {
@@ -239,6 +239,7 @@ trait TemplateReplacementRules
             }
 
             throw_if(empty($tasks), 'Exception', 'No data available in this range.');
+
             return $tasks;
         } else {
             return $this->tasks;  // è la chiamata alla relazione Eloquent. Si presuppone che il model abbia dei Task
@@ -269,9 +270,9 @@ trait TemplateReplacementRules
             $this->updateCurrentTaskPhotosArray();
             $html .= $task->getCorrosionMapHtml($this->_currentTaskPhotos);
         }
+
         return $html;
     }
-
 
     /**
      * Stampa nel docx l'htlm relativo all'indice.
@@ -287,6 +288,7 @@ trait TemplateReplacementRules
     {
         $html = '<h2 style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Table of Contents</h2>';
         $html .= '<phpdocx_tablecontents data-autoUpdate="true" />';
+
         return $html;
 
 //        $html = '<h2 style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Table of Contents</h2>';
@@ -320,12 +322,8 @@ trait TemplateReplacementRules
 //        }
 //        $html .= "</tbody></table>";
 //        return $html;
-
     }
 
-    /**
-     *
-     */
     public function getCorrosionMapHtmlLegendaPointLifeCircle()
     {
         $imagePath = storage_path('app/public/CicloTask.png');
@@ -338,6 +336,7 @@ trait TemplateReplacementRules
                         $imageTag
                     </div>
 EOF;
+
         return $html;
 
 //        <p>
@@ -366,18 +365,19 @@ EOF;
 //                            <td width="496" style="border-bottom: 1px solid #ececec;"><b>General view</b></td>
 //                            <td width="200" style="border-bottom: 1px solid #ececec; text-align: right;">Pag. 3</td>
 //                        </tr>
-//EOF;
+        //EOF;
 //        } else {
 //            $html .= <<<EOF
 //                        <tr style="height: 32px">
 //                            <td width="496" style="border-bottom: 1px solid #ececec;"><b>Work in Progress</b></td>
 //                        </tr>
-//EOF;
+        //EOF;
 //        }
 //        $html .= "</tbody></table>";
 
         $html = '<h2 style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Table of Contents</h2>';
         $html .= '<phpdocx_tablecontents data-autoUpdate="true" />';
+
         return $html;
     }
 
@@ -394,7 +394,7 @@ EOF;
      */
     public function getTasksToIncludeOrAll()
     {
-        return !empty($this->_taskToIncludeInReport) ? $this->_taskToIncludeInReport : $this->getTaskIdsArray();
+        return ! empty($this->_taskToIncludeInReport) ? $this->_taskToIncludeInReport : $this->getTaskIdsArray();
     }
 
     /**
@@ -427,7 +427,7 @@ EOF;
             $bridgeImageInfo = getimagesize($deck_img_path);
             $max_w = max($max_w, $bridgeImageInfo[0]);
         }
-        $d_factor = $max_w/2198;
+        $d_factor = $max_w / 2198;
 //        $d_factor = $max_w/1236;
 //        $d_factor = $max_w/696;
 
@@ -442,7 +442,7 @@ EOF;
             $overview_img = $section->getPointsImageOverview();
 
             $pageBreak = '';
-            if (++$sectionsCounter%2 == 0 && $sectionsCounter < $totSections) {
+            if (++$sectionsCounter % 2 == 0 && $sectionsCounter < $totSections) {
                 $pageBreak = '<phpdocx_break data-type="page" data-number="1" />';
             }
 
@@ -455,6 +455,7 @@ EOF;
                     $pageBreak
 EOF;
         }
+
         return $html;
     }
 
@@ -468,6 +469,7 @@ EOF;
     {
         /** @var Task $task */
         $task_ids = $this->getTasksToIncludeOrAll();
+
         return $this->printHtmlSectionImgsOverview($task_ids);
     }
 
@@ -482,9 +484,10 @@ EOF;
         /** @var Task $task */
 //        $noTasksMsg = '<p style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">No remarks related to this Application Log</p>';
         $forceBlankBefore = false;
-        if (!empty($this->_taskToIncludeInReport)) {
+        if (! empty($this->_taskToIncludeInReport)) {
             $forceBlankBefore = true;
         }
+
         return $this->printHtmlSectionImgsOverview($this->_taskToIncludeInReport, '', $forceBlankBefore);
     }
 
@@ -504,19 +507,16 @@ EOF;
             '$html_bloccoTask$' => 'getCorrosionMapHtmlBlock()',
             '$html_sectionImgsOverview$' => 'getCorrosionMapHtmlSectionImgsOverview()',
             '$html_tableOfContents$' => 'getCorrosionMapHtmlTableOfContents()',
-            '$html_legendaPointLifeCircle$' => 'getCorrosionMapHtmlLegendaPointLifeCircle()'
+            '$html_legendaPointLifeCircle$' => 'getCorrosionMapHtmlLegendaPointLifeCircle()',
         ];
         $this->insertPlaceholders('corrosion_map', $placeholders, true);
     }
-
 
     /**
      * *****************************
      * *****************************  TEMPLATE: environmental_report
      * *****************************
-     *
      */
-
 
     /**
      * Associate the "environmental_report" Template and its Placeholders to an object
@@ -558,7 +558,6 @@ EOF;
 
     public function handlePhpdocxBlockCloning()
     {
-
     }
 
     /**
@@ -616,9 +615,8 @@ EOF;
         /** @var EnvironmentalParameter $env_param */
         $env_param = $this->retrieveEnvironmentalParameterByKey($param_key);
         if ($env_param) {
-
             $data_source = $this->_current_data_source;
-            throw_if(!$data_source, new \Exception("Mandatory parameter 'data_source' is missing!", 403));
+            throw_if(! $data_source, new \Exception("Mandatory parameter 'data_source' is missing!", 403));
 
             $uom = $env_param->unity_of_measure;
             $min_threshold = isset($this->_current_min_tresholds[$env_param->name]) ? $this->_current_min_tresholds[$env_param->name] : null;
@@ -635,7 +633,6 @@ EOF;
                 $max_scale = $env_param->getMaximumInRange($this->_current_date_start, $this->_current_date_end, $data_source);
                 $min_scale = $min_threshold ? min($min_threshold, $env_param->getMinimumInRange($this->_current_date_start, $this->_current_date_end, $data_source)) :
                     $env_param->getMinimumInRange($this->_current_date_start, $this->_current_date_end, $data_source);
-
             } else {
                 $measurements = $env_param->measurements;
                 $max_scale = $env_param->getMaximum();
@@ -643,7 +640,7 @@ EOF;
             }
             $measurements_num = count($measurements);
 
-            throw_if(!$measurements_num, new \Exception("No data in this date range, for this data source!", 403));
+            throw_if(! $measurements_num, new \Exception('No data in this date range, for this data source!', 403));
 
             /** @var Measurement $measurement */
             foreach ($measurements as $measurement) {
@@ -651,12 +648,12 @@ EOF;
                 $data['data'][] =
                     [
                         'name' => ($step == 0) ? $measurement->measurement_time : '',
-                        'values' => $min_threshold ? [$min_threshold, $measurement->measured_value] : [$measurement->measured_value]
+                        'values' => $min_threshold ? [$min_threshold, $measurement->measured_value] : [$measurement->measured_value],
                     ];
             }
 
             $vax_label = "$legend ($uom)";
-            $paramsChart = array(
+            $paramsChart = [
                 'data' => $data,
                 'type' => 'lineChart',
                 'color' => $color,
@@ -677,17 +674,16 @@ EOF;
                 'horizontalOffset' => 360,
                 'formatDataLabels' => [
                     'rotation' => 45,
-                    'position' => 'center'
+                    'position' => 'center',
                 ],
-            );
+            ];
 
             $chart = new WordFragment($template_processor, 'document');
             $chart->addChart($paramsChart);
 
-            $template_processor->replaceVariableByWordFragment(array($chart_name => $chart), array('type' => 'block'));
+            $template_processor->replaceVariableByWordFragment([$chart_name => $chart], ['type' => 'block']);
         }
     }
-
 
     /**
      * @param CreateDocxFromTemplate $template_processor
@@ -828,13 +824,10 @@ EOF;
         return date('Y-m-d', time());
     }
 
-
-
     /**
      * *****************************
      * *****************************  TEMPLATE: application_log_report
      * *****************************
-     *
      */
 
     /**
@@ -852,7 +845,7 @@ EOF;
             '$break_n2$' => null,  // riconosciuto dal sistema
 //            '$html_sectionImgsOverview$' => 'getApplicationLogHtmlSectionImgsOverview()', // sposto dentro getCurrentAppLogStructureHtml
             '$html_fullApplicationLog$' => 'getCurrentAppLogStructureHtml()',
-            '$html_tableOfContents$' => 'getApplicationLogHtmlTableOfContents()'
+            '$html_tableOfContents$' => 'getApplicationLogHtmlTableOfContents()',
         ];
         $this->insertPlaceholders('application_log_report', $placeholders, true);
     }
@@ -907,6 +900,7 @@ EOF;
                 $zones_str .= $item->zone->description.' '.$item->zone->code.',';
             }
         }
+
         return trim($zones_str, ',');
     }
 
@@ -935,7 +929,7 @@ EOF;
     public function renderPhotos($photos)
     {
         $html = '';
-        if (!empty($photos) && !empty($photos['data']['detailed_images'])) {
+        if (! empty($photos) && ! empty($photos['data']['detailed_images'])) {
             $det_imgs = $photos['data']['detailed_images'];
             $counter = 0;
             $photos_paths = [];
@@ -950,6 +944,7 @@ EOF;
                 $counter++;
             }
         }
+
         return $html;
     }
 
@@ -985,7 +980,7 @@ EOF;
     {
         $html = '';
         $detections_array = $detections_ib->detections;
-        if (!empty($detections_array)) {
+        if (! empty($detections_array)) {
             $counter = 0;
             $detection_values = [];
             foreach ($detections_array as $key => $detection) {
@@ -1016,6 +1011,7 @@ EOF;
                 $counter++;
             }
         }
+
         return $html;
     }
 
@@ -1023,7 +1019,7 @@ EOF;
     {
         // come nascondere blocchi -> se le detections sono vuote, non stampo nulla
         $detections_array = $detection_info_block->detections;
-        if ($skipIfNoData && !empty($detections_array)) {
+        if ($skipIfNoData && ! empty($detections_array)) {
             foreach ($detections_array as $key => $detection) {
                 foreach ($detection_param_keys as $detection_param_key) {
                     if (empty($detection[$detection_param_key])) {
@@ -1057,16 +1053,17 @@ EOF;
 	    </table>
 EOF;
 
-        $html .= <<<EOF
+        $html .= <<<'EOF'
 	    <table cellpadding="0" cellspacing="0">
 	        <tbody>
 EOF;
         $html .= $this->renderDetections($detection_info_block, $detection_param_keys, $specialParamToCalculate, $specialParamCalculationCallback);
-        $html .= <<<EOF
+        $html .= <<<'EOF'
 	        </tbody>
 	    </table>
 <!--    <p style="page-break-before: always;"></p>-->
 EOF;
+
         return $html;
     }
 
@@ -1081,7 +1078,7 @@ EOF;
         $date = date('d/m/Y', strtotime($preparation_section->date_hour));
 
         $pageBreakBefore = '';
-        if (!empty($this->_taskToIncludeInReport)) {
+        if (! empty($this->_taskToIncludeInReport)) {
             $pageBreakBefore = '<p style="page-break-before: always;"></p>';
         }
 
@@ -1110,13 +1107,13 @@ EOF;
         $surface_preparation = $preparation_section->generic_data_info_blocks()->first();
         $kv_infos = $surface_preparation->key_value_infos;
         $paper_grain = $short_desc = '-';
-        if (!empty($kv_infos)) {
+        if (! empty($kv_infos)) {
             $paper_grain = $kv_infos['paper_grain'] ?? '-';
             $short_desc = $kv_infos['short_description'] ?? '-';
         }
 
         // Substrate preparation
-        $html .= <<<EOF
+        $html .= <<<'EOF'
 	    <table cellpadding="0" cellspacing="0">
 	        <tbody>
 	            <tr style="height: 32px">
@@ -1160,7 +1157,6 @@ EOF;
 
         return $html;
     }
-
 
     /**
      * @return string
@@ -1233,7 +1229,7 @@ EOF;
 EOF;
 
         // Components & thinners
-        $html .= <<<EOF
+        $html .= <<<'EOF'
             <table cellpadding="0" cellspacing="0">
                 <tbody>
                     <tr style="height: 32px">
@@ -1248,7 +1244,7 @@ EOF;
             $batch_nums = '';
             $name = $component['name'];
             array_walk($component['batch_numbers'], function ($val, $key) use (&$batch_nums) {
-                 $batch_nums .= "$key: $val <br/>";
+                $batch_nums .= "$key: $val <br/>";
             });
             $batch_nums = trim($batch_nums, ', ');
             $html .= <<<EOF
@@ -1277,7 +1273,7 @@ EOF;
 EOF;
         }
 
-        $html .= <<<EOF
+        $html .= <<<'EOF'
 	            <tr style="height: 32px"><td width="696"></td></tr>
 	        </tbody>
 	    </table>
@@ -1286,11 +1282,10 @@ EOF;
         /** @var GenericDataInfoBlock $application_method */
         $application_method = $application_section->generic_data_info_blocks()->first();
         $kv_infos = $application_method->key_value_infos;
-        if (!empty($kv_infos)) {
-
+        if (! empty($kv_infos)) {
             $dilution = 0;
             if ($components_liters_sum) {
-                $dilution = round(($thinners_liters_sum/$components_liters_sum)*100, 2); // arrotondare
+                $dilution = round(($thinners_liters_sum / $components_liters_sum) * 100, 2); // arrotondare
             }
 
             $svStandard = intval($svPercentage);
@@ -1299,7 +1294,6 @@ EOF;
 
             // Utilizzo totale (somma di tutti i componenti + thinners)
             $totalPaintConsumption = ($thinners_liters_sum + $components_liters_sum); // ?? chiamarla
-
 
             $app_method = $kv_infos['method'] ?? '-';
             $nozzle = $kv_infos['nozzle_needle_size'] ?? '-';
@@ -1313,7 +1307,7 @@ EOF;
                 /** @var ZoneAnalysisInfoBlock $item */
                 foreach ($zone_ib as $item) {
                     /** @var Zone $zone */
-                    $area += floatval(($item->zone->extension / 100)*$item->percentage_in_work); // mq * utilizzo %
+                    $area += floatval(($item->zone->extension / 100) * $item->percentage_in_work); // mq * utilizzo %
                 }
             }
             $area = round($area, 2);
@@ -1322,7 +1316,7 @@ EOF;
 
             // DFT estimated (Dry Feel Tickness - "spessore secco"): SV% (diluted)*100%*Total paint *(1-Loss factor%) *n°mani /(10*superficie m2)
             if ($area && $loss_factor != '-' && $numOfCoat != '-') {
-                $dftEstimated = ($svDiluted * 100 * $totalPaintConsumption * (1 - floatval($loss_factor)/100) * intval($numOfCoat))  / (10 * $area);
+                $dftEstimated = ($svDiluted * 100 * $totalPaintConsumption * (1 - floatval($loss_factor) / 100) * intval($numOfCoat)) / (10 * $area);
             }
             $dftEstimated = floor($dftEstimated);
 
@@ -1413,7 +1407,7 @@ EOF;
         $application_log = $this->getCurrentAppLog();
         /** @var ApplicationLogSection $inspection_section */
         $inspection_section = $application_log->getInspectionSection();
-        $html = <<<EOF
+        $html = <<<'EOF'
             <p style="page-break-before: always;"></p>
             <h2 style="text-align: center;font-size: 21px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Inspection</h2>
 EOF;
@@ -1476,7 +1470,7 @@ EOF;
         $application_log = $this->getCurrentAppLog();
         $remarks = $application_log->opened_tasks;
         if (count($remarks)) {
-            $html = <<<EOF
+            $html = <<<'EOF'
                 <h2 style="text-align: center;font-size: 12px;font-weight: bold;color: #1f519b;font-family: Raleway, sans-serif;">Remarks</h2>
     EOF;
             $html = '<phpdocx_break data-type="page" data-number="1" />';
@@ -1486,6 +1480,7 @@ EOF;
                 $html .= $task->getCorrosionMapHtml($this->_currentTaskPhotos);
             }
         }
+
         return $html;
     }
 
@@ -1509,17 +1504,15 @@ EOF;
             $general_view_section_html
             $remark_section_html
 EOF;
+
         return $html;
     }
-
 
     /**
      * *****************************
      * *****************************  TEMPLATE: corrosion_map_overview_only
      * *****************************
-     *
      */
-
 
     /**
      * Associate the "corrosion_map_overview_only" Template and its Placeholders to an object
@@ -1536,6 +1529,4 @@ EOF;
         ];
         $this->insertPlaceholders('corrosion_map_overview_only', $placeholders, true);
     }
-
-
 }

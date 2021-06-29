@@ -3,9 +3,9 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Lang;
 
 class StormResetPasswordNotification extends Notification
@@ -23,7 +23,6 @@ class StormResetPasswordNotification extends Notification
     {
         $this->token = $token;
     }
-
 
     /**
      * Get the notification's delivery channels.
@@ -44,13 +43,12 @@ class StormResetPasswordNotification extends Notification
      */
     public function toMail($notifiable)
     {
-
         return (new MailMessage)
-            ->subject(Lang::getFromJson('[:site] Reset Password Notification', ['site' => config('app.name')]))
-            ->line(Lang::getFromJson('You are receiving this email because we received a password reset request for your account.'))
-            ->action(Lang::getFromJson('Reset Password'), url(config('app.url').route('password.reset', ['token' => $this->token, 'email' => $notifiable->getEmailForPasswordReset()], false)))
-            ->line(Lang::getFromJson('This password reset link will expire in :count minutes.', ['count' => config('auth.passwords.users.expire')]))
-            ->line(Lang::getFromJson('If you did not request a password reset, no further action is required.'));
+            ->subject(Lang::get('[:site] Reset Password Notification', ['site' => config('app.name')]))
+            ->line(Lang::get('You are receiving this email because we received a password reset request for your account.'))
+            ->action(Lang::get('Reset Password'), url(config('app.url').route('password.reset', ['token' => $this->token, 'email' => $notifiable->getEmailForPasswordReset()], false)))
+            ->line(Lang::get('This password reset link will expire in :count minutes.', ['count' => config('auth.passwords.users.expire')]))
+            ->line(Lang::get('If you did not request a password reset, no further action is required.'));
     }
 
     /**

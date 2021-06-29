@@ -2,19 +2,16 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Permission;
+use App\Role;
+use Auth;
 use const FLASH_SUCCESS;
 use Illuminate\Http\Request;
-use Auth;
 use Session;
-use App\Role;
-use App\Permission;
 use StormUtils;
-
 
 class RoleController extends Controller
 {
-
     public function __construct()
     {
 //        $this->middleware(['auth', 'isAdmin']);//isAdmin middleware lets only users with a //specific permission permission to access these resources
@@ -40,7 +37,7 @@ class RoleController extends Controller
      */
     public function create()
     {
-        $permissions = Permission::all();//Get all permissions
+        $permissions = Permission::all(); //Get all permissions
 
         return view('roles.create', ['permissions' => $permissions]);
     }
@@ -76,7 +73,7 @@ class RoleController extends Controller
         }
 
         return redirect()->route('roles.index')
-            ->with(FLASH_SUCCESS, 'Role' . $role->name . ' added!');
+            ->with(FLASH_SUCCESS, 'Role'.$role->name.' added!');
     }
 
     /**
@@ -113,11 +110,10 @@ class RoleController extends Controller
      */
     public function update(Request $request, $id)
     {
-
         $role = Role::findOrFail($id);
         // Validate name and permission fields
         $this->validate($request, [
-            'name' => 'required|max:10|unique:roles,name,' . $id,
+            'name' => 'required|max:10|unique:roles,name,'.$id,
             'permissions' => 'required',
         ]);
 
@@ -125,7 +121,7 @@ class RoleController extends Controller
         $permissions = $request['permissions'];
         $role->fill($input)->save();
 
-        $p_all = Permission::all();//Get all permissions
+        $p_all = Permission::all(); //Get all permissions
 
         foreach ($p_all as $p) {
             $role->revokePermissionTo($p); //Remove all permissions associated with role
@@ -137,7 +133,7 @@ class RoleController extends Controller
         }
 
         return redirect()->route('roles.index')
-            ->with(FLASH_SUCCESS, 'Role' . $role->name . ' updated!');
+            ->with(FLASH_SUCCESS, 'Role'.$role->name.' updated!');
     }
 
     /**
@@ -163,6 +159,7 @@ class RoleController extends Controller
     public function confirmDestroy($id)
     {
         $role = Role::findOrFail($id);
+
         return view('roles.delete')->withRole($role);
     }
 }

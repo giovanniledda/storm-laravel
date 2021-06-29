@@ -20,7 +20,7 @@ class Comment extends Model
     {
         parent::boot();
 
-        Comment::observe(CommentObserver::class);
+        self::observe(CommentObserver::class);
     }
 
     public function commentable()
@@ -30,7 +30,7 @@ class Comment extends Model
 
     public function author()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo(\App\User::class);
     }
 
     public function authorNickname()

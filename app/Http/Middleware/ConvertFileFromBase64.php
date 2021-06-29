@@ -15,19 +15,18 @@ class ConvertFileFromBase64
      */
     public function handle($request, Closure $next)
     {
-
-        $requestContent = json_decode ($request->getContent(), true);
+        $requestContent = json_decode($request->getContent(), true);
 
         $base64File = @$requestContent['data']['attributes']['file'];
         if ($base64File) {
-            $tmpFilename = uniqid('phpfile_') ;
-            $tmpFileFullPath = '/tmp/'. $tmpFilename;
-            $h = fopen ($tmpFileFullPath, 'w');
+            $tmpFilename = uniqid('phpfile_');
+            $tmpFileFullPath = '/tmp/'.$tmpFilename;
+            $h = fopen($tmpFileFullPath, 'w');
             $decoded = base64_decode($base64File);
             fwrite($h, $decoded, strlen($decoded));
             fclose($h);
         }
-        if (isset($request->content['file'])){
+        if (isset($request->content['file'])) {
             unset($request->content['file']);
         }
 

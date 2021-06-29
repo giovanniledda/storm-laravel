@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 
 class Authorizer extends AbstractAuthorizer
 {
-
     /**
      * Authorize a resource index request.
      *
@@ -24,7 +23,6 @@ class Authorizer extends AbstractAuthorizer
     public function index($type, $request)
     {
         // TODO: Implement index() method.
-        
     }
 
     /**
@@ -90,5 +88,4 @@ class Authorizer extends AbstractAuthorizer
     {
         // TODO: Implement delete() method.
     }
-
 }

@@ -3,9 +3,9 @@
 use App\ApplicationLog;
 use App\ApplicationLogSection;
 use App\Project;
+use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 use Seeds\SeederUtils as Utils;
-use Faker\Factory as Faker;
 
 class ApplicationLogSeeder extends Seeder
 {
@@ -27,7 +27,6 @@ class ApplicationLogSeeder extends Seeder
      */
     public function run()
     {
-
         $this->utils = new Utils();
 //        $this->faker = Faker::create();
 
@@ -69,7 +68,6 @@ class ApplicationLogSeeder extends Seeder
                     $this->utils->addFakeStructureToApplicationLog($app_log);
                 }
             }
-
         }
     }
 }

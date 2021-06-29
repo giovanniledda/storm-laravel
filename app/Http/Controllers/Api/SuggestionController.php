@@ -10,7 +10,6 @@ use Illuminate\Http\Response;
 
 class SuggestionController extends Controller
 {
-
     /**
      * @param Request $request
      * @param $record
@@ -23,13 +22,13 @@ class SuggestionController extends Controller
             $suggestion = Suggestion::findOrFail($request->input('suggestion_id'));
             $suggestion->update(
                 [
-                    'use_counter' =>  $suggestion->use_counter + 1
+                    'use_counter' =>  $suggestion->use_counter + 1,
                 ]
             );
+
             return Utils::renderStandardJsonapiResponse([], 204);
         } catch (\Exception $e) {
-            return Utils::jsonAbortWithInternalError(422, $e->getCode(), "Error incrementing counter", $e->getMessage());
+            return Utils::jsonAbortWithInternalError(422, $e->getCode(), 'Error incrementing counter', $e->getMessage());
         }
     }
-
 }

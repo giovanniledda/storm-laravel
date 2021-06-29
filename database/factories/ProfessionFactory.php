@@ -8,7 +8,6 @@ use Faker\Generator as Faker;
 $autoIncrement = StormUtils::autoIncrement();
 
 $factory->define(Profession::class, function (Faker $faker) use ($autoIncrement) {
-
     $autoIncrement->next();
 
     return [
@@ -16,4 +15,3 @@ $factory->define(Profession::class, function (Faker $faker) use ($autoIncrement)
         'name' => $faker->jobTitle,
     ];
 });
-

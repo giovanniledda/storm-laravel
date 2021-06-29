@@ -2,13 +2,11 @@
 
 namespace App\JsonApi\V1\Sections;
 
-use Neomerx\JsonApi\Schema\SchemaProvider;
-
 use App\Boat;
+use Neomerx\JsonApi\Schema\SchemaProvider;
 
 class Schema extends SchemaProvider
 {
-
     /**
      * @var string
      */
@@ -21,9 +19,8 @@ class Schema extends SchemaProvider
      */
     public function getId($resource)
     {
-        return (string)$resource->getRouteKey();
+        return (string) $resource->getRouteKey();
     }
-
 
     /**
      * ritorna il nome del file associato all'immagine della sezione.
@@ -36,11 +33,12 @@ class Schema extends SchemaProvider
         $image = $resource->generic_images->last();
         if ($image) {
             $media = $image->getRelatedMedia();
-            return ($media['file_name']);
+
+            return $media['file_name'];
         }
+
         return null;
     }
-
 
     /**
      * ritorna l'id del file associato all'immagine della sezione.
@@ -53,8 +51,10 @@ class Schema extends SchemaProvider
         $image = $resource->generic_images->last();
         if ($image) {
             $media = $image->getRelatedMedia();
+
             return $media->id;
         }
+
         return null;
     }
 
@@ -67,9 +67,9 @@ class Schema extends SchemaProvider
             $tmp = [
                 'uri' => $i->getShowApiUrl(),
                 'title' => $i->title,
-                'mime_type' => $i->media->first()->mime_type
+                'mime_type' => $i->media->first()->mime_type,
             ];
-            $gdu [] = $tmp;
+            $gdu[] = $tmp;
         }
         $image = $resource->generic_images->last();
 
@@ -95,6 +95,7 @@ class Schema extends SchemaProvider
     {
         $boat = Boat::find($resource->boat_id);
         $dimension_fraction = ($boat->length > 0) && ($boat->draft > 0) ? $boat->length / $boat->draft : null;
+
         return [
             'name' => $resource->name,
             'section_type' => $resource->section_type,

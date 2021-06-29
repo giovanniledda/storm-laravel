@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 
 class Authorizer extends AbstractAuthorizer
 {
-
     /**
      * Authorize a resource index request.
      *
@@ -40,7 +39,7 @@ class Authorizer extends AbstractAuthorizer
     public function create($record, $request)
     {
         //$this->authenticate();
-       // $this->authorize('create', $record);
+        // $this->authorize('create', $record);
         $this->can('create', $record);
         // TODO: Implement create() method.
     }
@@ -93,5 +92,4 @@ class Authorizer extends AbstractAuthorizer
     {
         $this->can('delete', $record);
     }
-
 }

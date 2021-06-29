@@ -2,22 +2,18 @@
 
 namespace App\Observers;
 
-use App\Jobs\UpdateTaskMap;
+use App\History;
 use App\Jobs\NotifyTaskUpdates;
+use App\Jobs\UpdateTaskMap;
 use App\Notifications\TaskCreated;
 use App\Notifications\TaskUpdated;
-use App\Task;
-use App\History;
 use App\Project;
+use App\Task;
 use function is_object;
-
 use const TASKS_STATUS_DRAFT;
-
 
 class TaskObserver
 {
-
-
     /**
      * Handle the project "updating" event.
      *
@@ -35,9 +31,8 @@ class TaskObserver
             Project::find($task->project_id)
                 ->history()
                 ->create(
-                    ['event_date' => date("Y-m-d H:i:s", time()),
-                        'event_body' => 'Task number #' . $task->number . ' marked to closed']);
-
+                    ['event_date' => date('Y-m-d H:i:s', time()),
+                        'event_body' => 'Task number #'.$task->number.' marked to closed', ]);
         }
 
         /**
@@ -52,23 +47,21 @@ class TaskObserver
          *      original_task_status : '',
          *
          *  }
-         *
          */
         if (isset($original['task_status']) && $original['task_status'] != $task->task_status) {
-
             $auth_user = \Auth::user();
             if (isset($auth_user->id)) {
                 $u_id = $auth_user->id;
-                $u_fullname = $auth_user->name . ' ' . $auth_user->surname;
+                $u_fullname = $auth_user->name.' '.$auth_user->surname;
             } elseif ($task->author_id) {
                 $u_id = $task->author_id;
-                $u_fullname = $task->author->name . ' ' . $task->author->surname;
+                $u_fullname = $task->author->name.' '.$task->author->surname;
             } else {
                 $u_id = $u_fullname = null;
             }
 
             Task::find($task->id)->history()->create([
-                'event_date' => date("Y-m-d H:i:s", time()),
+                'event_date' => date('Y-m-d H:i:s', time()),
                 'event_body' => json_encode([
                     'user_id' => $u_id,
                     'user_name' => $u_fullname,
@@ -76,13 +69,10 @@ class TaskObserver
                     'task_status' => $task->task_status,
                     'comment_id' => null,
                     'comment_body' => null,
-                ])
+                ]),
             ]);
         }
-
-
     }
-
 
     /**
      * Handle the task "created" event.
@@ -96,24 +86,23 @@ class TaskObserver
         /**
          * @todo quando inserisci un task da storm lo stato deve essere accepted
          */
-
         $auth_user = \Auth::user();
         if (isset($auth_user->id)) {
             $u_id = $auth_user->id;
-            $u_fullname = $auth_user->name . ' ' . $auth_user->surname;
+            $u_fullname = $auth_user->name.' '.$auth_user->surname;
         } elseif ($task->author_id) {
             $u_id = $task->author_id;
-            $u_fullname = $task->author->name . ' ' . $task->author->surname;
+            $u_fullname = $task->author->name.' '.$task->author->surname;
         } else {
             $u_id = $u_fullname = null;
         }
 
         // se l'utente non è loggato oppure c'è ma non è storm, metto DRAFT
-        if ((isset($auth_user->id) && !$auth_user->is_storm) || !\Auth::check()) {
+        if ((isset($auth_user->id) && ! $auth_user->is_storm) || ! \Auth::check()) {
             $task->setStatus(TASKS_STATUS_DRAFT);
 
             Task::find($task->id)->history()->create([
-                'event_date' => date("Y-m-d H:i:s", time()),
+                'event_date' => date('Y-m-d H:i:s', time()),
                 'event_body' => json_encode([
                     'user_id' => $u_id,
                     'user_name' => $u_fullname,
@@ -121,14 +110,13 @@ class TaskObserver
                     'task_status' => TASKS_STATUS_DRAFT,
                     'comment_id' => null,
                     'comment_body' => null,
-                ])
+                ]),
             ]);
         }
 
         if ((isset($auth_user->id) && $auth_user->is_storm)) {
-
             Task::find($task->id)->history()->create([
-                'event_date' => date("Y-m-d H:i:s", time()),
+                'event_date' => date('Y-m-d H:i:s', time()),
                 'event_body' => json_encode([
                     'user_id' => $u_id,
                     'user_name' => $u_fullname,
@@ -136,10 +124,9 @@ class TaskObserver
                     'task_status' => $task->task_status,
                     'comment_id' => null,
                     'comment_body' => null,
-                ])
+                ]),
             ]);
         }
-
 
         /** setto la variabile added_by_storm **/
         $task_author = $task->author;

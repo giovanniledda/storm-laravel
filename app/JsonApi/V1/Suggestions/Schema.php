@@ -6,7 +6,6 @@ use Neomerx\JsonApi\Schema\SchemaProvider;
 
 class Schema extends SchemaProvider
 {
-
     /**
      * @var string
      */
@@ -34,7 +33,7 @@ class Schema extends SchemaProvider
             'updated-at' => $resource->updated_at->toAtomString(),
             'body' => $resource->body,
             'context' => $resource->context,
-            'use_counter' => $resource->use_counter
+            'use_counter' => $resource->use_counter,
         ];
     }
 }

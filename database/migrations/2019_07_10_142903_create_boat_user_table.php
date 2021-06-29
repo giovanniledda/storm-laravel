@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateBoatUserTable extends Migration
 {
@@ -15,10 +15,10 @@ class CreateBoatUserTable extends Migration
     {
         Schema::create('boat_user', function (Blueprint $table) {
             $table->bigIncrements('id');
-           // $table->enum('role', ['commander', 'owner']);  // TODO: forse un enum è limitante...possiamo pensare di agigungere un ruolo (usando il Model "Role") alla relazione
-            
-             // Relations:
-            
+            // $table->enum('role', ['commander', 'owner']);  // TODO: forse un enum è limitante...possiamo pensare di agigungere un ruolo (usando il Model "Role") alla relazione
+
+            // Relations:
+
             $table->unsignedBigInteger('profession_id')->nullable();
             $table->foreign('profession_id')->references('id')->on('professions')->onDelete('set null');
 
@@ -27,8 +27,7 @@ class CreateBoatUserTable extends Migration
 
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            
-            
+
             $table->timestamps();
         });
     }

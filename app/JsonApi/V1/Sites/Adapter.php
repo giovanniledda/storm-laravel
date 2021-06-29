@@ -5,7 +5,6 @@ namespace App\JsonApi\V1\Sites;
 use function abort_if;
 use App\Site;
 use CloudCreativity\LaravelJsonApi\Eloquent\AbstractAdapter;
-
 use CloudCreativity\LaravelJsonApi\Pagination\StandardStrategy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -13,7 +12,6 @@ use StormUtils;
 
 class Adapter extends AbstractAdapter
 {
-
     /**
      * Mapping of JSON API attribute field names to model keys.
      *
@@ -41,7 +39,6 @@ class Adapter extends AbstractAdapter
         // TODO
     }
 
-
 //    /**
 //     * @var Model $record
 //     */
@@ -51,7 +48,7 @@ class Adapter extends AbstractAdapter
 //            $ret = (bool)$record->delete();
 //            return $ret;
 //        } catch (\Exception $exc) {
-////            return StormUtils::catchIntegrityContraintViolationException($exc);
+    ////            return StormUtils::catchIntegrityContraintViolationException($exc);
 //            return StormUtils::jsonAbortWithInternalError(412, 100, 'Precondition failed', HTTP_412_DEL_UPD_ERROR_MSG);
 //        }
 //    }
@@ -66,5 +63,4 @@ class Adapter extends AbstractAdapter
         abort_if($site->boats()->count(), 412, __(HTTP_412_ADD_DEL_ENTITIES_ERROR_MSG, ['resource' => 'Site', 'entities' => 'Boats']));
         abort_if($site->projects()->count(), 412, __(HTTP_412_ADD_DEL_ENTITIES_ERROR_MSG, ['resource' => 'Site', 'entities' => 'Projects']));
     }
-
 }

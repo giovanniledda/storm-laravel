@@ -26,7 +26,7 @@ return [
     |
     */
 
-    'cloud' => env('FILESYSTEM_CLOUD', 'google'),
+    'cloud' => env('FILESYSTEM_CLOUD', 's3'),
 
     /*
     |--------------------------------------------------------------------------
@@ -37,13 +37,9 @@ return [
     | may even configure multiple disks of the same driver. Defaults have
     | been setup for each driver as an example of the required options.
     |
-    | Supported Drivers: "local", "ftp", "sftp", "s3", "rackspace"
+    | Supported Drivers: "local", "ftp", "sftp", "s3"
     |
     */
-
-
-
-
 
     'disks' => [
 
@@ -71,6 +67,7 @@ return [
             'region' => env('AWS_DEFAULT_REGION'),
             'bucket' => env('AWS_BUCKET'),
             'url' => env('AWS_URL'),
+            'endpoint' => env('AWS_ENDPOINT'),
         ],
 
         'dropbox' => [ //  as seen on https://medium.com/hello-laravel/dropbox-filesystem-laravel-5-4-dfb60a618d6e
@@ -78,7 +75,6 @@ return [
             // 'app_secret' => env('DROPBOX_APP_SECRET'),
             'token' => env('DROPBOX_TOKEN'),
         ],
-
 
         'media' => [
             'driver' => 'dropbox',
@@ -94,7 +90,6 @@ return [
             'refreshToken' => env('GOOGLE_DRIVE_REFRESH_TOKEN'),
             'folderId' => env('GOOGLE_DRIVE_FOLDER_ID'),
         ],
-
 
     ],
 

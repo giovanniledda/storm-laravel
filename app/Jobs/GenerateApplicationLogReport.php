@@ -7,11 +7,10 @@ use App\Project;
 use App\ReportItem;
 use App\Services\ReportGenerator;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\SerializesModels;
-
 use const REPORT_APPLOG_SUBTYPE;
 use const REPORT_ITEM_TYPE_CORR_MAP_DOC;
 
@@ -88,7 +87,7 @@ class GenerateApplicationLogReport implements ShouldQueue
                     'id' => $document->id,
                     'app_log_type' => $project->getCurrentAppLogType(),
                     'app_log_name' => $applicationLog->name,
-                    'zones' => $project->getCurrentAppLogZones()
+                    'zones' => $project->getCurrentAppLogZones(),
                 ]
             );
         }

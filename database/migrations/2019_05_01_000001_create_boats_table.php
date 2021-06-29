@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateBoatsTable extends Migration
 {
@@ -19,7 +19,7 @@ class CreateBoatsTable extends Migration
             $table->string('registration_number', 100)->nullable();
             $table->string('flag', 100)->nullable();
             $table->year('manufacture_year')->nullable();
-            $table->double('length', 8, 2); 
+            $table->double('length', 8, 2);
             $table->double('beam', 8, 2);
             $table->double('draft', 8, 2)->nullable();
             $table->enum('boat_type', [BOAT_TYPE_SAIL, BOAT_TYPE_MOTOR])->default(BOAT_TYPE_MOTOR);
@@ -33,7 +33,6 @@ class CreateBoatsTable extends Migration
             // site: TODO: probabilmente andrà eliminata (https://net7.codebasehq.com/projects/storm/tickets/172).
         //    $table->unsignedBigInteger('site_id')->nullable();
         //    $table->foreign('site_id')->references('id')->on('sites');
-
         });
     }
 

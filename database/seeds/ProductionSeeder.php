@@ -1,21 +1,20 @@
 <?php
 
-use Illuminate\Database\Seeder;
-use App\Site;
 use App\Profession;
+use App\Site;
 use App\TaskInterventType;
+use Illuminate\Database\Seeder;
 //use Faker\Factory as Faker;
 use Seeds\SeederUtils as Utils;
-
 
 class ProductionSeeder extends Seeder
 {
 //    protected $faker;
-protected $utils;
-protected $professions;
+    protected $utils;
+    protected $professions;
+
     public function run()
     {
-
         $this->utils = new Utils();
         $this->populateSites();
 
@@ -25,12 +24,9 @@ protected $professions;
         $this->createUsers();
     }
 
-
     private function populateSites()
     {
-
         $this->command->warn("\n\n ________________ Creating Sites ________________\n\n");
-
 
         $site = $this->utils->createSite();
 
@@ -42,7 +38,6 @@ protected $professions;
 
         $this->command->info("Site {$site->name} created");
 
-
         $site2 = $this->utils->createSite();
 
         $site2->setName('NCA Refit')
@@ -52,7 +47,6 @@ protected $professions;
             ->save();
 
         $this->command->info("Site {$site2->name} created");
-
 
         // $sites = \Config::get('storm.startup.sites');
         // foreach ($sites as $site => $fields) {
@@ -71,9 +65,7 @@ protected $professions;
 
     private function populateProfessions()
     {
-
         $this->command->warn("\n\n ________________ Creating Professions ________________\n\n");
-
 
         $professions = [];
         $professions[0] = $this->utils->createProfession('owner');
@@ -93,7 +85,6 @@ protected $professions;
 
     private function populateTaskTypes()
     {
-
         $this->command->warn("\n\n ________________ Creating Task Intervent Types ________________\n\n");
 
         $intervent_types = \Config::get('storm.startup.task_intervent_types');
@@ -101,16 +92,15 @@ protected $professions;
             $tit = TaskInterventType::create($fields);
             $this->command->info("Task Intervent Type {$tit->name} [OK]");
         }
-
     }
 
-    private function createUsers(){
-
+    private function createUsers()
+    {
         $users = [
             [
                 'name' => 'Claudio',
                 'surname' => 'Mazzuoli',
-                'email'   => 'claudio@stormyachts.eu'
+                'email'   => 'claudio@stormyachts.eu',
             ],  [
                 'name' => 'David Andrew',
                 'surname' => 'Fryer',
@@ -118,24 +108,22 @@ protected $professions;
             ],  [
                 'name' => 'Matteo',
                 'surname' => 'Gabbriellini',
-                'email'  => 'matteo@stormyachts.eu'
+                'email'  => 'matteo@stormyachts.eu',
             ],  [
-                'name' =>  'Francesco' ,
+                'name' =>  'Francesco',
                 'surname' => 'Sassano',
-                'email'  => 'francesco@stormyachts.eu'
+                'email'  => 'francesco@stormyachts.eu',
             ],  [
-                'name' =>  'Elisa' ,
+                'name' =>  'Elisa',
                 'surname' => 'Roberti',
-                'email' => 'elisa@stormyachts.eu'
-            ]
+                'email' => 'elisa@stormyachts.eu',
+            ],
 
         ];
 
-
         $password = 'password';
 
-        foreach ($users as $u)  {
-
+        foreach ($users as $u) {
             $user = User::create([
             'name' => $u['name'],
             'surname' => $u['surname'],
@@ -144,17 +132,10 @@ protected $professions;
             'is_storm' => true,
         ]);
 
-
-
-        $user->assignRole(PERMISSION_ADMIN);
-        $user->assignRole(PERMISSION_BOAT_MANAGER);
-        $user->assignRole(PERMISSION_BACKEND_MANAGER);
-        $user->assignRole(PERMISSION_WORKER);
-
-
-
+            $user->assignRole(PERMISSION_ADMIN);
+            $user->assignRole(PERMISSION_BOAT_MANAGER);
+            $user->assignRole(PERMISSION_BACKEND_MANAGER);
+            $user->assignRole(PERMISSION_WORKER);
+        }
     }
-
-    }
-
 }

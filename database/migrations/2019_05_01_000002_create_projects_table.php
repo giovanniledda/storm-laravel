@@ -1,9 +1,9 @@
 <?php
 
 use App\Project;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateProjectsTable extends Migration
 {
@@ -40,9 +40,7 @@ class CreateProjectsTable extends Migration
             // boat
             $table->unsignedBigInteger('boat_id')->nullable();
             $table->foreign('boat_id')->references('id')->on('boats');
-
         });
-
     }
 
     /**

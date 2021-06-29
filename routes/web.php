@@ -18,7 +18,6 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::group(['middleware' => ['logoutBlocked']], function () {
-
     Route::get('/dashboard', 'HomeController@index')->name('dashboard');
     Route::get('/user-photo/{id}', 'UserController@getProfilePhoto')->name('user-photo');
 
@@ -55,7 +54,6 @@ Route::group(['middleware' => ['logoutBlocked']], function () {
         Route::put('/users/{user_id}/addresses/{address_id}/update', 'UserController@addressesUpdate')->name('users.addresses.update');
         Route::get('/users/{user_id}/addresses/{address_id}/confirm-destroy', 'UserController@addressesConfirmDestroy')->name('users.addresses.confirm.destroy');
         Route::delete('/users/{user_id}/addresses/{address_id}/destroy', 'UserController@addressesDestroy')->name('users.addresses.destroy');
-
 
         // Roles and Permissions
         Route::get('/roles/{id}/confirm-destroy', 'RoleController@confirmDestroy')->name('roles.confirm.destroy');

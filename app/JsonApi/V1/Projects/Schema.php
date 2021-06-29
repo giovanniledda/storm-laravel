@@ -2,14 +2,12 @@
 
 namespace App\JsonApi\V1\Projects;
 
-use Neomerx\JsonApi\Schema\SchemaProvider;
-
 use App\Boat;
 use App\Site;
+use Neomerx\JsonApi\Schema\SchemaProvider;
 
 class Schema extends SchemaProvider
 {
-
     /**
      * @var string
      */
@@ -22,21 +20,21 @@ class Schema extends SchemaProvider
      */
     public function getId($resource)
     {
-        return (string)$resource->getRouteKey();
+        return (string) $resource->getRouteKey();
     }
 
     public function getPrimaryMeta($resource)
     {
         $generic_documents = $resource->generic_documents;
         $gdu = [];
-        foreach ($generic_documents as $i){
-            $tmp =[
+        foreach ($generic_documents as $i) {
+            $tmp = [
                 'uri' => $i->getShowApiUrl(),
                 'title' => $i->title,
                 'mime_type' => $i->media->first()->mime_type,
-                'date' => $i->updated_at->toAtomString(),// TODO: get MIME TYPE
+                'date' => $i->updated_at->toAtomString(), // TODO: get MIME TYPE
             ];
-            $gdu []= $tmp;
+            $gdu[] = $tmp;
         }
 
         return ['generic_documents' => $gdu];
@@ -62,7 +60,7 @@ class Schema extends SchemaProvider
             'application_logs' => [
              //   self::SHOW_SELF => true,
                 self::SHOW_RELATED => true,
-            ]
+            ],
         ];
     }
 
@@ -73,10 +71,11 @@ class Schema extends SchemaProvider
      */
     public function getAttributes($resource)
     {
-        $boat =  Boat::find($resource->boat_id);
-        $site =  Site::select('sites.name', 'sites.location')
+        $boat = Boat::find($resource->boat_id);
+        $site = Site::select('sites.name', 'sites.location')
                      ->where('id', '=', $resource->site_id)
                      ->first();
+
         return [
             'internal_progressive_number' => $resource->internal_progressive_number,
             'name' => $resource->name,

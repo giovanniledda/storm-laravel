@@ -2,13 +2,12 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
 use App\ApplicationLogSection;
+use Tests\TestCase;
 
 class ModelApplicationLogSectionTest extends TestCase
 {
     /**
-     *
      * @return void
      */
     public function testSimpleCreation()

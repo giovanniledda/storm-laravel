@@ -11,7 +11,6 @@ use Illuminate\Support\Collection;
 
 class Adapter extends AbstractAdapter
 {
-
     /**
      * Mapping of JSON API attribute field names to model keys.
      *
@@ -53,18 +52,17 @@ class Adapter extends AbstractAdapter
         }
 
         /** restringe il recordset in caso di mancanza di permessi */
-        if (!$user->can(PERMISSION_ADMIN) || !$user->can(PERMISSION_BACKEND_MANAGER)) {
+        if (! $user->can(PERMISSION_ADMIN) || ! $user->can(PERMISSION_BACKEND_MANAGER)) {
             // L'utente loggato non e' un admin
             // SE SI TRATTA DI UN DIPENDENTE  ALLORA MOSTRO SOLO QUELLI LEGATI A project_user
             if ($user->hasRole(ROLE_WORKER)) {
 
                 /**
                  *  trovo solo le barche che hanno un progetto a cui l'utente di sessione e' associato  in project_user
-                 *
                  */
 
 //                $query->whereIn('boats.id', $user->boatsOfMyActiveProjects(true));
-                
+
                 $query->select('boats.*')
                     ->distinct()
                     ->leftJoin('projects', 'boats.id', '=', 'projects.boat_id')
@@ -84,10 +82,7 @@ class Adapter extends AbstractAdapter
                 });
             }
         }
-
-
     }
-
 
     /* RELAZIONI PER LE RISORSE*/
     public function sections()
@@ -97,7 +92,7 @@ class Adapter extends AbstractAdapter
 
     public function projects()
     {
-        return $this->hasMany('App\Project');
+        return $this->hasMany(\App\Project::class);
     }
 
     /**

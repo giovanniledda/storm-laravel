@@ -3,17 +3,17 @@
 namespace App;
 
 use App\Traits\JsonAPIPhotos;
+use function copy;
+use function date;
+use const DIRECTORY_SEPARATOR;
+use function explode;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use function json_decode;
 use Net7\Documents\Document;
 use Net7\Documents\DocumentableTrait;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use function copy;
-use function date;
-use function explode;
-use function json_decode;
 use function time;
-use const DIRECTORY_SEPARATOR;
 
 class History extends Model
 {
@@ -28,7 +28,7 @@ class History extends Model
         'event_date',
         'historyable_id',
         'historyable_type',
-        'updated_at'
+        'updated_at',
     ];
 
     public function historyable()
@@ -38,7 +38,7 @@ class History extends Model
 
     public function comments()
     {
-        return $this->morphMany('App\Comment', 'commentable');
+        return $this->morphMany(\App\Comment::class, 'commentable');
     }
 
     public function getFirstcomment()
@@ -55,7 +55,7 @@ class History extends Model
                 'comments.created_at',
                 'comments.updated_at',
                 'users.name as author_name',
-                'users.surname  as author_surname']);
+                'users.surname  as author_surname', ]);
     }
 
     /**
@@ -67,7 +67,7 @@ class History extends Model
     public function getBodyAttribute($attribute)
     {
         $event_body_arr = json_decode($this->event_body, 1);
-        if (!empty($event_body_arr)) {
+        if (! empty($event_body_arr)) {
             return isset($event_body_arr[$attribute]) ? $event_body_arr[$attribute] : null;
         }
     }
@@ -78,8 +78,8 @@ class History extends Model
         $media_id = $media->id;
 
         $history_id = $this->id;
-        $path = 'histories' . DIRECTORY_SEPARATOR .
-            $history_id . DIRECTORY_SEPARATOR . $document->type . DIRECTORY_SEPARATOR . $media_id . DIRECTORY_SEPARATOR;
+        $path = 'histories'.DIRECTORY_SEPARATOR.
+            $history_id.DIRECTORY_SEPARATOR.$document->type.DIRECTORY_SEPARATOR.$media_id.DIRECTORY_SEPARATOR;
 
         return $path;
     }
@@ -91,7 +91,6 @@ class History extends Model
     {
         $this->update(['updated_at' => date('Y-m-d H:i:s', time())]);
     }
-
 
     /**
      * Retrieve additional image's path
@@ -124,8 +123,8 @@ class History extends Model
         // mettere tutto in una funzione
         $f_arr = explode('/', $filepath);
         $filename = Arr::last($f_arr);
-        $tempFilepath = '/tmp/' . $filename;
-        copy('./storage/seeder/' . $filepath, $tempFilepath);
+        $tempFilepath = '/tmp/'.$filename;
+        copy('./storage/seeder/'.$filepath, $tempFilepath);
         $file = new UploadedFile($tempFilepath, $filename, null, null, true);
 
         $doc = new Document([
@@ -133,6 +132,7 @@ class History extends Model
             'file' => $file,
         ]);
         $this->addDocumentWithType($doc, $type ? $type : Document::GENERIC_IMAGE_TYPE);
+
         return $doc;
     }
 }

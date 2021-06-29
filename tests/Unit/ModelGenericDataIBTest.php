@@ -2,13 +2,12 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
 use App\GenericDataInfoBlock;
+use Tests\TestCase;
 
 class ModelGenericDataIBTest extends TestCase
 {
     /**
-     *
      * @return void
      */
     public function testSimpleCreation()

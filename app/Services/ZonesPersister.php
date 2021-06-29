@@ -18,7 +18,7 @@ class ZonesPersister
      */
     public function persistZones(Project $project, array $zones_data)
     {
-        if (!empty($zones_data)) {
+        if (! empty($zones_data)) {
             $parent_to_be_created = [];
             $children_to_be_created = [];  // key (code+desc del padre) => value (array dei figli)
             $new_children_for_existing_parent = [];  // key (id del padre) => value (array dei figli)
@@ -31,7 +31,7 @@ class ZonesPersister
                 $description = $parent_zone['attributes']['description'];
                 $data = [
                     'code' => $code,
-                    'description' => $description
+                    'description' => $description,
                 ];
                 $parent_key = md5($code.$description);
 
@@ -101,7 +101,7 @@ class ZonesPersister
                 }
             }
 
-            if (!empty($new_children_for_existing_parent)) {
+            if (! empty($new_children_for_existing_parent)) {
                 foreach ($new_children_for_existing_parent as $parent_id => $new_children_data) {
                     foreach ($new_children_data as $child_data) {
                         $c_code = isset($child_data['code']) ? $child_data['code'] : null;

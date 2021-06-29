@@ -2,22 +2,21 @@
 
 namespace Tests\Feature;
 
-use Laravel\Passport\Passport;
-use Tests\TestApiCase;
 use App\Boat;
 use App\Permission;
-use App\Project;
 use App\Profession;
+use App\Project;
 use App\Role;
 use App\Task;
 use App\User;
-
+use Laravel\Passport\Passport;
 use const PERMISSION_BOAT_MANAGER;
 use const ROLE_BOAT_MANAGER;
+use Tests\TestApiCase;
 
 class ApiUpdateTest extends TestApiCase
 {
-    function test_can_create_notifications_related_to_task_creation()
+    public function test_can_create_notifications_related_to_task_creation()
     {
         $this->_populateProfessions();
         // Creo barca
@@ -40,7 +39,7 @@ class ApiUpdateTest extends TestApiCase
             $user->assignRole(ROLE_BOAT_MANAGER);
 
             // associo utente al progetto
-            $user->projects()->attach($project->id, [ 'profession_id' => 1]);
+            $user->projects()->attach($project->id, ['profession_id' => 1]);
         }
 
         // Devo "loggare" un utente altrimenti il TaskObserver si incazza
@@ -57,7 +56,6 @@ class ApiUpdateTest extends TestApiCase
 
         // verifico che gli utenti abbiano le notifiche
         foreach ($users as $user) {
-
             $this->_testUserConnection($user, USER_FAKE_PASSWORD);
             $this->refreshApplication();  // Fa una sorta di pulizia della cache perché dopo la prima post, poi tutte le chiamate successive tornano sulla stessa route
             Passport::actingAs($user);
@@ -74,13 +72,13 @@ class ApiUpdateTest extends TestApiCase
 //            dd($r);
         }
     }
-    
-     private function _populateProfessions() {
-        $professions = ['owner','chief engineer', 'captain', 'ship\'s boy'];
+
+    private function _populateProfessions()
+    {
+        $professions = ['owner', 'chief engineer', 'captain', 'ship\'s boy'];
         foreach ($professions as $profession) {
             $prof = Profession::create(['name'=>$profession]);
             $prof->save();
-        } 
-        
+        }
     }
 }

@@ -6,7 +6,6 @@ use CloudCreativity\LaravelJsonApi\Validation\AbstractValidators;
 
 class Validators extends AbstractValidators
 {
-
     /**
      * The error messages.
      *
@@ -51,13 +50,11 @@ class Validators extends AbstractValidators
      */
     protected function rules($record = null): array
     {
-
         return [
             'project_id'=> 'required|numeric|exists:projects,id',
             'profession_id'=> 'required|numeric|exists:professions,id',
-            'user_id'=> 'required|numeric|exists:users,id'
+            'user_id'=> 'required|numeric|exists:users,id',
         ];
-
     }
 
     /**
@@ -71,5 +68,4 @@ class Validators extends AbstractValidators
             //
         ];
     }
-
 }

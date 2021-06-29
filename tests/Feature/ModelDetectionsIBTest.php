@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
-use function factory;
-use App\DetectionsInfoBlock;
-use Tests\TestCase;
 use App\ApplicationLogSection;
+use App\DetectionsInfoBlock;
+use function factory;
+use Tests\TestCase;
 
 class ModelDetectionsIBTest extends TestCase
 {

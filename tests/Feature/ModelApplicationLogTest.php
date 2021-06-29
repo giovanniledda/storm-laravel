@@ -2,18 +2,18 @@
 
 namespace Tests\Feature;
 
+use App\ApplicationLog;
 use App\ApplicationLogSection;
 use App\ApplicationLogTask;
+use App\Boat;
+use App\Project;
 use App\Task;
 use App\Zone;
 use App\ZoneAnalysisInfoBlock;
-use Seeds\SeederUtils;
 use function factory;
-use App\Boat;
-use App\Project;
-use Tests\TestCase;
-use App\ApplicationLog;
+use Seeds\SeederUtils;
 use const TASK_TYPE_REMARK;
+use Tests\TestCase;
 
 class ModelApplicationLogTest extends TestCase
 {
@@ -44,15 +44,15 @@ class ModelApplicationLogTest extends TestCase
         $this->assertEquals($project->boat->id, $application_log->boat()->id);
     }
 
-    function test_internal_progressive_number() {
-
+    public function test_internal_progressive_number()
+    {
         $boats = factory(Boat::class, 3)->create();
         /** @var Boat $boat */
         foreach ($boats as $boat) {
             $projs_index_for_boat = 1;
             $application_logs_index_for_boat = 1;
             $projects = factory(Project::class, 4)->create([
-                'boat_id' => $boat->id
+                'boat_id' => $boat->id,
             ]);
             /** @var Project $project */
             foreach ($projects as $project) {
@@ -60,7 +60,7 @@ class ModelApplicationLogTest extends TestCase
                 $this->assertEquals($projs_index_for_boat++, $project->internal_progressive_number);
 
                 $application_logs = factory(ApplicationLog::class, 10)->create([
-                    'project_id' => $project->id
+                    'project_id' => $project->id,
                 ]);
                 /** @var ApplicationLog $application_log */
                 foreach ($application_logs as $application_log) {
@@ -71,8 +71,8 @@ class ModelApplicationLogTest extends TestCase
         }
     }
 
-    function test_started_sections() {
-
+    public function test_started_sections()
+    {
         $application_log_sections_num = $this->faker->numberBetween(1, 15);
         $application_log_sections_started_num = $started_counter = $this->faker->numberBetween(1, $application_log_sections_num);
 
@@ -95,11 +95,11 @@ class ModelApplicationLogTest extends TestCase
             if ($started_counter > 0) {
                 $started_counter--;
                 $application_log_section->update([
-                    'is_started' => 1
+                    'is_started' => 1,
                 ]);
             } else {
                 $application_log_section->update([
-                    'is_started' => 0
+                    'is_started' => 0,
                 ]);
             }
         }
@@ -111,7 +111,8 @@ class ModelApplicationLogTest extends TestCase
      * I Task (di tipo "remark") sono ora associati agli App Log.
      * Possono avere un App Log di apertura e uno di chiusura.
      */
-    function test_open_and_close_tasks() {
+    public function test_open_and_close_tasks()
+    {
 
         /** @var ApplicationLog $application_log */
         $application_log = factory(ApplicationLog::class)->create();
@@ -128,7 +129,7 @@ class ModelApplicationLogTest extends TestCase
             [
                 'task_id' => $task->id,
                 'application_log_id' => $application_log->id,
-                'action' => 'open'
+                'action' => 'open',
             ]
         );
 
@@ -160,7 +161,7 @@ class ModelApplicationLogTest extends TestCase
             [
                 'task_id' => $task2->id,
                 'application_log_id' => $application_log->id,
-                'action' => 'close'
+                'action' => 'close',
             ]
         );
 
@@ -197,7 +198,7 @@ class ModelApplicationLogTest extends TestCase
 
         /** @var Task $task5 */
         $task5 = factory(Task::class)->create([
-            'project_id' => factory(Project::class)->create()->id
+            'project_id' => factory(Project::class)->create()->id,
         ]);
 
         // .. openMe
@@ -207,12 +208,11 @@ class ModelApplicationLogTest extends TestCase
         // .. closeMe
         $task5->closeMe($application_log);
         $this->assertEquals($task5->closer_application_log()->first()->id, $application_log->id);
-
     }
 
     // test for getOpenedTaskFromMyZones function
-    function test_opened_tasks_from_my_zones() {
-
+    public function test_opened_tasks_from_my_zones()
+    {
         $utils = new SeederUtils();
 
         /** @var Project $project */
@@ -247,7 +247,7 @@ class ModelApplicationLogTest extends TestCase
             [
                 'project_id' => $project->id,
                 'is_open' => true,
-                'task_type' => TASK_TYPE_REMARK
+                'task_type' => TASK_TYPE_REMARK,
             ]
         );
         /** @var Task $task2 */
@@ -255,7 +255,7 @@ class ModelApplicationLogTest extends TestCase
             [
                 'project_id' => $project->id,
                 'is_open' => true,
-                'task_type' => TASK_TYPE_REMARK
+                'task_type' => TASK_TYPE_REMARK,
             ]
         );
         /** @var Task $task3 */
@@ -263,7 +263,7 @@ class ModelApplicationLogTest extends TestCase
             [
                 'project_id' => $project->id,
                 'is_open' => true,
-                'task_type' => TASK_TYPE_REMARK
+                'task_type' => TASK_TYPE_REMARK,
             ]
         );
 
@@ -281,7 +281,7 @@ class ModelApplicationLogTest extends TestCase
             [
                 'project_id' => $project->id,
                 'is_open' => true,
-                'task_type' => TASK_TYPE_REMARK
+                'task_type' => TASK_TYPE_REMARK,
             ]
         );
         /** @var Task $task5 */
@@ -289,7 +289,7 @@ class ModelApplicationLogTest extends TestCase
             [
                 'project_id' => $project->id,
                 'is_open' => true,
-                'task_type' => TASK_TYPE_REMARK
+                'task_type' => TASK_TYPE_REMARK,
             ]
         );
         /** @var Task $task6 */
@@ -297,7 +297,7 @@ class ModelApplicationLogTest extends TestCase
             [
                 'project_id' => $project->id,
                 'is_open' => true,
-                'task_type' => TASK_TYPE_REMARK
+                'task_type' => TASK_TYPE_REMARK,
             ]
         );
 
@@ -327,7 +327,6 @@ class ModelApplicationLogTest extends TestCase
         $this->assertEquals($task5->opener_application_log()->first()->id, $first_application_log->id);
 
 //        $task6->openMe($application_log);
-
 
         // Now I've to create a different App Log wich uses the same zones in its zone_ib
         /** @var ApplicationLog $second_application_log */

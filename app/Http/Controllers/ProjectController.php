@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Project;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+
 class ProjectController extends Controller
 {
     /**
@@ -82,6 +83,4 @@ class ProjectController extends Controller
     {
         //
     }
-
-   
 }

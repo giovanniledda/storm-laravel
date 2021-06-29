@@ -2,23 +2,20 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Boat;
+use App\BoatUser;
 use App\Http\Controllers\Controller;
+use App\Profession;
+use App\User;
+use App\Utils\Utils;
 use Auth;
 use Illuminate\Http\Request;
-use App\User;
-use App\Boat;
-use App\Profession;
-use App\BoatUser;
-use Validator;
-use App\Utils\Utils;
-
 use const PERMISSION_ADMIN;
 use const PERMISSION_BACKEND_MANAGER;
-
+use Validator;
 
 class BoatController extends Controller
 {
-
     /**
      * Inserisce un utente in boatUsers e lo caricica come owner
      * @param Request $request
@@ -39,27 +36,25 @@ class BoatController extends Controller
         /**
          * @todo aggiungere il controllo esistenza sia per user_id che la boat_id
          */
-
         $rel = BoatUser::create([
             'boat_id' => $boat['id'],
             'user_id' => $user_id,
-            'profession_id' => $owner->id
+            'profession_id' => $owner->id,
         ]);
 
         $data = [
-            "type" => "boats",
-            "attributes" => [
-                'owner_id' => $rel->id
-            ]];
+            'type' => 'boats',
+            'attributes' => [
+                'owner_id' => $rel->id,
+            ], ];
 
         $user = User::Find($user_id);
         $user->assignRole(ROLE_BOAT_MANAGER);
 
-        $resp = Response(["data" => $data], 201);
+        $resp = Response(['data' => $data], 201);
         $resp->header('Content-Type', 'application/vnd.api+json');
 
         return $resp;
-
     }
 
     /**
@@ -75,13 +70,14 @@ class BoatController extends Controller
         if ($user->can(PERMISSION_ADMIN) || $user->can(PERMISSION_BACKEND_MANAGER)) {
             /** @var Boat $boat */
             $boat = Boat::findOrFail($record->id);
+
             return Utils::renderStandardJsonapiResponse($boat->closedProjectsJsonApi(), 200);
         }
+
         return Utils::jsonAbortWithInternalError(401, 401, 'Authorization denied', "You're not allowed to access this resource.");
     }
 
     /**
-     *
      * @param Request $request
      *
      * @return mixed
@@ -92,13 +88,13 @@ class BoatController extends Controller
             $user = Auth::user();
             if ($user) {
                 $boats = $user->boatsOfMyClosedProjects();
+
                 return Utils::renderStandardJsonapiResponse($boats, 200);
             }
         }
     }
 
     /**
-     *
      * @param Request $request
      *
      * @return mixed
@@ -111,7 +107,7 @@ class BoatController extends Controller
             if ($user) {
                 if ($request->input('active-projects') == 'on') {
                     $boats = $user->can(PERMISSION_ADMIN) ? Boat::boatsWithActiveProjects() : $user->boatsOfMyActiveProjects();
-                } else if ($request->input('active-projects') == 'off') {
+                } elseif ($request->input('active-projects') == 'off') {
                     $boats = $user->can(PERMISSION_ADMIN) ? Boat::boatsWithClosedProjects() : $user->boatsOfMyClosedProjects();
                 } else {
                     $boats = $user->can(PERMISSION_ADMIN) ? Boat::all() : $user->boatsOfMyProjects();
@@ -134,15 +130,13 @@ class BoatController extends Controller
                         $data['data'][] = [
                             'id' => $boat->id,
                             'type' => 'boats',
-                            'attributes' => $attributes
+                            'attributes' => $attributes,
                         ];
                     }
                 }
             }
         }
+
         return Utils::renderStandardJsonapiResponse($data, 200);
     }
-
-
-
 }

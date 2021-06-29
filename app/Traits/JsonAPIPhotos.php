@@ -2,19 +2,17 @@
 
 namespace App\Traits;
 
-
-use Illuminate\Support\Arr;
-use Net7\Documents\Document;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use function base64_encode;
 use function copy;
 use function explode;
 use function file_exists;
 use function file_get_contents;
+use Illuminate\Support\Arr;
+use Net7\Documents\Document;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 trait JsonAPIPhotos
 {
-
     /**
      * @return mixed
      */
@@ -30,7 +28,6 @@ trait JsonAPIPhotos
     {
         return $this->getAllDocumentsMediaFileArray(Document::DETAILED_IMAGE_TYPE);
     }
-
 
     /**
      * @return mixed
@@ -62,6 +59,7 @@ trait JsonAPIPhotos
                 return $file_path;
             }
         }
+
         return null;
     }
 
@@ -74,16 +72,17 @@ trait JsonAPIPhotos
     {
         $file_path = $this->getDocumentPhotoRelatedMediaPathBySize($photo_doc, $image_size);
         if ($file_path) {
-           return [
+            return [
                 'type' => 'documents',
                 'id' => $photo_doc->id,
                 'attributes' => [
                     'doc_type' => $photo_doc->type,
                     'file_path' => $file_path,
-                    'base64' => base64_encode(file_get_contents($file_path))
-                ]
+                    'base64' => base64_encode(file_get_contents($file_path)),
+                ],
             ];
         }
+
         return null;
     }
 
@@ -102,10 +101,11 @@ trait JsonAPIPhotos
                 'attributes' => [
                     'doc_type' => $photo_doc->type,
                     'file_path' => $file_path,
-                    'file_uri' => route('download_document_web', $photo_doc->id)
-                ]
+                    'file_uri' => route('download_document_web', $photo_doc->id),
+                ],
             ];
         }
+
         return null;
     }
 
@@ -137,7 +137,6 @@ trait JsonAPIPhotos
         return [$field_key => $photo_objects];
     }
 
-
     /**
      * Adds an image as a generic_image Net7/Document
      * @param string $filepath
@@ -149,8 +148,8 @@ trait JsonAPIPhotos
         // mettere tutto in una funzione
         $f_arr = explode('/', $filepath);
         $filename = Arr::last($f_arr);
-        $tempFilepath = '/tmp/' . $filename;
-        copy('./storage/seeder/' . $filepath, $tempFilepath);
+        $tempFilepath = '/tmp/'.$filename;
+        copy('./storage/seeder/'.$filepath, $tempFilepath);
         $file = new UploadedFile($tempFilepath, $filename, null, null, true);
 
         $doc = new Document([

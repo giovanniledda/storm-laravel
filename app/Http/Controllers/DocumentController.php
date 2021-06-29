@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Net7\Documents\Document;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
+use Net7\Documents\Document;
 
 class DocumentController extends Controller
 {
-
-
     /**
      * Create a document and associate it to task {task} in request
      *
@@ -19,8 +17,6 @@ class DocumentController extends Controller
      */
     public function createRelatedToTask(Request $request, $related)
     {
-
-
         $task = \App\Task::find($request->task);
         // TODO check task exists
         $title = $request->title;
@@ -30,7 +26,7 @@ class DocumentController extends Controller
         $tmpFileFullPath = '';
         if ($base64File) {
             $tmpFilename = uniqid('phpfile_');
-            $tmpFileFullPath = '/tmp/' . $tmpFilename;
+            $tmpFileFullPath = '/tmp/'.$tmpFilename;
             $h = fopen($tmpFileFullPath, 'w');
             $decoded = base64_decode($base64File);
             fwrite($h, $decoded, strlen($decoded));
@@ -41,18 +37,16 @@ class DocumentController extends Controller
 
         $doc = new Document([
             'title' => $filename,
-            'file' => $file
+            'file' => $file,
         ]);
 
         $doc->save();
         $task->documents()->save($doc);
 
-
         $ret = ['data' => [
             'id' => $doc->id,
         ]];
+
         return new Response($ret, 201);
     }
-
-
 }

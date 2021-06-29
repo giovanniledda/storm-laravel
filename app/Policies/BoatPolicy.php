@@ -2,10 +2,9 @@
 
 namespace App\Policies;
 
-use App\User;
 use App\Boat;
 use App\BoatUser;
-
+use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use const PERMISSION_ADMIN;
 use const PERMISSION_BOAT_MANAGER;
@@ -35,7 +34,6 @@ class BoatPolicy
      */
     public function view(User $user, Boat $boat)
     {
-
         $c = Boat::find($boat->id)->associatedUsers->where('user_id', $user->id)->count();
         if ($c > 0) {
             return true;
@@ -45,7 +43,6 @@ class BoatPolicy
         if ($user->can(PERMISSION_ADMIN)) {
             return true;
         }
-
 
         // se il ruolo e' worker devo controllare che l'utente sia in project_user
         if ($user->hasRole(ROLE_WORKER)) {
@@ -60,7 +57,6 @@ class BoatPolicy
         }
 
         return false;
-
     }
 
     /**
@@ -78,7 +74,7 @@ class BoatPolicy
         if ($user->can(PERMISSION_WORKER)) {
             return true;
         }
-        
+
         if ($user->can(PERMISSION_BACKEND_MANAGER)) {
             return true;
         }
@@ -99,10 +95,10 @@ class BoatPolicy
             return true;
         }
 
-       if ($user->can(PERMISSION_BACKEND_MANAGER)) {
+        if ($user->can(PERMISSION_BACKEND_MANAGER)) {
             return true;
         }
-        
+
         return false;
     }
 
@@ -122,6 +118,7 @@ class BoatPolicy
         if ($user->can(PERMISSION_BACKEND_MANAGER)) {
             return true;
         }
+
         return false;
     }
 

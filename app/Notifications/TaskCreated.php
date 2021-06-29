@@ -9,7 +9,6 @@ use const TASK_CREATED_MOBILE_APP_TEXT;
 
 class TaskCreated extends TaskNotifications
 {
-
     /**
      * Create a new notification instance.
      *
@@ -30,12 +29,12 @@ class TaskCreated extends TaskNotifications
     {
         $parent_result = parent::toDatabase($notifiable);
         $parent_result['message'] = $this->getMobileAppMessage();
+
         return $parent_result;
     }
 
     protected function getMobileAppMessage()
     {
-
         return StormUtils::replacePlaceholders(TASK_CREATED_MOBILE_APP_TEXT, [
             '@someone' => $this->actionAuthor ? $this->actionAuthor->getFullName() : 'Someone',
             '@task_id' => $this->task->id,

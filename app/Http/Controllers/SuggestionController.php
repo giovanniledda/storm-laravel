@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use function __;
 use App\Http\Requests\RequestSuggestion;
+use App\Suggestion;
 use App\User;
 use DB;
 use Illuminate\Http\Request;
-use App\Suggestion;
-use StormUtils;
-
-use function __;
 use function redirect;
+use StormUtils;
 use function view;
 
 class SuggestionController extends Controller
@@ -23,6 +22,7 @@ class SuggestionController extends Controller
     public function index()
     {
         $suggestions = Suggestion::paginate(StormUtils::getItemsPerPage());
+
         return view('suggestions.index')->with('suggestions', $suggestions);
     }
 
@@ -46,6 +46,7 @@ class SuggestionController extends Controller
     {
         $validated = $request->validated();
         $suggestion = Suggestion::create($validated);
+
         return redirect()->route('suggestions.index')->with(FLASH_SUCCESS, __('Suggestion created!'));
     }
 
@@ -119,6 +120,7 @@ class SuggestionController extends Controller
     {
         $query = $request->input('query');
         $users = Suggestion::selectRaw('distinct context')->where('context', 'like', "%$query%")->get();
+
         return response()->json($users);
     }
 }

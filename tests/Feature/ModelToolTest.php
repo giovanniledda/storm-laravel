@@ -2,15 +2,14 @@
 
 namespace Tests\Feature;
 
-use function factory;
-use App\Tool;
 use App\DetectionsInfoBlock;
+use App\Tool;
+use function factory;
 use Tests\TestCase;
 
 class ModelToolTest extends TestCase
 {
     /**
-     *
      * @return void
      */
     public function testBasicRelationships()
@@ -26,7 +25,7 @@ class ModelToolTest extends TestCase
         $detections_info_block->save();
 
         $this->assertEquals($detections_info_block->tool->id, $tool->id); // testo la relazione inversa
-        $this->assertContains($detections_info_block->id, $tool->detections_info_blocks()->pluck('id')) ;
+        $this->assertContains($detections_info_block->id, $tool->detections_info_blocks()->pluck('id'));
 
         /** @var Tool $tool2 */
         $tool2 = factory(Tool::class)->create();
@@ -39,6 +38,6 @@ class ModelToolTest extends TestCase
         $tool2->save();
 
         $this->assertEquals($detections_info_block2->tool->id, $tool2->id); // testo la relazione inversa
-        $this->assertContains($detections_info_block2->id, $tool2->detections_info_blocks()->pluck('id')) ;
+        $this->assertContains($detections_info_block2->id, $tool2->detections_info_blocks()->pluck('id'));
     }
 }

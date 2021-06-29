@@ -27,10 +27,9 @@ class EventServiceProvider extends ServiceProvider
         ]
         */
         DocumentDeleted::class => [
-            DeleteReportItemAfterDocument::class
-        ]
+            DeleteReportItemAfterDocument::class,
+        ],
     ];
-
 
     /**
      * The subscriber classes to register.
@@ -38,7 +37,7 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $subscribe = [
-        'App\Listeners\TaskSubscriber',
+        \App\Listeners\TaskSubscriber::class,
     ];
 
     /**

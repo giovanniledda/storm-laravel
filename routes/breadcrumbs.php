@@ -6,9 +6,7 @@ Breadcrumbs::for('dashboard', function ($trail) {
     $trail->push(__('Dashboard'), route('dashboard'));
 });
 
-
 /** Users **/
-
 Breadcrumbs::for('users', function ($trail) {
     $trail->parent('dashboard');
     $trail->push(__('Users'), route('users.index'));
@@ -37,7 +35,7 @@ Breadcrumbs::for('user.addresses.new', function ($trail, $user) {
 
 Breadcrumbs::for('user.address', function ($trail, $user, $address) {
     $trail->parent('user.addresses', $user);
-    $trail->push($address->street, route('users.addresses.edit', ['user_id' => $user->id, 'address_id' => $address->id,]));
+    $trail->push($address->street, route('users.addresses.edit', ['user_id' => $user->id, 'address_id' => $address->id]));
 });
 
 // User phones
@@ -53,11 +51,10 @@ Breadcrumbs::for('user.phones.new', function ($trail, $user) {
 
 Breadcrumbs::for('user.phone', function ($trail, $user, $phone) {
     $trail->parent('user.phones', $user);
-    $trail->push($phone->phone_number, route('users.phones.confirm.destroy', ['user_id' => $user->id, 'phone_id' => $phone->id,]));
+    $trail->push($phone->phone_number, route('users.phones.confirm.destroy', ['user_id' => $user->id, 'phone_id' => $phone->id]));
 });
 
 /** Project - User **/
-
 Breadcrumbs::for('user.projects', function ($trail, $user) {
     $trail->parent('user', $user);
     $trail->push(__('Projects'), route('project_user.index', ['user_id' => $user->id]));
@@ -75,7 +72,6 @@ Breadcrumbs::for('user.project', function ($trail, $pu) {
 });
 
 /** Roles **/
-
 Breadcrumbs::for('roles', function ($trail) {
     $trail->parent('dashboard');
     $trail->push(__('Roles'), route('roles.index'));
@@ -91,9 +87,7 @@ Breadcrumbs::for('role', function ($trail, $role) {
     $trail->push($role->name, route('roles.edit', $role));
 });
 
-
 /** Permissions **/
-
 Breadcrumbs::for('permissions', function ($trail) {
     $trail->parent('dashboard');
     $trail->push(__('Permissions'), route('permissions.index'));
@@ -109,9 +103,7 @@ Breadcrumbs::for('permission', function ($trail, $permission) {
     $trail->push($permission->name, route('permissions.edit', $permission));
 });
 
-
 /** Professions **/
-
 Breadcrumbs::for('professions', function ($trail) {
     $trail->parent('dashboard');
     $trail->push(__('Professions'), route('professions.index'));
@@ -127,9 +119,7 @@ Breadcrumbs::for('profession', function ($trail, $profession) {
     $trail->push($profession->name, route('professions.edit', $profession));
 });
 
-
 /** Task Intervent Types **/
-
 Breadcrumbs::for('task_intervent_types', function ($trail) {
     $trail->parent('dashboard');
     $trail->push(__('Task Intervent Types'), route('task_intervent_types.index'));
@@ -145,9 +135,7 @@ Breadcrumbs::for('task_intervent_type', function ($trail, $interv_type) {
     $trail->push($interv_type->name, route('task_intervent_types.edit', $interv_type));
 });
 
-
 /** Sites **/
-
 Breadcrumbs::for('sites', function ($trail) {
     $trail->parent('dashboard');
     $trail->push(__('Dockyards/Sites'), route('sites.index'));
@@ -179,11 +167,9 @@ Breadcrumbs::for('site.address', function ($trail, $site, $address) {
     $trail->push($address->street, route('sites.addresses.edit', ['site_id' => $site->id, 'address_id' => $address->id]));
 });
 
-
 /** Suggestions **/
 
 /** Professions **/
-
 Breadcrumbs::for('suggestions', function ($trail) {
     $trail->parent('dashboard');
     $trail->push(__('Suggestions'), route('suggestions.index'));

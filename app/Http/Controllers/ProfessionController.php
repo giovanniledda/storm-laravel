@@ -19,6 +19,7 @@ class ProfessionController extends Controller
 //        $professions = Profession::all();
 
         $professions = Profession::paginate(StormUtils::getItemsPerPage());
+
         return view('professions.index')->with('professions', $professions);
     }
 
@@ -42,6 +43,7 @@ class ProfessionController extends Controller
     {
         $validated = $request->validated();
         $profession = Profession::create($validated);
+
         return redirect()->route('professions.index')
             ->with(FLASH_SUCCESS, __('Profession :name created!', ['name' => $profession->name]));
     }
@@ -77,7 +79,6 @@ class ProfessionController extends Controller
      */
     public function update(RequestProfession $request, Profession $profession)
     {
-
         $validated = $request->validated();
         $profession->fill($validated)->save();
         $profession->is_storm = $request->has('is_storm');
@@ -101,7 +102,6 @@ class ProfessionController extends Controller
             ->with(FLASH_SUCCESS, __('Profession deleted'));
     }
 
-
     /**
      * Ask confirmation about the specified resource from storage to remove.
      *
@@ -111,6 +111,7 @@ class ProfessionController extends Controller
     public function confirmDestroy($id)
     {
         $profession = Profession::findOrFail($id);
+
         return view('professions.delete')->withProfession($profession);
     }
 }

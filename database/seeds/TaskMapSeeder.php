@@ -4,13 +4,11 @@
  * by @reina
  */
 
-
-use Illuminate\Database\Seeder;
 use App\Task;
+use Illuminate\Database\Seeder;
 
 class TaskMapSeeder extends Seeder
 {
-
     /**
      * Run the database seeds.
      *
@@ -18,7 +16,6 @@ class TaskMapSeeder extends Seeder
      */
     public function run()
     {
-
         $type = $this->command->choice('What kind of Tasks are you looking for?', ['All', 'Primary', 'Remarks'], 0);
         if ($type == 'All') {
             $tasks = Task::all();
@@ -30,19 +27,16 @@ class TaskMapSeeder extends Seeder
 
         $tasks_num = count($tasks);
         $this->command->info("Starting image creation for $tasks_num tasks!");
-        $tasks->each(function ($task) // foreach($posts as $post) { }
-        {
+        $tasks->each(function ($task) { // foreach($posts as $post) { }
             echo PHP_EOL;
-            echo 'Try to create map for task #' . $task->id;
+            echo 'Try to create map for task #'.$task->id;
             echo PHP_EOL;
             $r = $task->updateMap();
             if (isset($r['success']) && $r['success']) {
-                $this->command->info("Map Created");
+                $this->command->info('Map Created');
             } else {
                 $this->command->error($r['error']);
             }
-
         });
     }
-
 }

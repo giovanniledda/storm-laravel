@@ -5,28 +5,27 @@ namespace App\JsonApi\V1\Tasks;
 use App\ApplicationLog;
 use App\Task;
 use App\TaskStatus;
-use Carbon\Carbon;
-use CloudCreativity\LaravelJsonApi\Eloquent\AbstractAdapter;
-use CloudCreativity\LaravelJsonApi\Pagination\StandardStrategy;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
-use Neomerx\JsonApi\Contracts\Encoder\Parameters\EncodingParametersInterface;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Collection;
 use function array_filter;
 use function array_keys;
 use function array_map;
 use function array_merge;
+use Carbon\Carbon;
+use CloudCreativity\LaravelJsonApi\Eloquent\AbstractAdapter;
+use CloudCreativity\LaravelJsonApi\Pagination\StandardStrategy;
 use function explode;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use function in_array;
-
+use Neomerx\JsonApi\Contracts\Encoder\Parameters\EncodingParametersInterface;
 use const ROLE_BOAT_MANAGER;
 use const TASK_TYPE_PRIMARY;
 use const TASK_TYPE_REMARK;
 
-class Adapter extends AbstractAdapter {
-
+class Adapter extends AbstractAdapter
+{
     protected $fillable = [
         'number',
         'title',
@@ -45,7 +44,7 @@ class Adapter extends AbstractAdapter {
         'y_coord',
         'bridge_position',
         'zone_id',
-        'task_type'
+        'task_type',
     ];
 
     /**
@@ -61,7 +60,8 @@ class Adapter extends AbstractAdapter {
      *
      * @param StandardStrategy $paging
      */
-    public function __construct(StandardStrategy $paging) {
+    public function __construct(StandardStrategy $paging)
+    {
         parent::__construct(new \App\Task(), $paging);
     }
 
@@ -85,8 +85,8 @@ class Adapter extends AbstractAdapter {
      * @param Collection $filters
      * @return void
      */
-    protected function filter($query, Collection $filters) {
-
+    protected function filter($query, Collection $filters)
+    {
         $skipFilters = [];
 
         // Tipo filters['remark_status'] = 'open|no_actions|local_repaint|total_repaint|closed';
@@ -97,12 +97,12 @@ class Adapter extends AbstractAdapter {
             $remarkStatuses = explode('|', $filters->get('remark_status'));
             $openRemarks = [
                 ['task_type', '=', TASK_TYPE_REMARK],
-                ['is_open', '=', 1]
+                ['is_open', '=', 1],
             ];
 
             $closedRemarks = [
                 ['task_type', '=', TASK_TYPE_REMARK],
-                ['is_open', '=', 0]
+                ['is_open', '=', 0],
             ];
 
             if (in_array('closed', $remarkStatuses)) {
@@ -110,22 +110,21 @@ class Adapter extends AbstractAdapter {
                 $query->where($openRemarks)
                     ->whereIn('task_status', $remarkStatuses)
                     ->orWhere($closedRemarks);
-
             } else {
                 $query->where($openRemarks)
                     ->whereIn('task_status', $remarkStatuses);
             }
         }
 
-        if ((!in_array('status', $skipFilters)) && ($status = $filters->get('status'))) {
+        if ((! in_array('status', $skipFilters)) && ($status = $filters->get('status'))) {
             $query->whereIn('task_status', explode('|', $status));
         }
 
-        if ((!in_array('task_type', $skipFilters)) && ($task_type = $filters->get('task_type'))) {
+        if ((! in_array('task_type', $skipFilters)) && ($task_type = $filters->get('task_type'))) {
             $query->where('task_type', '=', $task_type);
         }
 
-        if ((!in_array('is_open', $skipFilters)) && $filters->has('is_open')) {
+        if ((! in_array('is_open', $skipFilters)) && $filters->has('is_open')) {
             $isOpen = $filters->get('is_open');
             $query->where('is_open', '=', $isOpen);
         }
@@ -170,13 +169,14 @@ class Adapter extends AbstractAdapter {
             $intervals = array_filter($numbers, function ($elem) {
                 return Str::contains($elem, '-');
             });
-            if (!empty($intervals)) {
+            if (! empty($intervals)) {
                 $intervals_exploded = array_map(function ($elem) {
                     $nums = [];
                     list($start, $stop) = explode('-', $elem); // "9-12" => [9, 12]
                     for ($i = $start; $i <= $stop; $i++) {
-                        $nums[] = (string)$i;
+                        $nums[] = (string) $i;
                     }
+
                     return $nums;
                 }, $intervals);
                 $numbers = Arr::except($numbers, array_keys($intervals));
@@ -216,9 +216,9 @@ class Adapter extends AbstractAdapter {
         }
 
         /** restringe il recordset in caso di mancanza di permessi */
-        if ($user && !$user->can(PERMISSION_ADMIN)) {
+        if ($user && ! $user->can(PERMISSION_ADMIN)) {
             // L'utente loggato non e' un admin
-            if (!$user->is_storm) {
+            if (! $user->is_storm) {
                 $query->where('is_private', '=', false);
             }
 
@@ -242,7 +242,4 @@ class Adapter extends AbstractAdapter {
             }
         }
     }
-
-
-
 }

@@ -2,25 +2,23 @@
 
 namespace Tests\Feature;
 
-use App\Comment;
-use Laravel\Passport\Passport;
-use Tests\TestApiCase;
-
-use App\Project;
 use App\Boat;
-use App\Task;
-use App\Role;
+use App\Comment;
 use App\Permission;
-
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Project;
+use App\Role;
+use App\Task;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Laravel\Passport\Passport;
+use Tests\TestApiCase;
 
 class ApiCommentTest extends TestApiCase
 {
     /** create **/
-    function test_can_create_comment_related_to_task()
+    public function test_can_create_comment_related_to_task()
     {
         Role::firstOrCreate(['name' => ROLE_ADMIN]);
         Permission::firstOrCreate(['name' => PERMISSION_ADMIN]);
@@ -44,7 +42,7 @@ class ApiCommentTest extends TestApiCase
                     'body' => $this->faker->sentence(),
                 ],
                 'type' => 'comments',
-            ]
+            ],
         ];
 
         /*** creo un commento1 sul task */
@@ -58,10 +56,9 @@ class ApiCommentTest extends TestApiCase
     }
 
     /** create **/
-    function test_can_create_multiple_comments_related_to_task()
+    public function test_can_create_multiple_comments_related_to_task()
     {
-
-         Role::firstOrCreate(['name' => ROLE_ADMIN]);
+        Role::firstOrCreate(['name' => ROLE_ADMIN]);
         Permission::firstOrCreate(['name' => PERMISSION_ADMIN]);
         $this->disableExceptionHandling();
 
@@ -83,7 +80,7 @@ class ApiCommentTest extends TestApiCase
                     'body' => $this->faker->sentence(),
                 ],
                 'type' => 'comments',
-            ]
+            ],
         ];
 
         /*** creo N commenti sul task1 */
@@ -93,7 +90,6 @@ class ApiCommentTest extends TestApiCase
             $response = $this->json('POST', route('api:v1:comments.create'), $data, $this->headers)
                 ->assertJsonStructure(['data' => ['id']]);
         }
-
 
         /*** creo N commenti sul task2 */
         $task2 = $this->createProjectTask($project);
@@ -106,7 +102,7 @@ class ApiCommentTest extends TestApiCase
                     'body' => $this->faker->sentence(),
                 ],
                 'type' => 'comments',
-            ]
+            ],
         ];
         $random_num2_of_comments = $this->faker->randomDigitNotNull;
         for ($i = 0; $i < $random_num2_of_comments; $i++) {
@@ -114,7 +110,6 @@ class ApiCommentTest extends TestApiCase
             $response = $this->json('POST', route('api:v1:comments.create'), $data, $this->headers)
                 ->assertJsonStructure(['data' => ['id']]);
         }
-
 
         /*** recupero SOLO i commenti del task1 */
         $data = ['filter[task_id]' => $task1->id];
@@ -127,5 +122,4 @@ class ApiCommentTest extends TestApiCase
 
         $this->assertCount($random_num1_of_comments, $comments);
     }
-
 }

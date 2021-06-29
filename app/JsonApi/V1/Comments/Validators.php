@@ -6,7 +6,6 @@ use CloudCreativity\LaravelJsonApi\Validation\AbstractValidators;
 
 class Validators extends AbstractValidators
 {
-
     /*
      * Messagi di errore per i campi
      */
@@ -14,11 +13,10 @@ class Validators extends AbstractValidators
        // 'author_id.required' => 'author_id ' . VALIDATOR_REQUIRED,
        // 'author_id.numeric' => 'author_id ' . VALIDATOR_NUMERIC,
 //        'task_id.required' => 'task_id ' . VALIDATOR_REQUIRED,
-        'task_id.numeric' => 'task_id ' . VALIDATOR_NUMERIC,
-        'task_id.exists' => 'task_id ' . VALIDATOR_EXIST,
-        'body.required' => 'body ' . VALIDATOR_REQUIRED,
+        'task_id.numeric' => 'task_id '.VALIDATOR_NUMERIC,
+        'task_id.exists' => 'task_id '.VALIDATOR_EXIST,
+        'body.required' => 'body '.VALIDATOR_REQUIRED,
     ];
-
 
     /**
      * The include paths a client is allowed to request.
@@ -63,5 +61,4 @@ class Validators extends AbstractValidators
             //
         ];
     }
-
 }

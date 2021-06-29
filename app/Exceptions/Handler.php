@@ -2,16 +2,15 @@
 
 namespace App\Exceptions;
 
+use App\Utils\Utils as StormUtils;
 use CloudCreativity\LaravelJsonApi\Exceptions\HandlesErrors;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Neomerx\JsonApi\Exceptions\JsonApiException;
-use App\Utils\Utils as StormUtils;
 
 class Handler extends ExceptionHandler
 {
-
     use HandlesErrors;
 
     /**
@@ -57,15 +56,16 @@ class Handler extends ExceptionHandler
      * @param  \Exception $exception
      * @return \Illuminate\Http\Response
      */
-    public function render($request, \Exception $exception)
+    public function render($request, Exception $exception)
     {
         if ($this->isJsonApi($request, $exception)) {
-            
+
             //   $internal_error = StormUtils::convertMessageToInternalErrorCode($message);
             //  return StormUtils::jsonAbortWithInternalError($code, $internal_error, null, $message);
 
             return $this->renderJsonApi($request, $exception); // return json_api()->response()->exception($e);
-        }  
+        }
+
         return parent::render($request, $exception);
     }
 

@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
-use function factory;
+use App\ApplicationLogSection;
 use App\Product;
 use App\ProductUseInfoBlock;
+use function factory;
 use Tests\TestCase;
-use App\ApplicationLogSection;
 
 class ModelProductUseIBTest extends TestCase
 {
@@ -18,7 +18,6 @@ class ModelProductUseIBTest extends TestCase
 
         /** application_log_section **/
         /** $table->foreign('application_log_section_id')->references('id')->on('application_log_sections')->onDelete('set null') **/
-
         $product_use_info_blocks_num = $this->faker->numberBetween(10, 50);
         $app_log_section = factory(ApplicationLogSection::class)->create();
         $product_use_info_blocks = factory(ProductUseInfoBlock::class, $product_use_info_blocks_num)->create();
@@ -30,7 +29,6 @@ class ModelProductUseIBTest extends TestCase
 
         /** @var ProductUseInfoBlock $product_use_info_block */
         foreach ($product_use_info_blocks as $product_use_info_block) {
-
             $this->assertEquals($product_use_info_block->application_log_section->id, $app_log_section->id);
 
             /** @var Product $product */
@@ -45,9 +43,7 @@ class ModelProductUseIBTest extends TestCase
             }
 
             $this->assertEquals($product_use_info_block->product->id, $product->id); // testo la relazione inversa
-            $this->assertContains($product_use_info_block->id, $product->product_use_info_blocks()->pluck('id')) ;
+            $this->assertContains($product_use_info_block->id, $product->product_use_info_blocks()->pluck('id'));
         }
-
-
     }
 }

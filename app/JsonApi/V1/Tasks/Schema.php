@@ -2,14 +2,13 @@
 
 namespace App\JsonApi\V1\Tasks;
 
-use Neomerx\JsonApi\Schema\SchemaProvider;
-use App\User;
 use App\Section;
 use App\TaskInterventType;
+use App\User;
+use Neomerx\JsonApi\Schema\SchemaProvider;
 
 class Schema extends SchemaProvider
 {
-
     /**
      * @var string
      */
@@ -22,13 +21,11 @@ class Schema extends SchemaProvider
      */
     public function getId($resource)
     {
-        return (string)$resource->getRouteKey();
+        return (string) $resource->getRouteKey();
     }
-
 
     public function getPrimaryMeta($resource)
     {
-
         $detailed_images = $resource->detailed_images;
         $generic_images = $resource->generic_images;
         $additional_images = $resource->additional_images;
@@ -36,17 +33,17 @@ class Schema extends SchemaProvider
 
         $diu = [];
         foreach ($detailed_images as $i) {
-            $diu [] = $i->getShowApiUrl();
+            $diu[] = $i->getShowApiUrl();
         }
 
         $giu = [];
         foreach ($generic_images as $i) {
-            $giu [] = $i->getShowApiUrl();
+            $giu[] = $i->getShowApiUrl();
         }
 
         $aiu = [];
         foreach ($additional_images as $i) {
-            $aiu [] = $i->getShowApiUrl();
+            $aiu[] = $i->getShowApiUrl();
         }
 
         $gdu = [];
@@ -54,20 +51,21 @@ class Schema extends SchemaProvider
             $tmp = [
                 'uri' => $i->getShowApiUrl(),
                 'title' => $i->title,
-                'mime_type' => $i->media->first()->mime_type // TODO: get MIME TYPE
+                'mime_type' => $i->media->first()->mime_type, // TODO: get MIME TYPE
             ];
-            $gdu [] = $tmp;
+            $gdu[] = $tmp;
         }
 
         $image = $resource->generic_images->last();
-        if (!$image) {
+        if (! $image) {
             $image = $resource->detailed_images->first();
         }
+
         return [
             'detailed_images' => $diu,
             'additional_images' => $aiu,
             'generic_documents' => $gdu,
-            'image' => $image ? $image->getShowApiUrl() : null
+            'image' => $image ? $image->getShowApiUrl() : null,
 
         ];
         // TODO : mettere sia il link documentale all'immagine della barca che il project_id
@@ -75,7 +73,6 @@ class Schema extends SchemaProvider
 
     public function getInclusionMeta($resource)
     {
-
         return $this->getPrimaryMeta($resource);
     }
 
@@ -90,11 +87,12 @@ class Schema extends SchemaProvider
         $resource->setLastHistory(); // ottimizza il processo per una singola invocazione della API
         $author = $resource->author;
         $comments = $resource->comments()->get();
-        $section = Section::select("name")->where('id', $resource->section_id)->first();
+        $section = Section::select('name')->where('id', $resource->section_id)->first();
         $intervent_type = $resource->intervent_type;
         $zone = $resource->zone;
         $closer_app_log = $resource->closer_application_log()->first();
         $opener_app_log = $resource->opener_application_log()->first();
+
         return [
             'task_type' => $resource->task_type,
             'description' => $resource->description,
@@ -104,7 +102,7 @@ class Schema extends SchemaProvider
             'estimated_hours' => $resource->estimated_hours,
             'status' => $resource->task_status,
             'author_id' => $resource->author ? $author->id : '',
-            'author' => $resource->author ? $author->name . ' ' . $author->surname : '',
+            'author' => $resource->author ? $author->name.' '.$author->surname : '',
             'last_history' => $resource->getLastHistoryForApi(),
             'last_editor' => $resource->getLastEditor(),
             'last_editor_id' => $resource->getLastEditorId(),
@@ -129,7 +127,6 @@ class Schema extends SchemaProvider
             'updated-at' => $resource->updated_at ? $resource->updated_at->toAtomString() : null,
         ];
     }
-
 
     /* creare link customizzati */
     public function getResourceLinks($resource)

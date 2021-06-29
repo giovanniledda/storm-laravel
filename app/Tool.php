@@ -2,8 +2,8 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Model;
 
 class Tool extends Model
 {
@@ -28,7 +28,7 @@ class Tool extends Model
      */
     public function detections_info_blocks()
     {
-        return $this->hasMany('App\DetectionsInfoBlock', 'tool_id');
+        return $this->hasMany(\App\DetectionsInfoBlock::class, 'tool_id');
     }
 
     /**
@@ -36,7 +36,7 @@ class Tool extends Model
      */
     public function projects()
     {
-        return $this->belongsToMany('App\Project', 'project_tool');
+        return $this->belongsToMany(\App\Project::class, 'project_tool');
     }
 
     /**
@@ -56,15 +56,15 @@ class Tool extends Model
     }
 
     /**
-     *
      * Creates a Product using some fake data and some others that have sense
      * @param Faker $faker
      * @return Tool
      */
     public static function createSemiFake(Faker $faker)
     {
-        $t = new Tool(self::getSemiFakeData($faker));
+        $t = new self(self::getSemiFakeData($faker));
         $t->save();
+
         return $t;
     }
 
@@ -76,7 +76,7 @@ class Tool extends Model
         $data = [
             'type' => $this->table,
             'id' => $this->id,
-            'attributes' => parent::toArray()
+            'attributes' => parent::toArray(),
         ];
 
         return $data;
@@ -90,5 +90,4 @@ class Tool extends Model
     {
         return $this->toJsonApi();
     }
-
 }

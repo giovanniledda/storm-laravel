@@ -4,17 +4,15 @@ namespace App\JsonApi\V1\Projects;
 
 use CloudCreativity\LaravelJsonApi\Eloquent\AbstractAdapter;
 use CloudCreativity\LaravelJsonApi\Pagination\StandardStrategy;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Neomerx\JsonApi\Contracts\Encoder\Parameters\EncodingParametersInterface;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Collection;
-
 use function explode;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Collection;
+use Neomerx\JsonApi\Contracts\Encoder\Parameters\EncodingParametersInterface;
 use function request;
 
 class Adapter extends AbstractAdapter
 {
-
     protected $fillable = [
         'name',
         'status',
@@ -25,7 +23,7 @@ class Adapter extends AbstractAdapter
         'start_date',
         'end_date',
         'imported',
-        'last_cloud_sync'];
+        'last_cloud_sync', ];
 
     /**
      * Mapping of JSON API attribute field names to model keys.
@@ -37,10 +35,10 @@ class Adapter extends AbstractAdapter
     protected $attributes = ['status' => 'project_status'];
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected $relationships = [
-        'tasks', 'boat','products','application_logs'
+        'tasks', 'boat', 'products', 'application_logs',
     ];
 
     /**
@@ -60,7 +58,6 @@ class Adapter extends AbstractAdapter
      */
     protected function filter($query, Collection $filters)
     {
-
         if ($status = $filters->get('status')) {
             $query->where('project_status', '=', "{$status}");
         }
@@ -69,7 +66,7 @@ class Adapter extends AbstractAdapter
         }
 
         $user = \Auth::user();
-        if (!$user->can(PERMISSION_ADMIN) || !$user->can(PERMISSION_BACKEND_MANAGER)) {
+        if (! $user->can(PERMISSION_ADMIN) || ! $user->can(PERMISSION_BACKEND_MANAGER)) {
             if ($user->hasRole(ROLE_WORKER)) {
                 $query->select('projects.*')->Join('project_user', 'projects.id', '=', 'project_user.project_id')
                     ->where('project_user.user_id', '=', $user->id)->groupBy('projects.id');
@@ -82,7 +79,6 @@ class Adapter extends AbstractAdapter
                    echo $query;*/
             }
         }
-
 
         /** implementa la ricerca per name non cancellare ma commentare */
         /*if ($this->status = $filters->get('status')) {
@@ -115,7 +111,6 @@ class Adapter extends AbstractAdapter
             );
         }
         */
-
     }
 
     /**** RELAZIONI PER LE RISORSE **/
@@ -162,6 +157,4 @@ class Adapter extends AbstractAdapter
 //        }
 //        return parent::update($record, $document, $parameters);
 //    }
-
-
 }

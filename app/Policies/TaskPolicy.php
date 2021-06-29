@@ -2,18 +2,15 @@
 
 namespace App\Policies;
 
+use App\Task;
 use App\User;
-use App\Task; 
-
 use Illuminate\Auth\Access\HandlesAuthorization;
-
 use const PERMISSION_ADMIN;
-use const PERMISSION_BOAT_MANAGER;
 use const PERMISSION_BACKEND_MANAGER;
+use const PERMISSION_BOAT_MANAGER;
 use const PERMISSION_WORKER;
-use const ROLE_WORKER;
-
 use PhpParser\Node\Stmt\TryCatch;
+use const ROLE_WORKER;
 
 class TaskPolicy
 {
@@ -39,7 +36,7 @@ class TaskPolicy
      */
     public function view(User $user, Boat $boat)
     {
-        return true; 
+        return true;
     }
 
     /**
@@ -50,7 +47,7 @@ class TaskPolicy
      */
     public function create(User $user)
     {
-          return true; 
+        return true;
     }
 
     /**
@@ -62,7 +59,7 @@ class TaskPolicy
      */
     public function update(User $user, Boat $boat)
     {
-        return true; 
+        return true;
     }
 
     /**
@@ -74,7 +71,7 @@ class TaskPolicy
      */
     public function delete(User $user, Boat $boat)
     {
-     return true; 
+        return true;
     }
 
     /**
@@ -98,6 +95,6 @@ class TaskPolicy
      */
     public function forceDelete(User $user, Boat $boat)
     {
-        return true; 
+        return true;
     }
 }

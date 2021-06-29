@@ -3,6 +3,9 @@
 namespace App\Traits;
 
 use App\User;
+use function array_slice;
+use function count;
+use function date;
 use Exception;
 use Faker\Factory as FakerFactory;
 use Illuminate\Support\Arr;
@@ -12,15 +15,11 @@ use Net7\EnvironmentalMeasurement\Models\EnvironmentalParameter;
 use Net7\EnvironmentalMeasurement\Models\Measurement;
 use Phpdocx\Create\CreateDocxFromTemplate;
 use Phpdocx\Elements\WordFragment;
-use function array_slice;
-use function count;
-use function date;
 use function throw_if;
 use function time;
 
 trait EnvParamsInputOutputTranslations
 {
-
     /**
      * Override the function on HasMeasurements Trait
      *
@@ -47,7 +46,7 @@ trait EnvParamsInputOutputTranslations
      * @param null $document
      * @param array $min_thresholds
      */
-    public function translateMeasurementsInputForTempDPHumSensor($measurements, $source = null, $document = null  , $min_thresholds = [])
+    public function translateMeasurementsInputForTempDPHumSensor($measurements, $source = null, $document = null, $min_thresholds = [])
     {
         $array_ok = false;
         foreach ($measurements as $measurement_array) {
@@ -77,5 +76,4 @@ trait EnvParamsInputOutputTranslations
     {
         return Arr::has($measurement_array, ['Time', 'Celsius(°C)', 'Humidity(%rh)', 'Dew Point(°C)', 'Serial Number']);
     }
-
 }

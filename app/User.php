@@ -4,26 +4,25 @@ namespace App;
 
 use App\Notifications\StormResetPasswordNotification;
 use Illuminate\Auth\Passwords\CanResetPassword;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
+use function is_object;
 use Laravel\Passport\HasApiTokens;
+use Lecturize\Addresses\Traits\HasAddresses;
 use Net7\Documents\Document;
 use Net7\Documents\DocumentableTrait;
-use Spatie\Permission\Traits\HasRoles;
-use Lecturize\Addresses\Traits\HasAddresses;
-use StormUtils;
-use function is_object;
 use const PERMISSION_ADMIN;
 use const PROJECT_STATUS_CLOSED;
-
+use Spatie\Permission\Traits\HasRoles;
+use StormUtils;
 
 class User extends Authenticatable
 {
     use Notifiable, HasApiTokens, HasRoles, CanResetPassword, HasAddresses, DocumentableTrait;
 
     protected $fillable = [
-        'name', 'surname', 'email', 'password', 'is_storm', 'disable_login'
+        'name', 'surname', 'email', 'password', 'is_storm', 'disable_login',
     ];
 
     /**
@@ -42,7 +41,7 @@ class User extends Authenticatable
         'password',
         'remember_token',
         'roles',
-        'permissions'
+        'permissions',
     ];
 
     /**
@@ -55,28 +54,28 @@ class User extends Authenticatable
     /**
      * The custom method for is_storm_user (not existent on DB) attribute
      * See: https://laraveldaily.com/why-use-appends-with-accessors-in-eloquent/
-     *
      */
-    public function getIsStormUserAttribute() {
+    public function getIsStormUserAttribute()
+    {
         return $this->is_storm;
     }
 
     /**
      * The custom method for is_admin (not existent on DB) attribute
      * See: https://laraveldaily.com/why-use-appends-with-accessors-in-eloquent/
-     *
      */
-    public function getIsAdminAttribute() {
+    public function getIsAdminAttribute()
+    {
         return $this->can(PERMISSION_ADMIN);
     }
 
     /**
      * The custom method for can_login (not existent on DB) attribute
      * See: https://laraveldaily.com/why-use-appends-with-accessors-in-eloquent/
-     *
      */
-    public function getCanLoginAttribute() {
-        return !$this->disable_login;
+    public function getCanLoginAttribute()
+    {
+        return ! $this->disable_login;
     }
 
     /**
@@ -90,12 +89,12 @@ class User extends Authenticatable
 
     public static function onlyOne()
     {
-        return (User::all()->count() == 1);
+        return self::all()->count() == 1;
     }
 
     public function projects()
     {
-        return $this->belongsToMany('App\Project', 'project_user')
+        return $this->belongsToMany(\App\Project::class, 'project_user')
 //            ->using('App\ProjectUser')
             ->withPivot([
                 'profession_id',
@@ -137,6 +136,7 @@ class User extends Authenticatable
         if ($return_ids) {
             return $boat_ids;
         }
+
         return Boat::whereIn('id', $boat_ids)->get();
     }
 
@@ -150,6 +150,7 @@ class User extends Authenticatable
         if ($return_ids) {
             return $boat_ids;
         }
+
         return Boat::whereIn('id', $boat_ids)->get();
     }
 
@@ -163,23 +164,24 @@ class User extends Authenticatable
         if ($return_ids) {
             return $boat_ids;
         }
+
         return Boat::whereIn('id', $boat_ids)->get();
     }
 
     public function boats()
     {
-        return $this->belongsToMany('App\Boat')
-            ->using('App\BoatUser')
+        return $this->belongsToMany(\App\Boat::class)
+            ->using(\App\BoatUser::class)
             ->withPivot([
                 'profession_id',
                 'created_by',
-                'updated_by'
+                'updated_by',
             ]);
     }
 
     public function phones()
     {
-        return $this->hasMany('App\UsersTel');
+        return $this->hasMany(\App\UsersTel::class);
     }
 
     public function countPhones()
@@ -192,6 +194,7 @@ class User extends Authenticatable
         if ($this->hasAddress()) {
             return $pagination ? $this->addresses()->paginate(StormUtils::getItemsPerPage()) : $this->addresses()->get();
         }
+
         return [];
     }
 
@@ -204,7 +207,6 @@ class User extends Authenticatable
     {
         return $this->addresses()->count();
     }
-
 
     public function setPasswordAttribute($password)
     {
@@ -226,7 +228,7 @@ class User extends Authenticatable
     public function getFullName()
     {
         // per ora la logica è questa ma possiamo inserire anche un nuovo campo
-        return $this->name. ' '.$this->surname;
+        return $this->name.' '.$this->surname;
     }
 
     /**
@@ -252,7 +254,6 @@ class User extends Authenticatable
 
     /**
      * Adds an image as a generic_image Net7/Document
-     *
      */
     public function addProfilePhoto($file)
     {
@@ -270,6 +271,4 @@ class User extends Authenticatable
     {
         return is_object($this->getProfilePhotoDocument());
     }
-
-
 }

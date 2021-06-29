@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * Class AddStreetExtraToAddressesTable
@@ -12,7 +12,7 @@ class AddStreetExtraToAddressesTable extends Migration
     /**
      * Table names.
      *
-     * @var string  $table  The main table name for this migration.
+     * @var string   The main table name for this migration.
      */
     protected $table;
 
@@ -31,7 +31,7 @@ class AddStreetExtraToAddressesTable extends Migration
      */
     public function up()
     {
-        Schema::table($this->table, function(Blueprint $table){
+        Schema::table($this->table, function (Blueprint $table) {
             $table->string('street_extra', 60)->nullable()->after('street');
         });
     }
@@ -43,7 +43,7 @@ class AddStreetExtraToAddressesTable extends Migration
      */
     public function down()
     {
-        Schema::table($this->table, function(Blueprint $table){
+        Schema::table($this->table, function (Blueprint $table) {
             $table->dropColumn('street_extra');
         });
     }

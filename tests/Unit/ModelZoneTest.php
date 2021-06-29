@@ -2,18 +2,16 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
 use App\Zone;
+use Tests\TestCase;
 
 class ModelZoneTest extends TestCase
 {
     /**
-     *
      * @return void
      */
     public function testSimpleCreation()
     {
-
         $data = Zone::getSemiFakeData($this->faker);
         $except = ['project_id', 'parent_zone_id'];
 

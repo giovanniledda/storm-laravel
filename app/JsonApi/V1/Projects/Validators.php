@@ -6,10 +6,10 @@ use CloudCreativity\LaravelJsonApi\Validation\AbstractValidators;
 
 class Validators extends AbstractValidators
 {
-     /* The messages variable.
-     *
-     * @var string[]|null
-     */
+    /* The messages variable.
+    *
+    * @var string[]|null
+    */
     protected $messages = [
         'name.required' => 'name '.VALIDATOR_REQUIRED,
         'name.string' => 'name '.VALIDATOR_STRING,
@@ -21,12 +21,10 @@ class Validators extends AbstractValidators
         'site_id.exists' => 'site_id '.VALIDATOR_EXIST,
         'project_type.required' =>'project_type '.VALIDATOR_REQUIRED,
         'project_type.in' => 'status '.VALIDATOR_IN.': '.PROJECT_TYPE_NEWBUILD.','.PROJECT_TYPE_REFIT,
-        'status.in' => 'status '.VALIDATOR_IN.': '.PROJECT_STATUS_OPERATIONAL.','.PROJECT_STATUS_IN_SITE.','.PROJECT_STATUS_CLOSED
+        'status.in' => 'status '.VALIDATOR_IN.': '.PROJECT_STATUS_OPERATIONAL.','.PROJECT_STATUS_IN_SITE.','.PROJECT_STATUS_CLOSED,
     ];
 
     /**
-     * 
-     *    
      * The include paths a client is allowed to request.
      *
      * @var string[]|null
@@ -56,7 +54,7 @@ class Validators extends AbstractValidators
            'boat_id' => 'required|numeric|exists:boats,id',
            'project_type' => 'required|in:'.PROJECT_TYPE_NEWBUILD.','.PROJECT_TYPE_REFIT,
            'site_id'  => 'required|numeric|exists:sites,id',
-           'status' => 'in:'.PROJECT_STATUS_IN_SITE.','.PROJECT_STATUS_OPERATIONAL.','.PROJECT_STATUS_CLOSED
+           'status' => 'in:'.PROJECT_STATUS_IN_SITE.','.PROJECT_STATUS_OPERATIONAL.','.PROJECT_STATUS_CLOSED,
         ];
     }
 
@@ -71,5 +69,4 @@ class Validators extends AbstractValidators
             //
         ];
     }
-
 }

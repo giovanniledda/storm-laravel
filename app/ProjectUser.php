@@ -1,6 +1,7 @@
 <?php
+
 namespace App;
- 
+
 use Doctrine\DBAL\Driver\PDOException;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
@@ -14,22 +15,22 @@ class ProjectUser extends Pivot
         // 'role',
         'profession_id',
         'project_id',
-        'user_id'
+        'user_id',
     ];
 
     public function user()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo(\App\User::class);
     }
 
     public function project()
     {
-        return $this->belongsTo('App\Project');
+        return $this->belongsTo(\App\Project::class);
     }
 
     public function profession()
     {
-        return $this->belongsTo('App\Profession');
+        return $this->belongsTo(\App\Profession::class);
     }
 
     /**
@@ -41,7 +42,7 @@ class ProjectUser extends Pivot
     public static function createOneIfNotExists(int $user_id, int $project_id, int $profession_id = null)
     {
         try {
-            return ProjectUser::create([
+            return self::create([
                 'user_id' => $user_id,
                 'project_id' => $project_id,
                 'profession_id' => $profession_id,
@@ -61,9 +62,9 @@ class ProjectUser extends Pivot
      */
     public static function findOneByPks(int $user_id, int $project_id, int $profession_id)
     {
-        return ProjectUser::where('user_id', '=', $user_id)
+        return self::where('user_id', '=', $user_id)
             ->where('project_id', '=', $project_id)
             ->where('profession_id', '=', $profession_id)
             ->first();
     }
-} 
+}

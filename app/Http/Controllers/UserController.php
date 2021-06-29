@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\RequestAddress;
 use App\Http\Requests\RequestPhone;
+use App\Permission;
 use App\Phone;
+use App\Role;
+use App\User;
 use App\UsersTel;
 use Auth;
 use const FLASH_ERROR;
@@ -12,15 +15,10 @@ use const FLASH_WARNING;
 use Illuminate\Http\Request;
 use Net7\Documents\Document;
 use Session;
-use App\User;
-use App\Role;
-use App\Permission;
 use StormUtils;
-
 
 class UserController extends Controller
 {
-
     public function __construct()
     {
 //        $this->middleware(['auth', 'isAdmin']); //isAdmin middleware lets only users with a //specific permission permission to access these resources
@@ -49,6 +47,7 @@ class UserController extends Controller
     {
         //Get all roles and pass it to the view
         $roles = Role::get();
+
         return view('users.create', ['roles' => $roles]);
     }
 
@@ -67,7 +66,7 @@ class UserController extends Controller
             'surname' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6|confirmed',
-            'roles' => 'required|min:1'
+            'roles' => 'required|min:1',
         ]);
 
         $user = User::create($request->only('email', 'name', 'surname', 'password'));
@@ -131,13 +130,13 @@ class UserController extends Controller
         $validated = $this->validate($request, [
             'name' => 'required|max:120',
             'surname' => 'required',
-            'email' => 'required|email|unique:users,email,' . $id,
+            'email' => 'required|email|unique:users,email,'.$id,
             'password' => 'nullable|min:6|confirmed', // **
-            'photo' => 'image|mimes:jpeg,bmp,png'
+            'photo' => 'image|mimes:jpeg,bmp,png',
         ]);
 
         // **
-        $fields = !empty($validated['password']) ? ['name', 'surname', 'email', 'password'] : ['name', 'surname', 'email'];
+        $fields = ! empty($validated['password']) ? ['name', 'surname', 'email', 'password'] : ['name', 'surname', 'email'];
 
         $input = $request->only($fields); //Retreive the name, email and password fields
         $user->fill($input);
@@ -172,6 +171,7 @@ class UserController extends Controller
     {
         if (Auth::user()->id == $id) {
             flash()->warning(__('Deletion of currently logged in user is not allowed :('))->important();
+
             return redirect()->back();
         }
 
@@ -194,7 +194,7 @@ class UserController extends Controller
         $roles = Role::find($roles);
 
         // check for current role changes
-        if (!$user->hasAllRoles($roles)) {
+        if (! $user->hasAllRoles($roles)) {
             // reset all direct permissions for user
             $user->permissions()->sync([]);
         } else {
@@ -203,9 +203,9 @@ class UserController extends Controller
         }
 
         $user->syncRoles($roles);
+
         return $user;
     }
-
 
     /**
      * Ask confirmation about the specified resource from storage to remove.
@@ -216,16 +216,15 @@ class UserController extends Controller
     public function confirmDestroy($id)
     {
         $user = User::findOrFail($id);
+
         return view('users.delete')->withUser($user);
     }
-
 
     /*
      * *************************************************************
      *                      TELEPHONES
      * *************************************************************
      */
-
 
     /**
      * Phones list for a user
@@ -254,7 +253,6 @@ class UserController extends Controller
         return view('users.phones.create')->with(['user' => User::findOrFail($id)]);
     }
 
-
     /**
      * Store a newly created addresses for the Site in storage.
      *
@@ -278,7 +276,6 @@ class UserController extends Controller
 
         return redirect()->route('users.phones.index', ['id' => $id])->with($message_type, $message);
     }
-
 
     /**
      * Remove the specified phone from storage.
@@ -309,7 +306,6 @@ class UserController extends Controller
         return redirect()->route('users.phones.index', ['id' => $user_id])->with($message_type, $message);
     }
 
-
     /**
      * Ask confirmation about the specified phone from storage to remove.
      *
@@ -324,7 +320,6 @@ class UserController extends Controller
 
         return view('users.phones.delete')->with(['phone' => $phone, 'user' => $user]);
     }
-
 
     /*
      * *************************************************************
@@ -359,7 +354,6 @@ class UserController extends Controller
         return view('users.addresses.create')->with(['user' => User::findOrFail($id)]);
     }
 
-
     /**
      * Store a newly created addresses for the User in storage.
      *
@@ -384,7 +378,6 @@ class UserController extends Controller
             $user->addAddress($validated);
             $message = __('New address added for user :name!', ['name' => $user->name]);
             $message_type = FLASH_SUCCESS;
-
         } catch (\Exception $e) {
             $message = __('Something went wrong adding new address, check your data!');
             $message_type = FLASH_ERROR;
@@ -392,7 +385,6 @@ class UserController extends Controller
 
         return redirect()->route('users.addresses.index', ['id' => $id])->with($message_type, $message);
     }
-
 
     /**
      * Show the form for editing the specified addresses for the User.
@@ -430,7 +422,6 @@ class UserController extends Controller
                 $user->updateAddress($address, $validated);
                 $message = __('Address [:id] in :city updated!', ['id' => $address_id, 'city' => $address->city]);
                 $message_type = FLASH_SUCCESS;
-
             } catch (\Exception $e) {
                 $message = __('Something went wrong updating address [:id], check your data!', ['id' => $address_id]);
                 $message_type = FLASH_ERROR;
@@ -462,7 +453,6 @@ class UserController extends Controller
 
         return redirect()->route('users.addresses.index', ['id' => $user_id])->with($message_type, $message);
     }
-
 
     /**
      * Ask confirmation about the specified resource from storage to remove.
