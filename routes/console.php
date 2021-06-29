@@ -23,14 +23,14 @@ use Symfony\Component\Process\Process;
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
-})->describe('Display an inspiring quote');
+})->purpose('Display an inspiring quote');
 
 // Aggiornamento ID interni di Task, Project e ApplicationLog su base "Boat"
 Artisan::command('update-internal-ids', function (InternalProgNumHandler $ipn_handler) {
     $this->comment('Running internal IDS sync...');
     $ipn_handler->run();
     $this->comment('...done!');
-})->describe('Update (and sync) internal_progressive_number field for many Models');
+})->purpose('Update (and sync) internal_progressive_number field for many Models');
 
 // Spostamento immagini da Task a History
 Artisan::command('move-task-images', function () {
@@ -104,7 +104,7 @@ Artisan::command('move-task-images', function () {
         $bar->finish();
         $this->comment("\n...done!");
     }
-})->describe('Takes images from Tasks and assign them to the first History instance of each Task');
+})->purpose('Takes images from Tasks and assign them to the first History instance of each Task');
 
 // Spostamento CONVERSIONI (dir "c") immagini da Task a History
 Artisan::command('move-task-images-conversions', function () {
@@ -175,7 +175,7 @@ Artisan::command('move-task-images-conversions', function () {
         $bar->finish();
         $this->comment("\n...done!");
     }
-})->describe('Takes images CONVERSIONS from Tasks and assign them to the first History instance of each Task');
+})->purpose('Takes images CONVERSIONS from Tasks and assign them to the first History instance of each Task');
 
 // Spostamento descrizioni da Task a History comments
 Artisan::command('move-task-descriptions', function () {
@@ -227,7 +227,7 @@ Artisan::command('move-task-descriptions', function () {
         $bar->finish();
         $this->comment("\n...done!");
     }
-})->describe('Takes description from Tasks and assign them as a comment to the first History instance of each Task');
+})->purpose('Takes description from Tasks and assign them as a comment to the first History instance of each Task');
 
 // Aggiornamento dei template in uso, con nuovi placeholders
 Artisan::command('update-phpdocx-templates', function () {
@@ -250,7 +250,7 @@ Artisan::command('update-phpdocx-templates', function () {
             $this->info("- Template APP_LOG_REPORT updated for Project [ID: {$project->id}]");
         }
     }
-})->describe('Update of used templates, with new placeholders');
+})->purpose('Update of used templates, with new placeholders');
 
 // Per ogni Task aggiorna l'immaginina della sua posizione (con pin) sul ritaglio di ponte
 Artisan::command('update-task-map {limit?} {--id=*}', function ($limit = null) {
@@ -286,7 +286,7 @@ Artisan::command('update-task-map {limit?} {--id=*}', function ($limit = null) {
         $bar->finish();
         $this->comment("\n...done!");
     }
-})->describe('Runs updateMap for each Task');
+})->purpose('Runs updateMap for each Task');
 
 // SOLO PER LA PROD: Riavvia il container Docker che gestisce la coda degli invii a Google e rilancia i job falliti
 Artisan::command('reload-gdrive-jobs', function () {
@@ -297,4 +297,4 @@ Artisan::command('reload-gdrive-jobs', function () {
     $gdriveQueueDockerContainer = 'laravel_storm_queue';
     $process = new Process(["docker restart $gdriveQueueDockerContainer"]);
     $process->run();
-})->describe('Restarts docker container and retry gdrive-jobs queue jobs');
+})->purpose('Restarts docker container and retry gdrive-jobs queue jobs');
