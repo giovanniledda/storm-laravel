@@ -17,8 +17,6 @@ use Illuminate\Support\Str;
 |
 */
 
-$autoIncrement = StormUtils::autoIncrement();
-
 class UserFactory extends Factory
 {
     /**
@@ -35,10 +33,7 @@ class UserFactory extends Factory
      */
     public function definition()
     {
-        $autoIncrement->next();
-
         return [
-            'id' => $autoIncrement->current(),
             'name' => $this->faker->name,
             'email' => $this->faker->unique()->safeEmail,
             'email_verified_at' => now(),

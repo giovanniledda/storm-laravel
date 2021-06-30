@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Utils\Utils;
+
 use const DIRECTORY_SEPARATOR;
 use function exif_imagetype;
 use function explode;
@@ -272,7 +272,7 @@ class Section extends Model
             imagepng($dst_deck_white_bkg_img, $deck_with_pins_f_path);
 
             // ridimensiono l'immagine secondo i calcoli sopra
-            $deck_with_pins_resized_img_dest = Utils::resize_image($deck_with_pins_f_path, $sizeW, $sizeH);
+            $deck_with_pins_resized_img_dest = resize_image($deck_with_pins_f_path, $sizeW, $sizeH);
 
             imagealphablending($deck_with_pins_resized_img_dest, false);
             imagesavealpha($deck_with_pins_resized_img_dest, true);
@@ -299,9 +299,9 @@ class Section extends Model
                     if ($resize_pins) {
                         $new_w = 20;
                         $new_h = 32;
-//                    $pin_png_image_src = Utils::resize_image($pinPath, $new_w, $new_h);
+//                    $pin_png_image_src = resize_image($pinPath, $new_w, $new_h);
                         $pin_png_image_src_orig = imagecreatefrompng($pinPath);
-                        $pin_png_image_src = Utils::getPNGImageResized($pin_png_image_src_orig, $new_w, $new_h);
+                        $pin_png_image_src = getPNGImageResized($pin_png_image_src_orig, $new_w, $new_h);
                     } else {
                         $new_w = $iconInfo[0]; // 20;
                         $new_h = $iconInfo[1]; // 48;
@@ -330,7 +330,7 @@ class Section extends Model
                         $new_h,
                         100
                     );
-//                    Utils::imagecopymerge_alpha($deck_with_pins_resized_img_dest, $pin_png_image_src, $xx - $new_w / 2, $yy - $new_h, 0, 0, $new_w, $new_h, 100);
+//                    imagecopymerge_alpha($deck_with_pins_resized_img_dest, $pin_png_image_src, $xx - $new_w / 2, $yy - $new_h, 0, 0, $new_w, $new_h, 100);
 
                     imagealphablending($deck_with_pins_resized_img_dest, false);
                     imagesavealpha($deck_with_pins_resized_img_dest, true);

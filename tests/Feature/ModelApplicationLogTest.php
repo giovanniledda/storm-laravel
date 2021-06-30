@@ -10,8 +10,7 @@ use App\Models\Project;
 use App\Models\Task;
 use App\Models\Zone;
 use App\Models\ZoneAnalysisInfoBlock;
-use Database\Seeders\SeederUtils;
-use function factory;
+//use Database\Seeders\SeederUtils;
 use Seeds\SeederUtils;
 use const TASK_TYPE_REMARK;
 use Tests\TestCase;
@@ -214,7 +213,7 @@ class ModelApplicationLogTest extends TestCase
     // test for getOpenedTaskFromMyZones function
     public function test_opened_tasks_from_my_zones()
     {
-        $utils = new SeederUtils();
+        $utils = new \Database\Seeders\SeederUtils();
 
         /** @var Project $project */
         $project = Project::factory()->create();

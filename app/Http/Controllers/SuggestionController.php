@@ -8,6 +8,7 @@ use App\Models\Suggestion;
 use App\Models\User;
 use DB;
 use Illuminate\Http\Request;
+use function App\Utils\getItemsPerPage;
 use function redirect;
 use StormUtils;
 use function view;
@@ -21,7 +22,7 @@ class SuggestionController extends Controller
      */
     public function index()
     {
-        $suggestions = Suggestion::paginate(StormUtils::getItemsPerPage());
+        $suggestions = Suggestion::paginate(getItemsPerPage());
 
         return view('suggestions.index')->with('suggestions', $suggestions);
     }

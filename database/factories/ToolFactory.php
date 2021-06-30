@@ -23,6 +23,6 @@ class ToolFactory extends Factory
      */
     public function definition()
     {
-        return Tool::getSemiFakeData($faker);
+        return Tool::getSemiFakeData($this->faker);
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Utils\Utils;
+
 use function get_class_methods;
 use Illuminate\Http\Request;
 use function is_object;
@@ -23,7 +23,7 @@ class UpdateController extends Controller
 
         // TODO: se volessimo restituire senza body
 //        $record->markAsRead();
-//        return Utils::renderStandardJsonapiResponse([], 204);
+//        return $this->fakerrenderStandardJsonapiResponse([], 204);
 
         $updated = $record->markAsRead();
         if (is_object($updated)) {
@@ -33,9 +33,9 @@ class UpdateController extends Controller
                 'attributes' => $updated,
             ]];
 
-            return Utils::renderStandardJsonapiResponse($ret, 200);
+            return renderStandardJsonapiResponse($ret, 200);
         }
 
-        return Utils::jsonAbortWithInternalError(404, 404, 'Resource not found', "No notification with ID {$record->id}");
+        return jsonAbortWithInternalError(404, 404, 'Resource not found', "No notification with ID {$record->id}");
     }
 }

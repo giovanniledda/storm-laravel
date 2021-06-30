@@ -8,8 +8,6 @@ use App\Models\Boat;
 use App\Utils\Utils;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-$autoIncrement = StormUtils::autoIncrement();
-
 class BoatFactory extends Factory
 {
     /**
@@ -26,10 +24,7 @@ class BoatFactory extends Factory
      */
     public function definition()
     {
-        $autoIncrement->next();
-
         return [
-            'id' => $autoIncrement->current(),
             'name' => $this->faker->sentence(3),
             'registration_number' => $this->faker->randomNumber(5),
             'flag' => $this->faker->country(),

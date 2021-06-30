@@ -7,8 +7,6 @@ namespace Database\Factories;
 use App\Models\Profession;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-$autoIncrement = StormUtils::autoIncrement();
-
 class ProfessionFactory extends Factory
 {
     /**
@@ -25,10 +23,7 @@ class ProfessionFactory extends Factory
      */
     public function definition()
     {
-        $autoIncrement->next();
-
         return [
-            'id' => $autoIncrement->current(),
             'name' => $this->faker->jobTitle,
         ];
     }

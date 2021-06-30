@@ -23,6 +23,6 @@ class ZoneFactory extends Factory
      */
     public function definition()
     {
-        return Zone::getSemiFakeData($faker);
+        return Zone::getSemiFakeData($this->faker);
     }
 }

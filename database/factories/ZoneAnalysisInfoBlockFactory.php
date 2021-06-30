@@ -23,6 +23,6 @@ class ZoneAnalysisInfoBlockFactory extends Factory
      */
     public function definition()
     {
-        return ZoneAnalysisInfoBlock::getSemiFakeData($faker);
+        return ZoneAnalysisInfoBlock::getSemiFakeData($this->faker);
     }
 }

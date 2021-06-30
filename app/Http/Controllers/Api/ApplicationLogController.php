@@ -15,8 +15,10 @@ use App\Models\ReportItem;
 use App\Services\AppLogEntitiesPersister;
 use App\Services\ZonesPersister;
 use App\Models\Task;
-use App\Utils\Utils;
+
 use App\Models\Zone;
+use function App\Utils\jsonAbortWithInternalError;
+use function App\Utils\renderStandardJsonapiResponse;
 use function array_key_exists;
 use function explode;
 use Illuminate\Http\Request;
@@ -58,9 +60,9 @@ class ApplicationLogController extends Controller
                 }
             }
 
-            return Utils::renderStandardJsonapiResponse([], 204);
+            return renderStandardJsonapiResponse([], 204);
         } catch (\Exception $e) {
-            return Utils::jsonAbortWithInternalError(422, $e->getCode(), 'Error closing remarks', $e->getMessage());
+            return jsonAbortWithInternalError(422, $e->getCode(), 'Error closing remarks', $e->getMessage());
         }
     }
 
@@ -76,9 +78,9 @@ class ApplicationLogController extends Controller
         try {
             $remarks = $app_log->getExternallyOpenedRemarksRelatedToMyZones();
 
-            return Utils::renderStandardJsonapiResponse(['data' => $remarks], 200);
+            return renderStandardJsonapiResponse(['data' => $remarks], 200);
         } catch (\Exception $e) {
-            return Utils::jsonAbortWithInternalError(422, $e->getCode(), 'Error retrieving remarks', $e->getMessage());
+            return jsonAbortWithInternalError(422, $e->getCode(), 'Error retrieving remarks', $e->getMessage());
         }
     }
 
@@ -94,9 +96,9 @@ class ApplicationLogController extends Controller
         try {
             $zones = $app_log->getUsedZones();
 
-            return Utils::renderStandardJsonapiResponse(['data' => $zones], 200);
+            return renderStandardJsonapiResponse(['data' => $zones], 200);
         } catch (\Exception $e) {
-            return Utils::jsonAbortWithInternalError(422, $e->getCode(), 'Error retrieving zones', $e->getMessage());
+            return jsonAbortWithInternalError(422, $e->getCode(), 'Error retrieving zones', $e->getMessage());
         }
     }
 }

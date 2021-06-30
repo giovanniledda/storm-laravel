@@ -7,8 +7,6 @@ namespace Database\Factories;
 use App\Models\Site;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-$autoIncrement = StormUtils::autoIncrement();
-
 class SiteFactory extends Factory
 {
     /**
@@ -25,10 +23,7 @@ class SiteFactory extends Factory
      */
     public function definition()
     {
-        $autoIncrement->next();
-
         return [
-            'id' => $autoIncrement->current(),
             //
         ];
     }

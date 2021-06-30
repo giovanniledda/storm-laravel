@@ -23,6 +23,6 @@ class ApplicationLogSectionFactory extends Factory
      */
     public function definition()
     {
-        return ApplicationLogSection::getSemiFakeData($faker);
+        return ApplicationLogSection::getSemiFakeData($this->faker);
     }
 }

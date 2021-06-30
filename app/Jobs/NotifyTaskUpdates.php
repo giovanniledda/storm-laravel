@@ -65,7 +65,7 @@ class NotifyTaskUpdates implements ShouldQueue
      */
     public function handle()
     {
-//        $users = StormUtils::getAllBoatManagers();
+//        $users = getAllBoatManagers();
         $users = $this->task->getUsersToNotify();
         if (! empty($users)) {
             Notification::send($users, $this->task_notification);

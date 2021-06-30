@@ -5,6 +5,7 @@ namespace App\Notifications;
 use App\Models\Task;
 use App\Models\User;
 use StormUtils;
+use function App\Utils\replacePlaceholders;
 use const TASK_UPDATED_MOBILE_APP_TEXT;
 
 class TaskUpdated extends TaskNotifications
@@ -35,7 +36,7 @@ class TaskUpdated extends TaskNotifications
 
     protected function getMobileAppMessage()
     {
-        return StormUtils::replacePlaceholders(TASK_UPDATED_MOBILE_APP_TEXT, [
+        return replacePlaceholders(TASK_UPDATED_MOBILE_APP_TEXT, [
             '@someone' => $this->actionAuthor ? $this->actionAuthor->getFullName() : 'Someone',
             '@task_id' => $this->task->id,
             '@project_name' => $this->getProjectName(),

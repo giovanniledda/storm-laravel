@@ -8,8 +8,6 @@ use App\Models\Section;
 use App\Utils\Utils;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-$autoIncrement = Utils::autoIncrement();
-
 class SectionFactory extends Factory
 {
     /**
@@ -26,11 +24,9 @@ class SectionFactory extends Factory
      */
     public function definition()
     {
-        $autoIncrement->next();
         $sections_types = [SECTION_TYPE_LEFT_SIDE, SECTION_TYPE_RIGHT_SIDE, SECTION_TYPE_DECK];
 
         return [
-            'id' => $autoIncrement->current(),
             'name' => $this->faker->randomElement(['Left Side', 'Right Side', $this->faker->numerify('Deck #')]),
             'section_type' => $this->faker->randomElement($sections_types),
             'position' => $this->faker->randomDigitNotNull(),

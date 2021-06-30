@@ -9,6 +9,7 @@ use App\Utils\Utils;
 use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Validator;
+use function App\Utils\getFakeStormEmail;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
@@ -113,7 +114,7 @@ class RolesAndPermissionsSeeder extends Seeder
     private function createUser($role_name)
     {
         $faker = Faker::create();
-        $email = Utils::getFakeStormEmail($role_name);
+        $email = getFakeStormEmail($role_name);
 
         // Register the new user or whatever.
         $password = $role_name;

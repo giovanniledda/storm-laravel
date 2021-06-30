@@ -9,6 +9,7 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 use const PERMISSION_ADMIN;
 use const PERMISSION_BOAT_MANAGER;
 use PhpParser\Node\Stmt\TryCatch;
+use const ROLE_ADMIN;
 
 class BoatPolicy
 {
@@ -40,7 +41,8 @@ class BoatPolicy
         }
 
         // ADMIN VEDE SEMPRE TUTTE LE BARCHE
-        if ($user->can(PERMISSION_ADMIN)) {
+        ray( $user->getRoleNames());
+        if ($user->hasRole(ROLE_ADMIN)) {
             return true;
         }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Seeds;
+namespace Database\Seeders;
 
 use App\Models\ApplicationLog;
 use App\Models\ApplicationLogSection;
@@ -20,8 +20,10 @@ use App\Models\Subsection;
 use App\Models\Task;
 use App\Models\TaskInterventType;
 use App\Models\Tool;
+use App\Models\User;
 use App\Models\Zone;
 use App\Models\ZoneAnalysisInfoBlock;
+use function App\Utils\getFakeStormEmail;
 use const APPLICATION_LOG_SECTION_TYPE_APPLICATION;
 use const APPLICATION_LOG_SECTION_TYPE_INSPECTION;
 use const APPLICATION_LOG_SECTION_TYPE_PREPARATION;
@@ -33,16 +35,12 @@ use const APPLICATION_TYPE_PRIMER;
 use const APPLICATION_TYPE_UNDERCOAT;
 use function array_merge;
 use function count;
-use Database\Seeders\SeederUtils;
-use function factory;
 use Faker\Factory as Faker;
 use Illuminate\Support\Facades\Storage;
 use function memory_get_peak_usage;
 use function memory_get_usage;
 use Net7\Documents\Document;
 use function round;
-use StormUtils;
-use User;
 
 class SeederUtils
 {
@@ -77,7 +75,7 @@ class SeederUtils
     public function createUser($role_name)
     {
         $faker = $this->faker ? $this->faker : Faker::create();
-        $email = StormUtils::getFakeStormEmail($role_name);
+        $email = getFakeStormEmail($role_name);
 
         // Register the new user or whatever.
         $password = $role_name;

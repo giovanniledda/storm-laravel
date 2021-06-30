@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Observers\TaskObserver;
+use function App\Utils\sanitizeTextsForPlaceholders;
 use function date;
 use const DIRECTORY_SEPARATOR;
 use function explode;
@@ -375,7 +376,7 @@ class Task extends Model
     {
 
 // aggiungere qua altra logica, se serve (tipo filtri sui ruoli, etc)
-//        return StormUtils::getAllBoatManagers();
+//        return getAllBoatManagers();
         return $this->getProjectUsers();
     }
 
@@ -707,7 +708,7 @@ class Task extends Model
      */
     private function resize_image($file, $w, $h, $crop = false)
     {
-        return StormUtils::resize_image($file, $w, $h, $crop); // vedi il FIXME sopra
+        return resize_image($file, $w, $h, $crop); // vedi il FIXME sopra
     }
 
     /**
@@ -717,9 +718,9 @@ class Task extends Model
     public function getCorrosionMapHtml($photos_array)
     {
         $point_id = $this->internal_progressive_number;
-        $task_location = $this->section ? Utils::sanitizeTextsForPlaceholders($this->section->name) : '?';
-        $task_intervent_type = $this->intervent_type ? Utils::sanitizeTextsForPlaceholders($this->intervent_type->name) : '?';
-        //         'task_status' => Utils::sanitizeTextsForPlaceholders($task->task_status),
+        $task_location = $this->section ? sanitizeTextsForPlaceholders($this->section->name) : '?';
+        $task_intervent_type = $this->intervent_type ? sanitizeTextsForPlaceholders($this->intervent_type->name) : '?';
+        //         'task_status' => sanitizeTextsForPlaceholders($task->task_status),
 //        $created_at = date('d M Y', strtotime($this->created_at));
 //        $updated_at = date('d M Y', strtotime($this->updated_at));
         $status = $this->task_status;
@@ -738,7 +739,7 @@ EOF;
         }
 
         $taskDescription = '';
-        $description = Utils::sanitizeTextsForPlaceholders($this->description);
+        $description = sanitizeTextsForPlaceholders($this->description);
         if ($description) {
             $taskDescription = "<span style='color: #666666; width: 100%; padding: 8px'>$description</span>";
         }

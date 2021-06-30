@@ -7,9 +7,11 @@ use App\Models\BoatUser;
 use App\Http\Controllers\Controller;
 use App\Models\Profession;
 use App\Models\User;
-use App\Utils\Utils;
+
 use Auth;
 use Illuminate\Http\Request;
+use function App\Utils\jsonAbortWithInternalError;
+use function App\Utils\renderStandardJsonapiResponse;
 use const PERMISSION_ADMIN;
 use const PERMISSION_BACKEND_MANAGER;
 use Validator;
@@ -71,10 +73,10 @@ class BoatController extends Controller
             /** @var Boat $boat */
             $boat = Boat::findOrFail($record->id);
 
-            return Utils::renderStandardJsonapiResponse($boat->closedProjectsJsonApi(), 200);
+            return renderStandardJsonapiResponse($boat->closedProjectsJsonApi(), 200);
         }
 
-        return Utils::jsonAbortWithInternalError(401, 401, 'Authorization denied', "You're not allowed to access this resource.");
+        return jsonAbortWithInternalError(401, 401, 'Authorization denied', "You're not allowed to access this resource.");
     }
 
     /**
@@ -89,7 +91,7 @@ class BoatController extends Controller
             if ($user) {
                 $boats = $user->boatsOfMyClosedProjects();
 
-                return Utils::renderStandardJsonapiResponse($boats, 200);
+                return renderStandardJsonapiResponse($boats, 200);
             }
         }
     }
@@ -137,6 +139,6 @@ class BoatController extends Controller
             }
         }
 
-        return Utils::renderStandardJsonapiResponse($data, 200);
+        return renderStandardJsonapiResponse($data, 200);
     }
 }

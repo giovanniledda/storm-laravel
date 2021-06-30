@@ -2,13 +2,14 @@
 
 namespace App\Exceptions;
 
-use App\Utils\Utils as StormUtils;
+
 use CloudCreativity\LaravelJsonApi\Exceptions\HandlesErrors;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Neomerx\JsonApi\Exceptions\JsonApiException;
 use Throwable;
+use function App\Utils\catchIntegrityContraintViolationException;
 
 class Handler extends ExceptionHandler
 {
@@ -45,7 +46,7 @@ class Handler extends ExceptionHandler
     public function report(Throwable $exception)
     {
         if ($exception instanceof QueryException) {
-            StormUtils::catchIntegrityContraintViolationException($exception);
+            catchIntegrityContraintViolationException($exception);
         }
 
         parent::report($exception);
@@ -62,8 +63,8 @@ class Handler extends ExceptionHandler
     {
         if ($this->isJsonApi($request, $exception)) {
 
-            //   $internal_error = StormUtils::convertMessageToInternalErrorCode($message);
-            //  return StormUtils::jsonAbortWithInternalError($code, $internal_error, null, $message);
+            //   $internal_error = convertMessageToInternalErrorCode($message);
+            //  return jsonAbortWithInternalError($code, $internal_error, null, $message);
 
             return $this->renderJsonApi($request, $exception); // return json_api()->response()->exception($e);
         }

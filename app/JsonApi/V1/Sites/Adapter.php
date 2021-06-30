@@ -48,8 +48,8 @@ class Adapter extends AbstractAdapter
 //            $ret = (bool)$record->delete();
 //            return $ret;
 //        } catch (\Exception $exc) {
-    ////            return StormUtils::catchIntegrityContraintViolationException($exc);
-//            return StormUtils::jsonAbortWithInternalError(412, 100, 'Precondition failed', HTTP_412_DEL_UPD_ERROR_MSG);
+    ////            return catchIntegrityContraintViolationException($exc);
+//            return jsonAbortWithInternalError(412, 100, 'Precondition failed', HTTP_412_DEL_UPD_ERROR_MSG);
 //        }
 //    }
 

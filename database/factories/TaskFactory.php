@@ -23,6 +23,6 @@ class TaskFactory extends Factory
      */
     public function definition()
     {
-        return Task::getSemiFakeData($faker);
+        return Task::getSemiFakeData($this->faker);
     }
 }

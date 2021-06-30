@@ -7,6 +7,7 @@ use Faker\Factory;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Throwable;
 use function in_array;
 use Laravel\Passport\ClientRepository;
 
@@ -32,12 +33,12 @@ abstract class TestCase extends BaseTestCase
             {
             }
 
-            public function report(\Exception $e)
+            public function report(Throwable $e)
             {
                 // no-op
             }
 
-            public function render($request, \Exception $e)
+            public function render($request, Throwable $e)
             {
                 throw $e;
             }

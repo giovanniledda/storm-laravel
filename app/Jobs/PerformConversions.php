@@ -5,22 +5,23 @@ namespace App\Jobs;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use const QUEUE_PERFORM_CONVERSIONS;
-use Spatie\MediaLibrary\Conversion\ConversionCollection;
-use Spatie\MediaLibrary\FileManipulator;
-use Spatie\MediaLibrary\Models\Media;
+use Spatie\MediaLibrary\Conversions\ConversionCollection;
+use Spatie\MediaLibrary\Conversions\FileManipulator;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class PerformConversions implements ShouldQueue
 {
-    use InteractsWithQueue, Queueable;
+    use InteractsWithQueue, SerializesModels, Queueable;
 
-    /** @var \Spatie\MediaLibrary\Conversion\ConversionCollection */
-    protected $conversions;
+    protected ConversionCollection $conversions;
 
-    /** @var \Spatie\MediaLibrary\Models\Media */
-    protected $media;
+    protected Media $media;
 
-    public $tries = 2;
+    protected bool $onlyMissing;
+
+    public int $tries = 2;
 
     public function __construct(ConversionCollection $conversions, Media $media)
     {

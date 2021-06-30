@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Permission;
 use App\Role;
 use Auth;
+use function App\Utils\getItemsPerPage;
 use const FLASH_ERROR;
 use const FLASH_WARNING;
 use Illuminate\Http\Request;
@@ -26,7 +27,7 @@ class PermissionController extends Controller
     public function index()
     {
 //        $permissions = Permission::all(); //Get all permissions
-        $permissions = Permission::paginate(StormUtils::getItemsPerPage());
+        $permissions = Permission::paginate(getItemsPerPage());
 
         return view('permissions.index')->with('permissions', $permissions);
     }

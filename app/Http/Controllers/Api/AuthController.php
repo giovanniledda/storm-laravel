@@ -4,13 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Utils\Utils as StormUtils;
+
 use Exception;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Validator;
+use function App\Utils\renderStandardJsonapiResponse;
 
 class AuthController extends Controller
 {
@@ -141,9 +142,9 @@ class AuthController extends Controller
      * OVVERIDES PARENT FUNCTION!
      * Get the response for a successful password reset link.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  string $response
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @param $response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
     protected function sendResetLinkResponse(Request $request, $response)
     {
@@ -153,16 +154,16 @@ class AuthController extends Controller
             'data' => [],
         ];
 
-        return StormUtils::renderStandardJsonapiResponse($data, 200);
+        return renderStandardJsonapiResponse($data, 200);
     }
 
     /**
      * OVVERIDES PARENT FUNCTION!
      * Get the response for a failed password reset link.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  string $response
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @param $response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
     protected function sendResetLinkFailedResponse(Request $request, $response)
     {
@@ -174,7 +175,7 @@ class AuthController extends Controller
             ],
         ];
 
-        return StormUtils::renderStandardJsonapiResponse($data, 500);
+        return renderStandardJsonapiResponse($data, 500);
     }
 
     /**

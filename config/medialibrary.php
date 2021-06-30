@@ -9,6 +9,6 @@ return [
     'jobs' => [
 //        'perform_conversions' => Spatie\MediaLibrary\Jobs\PerformConversions::class,
         'perform_conversions' => App\Jobs\PerformConversions::class,
-        'generate_responsive_images' => Spatie\MediaLibrary\Jobs\GenerateResponsiveImages::class,
+        'generate_responsive_images' => Spatie\MediaLibrary\ResponsiveImages\Jobs\GenerateResponsiveImagesJob::class,
     ],
 ];

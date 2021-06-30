@@ -23,6 +23,6 @@ class GenericDataInfoBlockFactory extends Factory
      */
     public function definition()
     {
-        return GenericDataInfoBlock::getSemiFakeData($faker);
+        return GenericDataInfoBlock::getSemiFakeData($this->faker);
     }
 }

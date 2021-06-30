@@ -23,6 +23,6 @@ class DetectionsInfoBlockFactory extends Factory
      */
     public function definition()
     {
-        return DetectionsInfoBlock::getSemiFakeData($faker);
+        return DetectionsInfoBlock::getSemiFakeData($this->faker);
     }
 }

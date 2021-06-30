@@ -7,8 +7,6 @@ namespace Database\Factories;
 use App\Models\Comment;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-$autoIncrement = StormUtils::autoIncrement();
-
 class CommentFactory extends Factory
 {
     /**
@@ -25,10 +23,7 @@ class CommentFactory extends Factory
      */
     public function definition()
     {
-        $autoIncrement->next();
-
         return [
-            'id' => $autoIncrement->current(),
             'body' => $this->faker->sentence(10),
         ];
     }

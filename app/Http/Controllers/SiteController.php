@@ -6,6 +6,7 @@ use App\Http\Requests\RequestAddress;
 use App\Http\Requests\RequestSite;
 use App\Models\Site;
 use Countries;
+use function App\Utils\getItemsPerPage;
 use const FLASH_ERROR;
 use Illuminate\Http\Request;
 use Lecturize\Addresses\Facades\Addresses;
@@ -21,7 +22,7 @@ class SiteController extends Controller
     public function index()
     {
 //        $sites = Site::all();
-        $sites = Site::paginate(StormUtils::getItemsPerPage());
+        $sites = Site::paginate(getItemsPerPage());
 
         return view('sites.index')->with('sites', $sites);
     }

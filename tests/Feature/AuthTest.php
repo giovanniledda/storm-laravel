@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Mail;
 use function get_class_methods;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -236,6 +237,8 @@ class AuthTest extends TestCase
      */
     public function testResetPasswordRequest()
     {
+        Mail::fake();
+
         $user = $this->_createTestUser();
 
         // User's WRONG data

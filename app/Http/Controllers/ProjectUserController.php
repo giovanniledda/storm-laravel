@@ -13,6 +13,7 @@ use App\Role;
 use App\Models\User;
 use App\Models\UsersTel;
 use Auth;
+use function App\Utils\getItemsPerPage;
 use const FLASH_ERROR;
 use const FLASH_WARNING;
 use Illuminate\Http\Request;
@@ -36,7 +37,7 @@ class ProjectUserController extends Controller
     {
         abort_unless($request->has('user_id'), 404);
 //        $proj_users = ProjectUser::where('user_id', $request->user_id)->get();
-        $proj_users = ProjectUser::where('user_id', $request->user_id)->paginate(StormUtils::getItemsPerPage());
+        $proj_users = ProjectUser::where('user_id', $request->user_id)->paginate(getItemsPerPage());
 
         $user = User::findOrFail($request->user_id); //Get user with specified id
 

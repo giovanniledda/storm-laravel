@@ -23,6 +23,6 @@ class ProductUseInfoBlockFactory extends Factory
      */
     public function definition()
     {
-        return ProductUseInfoBlock::getSemiFakeData($faker);
+        return ProductUseInfoBlock::getSemiFakeData($this->faker);
     }
 }

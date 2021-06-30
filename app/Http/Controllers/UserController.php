@@ -9,13 +9,11 @@ use App\Models\Phone;
 use App\Role;
 use App\Models\User;
 use App\Models\UsersTel;
-use Auth;
+use function App\Utils\getItemsPerPage;
 use const FLASH_ERROR;
 use const FLASH_WARNING;
 use Illuminate\Http\Request;
 use Net7\Documents\Document;
-use Session;
-use StormUtils;
 
 class UserController extends Controller
 {
@@ -33,7 +31,7 @@ class UserController extends Controller
     {
         //Get all users and pass it to the view
 //        $users = User::all();
-        $users = User::paginate(StormUtils::getItemsPerPage());
+        $users = User::paginate(getItemsPerPage());
 
         return view('users.index')->with('users', $users);
     }
@@ -237,7 +235,7 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
 //        $phones = $user->phones;
-        $phones = $user->phones()->paginate(StormUtils::getItemsPerPage());
+        $phones = $user->phones()->paginate(getItemsPerPage());
 
         return view('users.phones.index')->with(['phones' => $phones, 'user' => $user]);
     }

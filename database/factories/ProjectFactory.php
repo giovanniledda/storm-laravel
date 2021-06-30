@@ -7,8 +7,6 @@ namespace Database\Factories;
 use App\Models\Project;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-$autoIncrement = StormUtils::autoIncrement();
-
 class ProjectFactory extends Factory
 {
     /**
@@ -25,10 +23,7 @@ class ProjectFactory extends Factory
      */
     public function definition()
     {
-        $autoIncrement->next();
-
         return [
-            'id' => $autoIncrement->current(),
             'name' => $this->faker->sentence(4),
             'start_date' => $this->faker->date(),
             'end_date' => $this->faker->date(),

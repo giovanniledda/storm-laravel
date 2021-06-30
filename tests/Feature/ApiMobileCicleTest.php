@@ -34,20 +34,20 @@ use Tests\TestApiCase;
 class ApiMobileCicleTest extends TestApiCase
 {
     public $boat =
-         [
-            'data'=>[
-                    'type' => 'boats',
-                    'attributes'=>[
-                                        'name'=> 'Teliri',
-                                        'registration_number'=> '9105889',
-                                         'manufacture_year'=>'1996',
-                                         'length'=>'115.5',
-                                         'draft'=>'19',
-                                         'beam'=>'9',
-                                         'boat_type'=>'M/Y',
-                            ],
+        [
+            'data' => [
+                'type' => 'boats',
+                'attributes' => [
+                    'name' => 'Teliri',
+                    'registration_number' => '9105889',
+                    'manufacture_year' => '1996',
+                    'length' => '115.5',
+                    'draft' => '19',
+                    'beam' => '9',
+                    'boat_type' => 'M/Y',
                 ],
-         ];
+            ],
+        ];
 
     // https://docs.spatie.be/laravel-permission/v2/advanced-usage/unit-testing/
     public $token = '';
@@ -70,10 +70,10 @@ class ApiMobileCicleTest extends TestApiCase
         $this->refreshApplication();  // Fa una sorta di pulizia della cache perché dopo la prima post, poi tutte le chiamate successive tornano sulla stessa route
 
         $response = $this->json('POST', route('api:v1:boats.create'), $this->boat, [
-            'Authorization' => 'Bearer '.$token,
-             'Content-type' => 'application/vnd.api+json',
+            'Authorization' => 'Bearer ' . $token,
+            'Content-type' => 'application/vnd.api+json',
             'Accept' => 'application/vnd.api+json',
-            ]);
+        ]);
 
         $response->assertStatus(201);
     }
@@ -88,32 +88,32 @@ class ApiMobileCicleTest extends TestApiCase
         $this->_populateProfessions();
         $token = $this->_getToken(ROLE_ADMIN, PERMISSION_ADMIN);
         $response = $this->json('POST', route('api:v1:boats.create'), $this->boat, [
-            'Authorization' => 'Bearer '.$token,
-             'Content-type' => 'application/vnd.api+json',
+            'Authorization' => 'Bearer ' . $token,
+            'Content-type' => 'application/vnd.api+json',
             'Accept' => 'application/vnd.api+json',
-            ]);
+        ]);
         $response->assertStatus(201);
 
         $boat = \App\Models\Boat::find(1);
 
         $data =
-         [
-            'data'=>[
+            [
+                'data' => [
                     'type' => 'boat-users',
-                    'attributes'=>[
-                       'profession_id' => 1,
-                       'user_id'=> 1,
-                       'boat_id'=> $boat->id,
-                            ],
+                    'attributes' => [
+                        'profession_id' => 1,
+                        'user_id' => 1,
+                        'boat_id' => $boat->id,
+                    ],
                 ],
-         ];
+            ];
         $this->refreshApplication();
 
         $response = $this->json('POST', route('api:v1:boat-users.create'), $data, [
-            'Authorization' => 'Bearer '.$token,
+            'Authorization' => 'Bearer ' . $token,
             'Content-type' => 'application/vnd.api+json',
             'Accept' => 'application/vnd.api+json',
-            ]);
+        ]);
 
         $response->assertStatus(201);
     }
@@ -127,10 +127,10 @@ class ApiMobileCicleTest extends TestApiCase
         $token = $this->_getToken(ROLE_BOAT_MANAGER, ROLE_BOAT_MANAGER);
 
         $response = $this->json('GET', route('api:v1:boats.index'), [], [
-        'Authorization' => 'Bearer '.$token,
-           'Content-type' => 'application/vnd.api+json',
-           'Accept' => 'application/vnd.api+json',
-            ]);
+            'Authorization' => 'Bearer ' . $token,
+            'Content-type' => 'application/vnd.api+json',
+            'Accept' => 'application/vnd.api+json',
+        ]);
         $response->assertStatus(200);
     }
 
@@ -143,10 +143,10 @@ class ApiMobileCicleTest extends TestApiCase
 
         $token = $this->_getToken(ROLE_ADMIN, PERMISSION_ADMIN);
         $response = $this->json('POST', route('api:v1:boats.create'), $this->boat, [
-            'Authorization' => 'Bearer '.$token,
-             'Content-type' => 'application/vnd.api+json',
+            'Authorization' => 'Bearer ' . $token,
+            'Content-type' => 'application/vnd.api+json',
             'Accept' => 'application/vnd.api+json',
-            ]);
+        ]);
         $response->assertStatus(201);
 
         $boat = \App\Models\Boat::find(1);
@@ -155,11 +155,11 @@ class ApiMobileCicleTest extends TestApiCase
         $this->refreshApplication();
 
         $token = $this->_getToken(ROLE_BOAT_MANAGER, ROLE_BOAT_MANAGER);
-        $response = $this->json('GET', route('api:v1:boats.relationships.sections', ['id'=> 1]), [], [
-        'Authorization' => 'Bearer '.$token,
-           'Content-type' => 'application/vnd.api+json',
-           'Accept' => 'application/vnd.api+json',
-            ]);
+        $response = $this->json('GET', route('api:v1:boats.relationships.sections', ['record' => 1]), [], [
+            'Authorization' => 'Bearer ' . $token,
+            'Content-type' => 'application/vnd.api+json',
+            'Accept' => 'application/vnd.api+json',
+        ]);
         $response->assertStatus(200);
     }
 
@@ -180,20 +180,20 @@ class ApiMobileCicleTest extends TestApiCase
         );
         $site->save();
 
-        $boat = \App\Models\Boat::create(['name'=> 'Teliri',
-                                        'registration_number'=> '9105889',
-                                         'manufacture_year'=>'1996',
-                                         'length'=>'115.5',
-                                          'draft'=>'19',
-                                         'beam'=>'9', ]);
+        $boat = \App\Models\Boat::create(['name' => 'Teliri',
+            'registration_number' => '9105889',
+            'manufacture_year' => '1996',
+            'length' => '115.5',
+            'draft' => '19',
+            'beam' => '9',]);
         $this->_createSections($boat);
 
         $project = \App\Models\Project::create(
-                [
-                    'name'=>'rebuildproject',
-                    'project_status'=>'open',
-                    ]
-                );
+            [
+                'name' => 'rebuildproject',
+                'project_status' => 'open',
+            ]
+        );
         $project->site()->associate($site)->save();
         $project->boat()->associate($boat)->save();
 
@@ -201,39 +201,39 @@ class ApiMobileCicleTest extends TestApiCase
         $this->_populateInterventType();
 
         $data = [
-            'data'=> [
-        'type'=> 'tasks',
-        'attributes'=> [
-            'description'=>'description',
-            'estimated_hours'=>'2.23',
-            'worked_hours'=>'2.2',
-            'for_admins'=>'1',
-            'boat_id'=>'1',
-            'project_id'=>'1',
-            'section_id'=>'1',
-            'author_id'=>'1',
-            'x_coord'=>'2.744',
-            'y_coord'=>'2.98798',
-            'intervent_type_id'=>'1',
-        ],
-    ], ];
+            'data' => [
+                'type' => 'tasks',
+                'attributes' => [
+                    'description' => 'description',
+                    'estimated_hours' => '2.23',
+                    'worked_hours' => '2.2',
+                    'for_admins' => '1',
+                    'boat_id' => '1',
+                    'project_id' => '1',
+                    'section_id' => '1',
+                    'author_id' => '1',
+                    'x_coord' => '2.744',
+                    'y_coord' => '2.98798',
+                    'intervent_type_id' => '1',
+                ],
+            ],];
 
         $response = $this->json('POST', route('api:v1:tasks.create'), $data, [
-            'Authorization' => 'Bearer '.$token,
-             'Content-type' => 'application/vnd.api+json',
+            'Authorization' => 'Bearer ' . $token,
+            'Content-type' => 'application/vnd.api+json',
             'Accept' => 'application/vnd.api+json',
-            ]);
+        ]);
         $response->assertStatus(201);
 
         $response = $this->json('GET', route('api:v1:tasks.index'), [
-             'filter[section_id]'=>1,
-             'filter[project_id]'=>1,
+            'filter[section_id]' => 1,
+            'filter[project_id]' => 1,
 
-         ], [
-            'Authorization' => 'Bearer '.$token,
-             'Content-type' => 'application/vnd.api+json',
+        ], [
+            'Authorization' => 'Bearer ' . $token,
+            'Content-type' => 'application/vnd.api+json',
             'Accept' => 'application/vnd.api+json',
-            ]);
+        ]);
         $response->assertStatus(200);
     }
 
@@ -276,7 +276,7 @@ class ApiMobileCicleTest extends TestApiCase
     {
         $professions = ['owner', 'chief engineer', 'captain', 'ship\'s boy'];
         foreach ($professions as $profession) {
-            $prof = Profession::create(['name'=>$profession]);
+            $prof = Profession::create(['name' => $profession]);
             $prof->save();
         }
     }
@@ -286,13 +286,13 @@ class ApiMobileCicleTest extends TestApiCase
         $interventTypes = ['flat', 'flot'];
         foreach ($interventTypes as $interventType) {
             $type = \App\Models\TaskInterventType::create([
-                'name'=>$interventType,
-                    ]);
+                'name' => $interventType,
+            ]);
             $type->save();
         }
     }
 
-    private function _getToken($UserRole, $UserPermission):string
+    private function _getToken($UserRole, $UserPermission): string
     {
         $role = Role::firstOrCreate(['name' => $UserRole]);
         $permission = Permission::firstOrCreate(['name' => $UserPermission]);
@@ -302,7 +302,7 @@ class ApiMobileCicleTest extends TestApiCase
         $token = $this->_grantTokenPassword($user);
         $this->assertIsString($token);
 
-        $this->json('GET', route('api.auth.user'), [], ['Authorization' => 'Bearer '.$token])
+        $this->json('GET', route('api.auth.user'), [], ['Authorization' => 'Bearer ' . $token])
             ->assertStatus(200)
             ->assertJsonStructure(['data' => ['id', 'type', 'attributes']]);
 
@@ -312,37 +312,37 @@ class ApiMobileCicleTest extends TestApiCase
     private function _createSections($boat)
     {
         $this->_createDeck(
-                [
-                    'name'=>'Deck 1',
-                    'section_type'=>'deck',
-                    'position'=>0,
-                    'code'=>'D1',
-                    'boat_id' => $boat->id,
-                ]);
+            [
+                'name' => 'Deck 1',
+                'section_type' => 'deck',
+                'position' => 0,
+                'code' => 'D1',
+                'boat_id' => $boat->id,
+            ]);
         $this->_createDeck(
-                [
-                    'name'=>'Deck 2',
-                    'section_type'=>'deck',
-                    'position'=>1,
-                    'code'=>'D2',
-                    'boat_id' => $boat->id,
-                ]);
+            [
+                'name' => 'Deck 2',
+                'section_type' => 'deck',
+                'position' => 1,
+                'code' => 'D2',
+                'boat_id' => $boat->id,
+            ]);
         $this->_createDeck(
-                [
-                    'name'=>'Deck 3',
-                    'section_type'=>'deck',
-                    'position'=>2,
-                    'code'=>'D3',
-                    'boat_id' => $boat->id,
-                ]);
+            [
+                'name' => 'Deck 3',
+                'section_type' => 'deck',
+                'position' => 2,
+                'code' => 'D3',
+                'boat_id' => $boat->id,
+            ]);
         $this->_createDeck(
-                [
-                    'name'=>'Deck 4',
-                    'section_type'=>'deck',
-                    'position'=>3,
-                    'code'=>'D3',
-                    'boat_id' => $boat->id,
-                ]);
+            [
+                'name' => 'Deck 4',
+                'section_type' => 'deck',
+                'position' => 3,
+                'code' => 'D3',
+                'boat_id' => $boat->id,
+            ]);
     }
 
     private function _createDeck($deck)

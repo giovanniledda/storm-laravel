@@ -6,7 +6,8 @@ use App\Jobs\SendDocumentsToGoogleDrive;
 use App\Observers\ProjectObserver;
 use App\Traits\EnvParamsInputOutputTranslations;
 use App\Traits\TemplateReplacementRules;
-use App\Utils\Utils as StormUtils;
+use function App\Utils\createCsvFileFromHeadersAndRecords;
+use function App\Utils\sanitizeTextsForPlaceholders;
 use function array_key_exists;
 use function array_map;
 use function collect;
@@ -1438,9 +1439,9 @@ class Project extends Model
 
         $records = collect($this->getTasksToIncludeInReport())->map(fn ($task) => [
             $task->internal_progressive_number,
-            Utils::sanitizeTextsForPlaceholders($task->description),
-            $task->section ? Utils::sanitizeTextsForPlaceholders($task->section->name) : '?',
-            ($task->task_type == TASK_TYPE_PRIMARY) ? ($task->intervent_type ? Utils::sanitizeTextsForPlaceholders($task->intervent_type->name) : '?') : 'Remark',
+            sanitizeTextsForPlaceholders($task->description),
+            $task->section ? sanitizeTextsForPlaceholders($task->section->name) : '?',
+            ($task->task_type == TASK_TYPE_PRIMARY) ? ($task->intervent_type ? sanitizeTextsForPlaceholders($task->intervent_type->name) : '?') : 'Remark',
             $task->task_status,
             ($task->task_type == TASK_TYPE_PRIMARY) ? date('d M Y', strtotime($task->created_at)) : $task->created_at->format('d M Y'),
             implode('|', $task->opener_application_log()->pluck('name')->toArray()),
@@ -1448,6 +1449,6 @@ class Project extends Model
             $task->zone_text,
         ]);
 
-        return StormUtils::createCsvFileFromHeadersAndRecords($header, $records);
+        return createCsvFileFromHeadersAndRecords($header, $records);
     }
 }

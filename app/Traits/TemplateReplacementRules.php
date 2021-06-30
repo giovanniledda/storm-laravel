@@ -14,6 +14,7 @@ use App\Models\Task;
 use App\Models\Tool;
 use App\Models\Zone;
 use App\Models\ZoneAnalysisInfoBlock;
+use function App\Utils\sanitizeTextsForPlaceholders;
 use const APPLICATION_TYPE_COATING;
 use const APPLICATION_TYPE_FILLER;
 use const APPLICATION_TYPE_HIGHBUILD;
@@ -86,14 +87,14 @@ trait TemplateReplacementRules
     {
         $boat = $this->boat;
 
-        return Utils::sanitizeTextsForPlaceholders($boat->name);
+        return sanitizeTextsForPlaceholders($boat->name);
     }
 
     public function getBoatRegistrationNumber()
     {
         $boat = $this->boat;
 
-        return Utils::sanitizeTextsForPlaceholders($boat->registration_number);
+        return sanitizeTextsForPlaceholders($boat->registration_number);
     }
 
     public function getBoatType()
@@ -129,12 +130,12 @@ trait TemplateReplacementRules
             $repl_array =
                 [
                     'task_id' => $task->id,
-                    'task_status' => Utils::sanitizeTextsForPlaceholders($task->task_status),
-                    'task_description' => Utils::sanitizeTextsForPlaceholders($task->description),
+                    'task_status' => sanitizeTextsForPlaceholders($task->task_status),
+                    'task_description' => sanitizeTextsForPlaceholders($task->description),
                     'task_created_at' => $task->created_at,
                     'task_updated_at' => $task->updated_at,
-                    'task_type' => $task->intervent_type ? Utils::sanitizeTextsForPlaceholders($task->intervent_type->name) : '?',
-                    'task_location' => $task->section ? Utils::sanitizeTextsForPlaceholders($task->section->name) : '?',
+                    'task_type' => $task->intervent_type ? sanitizeTextsForPlaceholders($task->intervent_type->name) : '?',
+                    'task_location' => $task->section ? sanitizeTextsForPlaceholders($task->section->name) : '?',
                     'pageBreak' => $this->printDocxPageBreak(),
                     'img_currentTask_brPos' => $this->getCurrentTaskBridgeImage(),
                     'img_currentTask_img1' => $this->getCurrentTaskImg1(),
@@ -312,7 +313,7 @@ trait TemplateReplacementRules
 //            $this->updateCurrentTaskPhotosArray();
 //            $index = count($this->_currentTaskPhotos) > 4 ? ($index + 2) : ($index + 1);
 //            $point_id = $task->internal_progressive_number;
-//            $task_location = $task->section ? Utils::sanitizeTextsForPlaceholders($task->section->name) : '?';
+//            $task_location = $task->section ? sanitizeTextsForPlaceholders($task->section->name) : '?';
 //            $html .= <<<EOF
 //                    <tr style="height: 32px">
 //                        <td width="496" style="border-bottom: 1px solid #ececec;"><b>$interventTypeName #$point_id</b> ($task_location)</td>

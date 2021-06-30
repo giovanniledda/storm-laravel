@@ -123,18 +123,18 @@ class ModelDocumentTest extends TestCase
 
         $this->assertEquals($firstMedia->id, $revisions[0]->old_value);
 
-        $firstHistoryMedia = \Spatie\MediaLibrary\Models\Media::Find($revisions[0]->old_value);
+        $firstHistoryMedia = \Spatie\MediaLibrary\MediaCollections\Models\Media::Find($revisions[0]->old_value);
         $this->assertEquals($firstMedia, $firstHistoryMedia);
 
         $this->assertEquals($secondMedia->id, $revisions[0]->new_value);
         $this->assertEquals($secondMedia->id, $revisions[1]->old_value);
 
-        $secondHistoryMedia = \Spatie\MediaLibrary\Models\Media::Find($revisions[1]->old_value);
+        $secondHistoryMedia = \Spatie\MediaLibrary\MediaCollections\Models\Media::Find($revisions[1]->old_value);
         $this->assertEquals($secondMedia, $secondHistoryMedia);
 
         $this->assertEquals($thirdMedia->id, $revisions[1]->new_value);
 
-        $thirdHistoryMedia = \Spatie\MediaLibrary\Models\Media::Find($revisions[1]->new_value);
+        $thirdHistoryMedia = \Spatie\MediaLibrary\MediaCollections\Models\Media::Find($revisions[1]->new_value);
         $this->assertEquals($thirdMedia, $thirdHistoryMedia);
 
         // alternatively you can cycle through revistions as below
@@ -302,16 +302,16 @@ class ModelDocumentTest extends TestCase
 
         // test deleting
 
-        $firstMedia = \Spatie\MediaLibrary\Models\Media::Find($first_expected_media_id);
+        $firstMedia = \Spatie\MediaLibrary\MediaCollections\Models\Media::Find($first_expected_media_id);
         $this->assertEquals($first_expected_media_id, $firstMedia->id);
-        $secondMedia = \Spatie\MediaLibrary\Models\Media::Find($second_expected_media_id);
+        $secondMedia = \Spatie\MediaLibrary\MediaCollections\Models\Media::Find($second_expected_media_id);
         $this->assertEquals($second_expected_media_id, $secondMedia->id);
 
         $doc->delete();
 
-        $firstMedia = \Spatie\MediaLibrary\Models\Media::Find($first_expected_media_id);
+        $firstMedia = \Spatie\MediaLibrary\MediaCollections\Models\Media::Find($first_expected_media_id);
         $this->assertEquals(null, $firstMedia);
-        $secondMedia = \Spatie\MediaLibrary\Models\Media::Find($second_expected_media_id);
+        $secondMedia = \Spatie\MediaLibrary\MediaCollections\Models\Media::Find($second_expected_media_id);
         $this->assertEquals(null, $secondMedia);
     }
 }

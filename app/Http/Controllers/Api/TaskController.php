@@ -7,12 +7,13 @@ use App\Http\Controllers\Controller;
 use App\Models\Section;
 use App\Models\Task;
 use App\Models\User;
-use App\Utils\Utils;
+
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use function App\Utils\renderStandardJsonapiResponse;
 use function is_null;
 use Net7\Documents\Document;
 use const TASK_TYPE_PRIMARY;
@@ -24,7 +25,7 @@ class TaskController extends Controller
 {
     public function primaryStatuses(Request $request)
     {
-        return Utils::renderStandardJsonapiResponse([
+        return renderStandardJsonapiResponse([
             'data' => [
                 'type' => 'tasks',
                 'attributes' => [
@@ -36,7 +37,7 @@ class TaskController extends Controller
 
     public function remarkStatuses(Request $request)
     {
-        return Utils::renderStandardJsonapiResponse([
+        return renderStandardJsonapiResponse([
             'data' => [
                 'type' => 'tasks',
                 'attributes' => [
@@ -65,7 +66,7 @@ class TaskController extends Controller
                 'attributes' => $history_data, ]);
         }
 
-        return Utils::renderStandardJsonapiResponse(['data' => $data], 200);
+        return renderStandardJsonapiResponse(['data' => $data], 200);
     }
 
     public function generateMap(Request $request, $related)
@@ -166,7 +167,7 @@ class TaskController extends Controller
             $record->update(['task_status' => $original_task_status]);
         }
 
-        return Utils::renderStandardJsonapiResponse([
+        return renderStandardJsonapiResponse([
             'data' => [
                 'type' => 'tasks',
                 'id' => $record->id,

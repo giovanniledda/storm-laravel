@@ -23,6 +23,6 @@ class ProductFactory extends Factory
      */
     public function definition()
     {
-        return Product::getSemiFakeData($faker);
+        return Product::getSemiFakeData($this->faker);
     }
 }

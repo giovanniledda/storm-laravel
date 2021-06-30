@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Api;
 use App\Models\Comment;
 use App\Models\History;
 use App\Http\Controllers\Controller;
-use App\Utils\Utils;
+
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Net7\Documents\Document;
+use function App\Utils\jsonAbortWithInternalError;
+use function App\Utils\renderStandardJsonapiResponse;
 
 class HistoriesController extends Controller
 {
@@ -34,9 +36,9 @@ class HistoriesController extends Controller
             $history->deleteDocument($document);
             $history->updateLastEdit();
 
-            return Utils::renderStandardJsonapiResponse([], 204);
+            return renderStandardJsonapiResponse([], 204);
         } catch (\Exception $e) {
-            return Utils::jsonAbortWithInternalError(422, $e->getCode(), 'Error removing image', $e->getMessage());
+            return jsonAbortWithInternalError(422, $e->getCode(), 'Error removing image', $e->getMessage());
         }
     }
 
@@ -64,9 +66,9 @@ class HistoriesController extends Controller
                 $history->updateLastEdit();
             }
 
-            return Utils::renderStandardJsonapiResponse([], 204);
+            return renderStandardJsonapiResponse([], 204);
         } catch (\Exception $e) {
-            return Utils::jsonAbortWithInternalError(422, $e->getCode(), 'Error creating comment', $e->getMessage());
+            return jsonAbortWithInternalError(422, $e->getCode(), 'Error creating comment', $e->getMessage());
         }
     }
 }

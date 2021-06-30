@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Lecturize\Addresses\Traits\HasAddresses;
 use StormUtils;
+use function App\Utils\getItemsPerPage;
 
 class Site extends Model
 {
@@ -95,7 +96,7 @@ class Site extends Model
     public function getAddresses($pagination = false)
     {
         if ($this->hasAddress()) {
-            return $pagination ? $this->addresses()->paginate(StormUtils::getItemsPerPage()) : $this->addresses()->get();
+            return $pagination ? $this->addresses()->paginate(getItemsPerPage()) : $this->addresses()->get();
         }
 
         return [];

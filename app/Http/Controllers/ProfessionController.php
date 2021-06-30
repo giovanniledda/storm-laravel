@@ -6,6 +6,7 @@ use App\Http\Requests\RequestProfession;
 use App\Models\Profession;
 use Illuminate\Http\Request;
 use StormUtils;
+use function App\Utils\getItemsPerPage;
 
 class ProfessionController extends Controller
 {
@@ -18,7 +19,7 @@ class ProfessionController extends Controller
     {
 //        $professions = Profession::all();
 
-        $professions = Profession::paginate(StormUtils::getItemsPerPage());
+        $professions = Profession::paginate(getItemsPerPage());
 
         return view('professions.index')->with('professions', $professions);
     }

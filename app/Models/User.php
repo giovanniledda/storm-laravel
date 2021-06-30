@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
+use function App\Utils\getItemsPerPage;
 use function is_object;
 use Laravel\Passport\HasApiTokens;
 use Lecturize\Addresses\Traits\HasAddresses;
@@ -20,8 +21,7 @@ use StormUtils;
 
 class User extends Authenticatable
 {
-    use HasFactory;
-    use Notifiable, HasApiTokens, HasRoles, CanResetPassword, HasAddresses, DocumentableTrait;
+    use HasFactory, Notifiable, HasApiTokens, HasRoles, CanResetPassword, HasAddresses, DocumentableTrait;
 
     protected $fillable = [
         'name', 'surname', 'email', 'password', 'is_storm', 'disable_login',
@@ -194,7 +194,7 @@ class User extends Authenticatable
     public function getAddresses($pagination = false)
     {
         if ($this->hasAddress()) {
-            return $pagination ? $this->addresses()->paginate(StormUtils::getItemsPerPage()) : $this->addresses()->get();
+            return $pagination ? $this->addresses()->paginate(getItemsPerPage()) : $this->addresses()->get();
         }
 
         return [];

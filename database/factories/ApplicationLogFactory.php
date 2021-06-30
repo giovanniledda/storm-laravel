@@ -23,6 +23,6 @@ class ApplicationLogFactory extends Factory
      */
     public function definition()
     {
-        return ApplicationLog::getSemiFakeData($faker);
+        return ApplicationLog::getSemiFakeData($this->faker);
     }
 }

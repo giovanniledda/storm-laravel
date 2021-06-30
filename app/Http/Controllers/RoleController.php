@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Permission;
 use App\Role;
 use Auth;
+use function App\Utils\getItemsPerPage;
 use const FLASH_SUCCESS;
 use Illuminate\Http\Request;
 use Session;
@@ -25,7 +26,7 @@ class RoleController extends Controller
     public function index()
     {
 //        $roles = Role::all(); //Get all roles
-        $roles = Role::paginate(StormUtils::getItemsPerPage());
+        $roles = Role::paginate(getItemsPerPage());
 
         return view('roles.index')->with('roles', $roles);
     }

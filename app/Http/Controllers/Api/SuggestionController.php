@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Suggestion;
-use App\Utils\Utils;
+
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use function App\Utils\jsonAbortWithInternalError;
+use function App\Utils\renderStandardJsonapiResponse;
 
 class SuggestionController extends Controller
 {
@@ -26,9 +28,9 @@ class SuggestionController extends Controller
                 ]
             );
 
-            return Utils::renderStandardJsonapiResponse([], 204);
+            return renderStandardJsonapiResponse([], 204);
         } catch (\Exception $e) {
-            return Utils::jsonAbortWithInternalError(422, $e->getCode(), 'Error incrementing counter', $e->getMessage());
+            return jsonAbortWithInternalError(422, $e->getCode(), 'Error incrementing counter', $e->getMessage());
         }
     }
 }

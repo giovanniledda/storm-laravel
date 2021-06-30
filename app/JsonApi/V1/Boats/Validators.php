@@ -46,13 +46,11 @@ class Validators extends AbstractValidators
     protected $allowedSortParameters = null;
 
     /**
-     * Get resource validation rules.
-     *
-     * @param mixed|null $record
-     *      the record being updated, or null if creating a resource.
-     * @return mixed
+     * @param null $record
+     * @param array $data
+     * @return string[]
      */
-    protected function rules($record = null): array
+    protected function rules($record = null, array $data): array
     {
         return [
            'name' => 'required|string|min:1|max:255',

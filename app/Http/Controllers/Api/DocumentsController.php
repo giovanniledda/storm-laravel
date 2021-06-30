@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Utils\Utils;
+
+use function App\Utils\jsonAbortWithInternalError;
+use function App\Utils\renderStandardJsonapiResponse;
 use function base64_encode;
 use function file_get_contents;
 use Illuminate\Http\Request;
@@ -59,10 +61,10 @@ class DocumentsController extends BaseController
                 'attributes' => $base64_data,
             ]];
 
-            return Utils::renderStandardJsonapiResponse($ret, 200);
+            return renderStandardJsonapiResponse($ret, 200);
         }
 
-        return Utils::jsonAbortWithInternalError(404, 404, 'Resource not found', "No document with ID {$request->record}");
+        return jsonAbortWithInternalError(404, 404, 'Resource not found', "No document with ID {$request->record}");
     }
 
     /**
