@@ -46,6 +46,7 @@
         "league/csv": "^9.7",
         "lecturize/laravel-addresses": "^0.1.1",
         "nao-pon/flysystem-google-drive": "~1.1",
+        "league/flysystem-aws-s3-v3": "^1.0",
         "net7/docs-generator": "dev-master",
         "net7/documents": "dev-master",
         "net7/env-measure": "dev-master",
@@ -55,7 +56,8 @@
         "spatie/laravel-model-status": "^1.10",
         "spatie/laravel-permission": "^4.2",
         "spatie/laravel-ray": "^1.23",
-        "venturecraft/revisionable": "1.*"
+        "venturecraft/revisionable": "1.*",
+        "ext-gd": "*"
     },
     "require-dev": {
         "beyondcode/laravel-er-diagram-generator": "^1.4",

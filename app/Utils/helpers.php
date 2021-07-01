@@ -15,7 +15,15 @@ use Webpatser\Countries\Countries;
 use function __;
 use function abort;
 use function abs;
+use function array_combine;
+use function array_map;
+use function array_pad;
+use function array_shift;
+use function array_walk;
 use function ceil;
+use function count;
+use function file;
+use function file_exists;
 use function getimagesize;
 use function htmlspecialchars;
 use function imagealphablending;
@@ -32,6 +40,7 @@ use function imagesy;
 use function is_null;
 use function response;
 use function str_replace;
+use function throw_if;
 use function vsprintf;
 use const HTTP_412_ADD_UPD_ERROR_MSG;
 use const HTTP_412_DEL_UPD_ERROR_MSG;
@@ -196,7 +205,7 @@ function getSql($queryBuilder)
  *
  * @param Exception $exception
  */
-function catchIntegrityContraintViolationException(Exception $exception)
+function catchIntegrityConstraintViolationException(Exception $exception)
 {
     if (Str::contains($exception->getMessage(), 'Integrity constraint violation')) {
         if (Str::contains($exception->getMessage(), '1451')) {
@@ -211,13 +220,11 @@ function catchIntegrityContraintViolationException(Exception $exception)
 
 /**
  * Restituisce una response di errore JSONAPI compliant
- *
  * @param int $http_status_code
  * @param int $internal_error
- * @param string $title
- * @param string $message
- *
- * @return Response
+ * @param null $title
+ * @param null $message
+ * @return \Illuminate\Http\JsonResponse
  */
 function jsonAbortWithInternalError($http_status_code = 500, $internal_error = 500, $title = null, $message = null)
 {
@@ -361,6 +368,23 @@ function createCsvFileFromHeadersAndRecords($header, $records)
     //insert all the records
     $csv->insertAll($records);
 
+    return $csv;
+}
+
+// "Presa" dal plugin net7 environmental measurements.
+//  TODO: refact...le funzioni sono le stesse ma alcune parti della app la utilizzano a prescindere dal plugin quindi va messa qua
+function convertCsvInAssociativeArray($filename)
+{
+    throw_if(!file_exists($filename), 'Exception', "CSV file not found on $filename!");
+    $csv = array_map('str_getcsv', file($filename));
+    if (!empty($csv)) {
+        $cols = count($csv[0]);
+        array_walk($csv, function(&$a) use ($csv, $cols) {
+            $a = array_pad($a, $cols, '-');
+            $a = array_combine($csv[0], $a);
+        });
+        array_shift($csv); # remove column header
+    }
     return $csv;
 }
 

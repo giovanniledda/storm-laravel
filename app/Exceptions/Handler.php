@@ -9,7 +9,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Neomerx\JsonApi\Exceptions\JsonApiException;
 use Throwable;
-use function App\Utils\catchIntegrityContraintViolationException;
+use function App\Utils\catchIntegrityConstraintViolationException;
 
 class Handler extends ExceptionHandler
 {
@@ -46,7 +46,7 @@ class Handler extends ExceptionHandler
     public function report(Throwable $exception)
     {
         if ($exception instanceof QueryException) {
-            catchIntegrityContraintViolationException($exception);
+            catchIntegrityConstraintViolationException($exception);
         }
 
         parent::report($exception);

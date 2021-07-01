@@ -3,6 +3,9 @@
 namespace App\Models;
 
 
+use function App\Utils\getPNGImageResized;
+use function App\Utils\imagecopymerge_alpha;
+use function App\Utils\resize_image;
 use const DIRECTORY_SEPARATOR;
 use function exif_imagetype;
 use function explode;

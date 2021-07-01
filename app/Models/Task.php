@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Observers\TaskObserver;
+use function App\Utils\resize_image;
 use function App\Utils\sanitizeTextsForPlaceholders;
 use function date;
 use const DIRECTORY_SEPARATOR;
@@ -631,7 +632,7 @@ class Task extends Model
                     imagedestroy($src);
                     imagedestroy($image);
 
-                    $this->addFileOrUpdateDocumentWithType($tmpfilePath, $this::CORROSION_MAP_DOCUMENT_TYPE, 'corrosion_map');
+                    $this->addFileOrUpdateDocumentWithType($tmpfilePath, $this::CORROSION_MAP_DOCUMENT_TYPE, 'corrosion_map.jpg');  // senza il .jpg in precedente versione
                     fclose($tmpfileHandle); //this removes the tempfile
 
                     return ['success' => true, 'H' => $sizeH, 'W' => $sizeW];

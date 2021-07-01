@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Net7\Documents\Document;
 use Net7\Logging\models\Logs as Log;
+use function App\Utils\jsonAbortWithInternalError;
 use function App\Utils\renderStandardJsonapiResponse;
 use const PROJECT_STATUS_CLOSED;
 use const USER_PHOTO_API_NO_DOC_MSG;
