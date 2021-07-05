@@ -41,7 +41,6 @@ class BoatPolicy
         }
 
         // ADMIN VEDE SEMPRE TUTTE LE BARCHE
-        ray( $user->getRoleNames());
         if ($user->hasRole(ROLE_ADMIN)) {
             return true;
         }
