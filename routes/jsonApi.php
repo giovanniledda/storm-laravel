@@ -234,7 +234,8 @@ Route::group(['middleware' => ['auth:api', 'logoutBlocked']], function () {
 
         $api->resource('documents')
             ->only('show')
-            ->controller(DocumentsController::class) // uses the App\Http\Controllers\Api\DocumentController
+            ->controller('\App\Http\Controllers\Api\DocumentsController') // uses the App\Http\Controllers\Api\DocumentController
+//            ->controller(DocumentsController::class) // uses the App\Http\Controllers\Api\DocumentController
             ->routes(function ($docs) {
                 $docs->get('{record}/show/{size}', 'show')->name('show_with_size');
                 $docs->get('{record}/show', 'show')->name('show');
