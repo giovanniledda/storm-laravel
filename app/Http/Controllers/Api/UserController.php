@@ -65,20 +65,16 @@ class UserController extends Controller
         return jsonAbortWithInternalError(500, 500, USER_PHOTO_API_NO_DOC_TITLE, USER_PHOTO_API_NO_DOC_MSG);
     }
 
-    /**
-     * Giovi: è una cosa che aveva messo su Antonio Reina per gestire la pulizia del localstorage
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|Response
-     */
     public function getVersion()
     {
-        $ret = [
-            'data' => [
+        $ret = ['data' => [
                 'type' => 'version',
                 'id' => getenv('VERSION'),
                 'attributes' => [
                     'version' => getenv('VERSION'),
+
                 ],
-        ]];
+            ]];
 
         return renderStandardJsonapiResponse($ret, 200);
     }
