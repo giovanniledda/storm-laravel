@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use Illuminate\Support\Facades\Storage;
 use function base64_encode;
 use function copy;
 use function explode;
@@ -78,7 +79,8 @@ trait JsonAPIPhotos
                 'attributes' => [
                     'doc_type' => $photo_doc->type,
                     'file_path' => $file_path,
-                    'base64' => base64_encode(file_get_contents($file_path)),
+                    'base64' => base64_encode(file_get_contents($file_path)),  // before S3
+//                    'base64' => base64_encode(Storage::get($file_path)),  // with S3
                 ],
             ];
         }

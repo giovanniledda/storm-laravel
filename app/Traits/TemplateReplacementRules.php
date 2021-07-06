@@ -424,7 +424,11 @@ EOF;
             $deck_media = $section->generic_images->last();
 //            $deck_img_path_large = $deck_media->getPathBySize('');
             //            $deck_img_path = file_exists($deck_img_path_large) ? $deck_img_path_large : $deck_media->getPathBySize('');
+            // before S3
             $deck_img_path = $deck_media->getPathBySize('');
+            // with S3
+//            $deck_img_path = Storage::url($deck_media->getPathBySize(''));
+//            ray($deck_img_path);
             $bridgeImageInfo = getimagesize($deck_img_path);
             $max_w = max($max_w, $bridgeImageInfo[0]);
         }
@@ -440,17 +444,21 @@ EOF;
             // 2 - divido questo max per 1236 ed ottengo un fattore per cui dovrò andare a dividere la W (in realtà divido per il fattore * 2) di tutte le altre section per ottenere la dimensione corretta
             // 3 - passo il fattore ottenuto alla drawOverviewImageWithTaskPoints
             $section->drawOverviewImageWithTaskPoints($task_ids, $d_factor);
+            // before S3
             $overview_img = $section->getPointsImageOverview();
+            $src = "file://$overview_img";
+            // with S3
+//            $overview_img = Storage::url($section->getPointsImageOverview());
+//            $src = "$overview_img";
 
             $pageBreak = '';
             if (++$sectionsCounter % 2 == 0 && $sectionsCounter < $totSections) {
                 $pageBreak = '<phpdocx_break data-type="page" data-number="1" />';
             }
-
             $html .= <<<EOF
                     <div>
                         <p style="text-align:center; font-size: 14px; color: #999999;">$section_text
-                            <img width="926" align="center" src="file://$overview_img" alt="Section Overview Image">
+                            <img width="926" align="center" src="$src" alt="Section Overview Image">
                         </p>
                     </div>
                     $pageBreak

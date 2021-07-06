@@ -255,9 +255,14 @@ class Project extends Model
 
         $filepath = $media->getPath();
 
+        // before S3
         $fh = fopen($filepath, 'r');
         $content = fread($fh, filesize($filepath));
         fclose($fh);
+        // before S3 - stop
+
+        // with S3
+//        $content = Storage::get($media->getPath());
 
         $filename = $media->file_name;
         $googleFolder = $this->getGoogleFolderPath($document);
