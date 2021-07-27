@@ -35,7 +35,6 @@ class Adapter extends AbstractAdapter
      */
     protected function filter($query, Collection $filters)
     {
-
         /** @var User $user */
         $user = \Auth::user();
         /** implementa la ricerca per site_id */

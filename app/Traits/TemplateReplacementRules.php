@@ -339,10 +339,6 @@ trait TemplateReplacementRules
 EOF;
 
         return $html;
-
-//        <p>
-//                            <img width="1000" align="left" src="file://$imagePath" alt="Section Overview Image">
-//                        </p>
     }
 
     /**
